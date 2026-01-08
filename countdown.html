@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer - Timerist</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Timers</a>
+        
+        <div class="timer-container">
+            <div class="timer-display">
+                <div class="timer-label">Countdown Timer</div>
+                <div class="timer-time" id="display">00:00</div>
+            </div>
+            
+            <div class="timer-controls">
+                <button class="btn btn-primary" id="startBtn">Start</button>
+                <button class="btn btn-secondary" id="pauseBtn" disabled>Pause</button>
+                <button class="btn btn-danger" id="resetBtn">Reset</button>
+            </div>
+            
+            <div class="timer-settings">
+                <div class="setting-group">
+                    <label for="minutes">Minutes</label>
+                    <input type="number" id="minutes" min="0" max="99" value="5" />
+                </div>
+                <div class="setting-group">
+                    <label for="seconds">Seconds</label>
+                    <input type="number" id="seconds" min="0" max="59" value="0" />
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="scripts/countdown.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Timer - Timerist</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Timers</a>
+        
+        <div class="timer-container">
+            <div class="timer-display">
+                <div class="timer-label" id="phaseLabel">Phase 1</div>
+                <div class="timer-time" id="display">00:00</div>
+                <div style="margin-top: 20px; font-size: 1rem; color: var(--text-light);">
+                    Phase <span id="phase">1</span> of <span id="totalPhases">3</span>
+                </div>
+            </div>
+            
+            <div class="timer-controls">
+                <button class="btn btn-primary" id="startBtn">Start</button>
+                <button class="btn btn-secondary" id="pauseBtn" disabled>Pause</button>
+                <button class="btn btn-danger" id="resetBtn">Reset</button>
+            </div>
+            
+            <div class="timer-settings">
+                <div class="setting-group">
+                    <label for="phaseCount">Number of Phases</label>
+                    <input type="number" id="phaseCount" min="1" max="10" value="3" />
+                    <button class="btn btn-secondary" id="updatePhases" style="margin-top: 10px; width: 100%;">Update Phases</button>
+                </div>
+                <div id="phasesContainer">
+                    <!-- Phases will be dynamically generated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="scripts/custom.js"></script>
+</body>
+</html>
+
