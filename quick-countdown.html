@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Countdown - Timerist</title>
+    <link rel="stylesheet" href="styles/themes.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <script src="scripts/theme-switcher.js"></script>
+    <script src="scripts/style-switcher-ui.js"></script>
+    <style>
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 30px;
+        }
+        
+        .preset-btn {
+            padding: 16px 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-small);
+            background: var(--card-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            font-family: var(--font-family);
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+        
+        .preset-btn:hover {
+            background: var(--card-bg-hover);
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .preset-btn:active {
+            transform: translateY(0);
+        }
+        
+        .preset-btn.reset-btn {
+            background: var(--danger-color);
+            color: var(--text-on-primary);
+            border-color: var(--danger-color);
+            grid-column: span 2;
+        }
+        
+        .preset-btn.reset-btn:hover {
+            background: var(--danger-dark);
+            border-color: var(--danger-dark);
+        }
+        
+        /* Style 1 specific preset button styling */
+        [data-theme="style1"] .preset-btn {
+            background: #333333;
+            color: var(--text-color);
+            border-color: var(--border-color);
+        }
+        
+        [data-theme="style1"] .preset-btn:hover {
+            background: #444444;
+            border-color: var(--primary-color);
+        }
+        
+        [data-theme="style1"] .preset-btn.reset-btn {
+            background: var(--danger-color);
+            color: var(--text-on-primary);
+        }
+        
+        .timer-running .preset-btn:not(.reset-btn) {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .timer-running .preset-btn:not(.reset-btn):hover {
+            transform: none;
+            border-color: var(--border-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Timers</a>
+        
+        <div class="timer-container">
+            <div class="timer-display">
+                <div class="timer-label">Quick Countdown</div>
+                <div class="timer-time" id="display">00:00</div>
+            </div>
+            
+            <div class="timer-controls">
+                <button class="btn btn-primary" id="startBtn" style="display: none;">Start</button>
+                <button class="btn btn-secondary" id="pauseBtn" disabled style="display: none;">Pause</button>
+                <button class="btn btn-danger" id="resetBtn" style="display: none;">Reset</button>
+            </div>
+            
+            <!-- Manual Time Entry -->
+            <div class="timer-settings" style="margin-top: 30px; margin-bottom: 30px;">
+                <div class="setting-group">
+                    <label for="manualMinutes">Minutes</label>
+                    <input type="number" id="manualMinutes" min="0" max="99" value="0" />
+                </div>
+                <div class="setting-group">
+                    <label for="manualSeconds">Seconds</label>
+                    <input type="number" id="manualSeconds" min="0" max="59" value="0" />
+                </div>
+                <button class="btn btn-primary" id="manualStartBtn" style="width: 100%; margin-top: 10px;">Start Manual Time</button>
+            </div>
+            
+            <!-- Preset Buttons (15-second increments) -->
+            <div class="preset-buttons">
+                <button class="preset-btn" data-seconds="15">00:15</button>
+                <button class="preset-btn" data-seconds="30">00:30</button>
+                <button class="preset-btn" data-seconds="45">00:45</button>
+                <button class="preset-btn" data-seconds="60">01:00</button>
+                <button class="preset-btn" data-seconds="75">01:15</button>
+                <button class="preset-btn" data-seconds="90">01:30</button>
+                <button class="preset-btn" data-seconds="105">01:45</button>
+                <button class="preset-btn" data-seconds="120">02:00</button>
+                <button class="preset-btn reset-btn" id="quickResetBtn">Reset</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="scripts/quick-countdown.js"></script>
+</body>
+</html>

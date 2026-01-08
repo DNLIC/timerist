@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WordPress Embed Examples - Timerist</title>
+    <title>WordPress Embed Examples - TimeristWP</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -40,8 +40,8 @@
     </style>
 </head>
 <body>
-    <h1>WordPress Embed Examples</h1>
-    <p>Copy and paste these code snippets into your WordPress pages or posts.</p>
+    <h1>WordPress Embed Examples - TimeristWP v2.0</h1>
+    <p>Copy and paste these code snippets into your WordPress pages or posts, or use the TimeristWP plugin shortcodes.</p>
     
     <h2>1. Countdown Timer</h2>
     <div class="example">
@@ -103,13 +103,22 @@
 &lt;/iframe&gt;</code></pre>
     </div>
     
-    <h2>Instructions</h2>
+    <h2>Method 1: Using iframe (Manual Embed)</h2>
     <ol>
         <li>In WordPress, add a "Custom HTML" block to your page or post</li>
         <li>Paste the iframe code for the timer you want to embed</li>
         <li>Adjust the <code>height</code> value if needed (600px works well for most timers)</li>
         <li>Publish your page!</li>
     </ol>
+    
+    <h2>Method 2: Using TimeristWP Plugin Shortcodes (Recommended)</h2>
+    <p>If you have the TimeristWP plugin installed, you can use shortcodes instead:</p>
+    <div class="example">
+        <pre><code>[timerist_tabata height="600"]
+[timerist_countdown height="600"]
+[timerist type="emom" height="600"]</code></pre>
+    </div>
+    <p>See the TimeristWP plugin documentation for all available shortcodes.</p>
     
     <p><strong>Note:</strong> Make sure your WordPress site allows iframe embeds. Some security plugins may block iframes by default.</p>
 </body>

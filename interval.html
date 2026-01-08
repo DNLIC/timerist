@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interval Timer - Timerist</title>
+    <link rel="stylesheet" href="styles/themes.css">
     <link rel="stylesheet" href="styles/main.css">
+    <script src="scripts/theme-switcher.js"></script>
+    <script src="scripts/style-switcher-ui.js"></script>
 </head>
 <body>
     <div class="container">
@@ -19,34 +22,316 @@
                 </div>
             </div>
             
+            <!-- Number of Rounds -->
+            <div class="setting-group" style="margin-bottom: 20px; text-align: center;">
+                <label style="display: block; margin-bottom: 8px; font-weight: var(--font-weight-semibold); color: var(--text-color);">Number of Rounds</label>
+                <div class="rounds-input-group">
+                    <button class="rounds-adjust-btn" id="roundsDecreaseBtn" type="button">−</button>
+                    <input type="text" id="rounds" value="5" readonly style="width: 80px; text-align: center; font-size: 1.2rem; font-weight: 600; background: var(--card-bg); border: 2px solid var(--border-color); border-radius: var(--border-radius-small); padding: 8px;" />
+                    <button class="rounds-adjust-btn" id="roundsIncreaseBtn" type="button">+</button>
+                </div>
+            </div>
+            
             <div class="timer-controls">
                 <button class="btn btn-primary" id="startBtn">Start</button>
                 <button class="btn btn-secondary" id="pauseBtn" disabled>Pause</button>
                 <button class="btn btn-danger" id="resetBtn">Reset</button>
+                <button class="btn btn-secondary" id="clearBtn" style="background: var(--text-light);">Clear</button>
             </div>
             
-            <div class="timer-settings">
-                <div class="setting-group">
-                    <label for="workMinutes">Work - Minutes</label>
-                    <input type="number" id="workMinutes" min="0" max="99" value="0" />
+            <!-- Split Screen: Work (Left) and Rest (Right) -->
+            <div class="interval-split-container">
+                <!-- Work Side (Left) -->
+                <div class="interval-side interval-work">
+                    <div class="interval-label">Work</div>
+                    <div class="time-input-group">
+                        <input type="text" id="workTime" value="00:30" pattern="[0-9]{2}:[0-9]{2}" placeholder="MM:SS" />
+                    </div>
+                    <div class="adjust-buttons">
+                        <button class="time-adjust-btn" id="workDecreaseBtn" type="button">−5</button>
+                        <button class="time-adjust-btn" id="workIncreaseBtn" type="button">+5</button>
+                    </div>
+                    <div class="preset-buttons">
+                        <button class="preset-btn" data-type="work" data-seconds="15">00:15</button>
+                        <button class="preset-btn" data-type="work" data-seconds="30">00:30</button>
+                        <button class="preset-btn" data-type="work" data-seconds="45">00:45</button>
+                        <button class="preset-btn" data-type="work" data-seconds="60">01:00</button>
+                        <button class="preset-btn" data-type="work" data-seconds="90">01:30</button>
+                        <button class="preset-btn" data-type="work" data-seconds="120">02:00</button>
+                    </div>
                 </div>
-                <div class="setting-group">
-                    <label for="workSeconds">Work - Seconds</label>
-                    <input type="number" id="workSeconds" min="0" max="59" value="30" />
-                </div>
-                <div class="setting-group">
-                    <label for="restMinutes">Rest - Minutes</label>
-                    <input type="number" id="restMinutes" min="0" max="99" value="0" />
-                </div>
-                <div class="setting-group">
-                    <label for="restSeconds">Rest - Seconds</label>
-                    <input type="number" id="restSeconds" min="0" max="59" value="10" />
-                </div>
-                <div class="setting-group">
-                    <label for="rounds">Number of Rounds</label>
-                    <input type="number" id="rounds" min="1" max="99" value="5" />
+                
+                <!-- Rest Side (Right) -->
+                <div class="interval-side interval-rest">
+                    <div class="interval-label">Rest</div>
+                    <div class="time-input-group">
+                        <input type="text" id="restTime" value="00:10" pattern="[0-9]{2}:[0-9]{2}" placeholder="MM:SS" />
+                    </div>
+                    <div class="adjust-buttons">
+                        <button class="time-adjust-btn" id="restDecreaseBtn" type="button">−5</button>
+                        <button class="time-adjust-btn" id="restIncreaseBtn" type="button">+5</button>
+                    </div>
+                    <div class="preset-buttons">
+                        <button class="preset-btn" data-type="rest" data-seconds="15">00:15</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="30">00:30</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="45">00:45</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="60">01:00</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="90">01:30</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="120">02:00</button>
+                    </div>
                 </div>
             </div>
+            
+            <style>
+                /* Split Screen Layout */
+                .interval-split-container {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 15px;
+                    margin-top: 30px;
+                }
+                
+                .interval-side {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 12px;
+                }
+                
+                .interval-label {
+                    font-size: 1rem;
+                    font-weight: var(--font-weight-semibold);
+                    color: var(--text-color);
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                }
+                
+                .interval-work .interval-label {
+                    color: var(--primary-color);
+                }
+                
+                .interval-rest .interval-label {
+                    color: var(--secondary-color);
+                }
+                
+                .time-input-group {
+                    width: 100%;
+                }
+                
+                .time-input-group input {
+                    width: 100%;
+                    text-align: center;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    font-family: var(--font-mono);
+                    padding: 10px;
+                    border: 2px solid var(--border-color);
+                    border-radius: var(--border-radius-small);
+                    background: var(--card-bg);
+                    color: var(--text-color);
+                }
+                
+                .time-input-group input:focus {
+                    outline: none;
+                    border-color: var(--primary-color);
+                }
+                
+                .adjust-buttons {
+                    display: flex;
+                    gap: 8px;
+                    width: 100%;
+                }
+                
+                .time-adjust-btn {
+                    flex: 1;
+                    height: 40px;
+                    font-size: 1rem;
+                    font-weight: bold;
+                    border: 2px solid var(--border-color);
+                    border-radius: var(--border-radius-small);
+                    background: var(--card-bg);
+                    color: var(--text-color);
+                    cursor: pointer;
+                    transition: all var(--transition-normal);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 0;
+                }
+                
+                .time-adjust-btn:hover:not(:disabled) {
+                    background: var(--card-bg-hover);
+                    border-color: var(--primary-color);
+                    transform: scale(1.05);
+                }
+                
+                .time-adjust-btn:active:not(:disabled) {
+                    transform: scale(0.95);
+                }
+                
+                .time-adjust-btn:disabled {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                }
+                
+                .preset-buttons {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 8px;
+                    width: 100%;
+                }
+                
+                .preset-btn {
+                    padding: 14px 10px;
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                    border: 2px solid var(--border-color);
+                    border-radius: var(--border-radius-small);
+                    background: var(--card-bg);
+                    color: var(--text-color);
+                    cursor: pointer;
+                    transition: all var(--transition-normal);
+                    font-family: var(--font-family);
+                    text-decoration: underline;
+                    text-underline-offset: 3px;
+                    min-height: 44px; /* Thumb-friendly size */
+                }
+                
+                .preset-btn:hover:not(:disabled) {
+                    background: var(--card-bg-hover);
+                    transform: translateY(-2px);
+                    box-shadow: var(--shadow);
+                }
+                
+                .preset-btn:active:not(:disabled) {
+                    transform: translateY(0);
+                }
+                
+                .preset-btn.active {
+                    background: var(--primary-color);
+                    color: var(--text-on-primary);
+                    border-color: var(--primary-color);
+                }
+                
+                .interval-rest .preset-btn.active {
+                    background: var(--secondary-color);
+                    border-color: var(--secondary-color);
+                }
+                
+                /* Style 1 specific styling */
+                [data-theme="style1"] .time-adjust-btn,
+                [data-theme="style1"] .preset-btn {
+                    background: #333333;
+                    color: var(--text-color);
+                    border-color: var(--border-color);
+                }
+                
+                [data-theme="style1"] .time-adjust-btn:hover:not(:disabled),
+                [data-theme="style1"] .preset-btn:hover:not(:disabled) {
+                    background: #444444;
+                    border-color: var(--primary-color);
+                }
+                
+                [data-theme="style1"] .preset-btn.active {
+                    background: var(--primary-color);
+                    color: var(--text-on-primary);
+                }
+                
+                [data-theme="style1"] .interval-rest .preset-btn.active {
+                    background: var(--secondary-color);
+                }
+                
+                .timer-running .preset-btn,
+                .timer-running .time-adjust-btn {
+                    opacity: 0.6;
+                    cursor: not-allowed;
+                }
+                
+                .timer-running .preset-btn:hover,
+                .timer-running .time-adjust-btn:hover {
+                    transform: none;
+                    border-color: var(--border-color);
+                }
+                
+                /* Rounds Input Group */
+                .rounds-input-group {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 12px;
+                }
+                
+                .rounds-adjust-btn {
+                    width: 45px;
+                    height: 45px;
+                    font-size: 1.5rem;
+                    font-weight: bold;
+                    border: 2px solid var(--border-color);
+                    border-radius: var(--border-radius-small);
+                    background: var(--card-bg);
+                    color: var(--text-color);
+                    cursor: pointer;
+                    transition: all var(--transition-normal);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 0;
+                }
+                
+                .rounds-adjust-btn:hover:not(:disabled) {
+                    background: var(--card-bg-hover);
+                    border-color: var(--primary-color);
+                    transform: scale(1.05);
+                }
+                
+                .rounds-adjust-btn:active:not(:disabled) {
+                    transform: scale(0.95);
+                }
+                
+                .rounds-adjust-btn:disabled {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                }
+                
+                /* Style 1 specific rounds button styling */
+                [data-theme="style1"] .rounds-adjust-btn {
+                    background: #333333;
+                    color: var(--text-color);
+                    border-color: var(--border-color);
+                }
+                
+                [data-theme="style1"] .rounds-adjust-btn:hover:not(:disabled) {
+                    background: #444444;
+                    border-color: var(--primary-color);
+                }
+                
+                .timer-running .rounds-adjust-btn {
+                    opacity: 0.6;
+                    cursor: not-allowed;
+                }
+                
+                .timer-running .rounds-adjust-btn:hover {
+                    transform: none;
+                    border-color: var(--border-color);
+                }
+                
+                /* Mobile optimization */
+                @media (max-width: 480px) {
+                    .interval-split-container {
+                        gap: 10px;
+                    }
+                    
+                    .preset-btn {
+                        padding: 12px 8px;
+                        font-size: 0.8rem;
+                        min-height: 48px;
+                    }
+                    
+                    .time-adjust-btn {
+                        height: 44px;
+                    }
+                }
+            </style>
         </div>
     </div>
     

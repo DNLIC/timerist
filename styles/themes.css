@@ -1,0 +1,196 @@
+/* 
+ * TimeristWP Theme System
+ * Supports: Style 1, Style 2, Style 3 (current design)
+ * Responsive: iPhone, iPad, Laptop, Desktop
+ * Orientation: Portrait & Landscape
+ */
+
+/* ============================================
+   STYLE 3 (Current Design - Default)
+   ============================================ */
+:root,
+:root[data-theme="style3"] {
+    /* Colors */
+    --primary-color: #4a90e2;
+    --primary-dark: #357abd;
+    --primary-light: #6ba3e8;
+    --secondary-color: #50c878;
+    --secondary-dark: #45b869;
+    --danger-color: #e74c3c;
+    --danger-dark: #c0392b;
+    --warning-color: #f39c12;
+    
+    /* Text Colors */
+    --text-color: #333;
+    --text-light: #666;
+    --text-lighter: #999;
+    --text-on-primary: #ffffff;
+    
+    /* Background Colors */
+    --bg-color: #f5f7fa;
+    --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --card-bg: #ffffff;
+    --card-bg-hover: #fafbfc;
+    
+    /* Borders & Shadows */
+    --border-color: #e1e8ed;
+    --border-radius: 16px;
+    --border-radius-small: 8px;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.15);
+    --shadow-large: 0 8px 24px rgba(0, 0, 0, 0.12);
+    
+    /* Typography */
+    --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    --font-mono: 'Courier New', monospace;
+    --font-size-base: 1rem;
+    --font-size-large: 1.2rem;
+    --font-size-small: 0.9rem;
+    --font-weight-normal: 400;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    
+    /* Timer Specific */
+    --timer-size-mobile: 2.5rem;
+    --timer-size-tablet: 3.5rem;
+    --timer-size-desktop: 5rem;
+    --timer-color: var(--primary-color);
+    
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+    
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+}
+
+/* ============================================
+   STYLE 1 (Dark Mode - Based on provided images)
+   ============================================ */
+:root[data-theme="style1"] {
+    /* Colors - Dark Mode Theme */
+    --primary-color: #ff0000;
+    --primary-dark: #cc0000;
+    --primary-light: #ff3333;
+    --secondary-color: #00ff00;
+    --secondary-dark: #00cc00;
+    --danger-color: #ff0000;
+    --danger-dark: #cc0000;
+    --warning-color: #ffaa00;
+    
+    /* Text Colors - White on Dark */
+    --text-color: #ffffff;
+    --text-light: #cccccc;
+    --text-lighter: #999999;
+    --text-on-primary: #ffffff;
+    
+    /* Background Colors - Dark Theme */
+    --bg-color: #000000;
+    --bg-gradient: #000000;
+    --card-bg: #1a1a1a;
+    --card-bg-hover: #2a2a2a;
+    
+    /* Borders & Shadows - Dark Mode */
+    --border-color: #333333;
+    --border-radius: 12px;
+    --border-radius-small: 8px;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.7);
+    --shadow-large: 0 8px 24px rgba(0, 0, 0, 0.8);
+    
+    /* Typography */
+    --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    --font-mono: 'Courier New', monospace;
+    --font-size-base: 1rem;
+    --font-size-large: 1.2rem;
+    --font-size-small: 0.9rem;
+    --font-weight-normal: 400;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    
+    /* Timer Specific - Large, Bold White Numbers */
+    --timer-size-mobile: 3rem;
+    --timer-size-tablet: 4.5rem;
+    --timer-size-desktop: 6rem;
+    --timer-color: #ffffff;
+    
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+    
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+}
+
+/* ============================================
+   STYLE 2 (Placeholder - To be customized)
+   ============================================ */
+:root[data-theme="style2"] {
+    /* Colors */
+    --primary-color: #4a90e2;
+    --primary-dark: #357abd;
+    --primary-light: #6ba3e8;
+    --secondary-color: #50c878;
+    --secondary-dark: #45b869;
+    --danger-color: #e74c3c;
+    --danger-dark: #c0392b;
+    --warning-color: #f39c12;
+    
+    /* Text Colors */
+    --text-color: #333;
+    --text-light: #666;
+    --text-lighter: #999;
+    --text-on-primary: #ffffff;
+    
+    /* Background Colors */
+    --bg-color: #f5f7fa;
+    --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --card-bg: #ffffff;
+    --card-bg-hover: #fafbfc;
+    
+    /* Borders & Shadows */
+    --border-color: #e1e8ed;
+    --border-radius: 16px;
+    --border-radius-small: 8px;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.15);
+    --shadow-large: 0 8px 24px rgba(0, 0, 0, 0.12);
+    
+    /* Typography */
+    --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    --font-mono: 'Courier New', monospace;
+    --font-size-base: 1rem;
+    --font-size-large: 1.2rem;
+    --font-size-small: 0.9rem;
+    --font-weight-normal: 400;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    
+    /* Timer Specific */
+    --timer-size-mobile: 2.5rem;
+    --timer-size-tablet: 3.5rem;
+    --timer-size-desktop: 5rem;
+    --timer-color: var(--primary-color);
+    
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+    
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+}
