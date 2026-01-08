@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "your-project-id-here",
+    "ttimer": "timerist-4ecd9"
+  },
+  "targets": {},
+  "etags": {}
+}
