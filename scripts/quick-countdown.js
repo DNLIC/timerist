@@ -121,18 +121,21 @@ function stopTimer() {
     stopBtn.style.display = 'none';
     resetBtn.style.display = 'inline-block';
     clearBtn.style.display = 'inline-block';
-    currentTime = 0;
+    // Don't reset currentTime here - let resetTimer handle that
     updateDisplay();
 }
 
-// Reset timer
+// Reset timer - resets clock to original selected time but keeps the time value
 function resetTimer() {
-    stopTimer();
-    currentTime = 0;
-    totalSeconds = 0;
+    isRunning = false;
+    clearInterval(interval);
+    interval = null;
+    // Reset currentTime back to the original selected time (totalSeconds)
+    // This allows user to start again with the same time
+    currentTime = totalSeconds;
     updateDisplay();
     startBtn.textContent = 'Start';
-    startBtn.style.display = 'inline-block';
+    startBtn.style.display = totalSeconds > 0 ? 'inline-block' : 'none';
     pauseBtn.style.display = 'none';
     stopBtn.style.display = 'none';
     resetBtn.style.display = 'none';
