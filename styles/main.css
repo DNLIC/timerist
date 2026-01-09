@@ -192,12 +192,34 @@ footer a:hover {
 
 .btn-secondary {
     background: var(--secondary-color);
-    color: var(--text-on-primary);
+    color: #ffffff !important;
+    font-weight: 700;
+    text-shadow: none;
+    opacity: 1;
 }
 
 .btn-secondary:hover:not(:disabled) {
     background: var(--secondary-dark);
     transform: scale(1.05);
+    color: #ffffff !important;
+    opacity: 1;
+}
+
+/* Ensure maximum contrast for Style 1 (dark mode) */
+[data-theme="style1"] .btn-secondary {
+    background: var(--secondary-color);
+    color: #ffffff !important;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    opacity: 1 !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+[data-theme="style1"] .btn-secondary:hover:not(:disabled) {
+    background: var(--secondary-dark);
+    color: #ffffff !important;
+    opacity: 1 !important;
 }
 
 .btn-danger {
@@ -214,6 +236,23 @@ footer a:hover {
     opacity: 0.5;
     cursor: not-allowed;
     transform: none;
+}
+
+/* Override disabled opacity for secondary buttons to maintain text contrast */
+.btn-secondary:disabled {
+    opacity: 1 !important;
+    color: #ffffff !important;
+    background: var(--secondary-color) !important;
+}
+
+/* Style 1 (dark mode) - ensure maximum contrast for PAUSE button */
+[data-theme="style1"] .btn-secondary:disabled {
+    opacity: 1 !important;
+    color: #ffffff !important;
+    background: var(--secondary-color) !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .timer-settings {
