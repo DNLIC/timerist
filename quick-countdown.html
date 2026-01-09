@@ -9,6 +9,19 @@
     <script src="scripts/theme-switcher.js"></script>
     <script src="scripts/style-switcher-ui.js"></script>
     <style>
+        .timer-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .timer-controls .btn {
+            min-width: 80px;
+            padding: 12px 20px;
+        }
+        
         .preset-buttons {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -200,6 +213,16 @@
                 padding: 10px 14px;
                 font-size: 0.9rem;
             }
+            
+            .timer-controls {
+                gap: 8px;
+            }
+            
+            .timer-controls .btn {
+                min-width: 70px;
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
@@ -213,9 +236,11 @@
                 <div class="timer-time" id="display">00:00</div>
             </div>
             
+            <!-- Control Buttons -->
             <div class="timer-controls">
-                <button class="btn btn-primary" id="startBtn" style="display: none;">Start</button>
-                <button class="btn btn-secondary" id="pauseBtn" disabled style="display: none;">Pause</button>
+                <button class="btn btn-primary" id="startBtn">Start</button>
+                <button class="btn btn-secondary" id="pauseBtn" style="display: none;">Pause</button>
+                <button class="btn btn-danger" id="stopBtn" style="display: none;">Stop</button>
                 <button class="btn btn-danger" id="resetBtn" style="display: none;">Reset</button>
             </div>
             

@@ -7,6 +7,7 @@ let isRunning = false;
 const display = document.getElementById('display');
 const startBtn = document.getElementById('startBtn');
 const pauseBtn = document.getElementById('pauseBtn');
+const stopBtn = document.getElementById('stopBtn');
 const resetBtn = document.getElementById('resetBtn');
 const quickResetBtn = document.getElementById('quickResetBtn');
 const presetButtons = document.querySelectorAll('.preset-btn[data-seconds]');
@@ -82,7 +83,8 @@ function startTimer() {
     isRunning = true;
     startBtn.style.display = 'none';
     pauseBtn.style.display = 'inline-block';
-    pauseBtn.disabled = false;
+    stopBtn.style.display = 'inline-block';
+    resetBtn.style.display = 'none';
     
     interval = setInterval(() => {
         currentTime--;
@@ -101,8 +103,10 @@ function pauseTimer() {
     isRunning = false;
     clearInterval(interval);
     startBtn.style.display = 'inline-block';
-    pauseBtn.style.display = 'none';
     startBtn.textContent = 'Resume';
+    pauseBtn.style.display = 'none';
+    stopBtn.style.display = 'inline-block';
+    resetBtn.style.display = 'inline-block';
 }
 
 // Stop timer
@@ -112,6 +116,7 @@ function stopTimer() {
     interval = null;
     startBtn.style.display = 'none';
     pauseBtn.style.display = 'none';
+    stopBtn.style.display = 'none';
     resetBtn.style.display = 'inline-block';
     currentTime = 0;
     updateDisplay();
@@ -124,6 +129,9 @@ function resetTimer() {
     totalSeconds = 0;
     updateDisplay();
     startBtn.textContent = 'Start';
+    startBtn.style.display = 'inline-block';
+    pauseBtn.style.display = 'none';
+    stopBtn.style.display = 'none';
     resetBtn.style.display = 'none';
 }
 
@@ -138,6 +146,15 @@ function setTime(seconds) {
     totalSeconds = seconds;
     currentTime = seconds;
     updateDisplay();
+    
+    // Show start button when time is set
+    if (currentTime > 0) {
+        startBtn.style.display = 'inline-block';
+        startBtn.textContent = 'Start';
+        pauseBtn.style.display = 'none';
+        stopBtn.style.display = 'none';
+        resetBtn.style.display = 'none';
+    }
     
     // Don't auto-start - let user adjust with +/- buttons if needed, then click Start
 }
@@ -157,6 +174,13 @@ function setTimeFromManual() {
     currentTime = total;
     updateDisplay();
     
+    // Show start button
+    startBtn.style.display = 'inline-block';
+    startBtn.textContent = 'Start';
+    pauseBtn.style.display = 'none';
+    stopBtn.style.display = 'none';
+    resetBtn.style.display = 'none';
+    
     // Automatically start the countdown
     startTimer();
 }
@@ -168,6 +192,24 @@ function adjustManualTime(increment) {
     const currentSeconds = parseTime(manualTimeInput.value);
     const newSeconds = Math.max(0, currentSeconds + (increment ? 5 : -5));
     manualTimeInput.value = formatTimeInput(newSeconds);
+    
+    // Update display and show start button if time > 0
+    totalSeconds = newSeconds;
+    currentTime = newSeconds;
+    updateDisplay();
+    
+    if (currentTime > 0) {
+        startBtn.style.display = 'inline-block';
+        startBtn.textContent = 'Start';
+        pauseBtn.style.display = 'none';
+        stopBtn.style.display = 'none';
+        resetBtn.style.display = 'none';
+    } else {
+        startBtn.style.display = 'none';
+        pauseBtn.style.display = 'none';
+        stopBtn.style.display = 'none';
+        resetBtn.style.display = 'none';
+    }
 }
 
 // Play sound when timer completes
@@ -193,6 +235,7 @@ function playSound() {
 // Event listeners
 startBtn.addEventListener('click', startTimer);
 pauseBtn.addEventListener('click', pauseTimer);
+stopBtn.addEventListener('click', stopTimer);
 resetBtn.addEventListener('click', resetTimer);
 quickResetBtn.addEventListener('click', resetTimer);
 
@@ -225,3 +268,5 @@ manualTimeInput.addEventListener('input', function() {
 
 // Initialize
 updateDisplay();
+// Hide start button initially since time is 0
+startBtn.style.display = 'none';
