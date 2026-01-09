@@ -9,6 +9,7 @@ const startBtn = document.getElementById('startBtn');
 const pauseBtn = document.getElementById('pauseBtn');
 const stopBtn = document.getElementById('stopBtn');
 const resetBtn = document.getElementById('resetBtn');
+const clearBtn = document.getElementById('clearBtn');
 const quickResetBtn = document.getElementById('quickResetBtn');
 const presetButtons = document.querySelectorAll('.preset-btn[data-seconds]');
 const manualTimeInput = document.getElementById('manualTime');
@@ -107,6 +108,7 @@ function pauseTimer() {
     pauseBtn.style.display = 'none';
     stopBtn.style.display = 'inline-block';
     resetBtn.style.display = 'inline-block';
+    clearBtn.style.display = 'inline-block';
 }
 
 // Stop timer
@@ -118,6 +120,7 @@ function stopTimer() {
     pauseBtn.style.display = 'none';
     stopBtn.style.display = 'none';
     resetBtn.style.display = 'inline-block';
+    clearBtn.style.display = 'inline-block';
     currentTime = 0;
     updateDisplay();
 }
@@ -133,6 +136,22 @@ function resetTimer() {
     pauseBtn.style.display = 'none';
     stopBtn.style.display = 'none';
     resetBtn.style.display = 'none';
+    clearBtn.style.display = 'none';
+}
+
+// Clear timer - clears all inputs and resets to clean state
+function clearTimer() {
+    stopTimer();
+    currentTime = 0;
+    totalSeconds = 0;
+    manualTimeInput.value = '00:00';
+    updateDisplay();
+    startBtn.textContent = 'Start';
+    startBtn.style.display = 'none';
+    pauseBtn.style.display = 'none';
+    stopBtn.style.display = 'none';
+    resetBtn.style.display = 'none';
+    clearBtn.style.display = 'none';
 }
 
 // Set time from preset button
@@ -237,6 +256,7 @@ startBtn.addEventListener('click', startTimer);
 pauseBtn.addEventListener('click', pauseTimer);
 stopBtn.addEventListener('click', stopTimer);
 resetBtn.addEventListener('click', resetTimer);
+clearBtn.addEventListener('click', clearTimer);
 quickResetBtn.addEventListener('click', resetTimer);
 
 // Preset button listeners
