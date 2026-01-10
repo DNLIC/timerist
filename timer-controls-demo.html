@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TimerControls Component Demo</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        :root {
+            --background: 245 247 250;
+            --foreground: 51 51 51;
+            --card: 255 255 255;
+            --card-foreground: 51 51 51;
+            --primary: 74 144 226;
+            --primary-foreground: 255 255 255;
+            --secondary: 80 200 120;
+            --secondary-foreground: 255 255 255;
+            --muted: 102 102 102;
+            --muted-foreground: 153 153 153;
+            --accent: 225 232 237;
+            --accent-foreground: 51 51 51;
+            --destructive: 231 76 60;
+            --destructive-foreground: 255 255 255;
+            --border: 225 232 237;
+            --input: 225 232 237;
+            --ring: 74 144 226;
+            --radius: 0.5rem;
+        }
+        
+        [data-theme="style1"] {
+            --background: 0 0 0;
+            --foreground: 255 255 255;
+            --card: 26 26 26;
+            --card-foreground: 255 255 255;
+            --primary: 255 0 0;
+            --primary-foreground: 255 255 255;
+            --secondary: 0 255 0;
+            --secondary-foreground: 0 0 0;
+            --muted: 204 204 204;
+            --muted-foreground: 153 153 153;
+            --accent: 51 51 51;
+            --accent-foreground: 255 255 255;
+            --destructive: 255 0 0;
+            --destructive-foreground: 255 255 255;
+            --border: 51 51 51;
+            --input: 51 51 51;
+            --ring: 255 0 0;
+        }
+        
+        body {
+            background: rgb(var(--background));
+            color: rgb(var(--foreground));
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .bg-card { background-color: rgb(var(--card)); }
+        .text-foreground { color: rgb(var(--foreground)); }
+        .text-muted-foreground { color: rgb(var(--muted-foreground)); }
+        .bg-primary { background-color: rgb(var(--primary)); }
+        .text-primary-foreground { color: rgb(var(--primary-foreground)); }
+        .bg-secondary { background-color: rgb(var(--secondary)); }
+        .text-secondary-foreground { color: rgb(var(--secondary-foreground)); }
+        .bg-destructive { background-color: rgb(var(--destructive)); }
+        .text-destructive-foreground { color: rgb(var(--destructive-foreground)); }
+        .border-border { border-color: rgb(var(--border)); }
+        .hover\:bg-primary\/90:hover { background-color: rgba(var(--primary), 0.9); }
+        .hover\:bg-secondary\/90:hover { background-color: rgba(var(--secondary), 0.9); }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        
+        // Simple Button Component
+        const Button = ({ onClick, disabled, className, children, variant = "default" }) => {
+            const baseClasses = "px-4 py-2 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed";
+            const variantClasses = {
+                default: "bg-primary text-primary-foreground hover:bg-primary/90",
+                secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/90",
+                outline: "border-2 border-border bg-transparent hover:bg-accent",
+                destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            };
+            
+            return (
+                <button
+                    onClick={onClick}
+                    disabled={disabled}
+                    className={`${baseClasses} ${variantClasses[variant]} ${className || ""}`}
+                >
+                    {children}
+                </button>
+            );
+        };
+        
+        // Badge Component
+        const Badge = ({ children, variant = "default", className }) => {
+            const baseClasses = "inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold";
+            const variantClasses = {
+                default: "bg-primary text-primary-foreground",
+                secondary: "bg-secondary text-secondary-foreground",
+                outline: "border border-border"
+            };
+            
+            return (
+                <span className={`${baseClasses} ${variantClasses[variant]} ${className || ""}`}>
+                    {children}
+                </span>
+            );
+        };
+        
+        // Circular Progress Component
+        const CircularProgress = ({ value, max = 100, current, size = 240, strokeWidth = 12, workColor, restColor, phase, className, animated = true }) => {
+            // Calculate percentage - show elapsed progress (how much time has passed)
+            const percentage = current !== undefined && max !== undefined && max > 0
+                ? Math.min(100, Math.max(0, ((max - current) / max) * 100))
+                : Math.min(100, Math.max(0, value));
+            
+            // Determine color based on phase - red for Work, green for Rest
+            const progressColor = (() => {
+                if (phase) {
+                    const phaseLower = phase.toLowerCase();
+                    if (phaseLower === "work") {
+                        return workColor || "rgb(231, 76, 60)"; // Red (destructive color)
+                    } else if (phaseLower === "rest") {
+                        return restColor || "rgb(80, 200, 120)"; // Green (secondary color)
+                    }
+                }
+                return workColor || `rgb(var(--primary))`;
+            })();
+            
+            const radius = (size - strokeWidth) / 2;
+            const circumference = 2 * Math.PI * radius;
+            const offset = circumference - (percentage / 100) * circumference;
+            
+            return (
+                <div
+                    className={`relative inline-flex items-center justify-center ${className || ""}`}
+                    style={{ width: size, height: size }}
+                    role="progressbar"
+                    aria-valuemin={0}
+                    aria-valuemax={max}
+                    aria-valuenow={current !== undefined ? current : value}
+                    aria-label={`Progress: ${Math.round(percentage)}%`}
+                >
+                    <svg
+                        width={size}
+                        height={size}
+                        className="transform -rotate-90"
+                        aria-hidden="true"
+                    >
+                        <circle
+                            cx={size / 2}
+                            cy={size / 2}
+                            r={radius}
+                            fill="none"
+                            stroke={`rgba(var(--muted), 0.2)`}
+                            strokeWidth={strokeWidth}
+                        />
+                        <circle
+                            cx={size / 2}
+                            cy={size / 2}
+                            r={radius}
+                            fill="none"
+                            stroke={progressColor}
+                            strokeWidth={strokeWidth}
+                            strokeLinecap="round"
+                            strokeDasharray={circumference}
+                            strokeDashoffset={offset}
+                            style={{
+                                transition: animated ? "stroke-dashoffset 1s linear" : "stroke-dashoffset 0.3s ease-out",
+                                strokeDashoffset: offset
+                            }}
+                        />
+                    </svg>
+                </div>
+            );
+        };
+        
+        // Mode-specific default configurations
+        const MODE_DEFAULTS = {
+            tabata: { duration: 20, rounds: 8, workDuration: 20, restDuration: 10 },
+            interval: { duration: 30, rounds: 5, workDuration: 30, restDuration: 15 },
+            hiit: { duration: 45, rounds: 6, workDuration: 45, restDuration: 15 },
+            emom: { duration: 60, rounds: 10 },
+            countdown: { duration: 60 },
+            stopwatch: { duration: 0 },
+            custom: { duration: 30 }
+        };
+        
+        // TimerControls Component
+        const TimerControls = ({
+            isRunning,
+            isPaused = false,
+            mode,
+            onTogglePlayPause,
+            onReset,
+            onStop,
+            onModeChange,
+            onModeChangeWithDefaults,
+            duration,
+            onDurationChange,
+            minDuration = 1,
+            maxDuration = 600,
+            currentRound,
+            totalRounds,
+            phaseLabel,
+            showModeSelector = true,
+            showDurationSlider = false,
+            showTimerDisplay = false,
+            initialDuration,
+            warningThreshold = 3,
+            showPhaseWarnings = true,
+            enableBeeps = true,
+            beepVolume = 0.3,
+            disabled = false
+        }) => {
+            const isActive = isRunning && !isPaused;
+            
+            // Create and manage a single AudioContext instance
+            const audioContextRef = React.useRef(null);
+            
+            // Initialize audio context on user interaction
+            const initAudioContext = async () => {
+                if (audioContextRef.current) {
+                    // Resume if suspended
+                    if (audioContextRef.current.state === "suspended") {
+                        await audioContextRef.current.resume();
+                    }
+                    return audioContextRef.current;
+                }
+                
+                try {
+                    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                    audioContextRef.current = new AudioContextClass();
+                    // Resume in case it starts suspended
+                    if (audioContextRef.current.state === "suspended") {
+                        await audioContextRef.current.resume();
+                    }
+                    return audioContextRef.current;
+                } catch (error) {
+                    console.warn("Failed to create audio context:", error);
+                    return null;
+                }
+            };
+            
+            // Resume audio context when timer starts
+            React.useEffect(() => {
+                if (isActive && enableBeeps) {
+                    initAudioContext().then(ctx => {
+                        if (ctx) {
+                            console.log("Audio context initialized:", ctx.state);
+                        }
+                    });
+                }
+            }, [isActive, enableBeeps]);
+            
+            // Audio beep function using Web Audio API
+            const playBeep = async (frequency = 800, duration = 0.2, type = "single") => {
+                if (!enableBeeps) {
+                    console.log("Beeps disabled");
+                    return;
+                }
+                
+                try {
+                    const audioContext = await initAudioContext();
+                    if (!audioContext) {
+                        console.warn("No audio context available");
+                        return;
+                    }
+                    
+                    // Ensure context is running
+                    if (audioContext.state === "suspended") {
+                        await audioContext.resume();
+                        console.log("Audio context resumed");
+                    }
+                    
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = frequency;
+                    oscillator.type = "sine";
+                    
+                    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(beepVolume, audioContext.currentTime + 0.01);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + duration);
+                    
+                    // For double/triple beeps
+                    if (type === "double") {
+                        setTimeout(() => {
+                            playBeep(frequency, duration, "single");
+                        }, duration * 1000 + 50);
+                    } else if (type === "triple") {
+                        setTimeout(() => {
+                            playBeep(frequency, duration, "double");
+                        }, duration * 1000 + 50);
+                    }
+                } catch (error) {
+                    console.warn("Audio playback failed:", error);
+                }
+            };
+            
+            // Calculate if we're in warning zone
+            const isWarningZone = showPhaseWarnings && duration && duration <= warningThreshold && duration > 0 && isActive;
+            
+            // Track previous duration to detect changes
+            const prevDurationRef = React.useRef(duration);
+            
+            // Play beeps based on timer state
+            React.useEffect(() => {
+                if (!isActive || !duration || !enableBeeps) {
+                    prevDurationRef.current = duration;
+                    return;
+                }
+                
+                // Only play beep if duration actually changed
+                if (prevDurationRef.current === duration) {
+                    return;
+                }
+                
+                // Phase change beep (when timer reaches 0 or transitions)
+                if (duration === 0 || (prevDurationRef.current && prevDurationRef.current > 0 && duration <= 0)) {
+                    playBeep(1000, 0.3, "double").catch(err => console.warn("Beep failed:", err));
+                    prevDurationRef.current = duration;
+                    return;
+                }
+                
+                // Warning beep at threshold
+                if (duration === warningThreshold && showPhaseWarnings && prevDurationRef.current > warningThreshold) {
+                    playBeep(600, 0.15, "single").catch(err => console.warn("Beep failed:", err));
+                    prevDurationRef.current = duration;
+                    return;
+                }
+                
+                // Final countdown beep (1 second remaining)
+                if (duration === 1 && prevDurationRef.current > 1) {
+                    playBeep(800, 0.2, "single").catch(err => console.warn("Beep failed:", err));
+                    prevDurationRef.current = duration;
+                    return;
+                }
+                
+                prevDurationRef.current = duration;
+            }, [duration, isActive, enableBeeps, warningThreshold, showPhaseWarnings]);
+            
+            // Determine next phase
+            const nextPhase = phaseLabel 
+                ? (phaseLabel.toLowerCase() === "work" ? "Rest" : "Work")
+                : null;
+            
+            // ARIA announcement
+            const ariaAnnouncement = isWarningZone && nextPhase
+                ? (duration === warningThreshold
+                    ? `Warning: ${warningThreshold} seconds until ${nextPhase} phase`
+                    : duration === 1
+                    ? `Phase change: Switching to ${nextPhase} now`
+                    : "")
+                : "";
+            
+            const progressPercentage = showTimerDisplay && duration && initialDuration
+                ? Math.max(0, Math.min(100, ((initialDuration - duration) / initialDuration) * 100))
+                : 0;
+            
+            const formatTime = (seconds) => {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+            };
+            
+            const handleModeChange = (value) => {
+                if (value && onModeChange) {
+                    const newMode = value;
+                    onModeChange(newMode);
+                    
+                    // If onModeChangeWithDefaults is provided, call it with suggested defaults
+                    if (onModeChangeWithDefaults) {
+                        onModeChangeWithDefaults(newMode, MODE_DEFAULTS[newMode]);
+                    }
+                }
+            };
+            
+            // Determine background tint based on phase
+            const getBackgroundStyle = () => {
+                if (!phaseLabel) {
+                    return { background: `rgb(var(--card))` };
+                }
+                const phaseLower = phaseLabel.toLowerCase();
+                const isDark = document.documentElement.getAttribute("data-theme") === "style1";
+                
+                if (phaseLower === "work") {
+                    // Red tint for Work phase
+                    return {
+                        background: `rgb(var(--card))`,
+                        position: "relative",
+                        overflow: "hidden"
+                    };
+                } else if (phaseLower === "rest") {
+                    // Green tint for Rest phase
+                    return {
+                        background: `rgb(var(--card))`,
+                        position: "relative",
+                        overflow: "hidden"
+                    };
+                }
+                return { background: `rgb(var(--card))` };
+            };
+            
+            const getBorderColor = () => {
+                if (!phaseLabel) return `rgb(var(--border))`;
+                const phaseLower = phaseLabel.toLowerCase();
+                const isDark = document.documentElement.getAttribute("data-theme") === "style1";
+                
+                if (phaseLower === "work") {
+                    return isDark ? "rgba(255, 0, 0, 0.3)" : "rgba(231, 76, 60, 0.2)";
+                } else if (phaseLower === "rest") {
+                    return isDark ? "rgba(0, 255, 0, 0.3)" : "rgba(80, 200, 120, 0.2)";
+                }
+                return `rgb(var(--border))`;
+            };
+            
+            const backgroundStyle = getBackgroundStyle();
+            const borderColor = getBorderColor();
+            
+            return (
+                <div 
+                    className="flex flex-col gap-4 p-6 rounded-lg shadow-lg relative"
+                    style={{
+                        ...backgroundStyle,
+                        border: `1px solid ${borderColor}`,
+                        transition: "all 0.5s ease-in-out"
+                    }}
+                    >
+                    {/* Mode Selector - Always at the top */}
+                    {showModeSelector && onModeChange && (
+                        <div className="flex flex-col gap-2 relative" style={{ zIndex: 10, borderBottom: "1px solid rgb(var(--border))", paddingBottom: "16px", marginBottom: "8px" }}>
+                            <label className="text-sm font-semibold uppercase tracking-wide" style={{ color: `rgb(var(--muted-foreground))` }}>
+                                Timer Mode
+                            </label>
+                            <div className="flex flex-wrap gap-2">
+                                {["tabata", "interval", "hiit", "emom", "countdown", "stopwatch"].map((modeOption) => (
+                                    <button
+                                        key={modeOption}
+                                        onClick={() => handleModeChange(modeOption)}
+                                        disabled={disabled || isActive}
+                                        className="px-4 py-2 rounded-md text-sm font-medium transition-colors min-w-[100px] disabled:opacity-50 disabled:cursor-not-allowed"
+                                        style={{
+                                            background: mode === modeOption 
+                                                ? `rgb(var(--primary))` 
+                                                : "transparent",
+                                            color: mode === modeOption 
+                                                ? `rgb(var(--primary-foreground))` 
+                                                : `rgb(var(--foreground))`,
+                                            border: mode === modeOption 
+                                                ? "none" 
+                                                : `1px solid rgb(var(--border))`,
+                                            cursor: disabled || isActive ? "not-allowed" : "pointer"
+                                        }}
+                                        aria-label={`${modeOption} timer`}
+                                    >
+                                        {modeOption.charAt(0).toUpperCase() + modeOption.slice(1)}
+                                    </button>
+                                ))}
+                            </div>
+                            {/* Mode description */}
+                            <p className="text-xs mt-1" style={{ color: `rgb(var(--muted-foreground))` }}>
+                                {mode === "tabata" && "20s work, 10s rest, 8 rounds"}
+                                {mode === "interval" && "30s work, 15s rest, 5 rounds"}
+                                {mode === "hiit" && "45s work, 15s rest, 6 rounds"}
+                                {mode === "emom" && "Every minute on the minute, 10 rounds"}
+                                {mode === "countdown" && "Simple countdown timer"}
+                                {mode === "stopwatch" && "Track elapsed time"}
+                                {mode === "custom" && "Custom timer configuration"}
+                            </p>
+                        </div>
+                    )}
+                    
+                    {/* ARIA Live Region for announcements */}
+                    <div
+                        aria-live="polite"
+                        aria-atomic="true"
+                        style={{
+                            position: "absolute",
+                            width: "1px",
+                            height: "1px",
+                            padding: 0,
+                            margin: "-1px",
+                            overflow: "hidden",
+                            clip: "rect(0, 0, 0, 0)",
+                            whiteSpace: "nowrap",
+                            borderWidth: 0
+                        }}
+                        role="status"
+                    >
+                        {ariaAnnouncement}
+                    </div>
+                    
+                    {/* Phase-based background overlay */}
+                    {phaseLabel && (
+                        <div
+                            key={`overlay-${phaseLabel}-${document.documentElement.getAttribute("data-theme")}`}
+                            style={{
+                                position: "absolute",
+                                inset: 0,
+                                pointerEvents: "none",
+                                borderRadius: "0.5rem",
+                                background: phaseLabel.toLowerCase() === "work"
+                                    ? (document.documentElement.getAttribute("data-theme") === "style1" 
+                                        ? (isWarningZone ? "rgba(255, 0, 0, 0.15)" : "rgba(255, 0, 0, 0.1)")
+                                        : (isWarningZone ? "rgba(231, 76, 60, 0.08)" : "rgba(231, 76, 60, 0.05)"))
+                                    : (document.documentElement.getAttribute("data-theme") === "style1"
+                                        ? (isWarningZone ? "rgba(0, 255, 0, 0.15)" : "rgba(0, 255, 0, 0.1)")
+                                        : (isWarningZone ? "rgba(80, 200, 120, 0.08)" : "rgba(80, 200, 120, 0.05)")),
+                                zIndex: 0,
+                                transition: "background 0.5s ease-in-out"
+                            }}
+                        />
+                    )}
+                    {/* Timer Display with Circular Progress */}
+                    {showTimerDisplay && duration !== undefined && (
+                        <div className="flex flex-col items-center justify-center py-6 relative" style={{ zIndex: 10 }}>
+                            <div className="relative inline-flex items-center justify-center" style={{ width: 240, height: 240 }}>
+                                <CircularProgress
+                                    value={progressPercentage}
+                                    current={duration}
+                                    max={initialDuration || duration}
+                                    size={240}
+                                    strokeWidth={12}
+                                    phase={phaseLabel}
+                                    animated={isActive}
+                                    className="absolute"
+                                />
+                                <div className="relative z-10 flex flex-col items-center justify-center">
+                                    <div 
+                                        className="text-5xl md:text-6xl font-mono font-bold tabular-nums"
+                                        style={{
+                                            color: isWarningZone ? "rgb(231, 76, 60)" : `rgb(var(--foreground))`,
+                                            transform: isWarningZone ? "scale(1.05)" : "scale(1)",
+                                            transition: "all 0.3s ease"
+                                        }}
+                                    >
+                                        {formatTime(duration)}
+                                    </div>
+                                    {phaseLabel && (
+                                        <div 
+                                            className="text-sm uppercase tracking-wide mt-2 font-semibold"
+                                            style={{
+                                                color: phaseLabel.toLowerCase() === "work"
+                                                    ? "rgb(231, 76, 60)"
+                                                    : "rgb(80, 200, 120)",
+                                                animation: isWarningZone ? "pulse 1s ease-in-out infinite" : "none"
+                                            }}
+                                        >
+                                            {phaseLabel}
+                                        </div>
+                                    )}
+                                    {/* Warning bell icon */}
+                                    {isWarningZone && showPhaseWarnings && (
+                                        <div style={{
+                                            position: "absolute",
+                                            top: "-8px",
+                                            right: "-8px",
+                                            zIndex: 20
+                                        }}>
+                                            <span style={{
+                                                display: "inline-block",
+                                                fontSize: "24px",
+                                                animation: "bounce 1s ease-in-out infinite",
+                                                filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))"
+                                            }}>🔔</span>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    {/* Status Badge & Phase Info */}
+                    {(phaseLabel || currentRound !== undefined || isWarningZone) && (
+                        <div className="flex items-center gap-3 flex-wrap relative" style={{ zIndex: 10 }}>
+                            {phaseLabel && (
+                                <Badge 
+                                    variant={phaseLabel.toLowerCase() === "work" ? "default" : "secondary"}
+                                    style={{
+                                        animation: isWarningZone ? "pulse 1s ease-in-out infinite" : "none"
+                                    }}
+                                >
+                                    {phaseLabel}
+                                </Badge>
+                            )}
+                            {currentRound !== undefined && totalRounds !== undefined && (
+                                <Badge variant="outline">
+                                    Round {currentRound} / {totalRounds}
+                                </Badge>
+                            )}
+                            {/* Warning indicator for upcoming phase change */}
+                            {isWarningZone && showPhaseWarnings && (
+                                <Badge 
+                                    style={{
+                                        background: "rgb(231, 76, 60)",
+                                        color: "white",
+                                        animation: "pulse 1s ease-in-out infinite",
+                                        fontWeight: "bold"
+                                    }}
+                                    aria-live="assertive"
+                                    aria-label={`Warning: ${duration} second${duration !== 1 ? "s" : ""} until ${nextPhase} phase`}
+                                >
+                                    ⚠️ {duration}s to {nextPhase}
+                                </Badge>
+                            )}
+                            {isActive && !isWarningZone && (
+                                <Badge style={{ animation: "none" }}>
+                                    Running
+                                </Badge>
+                            )}
+                        </div>
+                    )}
+                    
+                    {/* Duration Slider */}
+                    {showDurationSlider && duration !== undefined && onDurationChange && (
+                        <div className="flex flex-col gap-2 relative" style={{ zIndex: 10 }}>
+                            <div className="flex items-center justify-between">
+                                <label className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+                                    Duration
+                                </label>
+                                <span className="text-sm font-mono text-foreground">
+                                    {Math.floor((duration || 0) / 60)}:{(duration || 0) % 60 < 10 ? "0" : ""}
+                                    {(duration || 0) % 60}
+                                </span>
+                            </div>
+                            <input
+                                type="range"
+                                value={duration}
+                                onChange={(e) => onDurationChange(parseInt(e.target.value))}
+                                min={minDuration}
+                                max={maxDuration}
+                                step={1}
+                                disabled={disabled || isActive}
+                                className="w-full"
+                            />
+                        </div>
+                    )}
+                    
+                    {/* Main Control Buttons */}
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center items-stretch sm:items-center relative" style={{ zIndex: 10 }}>
+                        {/* Play/Pause Toggle */}
+                        <Button
+                            onClick={async () => {
+                                // Initialize audio context on first user interaction (browser autoplay policy)
+                                if (!isActive && enableBeeps) {
+                                    await initAudioContext();
+                                }
+                                onTogglePlayPause();
+                            }}
+                            disabled={disabled}
+                            variant={isActive ? "secondary" : "default"}
+                            className="flex-1 sm:flex-initial min-w-[140px]"
+                        >
+                            {isActive ? "⏸ Pause" : "▶ Start"}
+                        </Button>
+                        
+                        {/* Reset Button */}
+                        <Button
+                            onClick={onReset}
+                            disabled={disabled || isActive}
+                            variant="outline"
+                            className="flex-1 sm:flex-initial min-w-[140px]"
+                        >
+                            ↻ Reset
+                        </Button>
+                        
+                        {/* Stop Button (optional) */}
+                        {onStop && (
+                            <Button
+                                onClick={onStop}
+                                disabled={disabled || !isActive}
+                                variant="destructive"
+                                className="flex-1 sm:flex-initial min-w-[140px]"
+                            >
+                                ⏹ Stop
+                            </Button>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+        
+        // Main App
+        const App = () => {
+            const [isRunning, setIsRunning] = useState(false);
+            const [isPaused, setIsPaused] = useState(false);
+            const [mode, setMode] = useState("tabata");
+            const [duration, setDuration] = useState(20);
+            const [currentRound, setCurrentRound] = useState(1);
+            const [totalRounds, setTotalRounds] = useState(8);
+            const [phaseLabel, setPhaseLabel] = useState("Work");
+            const [initialDuration, setInitialDuration] = useState(20);
+            
+            const handleModeChange = (newMode) => {
+                setMode(newMode);
+                handleReset();
+            };
+            
+            const handleModeChangeWithDefaults = (newMode, defaults) => {
+                setMode(newMode);
+                // Update duration and rounds based on mode defaults
+                if (defaults.duration !== undefined) {
+                    setDuration(defaults.duration);
+                    setInitialDuration(defaults.duration);
+                }
+                if (defaults.rounds !== undefined) {
+                    setTotalRounds(defaults.rounds);
+                    setCurrentRound(1);
+                }
+                setPhaseLabel("Work");
+                setIsRunning(false);
+                setIsPaused(false);
+            };
+            
+            const handleTogglePlayPause = () => {
+                if (isRunning && !isPaused) {
+                    setIsPaused(true);
+                } else if (isPaused) {
+                    setIsPaused(false);
+                } else {
+                    setIsRunning(true);
+                    setIsPaused(false);
+                }
+            };
+            
+            const handleReset = () => {
+                setIsRunning(false);
+                setIsPaused(false);
+                setCurrentRound(1);
+                setPhaseLabel("Work");
+                setDuration(20);
+                setInitialDuration(20);
+            };
+            
+            const handleStop = () => {
+                setIsRunning(false);
+                setIsPaused(false);
+            };
+            
+            // Simulate timer
+            useEffect(() => {
+                if (isRunning && !isPaused && duration > 0) {
+                    const interval = setInterval(() => {
+                        setDuration((prev) => {
+                            if (prev <= 1) {
+                                if (phaseLabel === "Work") {
+                                    setPhaseLabel("Rest");
+                                    setInitialDuration(10);
+                                    return 10;
+                                } else {
+                                    setPhaseLabel("Work");
+                                    setInitialDuration(20);
+                                    setCurrentRound((prev) => {
+                                        if (prev >= totalRounds) {
+                                            setIsRunning(false);
+                                            setIsPaused(false);
+                                            return 1;
+                                        }
+                                        return prev + 1;
+                                    });
+                                    return 20;
+                                }
+                            }
+                            return prev - 1;
+                        });
+                    }, 1000);
+                    
+                    return () => clearInterval(interval);
+                }
+            }, [isRunning, isPaused, duration, phaseLabel, totalRounds]);
+            
+            const formatTime = (seconds) => {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+            };
+            
+            return (
+                <div className="min-h-screen p-4 md:p-8" style={{background: `rgb(var(--background))`}}>
+                    <div className="max-w-4xl mx-auto space-y-8">
+                        <header className="text-center space-y-2">
+                            <h1 className="text-4xl font-bold" style={{color: `rgb(var(--foreground))`}}>Timerist</h1>
+                            <p style={{color: `rgb(var(--muted-foreground))`}}>Timer Controls Component Demo</p>
+                        </header>
+                        
+                        <div className="grid gap-8 md:grid-cols-2">
+                            {/* Full Featured Example */}
+                            <div className="space-y-4">
+                                <h2 className="text-2xl font-semibold" style={{color: `rgb(var(--foreground))`}}>
+                                    Full Featured
+                                </h2>
+                                <TimerControls
+                                    isRunning={isRunning}
+                                    isPaused={isPaused}
+                                    mode={mode}
+                                    onTogglePlayPause={handleTogglePlayPause}
+                                    onReset={handleReset}
+                                    onStop={handleStop}
+                                    onModeChange={handleModeChange}
+                                    onModeChangeWithDefaults={handleModeChangeWithDefaults}
+                                    duration={duration}
+                                    onDurationChange={setDuration}
+                                    minDuration={1}
+                                    maxDuration={300}
+                                    currentRound={currentRound}
+                                    totalRounds={totalRounds}
+                                    phaseLabel={phaseLabel}
+                                    showModeSelector={true}
+                                    showDurationSlider={true}
+                                    showTimerDisplay={true}
+                                    initialDuration={initialDuration}
+                                    warningThreshold={3}
+                                    showPhaseWarnings={true}
+                                    enableBeeps={true}
+                                    beepVolume={0.3}
+                                />
+                            </div>
+                            
+                            {/* Timer Display */}
+                            <div className="space-y-4">
+                                <h2 className="text-2xl font-semibold" style={{color: `rgb(var(--foreground))`}}>
+                                    Timer Display
+                                </h2>
+                                <div className="p-8 bg-card border border-border rounded-lg shadow-lg text-center">
+                                    <div className="text-sm uppercase tracking-wide mb-4" style={{color: `rgb(var(--muted-foreground))`}}>
+                                        {phaseLabel}
+                                    </div>
+                                    <div className="text-7xl md:text-8xl font-mono font-bold mb-4 tabular-nums" style={{color: `rgb(var(--primary))`}}>
+                                        {formatTime(duration)}
+                                    </div>
+                                    <div className="text-lg" style={{color: `rgb(var(--muted-foreground))`}}>
+                                        Round {currentRound} of {totalRounds}
+                                    </div>
+                                    <div className="mt-4">
+                                        <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
+                                            isRunning && !isPaused
+                                                ? "bg-primary text-primary-foreground"
+                                                : isPaused
+                                                ? "bg-muted text-muted-foreground"
+                                                : "bg-secondary/20"
+                                        }`}>
+                                            {isRunning && !isPaused
+                                                ? "Running"
+                                                : isPaused
+                                                ? "Paused"
+                                                : "Stopped"}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {/* Minimal Example */}
+                        <div className="space-y-4">
+                            <h2 className="text-2xl font-semibold" style={{color: `rgb(var(--foreground))`}}>
+                                Minimal Example
+                            </h2>
+                            <TimerControls
+                                isRunning={false}
+                                mode="countdown"
+                                onTogglePlayPause={() => {}}
+                                onReset={() => {}}
+                                onModeChange={() => {}}
+                                showModeSelector={true}
+                                showDurationSlider={false}
+                                showTimerDisplay={true}
+                                duration={60}
+                                initialDuration={60}
+                                enableBeeps={true}
+                                beepVolume={0.3}
+                            />
+                        </div>
+                        
+                        {/* Dark Mode Toggle */}
+                        <div className="flex justify-center">
+                            <button
+                                onClick={() => {
+                                    const html = document.documentElement;
+                                    const currentTheme = html.getAttribute("data-theme");
+                                    html.setAttribute(
+                                        "data-theme",
+                                        currentTheme === "style1" ? "" : "style1"
+                                    );
+                                }}
+                                className="px-4 py-2 rounded-md font-semibold transition-colors"
+                                style={{
+                                    background: `rgb(var(--primary))`,
+                                    color: `rgb(var(--primary-foreground))`
+                                }}
+                            >
+                                Toggle Dark Mode
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+        
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

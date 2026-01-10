@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Timer Example - TimerControls</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        :root {
+            --background: 245 247 250;
+            --foreground: 51 51 51;
+            --card: 255 255 255;
+            --card-foreground: 51 51 51;
+            --primary: 74 144 226;
+            --primary-foreground: 255 255 255;
+            --secondary: 80 200 120;
+            --secondary-foreground: 255 255 255;
+            --muted: 102 102 102;
+            --muted-foreground: 153 153 153;
+            --accent: 225 232 237;
+            --accent-foreground: 51 51 51;
+            --destructive: 231 76 60;
+            --destructive-foreground: 255 255 255;
+            --border: 225 232 237;
+            --input: 225 232 237;
+            --ring: 74 144 226;
+            --radius: 0.5rem;
+        }
+        
+        [data-theme="style1"] {
+            --background: 0 0 0;
+            --foreground: 255 255 255;
+            --card: 26 26 26;
+            --card-foreground: 255 255 255;
+            --primary: 255 0 0;
+            --primary-foreground: 255 255 255;
+            --secondary: 0 255 0;
+            --secondary-foreground: 0 0 0;
+            --muted: 204 204 204;
+            --muted-foreground: 153 153 153;
+            --accent: 51 51 51;
+            --accent-foreground: 255 255 255;
+            --destructive: 255 0 0;
+            --destructive-foreground: 255 255 255;
+            --border: 51 51 51;
+            --input: 51 51 51;
+            --ring: 255 0 0;
+        }
+        
+        body {
+            background: rgb(var(--background));
+            color: rgb(var(--foreground));
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .bg-card { background-color: rgb(var(--card)); }
+        .text-foreground { color: rgb(var(--foreground)); }
+        .text-muted-foreground { color: rgb(var(--muted-foreground)); }
+        .bg-primary { background-color: rgb(var(--primary)); }
+        .text-primary-foreground { color: rgb(var(--primary-foreground)); }
+        .bg-secondary { background-color: rgb(var(--secondary)); }
+        .text-secondary-foreground { color: rgb(var(--secondary-foreground)); }
+        .bg-destructive { background-color: rgb(var(--destructive)); }
+        .text-destructive-foreground { color: rgb(var(--destructive-foreground)); }
+        .border-border { border-color: rgb(var(--border)); }
+        .hover\:bg-primary\/90:hover { background-color: rgba(var(--primary), 0.9); }
+        .hover\:bg-secondary\/90:hover { background-color: rgba(var(--secondary), 0.9); }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        
+        // Import TimerControls component (simplified version for demo)
+        // In a real app, you'd import from the actual component file
+        // For this demo, we'll include a minimal version
+        
+        // Mode-specific default configurations
+        const MODE_DEFAULTS = {
+            tabata: { duration: 20, rounds: 8, workDuration: 20, restDuration: 10 },
+            interval: { duration: 30, rounds: 5, workDuration: 30, restDuration: 15 },
+            hiit: { duration: 45, rounds: 6, workDuration: 45, restDuration: 15 },
+            emom: { duration: 60, rounds: 10 },
+            countdown: { duration: 60 },
+            stopwatch: { duration: 0 },
+            custom: { duration: 30 }
+        };
+        
+        // Complete Timer Example Page
+        function TimerExamplePage() {
+            // Timer state
+            const [isRunning, setIsRunning] = useState(false);
+            const [isPaused, setIsPaused] = useState(false);
+            const [mode, setMode] = useState("tabata");
+            
+            // Timer values
+            const [duration, setDuration] = useState(20);
+            const [initialDuration, setInitialDuration] = useState(20);
+            const [currentRound, setCurrentRound] = useState(1);
+            const [totalRounds, setTotalRounds] = useState(8);
+            const [phaseLabel, setPhaseLabel] = useState("Work");
+            
+            // Work/Rest durations (for interval-based timers)
+            const [workDuration, setWorkDuration] = useState(20);
+            const [restDuration, setRestDuration] = useState(10);
+            
+            // Interval reference for cleanup
+            const intervalRef = useRef(null);
+            
+            // Initialize mode defaults
+            useEffect(() => {
+                const defaults = MODE_DEFAULTS[mode];
+                if (defaults.duration !== undefined) {
+                    setDuration(defaults.duration);
+                    setInitialDuration(defaults.duration);
+                }
+                if (defaults.rounds !== undefined) {
+                    setTotalRounds(defaults.rounds);
+                    setCurrentRound(1);
+                }
+                if (defaults.workDuration !== undefined) {
+                    setWorkDuration(defaults.workDuration);
+                }
+                if (defaults.restDuration !== undefined) {
+                    setRestDuration(defaults.restDuration);
+                }
+                setPhaseLabel("Work");
+            }, [mode]);
+            
+            // Handle phase changes (Work -> Rest, Rest -> Work, Round completion)
+            const handlePhaseChange = () => {
+                if (mode === "tabata" || mode === "interval" || mode === "hiit") {
+                    if (phaseLabel === "Work") {
+                        // Switch to Rest phase
+                        setPhaseLabel("Rest");
+                        setDuration(restDuration);
+                        setInitialDuration(restDuration);
+                    } else {
+                        // Switch to Work phase, next round
+                        setPhaseLabel("Work");
+                        setDuration(workDuration);
+                        setInitialDuration(workDuration);
+                        
+                        const nextRound = currentRound + 1;
+                        if (nextRound > totalRounds) {
+                            // All rounds completed
+                            handleTimerComplete();
+                        } else {
+                            setCurrentRound(nextRound);
+                        }
+                    }
+                } else if (mode === "emom") {
+                    // EMOM: Reset to full minute, next round
+                    const nextRound = currentRound + 1;
+                    if (nextRound > totalRounds) {
+                        handleTimerComplete();
+                    } else {
+                        setCurrentRound(nextRound);
+                        setDuration(60);
+                        setInitialDuration(60);
+                        setPhaseLabel("Work");
+                    }
+                } else if (mode === "countdown") {
+                    // Countdown completed
+                    handleTimerComplete();
+                }
+                // Stopwatch doesn't have phase changes
+            };
+            
+            // Handle timer completion
+            const handleTimerComplete = () => {
+                setIsRunning(false);
+                setIsPaused(false);
+                console.log("Timer completed!");
+            };
+            
+            // Main timer countdown logic
+            useEffect(() => {
+                if (isRunning && !isPaused && duration > 0) {
+                    intervalRef.current = setInterval(() => {
+                        setDuration((prev) => {
+                            const newDuration = prev - 1;
+                            
+                            // When timer reaches 0, handle phase/round switching
+                            if (newDuration <= 0) {
+                                handlePhaseChange();
+                                return 0;
+                            }
+                            
+                            return newDuration;
+                        });
+                    }, 1000);
+                } else {
+                    // Clear interval when paused or stopped
+                    if (intervalRef.current) {
+                        clearInterval(intervalRef.current);
+                        intervalRef.current = null;
+                    }
+                }
+                
+                // Cleanup on unmount
+                return () => {
+                    if (intervalRef.current) {
+                        clearInterval(intervalRef.current);
+                    }
+                };
+            }, [isRunning, isPaused, duration, mode, currentRound, totalRounds, phaseLabel, workDuration, restDuration]);
+            
+            // Control handlers
+            const handleTogglePlayPause = () => {
+                if (isRunning && !isPaused) {
+                    // Pause
+                    setIsPaused(true);
+                } else if (isPaused) {
+                    // Resume
+                    setIsPaused(false);
+                } else {
+                    // Start
+                    setIsRunning(true);
+                    setIsPaused(false);
+                }
+            };
+            
+            const handleReset = () => {
+                setIsRunning(false);
+                setIsPaused(false);
+                setCurrentRound(1);
+                setPhaseLabel("Work");
+                
+                // Reset to initial values based on mode
+                const defaults = MODE_DEFAULTS[mode];
+                if (defaults.duration !== undefined) {
+                    setDuration(defaults.duration);
+                    setInitialDuration(defaults.duration);
+                }
+                if (defaults.workDuration !== undefined) {
+                    setWorkDuration(defaults.workDuration);
+                    setDuration(defaults.workDuration);
+                    setInitialDuration(defaults.workDuration);
+                }
+            };
+            
+            const handleStop = () => {
+                setIsRunning(false);
+                setIsPaused(false);
+            };
+            
+            const handleModeChange = (newMode) => {
+                setMode(newMode);
+                handleReset();
+            };
+            
+            const handleModeChangeWithDefaults = (newMode, defaults) => {
+                setMode(newMode);
+                if (defaults.duration !== undefined) {
+                    setDuration(defaults.duration);
+                    setInitialDuration(defaults.duration);
+                }
+                if (defaults.rounds !== undefined) {
+                    setTotalRounds(defaults.rounds);
+                    setCurrentRound(1);
+                }
+                if (defaults.workDuration !== undefined) {
+                    setWorkDuration(defaults.workDuration);
+                    setDuration(defaults.workDuration);
+                    setInitialDuration(defaults.workDuration);
+                }
+                if (defaults.restDuration !== undefined) {
+                    setRestDuration(defaults.restDuration);
+                }
+                setPhaseLabel("Work");
+                setIsRunning(false);
+                setIsPaused(false);
+            };
+            
+            const handleDurationChange = (newDuration) => {
+                if (!isRunning) {
+                    setDuration(newDuration);
+                    setInitialDuration(newDuration);
+                }
+            };
+            
+            // Format time helper
+            const formatTime = (seconds) => {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+            };
+            
+            return (
+                <div className="min-h-screen p-4 md:p-8" style={{background: `rgb(var(--background))`}}>
+                    <div className="max-w-4xl mx-auto space-y-8">
+                        <header className="text-center space-y-2">
+                            <h1 className="text-4xl font-bold" style={{color: `rgb(var(--foreground))`}}>Complete Timer Example</h1>
+                            <p style={{color: `rgb(var(--muted-foreground))`}}>
+                                Full timer implementation with countdown, phase switching, and pause/resume
+                            </p>
+                        </header>
+                        
+                        {/* Note: In a real implementation, you would import and use the actual TimerControls component */}
+                        {/* For this demo, we'll show a simplified version */}
+                        <div className="p-6 bg-card border border-border rounded-lg shadow-lg">
+                            <h2 className="text-2xl font-semibold mb-4" style={{color: `rgb(var(--foreground))`}}>Timer Controls</h2>
+                            
+                            {/* Mode Selector */}
+                            <div className="mb-4 pb-4 border-b" style={{borderColor: `rgb(var(--border))`}}>
+                                <label className="text-sm font-semibold uppercase tracking-wide mb-2 block" style={{color: `rgb(var(--muted-foreground))`}}>
+                                    Timer Mode
+                                </label>
+                                <div className="flex flex-wrap gap-2">
+                                    {["tabata", "interval", "hiit", "emom", "countdown", "stopwatch"].map((modeOption) => (
+                                        <button
+                                            key={modeOption}
+                                            onClick={() => handleModeChangeWithDefaults(modeOption, MODE_DEFAULTS[modeOption])}
+                                            disabled={isRunning}
+                                            className="px-4 py-2 rounded-md text-sm font-medium transition-colors min-w-[100px] disabled:opacity-50 disabled:cursor-not-allowed"
+                                            style={{
+                                                background: mode === modeOption 
+                                                    ? `rgb(var(--primary))` 
+                                                    : "transparent",
+                                                color: mode === modeOption 
+                                                    ? `rgb(var(--primary-foreground))` 
+                                                    : `rgb(var(--foreground))`,
+                                                border: mode === modeOption 
+                                                    ? "none" 
+                                                    : `1px solid rgb(var(--border))`,
+                                                cursor: isRunning ? "not-allowed" : "pointer"
+                                            }}
+                                        >
+                                            {modeOption.charAt(0).toUpperCase() + modeOption.slice(1)}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                            
+                            {/* Control Buttons */}
+                            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                                <button
+                                    onClick={handleTogglePlayPause}
+                                    className="px-6 py-3 rounded-md font-semibold uppercase tracking-wide transition-all"
+                                    style={{
+                                        background: isRunning && !isPaused 
+                                            ? `rgb(var(--secondary))` 
+                                            : `rgb(var(--primary))`,
+                                        color: `rgb(var(--primary-foreground))`
+                                    }}
+                                >
+                                    {isRunning && !isPaused ? "⏸ Pause" : isPaused ? "▶ Resume" : "▶ Start"}
+                                </button>
+                                
+                                <button
+                                    onClick={handleReset}
+                                    disabled={isRunning}
+                                    className="px-6 py-3 rounded-md font-semibold uppercase tracking-wide border-2 disabled:opacity-50"
+                                    style={{
+                                        borderColor: `rgb(var(--border))`,
+                                        color: `rgb(var(--foreground))`
+                                    }}
+                                >
+                                    ↻ Reset
+                                </button>
+                                
+                                {isRunning && (
+                                    <button
+                                        onClick={handleStop}
+                                        className="px-6 py-3 rounded-md font-semibold uppercase tracking-wide"
+                                        style={{
+                                            background: `rgb(var(--destructive))`,
+                                            color: `rgb(var(--destructive-foreground))`
+                                        }}
+                                    >
+                                        ⏹ Stop
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                        
+                        {/* Timer Display */}
+                        <div className="p-8 bg-card border border-border rounded-lg shadow-lg text-center">
+                            <div className="text-sm uppercase tracking-wide mb-4" style={{color: `rgb(var(--muted-foreground))`}}>
+                                {phaseLabel} - Round {currentRound} of {totalRounds}
+                            </div>
+                            <div className="text-8xl md:text-9xl font-mono font-bold mb-4 tabular-nums" style={{color: `rgb(var(--primary))`}}>
+                                {formatTime(duration)}
+                            </div>
+                            <div className="text-lg" style={{color: `rgb(var(--muted-foreground))`}}>
+                                {mode === "tabata" || mode === "interval" || mode === "hiit" ? (
+                                    <>
+                                        Work: {formatTime(workDuration)} | Rest: {formatTime(restDuration)}
+                                    </>
+                                ) : (
+                                    <>Total Duration: {formatTime(initialDuration)}</>
+                                )}
+                            </div>
+                        </div>
+                        
+                        {/* Timer Status */}
+                        <div className="p-6 bg-card border border-border rounded-lg shadow-lg">
+                            <h2 className="text-2xl font-semibold mb-4" style={{color: `rgb(var(--foreground))`}}>Timer Status</h2>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div>
+                                    <div className="text-sm uppercase tracking-wide mb-1" style={{color: `rgb(var(--muted-foreground))`}}>Status</div>
+                                    <div className="text-lg font-semibold" style={{color: `rgb(var(--foreground))`}}>
+                                        {isRunning && !isPaused ? "Running" : isPaused ? "Paused" : "Stopped"}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="text-sm uppercase tracking-wide mb-1" style={{color: `rgb(var(--muted-foreground))`}}>Mode</div>
+                                    <div className="text-lg font-semibold capitalize" style={{color: `rgb(var(--foreground))`}}>{mode}</div>
+                                </div>
+                                <div>
+                                    <div className="text-sm uppercase tracking-wide mb-1" style={{color: `rgb(var(--muted-foreground))`}}>Round</div>
+                                    <div className="text-lg font-semibold" style={{color: `rgb(var(--foreground))`}}>
+                                        {currentRound} / {totalRounds}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="text-sm uppercase tracking-wide mb-1" style={{color: `rgb(var(--muted-foreground))`}}>Phase</div>
+                                    <div className="text-lg font-semibold" style={{color: `rgb(var(--foreground))`}}>{phaseLabel}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+        
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<TimerExamplePage />);
+    </script>
+</body>
+</html>

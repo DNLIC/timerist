@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": ".",
+    "public": "out",
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -9,7 +9,26 @@
       ".gitignore",
       "README.md",
       "wordpress-embed-example.html",
-      "push-to-github.sh"
+      "push-to-github.sh",
+      "app/**",
+      "components/**",
+      "lib/**",
+      "styles/**",
+      "scripts/**",
+      "*.html",
+      "*.php",
+      "*.md",
+      "*.sh",
+      "next.config.js",
+      "tailwind.config.ts",
+      "tsconfig.json",
+      "postcss.config.js"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
     ],
     "headers": [
       {
