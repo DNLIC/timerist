@@ -4,12 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stopwatch - Timerist</title>
-    <link rel="stylesheet" href="styles/themes.css">
-    <link rel="stylesheet" href="styles/main.css">
-    <script src="scripts/theme-switcher.js"></script>
-    <script src="scripts/style-switcher-ui.js"></script>
+    <link rel="stylesheet" href="styles/timerist-design-system.css">
+    <style>
+        .timer-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .timer-controls {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .timer-controls .btn {
+            min-width: 80px;
+            padding: 0.75rem 1.25rem;
+        }
+        
+        @media (max-width: 390px) {
+            .timer-controls {
+                gap: 0.5rem;
+            }
+            
+            .timer-controls .btn {
+                min-width: 70px;
+                padding: 0.625rem 1rem;
+                font-size: 0.875rem;
+            }
+        }
+    </style>
 </head>
 <body>
+    <button class="mode-toggle-btn mode-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+        <span id="theme-icon">🌙</span>
+    </button>
+    
     <div class="container">
         <a href="index.html" class="back-link">← Back to Timers</a>
         
@@ -22,12 +54,32 @@
             <div class="timer-controls">
                 <button class="btn btn-primary" id="startBtn">Start</button>
                 <button class="btn btn-secondary" id="pauseBtn" disabled>Pause</button>
-                <button class="btn btn-danger" id="resetBtn">Reset</button>
+                <button class="btn btn-destructive" id="resetBtn">Reset</button>
             </div>
         </div>
     </div>
     
+    <script src="scripts/dark-mode-toggle.js"></script>
     <script src="scripts/stopwatch.js"></script>
+    <script>
+        function updateThemeIcon() {
+            const icon = document.getElementById('theme-icon');
+            const isDark = document.documentElement.classList.contains('dark');
+            icon.textContent = isDark ? '☀️' : '🌙';
+        }
+        
+        updateThemeIcon();
+        const observer = new MutationObserver(updateThemeIcon);
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+        
+        const originalToggle = window.toggleTheme;
+        window.toggleTheme = function() {
+            originalToggle();
+            setTimeout(updateThemeIcon, 10);
+        };
+    </script>
 </body>
 </html>
-

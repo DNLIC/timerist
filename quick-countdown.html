@@ -4,160 +4,96 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quick Countdown - Timerist</title>
-    <link rel="stylesheet" href="styles/themes.css">
-    <link rel="stylesheet" href="styles/main.css">
-    <script src="scripts/theme-switcher.js"></script>
-    <script src="scripts/style-switcher-ui.js"></script>
+    <link rel="stylesheet" href="styles/timerist-design-system.css">
     <style>
+        .timer-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
         .timer-controls {
             display: flex;
-            gap: 10px;
+            gap: 0.75rem;
             justify-content: center;
-            margin-top: 20px;
+            margin-top: 1.5rem;
             flex-wrap: wrap;
         }
         
         .timer-controls .btn {
             min-width: 80px;
-            padding: 12px 20px;
+            padding: 0.75rem 1.25rem;
         }
         
-        .preset-buttons {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 30px;
-        }
-        
-        /* Keep 2 columns (50-50) as long as possible, only stack on very small screens */
-        @media (max-width: 480px) {
-            .preset-buttons {
-                grid-template-columns: 1fr;
-                gap: 12px;
+        @media (max-width: 390px) {
+            .timer-controls {
+                gap: 0.5rem;
             }
             
-            .preset-btn.reset-btn {
-                grid-column: 1;
+            .timer-controls .btn {
+                min-width: 70px;
+                padding: 0.625rem 1rem;
+                font-size: 0.875rem;
             }
         }
         
-        .preset-btn {
-            padding: 16px 20px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border: 2px solid var(--border-color);
-            border-radius: var(--border-radius-small);
-            background: var(--card-bg);
-            color: var(--text-color);
-            cursor: pointer;
-            transition: all var(--transition-normal);
-            font-family: var(--font-family);
-            text-decoration: underline;
-            text-underline-offset: 4px;
+        .timer-settings {
+            margin: 2rem 0;
         }
         
-        .preset-btn:hover {
-            background: var(--card-bg-hover);
-            border-color: var(--primary-color);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
+        .setting-group {
+            width: 100%;
         }
         
-        .preset-btn:active {
-            transform: translateY(0);
-        }
-        
-        .preset-btn.reset-btn {
-            background: var(--danger-color);
-            color: var(--text-on-primary);
-            border-color: var(--danger-color);
-            grid-column: span 2;
-        }
-        
-        .preset-btn.reset-btn:hover {
-            background: var(--danger-dark);
-            border-color: var(--danger-dark);
-        }
-        
-        /* Style 1 specific preset button styling */
-        [data-theme="style1"] .preset-btn {
-            background: #333333;
-            color: var(--text-color);
-            border-color: var(--border-color);
-        }
-        
-        [data-theme="style1"] .preset-btn:hover {
-            background: #444444;
-            border-color: var(--primary-color);
-        }
-        
-        [data-theme="style1"] .preset-btn.reset-btn {
-            background: var(--danger-color);
-            color: var(--text-on-primary);
-        }
-        
-        .timer-running .preset-btn:not(.reset-btn) {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        
-        .timer-running .preset-btn:not(.reset-btn):hover {
-            transform: none;
-            border-color: var(--border-color);
-        }
-        
-        /* Time Input Container */
         .time-input-container {
             width: 100%;
-            margin-bottom: 10px;
+            margin-bottom: 0.75rem;
         }
         
         .time-input-container input {
             width: 100%;
             text-align: center;
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             font-weight: 600;
-            font-family: var(--font-mono);
-            padding: 12px;
-            border: 2px solid var(--border-color);
-            border-radius: var(--border-radius-small);
-            background: var(--card-bg);
-            color: var(--text-color);
-            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+            padding: 0.75rem;
+            border: 2px solid hsl(var(--input));
+            border-radius: var(--radius);
+            background-color: hsl(var(--background));
+            color: hsl(var(--foreground));
+            min-height: 44px;
         }
         
         .time-input-container input:focus {
             outline: none;
-            border-color: var(--primary-color);
+            border-color: hsl(var(--ring));
+            box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
         }
         
-        /* Time Adjust Buttons Container */
         .time-adjust-buttons {
             display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
+            gap: 0.625rem;
+            margin-bottom: 0.75rem;
         }
         
         .time-adjust-btn {
             flex: 1;
-            height: 40px;
+            min-height: 44px;
             font-size: 1rem;
-            font-weight: bold;
-            border: 2px solid var(--border-color);
-            border-radius: var(--border-radius-small);
-            background: var(--card-bg);
-            color: var(--text-color);
+            font-weight: 700;
+            border: 2px solid hsl(var(--border));
+            border-radius: var(--radius);
+            background-color: hsl(var(--card));
+            color: hsl(var(--foreground));
             cursor: pointer;
             transition: all var(--transition-normal);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0;
         }
         
         .time-adjust-btn:hover:not(:disabled) {
-            background: var(--card-bg-hover);
-            border-color: var(--primary-color);
+            background-color: hsl(var(--accent));
+            border-color: hsl(var(--primary));
             transform: scale(1.05);
         }
         
@@ -170,18 +106,6 @@
             cursor: not-allowed;
         }
         
-        /* Style 1 specific button styling */
-        [data-theme="style1"] .time-adjust-btn {
-            background: #333333;
-            color: var(--text-color);
-            border-color: var(--border-color);
-        }
-        
-        [data-theme="style1"] .time-adjust-btn:hover:not(:disabled) {
-            background: #444444;
-            border-color: var(--primary-color);
-        }
-        
         .timer-running .time-adjust-btn {
             opacity: 0.6;
             cursor: not-allowed;
@@ -189,55 +113,120 @@
         
         .timer-running .time-adjust-btn:hover {
             transform: none;
-            border-color: var(--border-color);
+            border-color: hsl(var(--border));
         }
         
-        /* Mobile optimization */
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 390px) {
+            .preset-buttons {
+                grid-template-columns: 1fr;
+                gap: 0.625rem;
+            }
+            
+            .preset-btn.reset-btn {
+                grid-column: 1;
+            }
+        }
+        
+        .preset-btn {
+            padding: 1rem 1.25rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: 2px solid hsl(var(--border));
+            border-radius: var(--radius);
+            background-color: hsl(var(--card));
+            color: hsl(var(--foreground));
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            min-height: 44px;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+        
+        .preset-btn:hover:not(:disabled) {
+            background-color: hsl(var(--accent));
+            border-color: hsl(var(--primary));
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .preset-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        
+        .preset-btn.reset-btn {
+            background-color: hsl(var(--destructive));
+            color: hsl(var(--destructive-foreground));
+            border-color: hsl(var(--destructive));
+            grid-column: span 2;
+            text-decoration: none;
+        }
+        
+        .preset-btn.reset-btn:hover:not(:disabled) {
+            background-color: hsl(var(--destructive) / 0.9);
+            border-color: hsl(var(--destructive) / 0.9);
+        }
+        
+        @media (max-width: 390px) {
+            .preset-btn.reset-btn {
+                grid-column: 1;
+            }
+        }
+        
+        .timer-running .preset-btn:not(.reset-btn) {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .timer-running .preset-btn:not(.reset-btn):hover {
+            transform: none;
+            border-color: hsl(var(--border));
+        }
+        
         @media (max-width: 768px) {
             .time-input-container input {
-                padding: 10px;
+                padding: 0.625rem;
                 font-size: 1.1rem;
             }
             
             .time-adjust-buttons {
-                gap: 8px;
+                gap: 0.5rem;
             }
             
             .time-adjust-btn {
-                height: 36px;
                 font-size: 0.9rem;
             }
             
             .preset-btn {
-                padding: 12px 16px;
+                padding: 0.75rem 1rem;
                 font-size: 1rem;
             }
         }
         
-        @media (max-width: 480px) {
+        @media (max-width: 390px) {
             .time-input-container input {
-                padding: 12px;
+                padding: 0.75rem;
                 font-size: 1.3rem;
             }
             
             .preset-btn {
-                padding: 10px 14px;
-                font-size: 0.9rem;
-            }
-            
-            .timer-controls {
-                gap: 8px;
-            }
-            
-            .timer-controls .btn {
-                min-width: 70px;
-                padding: 10px 16px;
+                padding: 0.625rem 0.875rem;
                 font-size: 0.9rem;
             }
         }
     </style>
 </head>
 <body>
+    <button class="mode-toggle-btn mode-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+        <span id="theme-icon">🌙</span>
+    </button>
+    
     <div class="container">
         <a href="index.html" class="back-link">← Back to Timers</a>
         
@@ -251,13 +240,13 @@
             <div class="timer-controls">
                 <button class="btn btn-primary" id="startBtn">Start</button>
                 <button class="btn btn-secondary" id="pauseBtn" style="display: none;">Pause</button>
-                <button class="btn btn-danger" id="stopBtn" style="display: none;">Stop</button>
-                <button class="btn btn-danger" id="resetBtn" style="display: none;">Reset</button>
+                <button class="btn btn-destructive" id="stopBtn" style="display: none;">Stop</button>
+                <button class="btn btn-destructive" id="resetBtn" style="display: none;">Reset</button>
                 <button class="btn btn-secondary" id="clearBtn" style="display: none;">Clear</button>
             </div>
             
             <!-- Manual Time Entry -->
-            <div class="timer-settings" style="margin-top: 30px; margin-bottom: 30px;">
+            <div class="timer-settings">
                 <div class="setting-group">
                     <div class="time-input-container">
                         <input type="text" id="manualTime" value="00:00" pattern="[0-9]{2}:[0-9]{2}" placeholder="MM:SS" />
@@ -266,7 +255,7 @@
                         <button class="time-adjust-btn" id="manualDecreaseBtn" type="button">−5</button>
                         <button class="time-adjust-btn" id="manualIncreaseBtn" type="button">+5</button>
                     </div>
-                    <button class="btn btn-primary" id="manualStartBtn" style="width: 100%; margin-top: 10px;">Start</button>
+                    <button class="btn btn-primary" id="manualStartBtn" style="width: 100%; margin-top: 0.625rem;">Start</button>
                 </div>
             </div>
             
@@ -297,6 +286,28 @@
         </div>
     </div>
     
+    <script src="scripts/dark-mode-toggle.js"></script>
     <script src="scripts/quick-countdown.js"></script>
+    <script>
+        // Update theme icon
+        function updateThemeIcon() {
+            const icon = document.getElementById('theme-icon');
+            const isDark = document.documentElement.classList.contains('dark');
+            icon.textContent = isDark ? '☀️' : '🌙';
+        }
+        
+        updateThemeIcon();
+        const observer = new MutationObserver(updateThemeIcon);
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+        
+        const originalToggle = window.toggleTheme;
+        window.toggleTheme = function() {
+            originalToggle();
+            setTimeout(updateThemeIcon, 10);
+        };
+    </script>
 </body>
 </html>

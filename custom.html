@@ -4,12 +4,109 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Custom Timer - Timerist</title>
-    <link rel="stylesheet" href="styles/themes.css">
-    <link rel="stylesheet" href="styles/main.css">
-    <script src="scripts/theme-switcher.js"></script>
-    <script src="scripts/style-switcher-ui.js"></script>
+    <link rel="stylesheet" href="styles/timerist-design-system.css">
+    <style>
+        .timer-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .timer-controls {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .timer-controls .btn {
+            min-width: 80px;
+            padding: 0.75rem 1.25rem;
+        }
+        
+        .timer-settings {
+            margin-top: 2rem;
+        }
+        
+        .setting-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            background-color: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+        }
+        
+        .setting-group label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: hsl(var(--muted-foreground));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .setting-group input {
+            width: 100%;
+            padding: 0.625rem;
+            border: 2px solid hsl(var(--input));
+            border-radius: var(--radius);
+            background-color: hsl(var(--background));
+            color: hsl(var(--foreground));
+            font-size: 1rem;
+            font-weight: 600;
+            min-height: 44px;
+        }
+        
+        .setting-group input[type="text"] {
+            text-align: left;
+        }
+        
+        .setting-group input[type="number"] {
+            text-align: center;
+        }
+        
+        .setting-group input:focus {
+            outline: none;
+            border-color: hsl(var(--ring));
+            box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+        }
+        
+        #phasesContainer {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        @media (max-width: 390px) {
+            .timer-controls {
+                gap: 0.5rem;
+            }
+            
+            .timer-controls .btn {
+                min-width: 70px;
+                padding: 0.625rem 1rem;
+                font-size: 0.875rem;
+            }
+            
+            .setting-group {
+                padding: 1rem;
+            }
+        }
+        
+        .round-info {
+            margin-top: 1.25rem;
+            font-size: 1rem;
+            color: hsl(var(--muted-foreground));
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
+    <button class="mode-toggle-btn mode-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+        <span id="theme-icon">🌙</span>
+    </button>
+    
     <div class="container">
         <a href="index.html" class="back-link">← Back to Timers</a>
         
@@ -17,7 +114,7 @@
             <div class="timer-display">
                 <div class="timer-label" id="phaseLabel">Phase 1</div>
                 <div class="timer-time" id="display">00:00</div>
-                <div style="margin-top: 20px; font-size: 1rem; color: var(--text-light);">
+                <div class="round-info">
                     Phase <span id="phase">1</span> of <span id="totalPhases">3</span>
                 </div>
             </div>
@@ -25,14 +122,14 @@
             <div class="timer-controls">
                 <button class="btn btn-primary" id="startBtn">Start</button>
                 <button class="btn btn-secondary" id="pauseBtn" disabled>Pause</button>
-                <button class="btn btn-danger" id="resetBtn">Reset</button>
+                <button class="btn btn-destructive" id="resetBtn">Reset</button>
             </div>
             
             <div class="timer-settings">
                 <div class="setting-group">
                     <label for="phaseCount">Number of Phases</label>
                     <input type="number" id="phaseCount" min="1" max="10" value="3" />
-                    <button class="btn btn-secondary" id="updatePhases" style="margin-top: 10px; width: 100%;">Update Phases</button>
+                    <button class="btn btn-secondary" id="updatePhases" style="margin-top: 0.625rem; width: 100%;">Update Phases</button>
                 </div>
                 <div id="phasesContainer">
                     <!-- Phases will be dynamically generated here -->
@@ -41,7 +138,27 @@
         </div>
     </div>
     
+    <script src="scripts/dark-mode-toggle.js"></script>
     <script src="scripts/custom.js"></script>
+    <script>
+        function updateThemeIcon() {
+            const icon = document.getElementById('theme-icon');
+            const isDark = document.documentElement.classList.contains('dark');
+            icon.textContent = isDark ? '☀️' : '🌙';
+        }
+        
+        updateThemeIcon();
+        const observer = new MutationObserver(updateThemeIcon);
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+        
+        const originalToggle = window.toggleTheme;
+        window.toggleTheme = function() {
+            originalToggle();
+            setTimeout(updateThemeIcon, 10);
+        };
+    </script>
 </body>
 </html>
-

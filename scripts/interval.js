@@ -82,9 +82,9 @@ function updateDisplay() {
     totalRoundsDisplay.textContent = totalRounds;
     
     if (isWorkPhase) {
-        phaseLabel.style.color = 'var(--primary-color)';
+        phaseLabel.style.color = 'hsl(var(--primary))';
     } else {
-        phaseLabel.style.color = 'var(--secondary-color)';
+        phaseLabel.style.color = 'hsl(var(--secondary))';
     }
 }
 

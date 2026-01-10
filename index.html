@@ -4,11 +4,121 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Timerist - Fitness Timers</title>
-    <link rel="stylesheet" href="styles/themes.css">
-    <link rel="stylesheet" href="styles/main.css">
-    <script src="scripts/theme-switcher.js"></script>
+    <link rel="stylesheet" href="styles/timerist-design-system.css">
+    <style>
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        
+        header h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: hsl(var(--foreground));
+        }
+        
+        header .subtitle {
+            font-size: 1rem;
+            color: hsl(var(--muted-foreground));
+        }
+        
+        .timer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        @media (max-width: 390px) {
+            .timer-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+        
+        .timer-card {
+            background-color: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            padding: 2rem 1.5rem;
+            text-decoration: none;
+            color: hsl(var(--card-foreground));
+            transition: all var(--transition-normal);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: var(--shadow);
+            min-height: 180px;
+            justify-content: center;
+        }
+        
+        .timer-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+            border-color: hsl(var(--primary));
+        }
+        
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            line-height: 1;
+        }
+        
+        .timer-card h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: hsl(var(--foreground));
+        }
+        
+        .timer-card p {
+            font-size: 0.875rem;
+            color: hsl(var(--muted-foreground));
+            margin: 0;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-top: 3rem;
+            border-top: 1px solid hsl(var(--border));
+            color: hsl(var(--muted-foreground));
+            font-size: 0.875rem;
+        }
+        
+        footer a {
+            color: hsl(var(--primary));
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 390px) {
+            header h1 {
+                font-size: 1.875rem;
+            }
+            
+            .timer-card {
+                padding: 1.5rem 1rem;
+                min-height: 160px;
+            }
+            
+            .card-icon {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
+    <button class="mode-toggle-btn mode-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+        <span id="theme-icon">🌙</span>
+    </button>
+    
     <div class="container">
         <header>
             <h1>Timerist</h1>
@@ -65,6 +175,32 @@
             <p>Timerist.com is part of the <a href="https://workoutist.com" target="_blank" rel="noopener">Workoutist Network of Fitness Sites</a>. Made by <a href="https://builderist.com" target="_blank" rel="noopener">Builderist.com</a> & <a href="https://bigfactory.com" target="_blank" rel="noopener">BigFactory.com</a>.</p>
         </footer>
     </div>
+    
+    <script src="scripts/dark-mode-toggle.js"></script>
+    <script>
+        // Update theme icon
+        function updateThemeIcon() {
+            const icon = document.getElementById('theme-icon');
+            const isDark = document.documentElement.classList.contains('dark');
+            icon.textContent = isDark ? '☀️' : '🌙';
+        }
+        
+        // Initial icon update
+        updateThemeIcon();
+        
+        // Watch for theme changes
+        const observer = new MutationObserver(updateThemeIcon);
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+        
+        // Override toggleTheme to also update icon
+        const originalToggle = window.toggleTheme;
+        window.toggleTheme = function() {
+            originalToggle();
+            setTimeout(updateThemeIcon, 10);
+        };
+    </script>
 </body>
 </html>
-
