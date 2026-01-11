@@ -244,148 +244,107 @@ export default function CountdownTimerPage() {
 
   return (
       <div
-        className="min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden"
+        className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center px-4 sm:px-6 md:px-8 py-2 md:py-6 relative"
         style={{
-          paddingTop: "env(safe-area-inset-top)",
-          paddingBottom: "env(safe-area-inset-bottom)",
+          paddingTop: `calc(env(safe-area-inset-top) + 0.5rem)`,
+          paddingBottom: `calc(env(safe-area-inset-bottom) + 0.5rem)`,
           paddingLeft: "env(safe-area-inset-left)",
           paddingRight: "env(safe-area-inset-right)",
         }}
       >
-        {/* Header with menu button */}
-        <header className="flex justify-end p-2">
+        {/* Header with hamburger (tight top padding) */}
+        <div className="absolute top-2 right-2 md:top-4 md:right-4 z-10">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setDrawerOpen(true)}
-            className="h-10 w-10 sm:h-12 sm:w-12"
             aria-label="Open settings menu"
+            className="h-10 w-10"
           >
-            <Menu className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
+            <Menu className="h-6 w-6" aria-hidden="true" />
           </Button>
-        </header>
+        </div>
 
-        {/* Main timer display - optimized for vertical mobile */}
-        <main className="flex-1 flex flex-col items-center justify-center px-4 max-w-md mx-auto w-full space-y-3">
-          {/* Phase indicator */}
-          <div>
+        {/* Content wrapper - centered, constrained width */}
+        <div className="w-full max-w-md flex flex-col items-center space-y-3 md:space-y-6">
+          {/* Status label (READY/COMPLETE) - smaller font, tight margin */}
+          <h2
+            className="text-xl md:text-2xl font-semibold tracking-wide"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            {phase === "running"
+              ? "Running"
+              : phase === "paused"
+                ? "Paused"
+                : phase === "complete"
+                  ? "Complete"
+                  : "Ready"}
+          </h2>
+
+          {/* Prominent timer digits - viewport-scaled for better fit */}
+          <div className="text-center font-mono font-bold leading-none">
             <span
-              className="text-sm sm:text-base font-medium text-muted-foreground uppercase tracking-wide"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              {phase === "running"
-                ? "Running"
-                : phase === "paused"
-                  ? "Paused"
-                  : phase === "complete"
-                    ? "Complete"
-                    : "Ready"}
-            </span>
-          </div>
-
-          {/* Timer display - responsive font scaling starting at text-8xl */}
-          <div className="relative w-full flex items-center justify-center overflow-hidden">
-            <div
-              className="text-8xl sm:text-9xl md:text-[12rem] lg:text-[16rem] font-bold font-mono tabular-nums leading-none select-none whitespace-nowrap"
+              className="text-8xl sm:text-9xl md:text-[12rem] lg:text-[14rem] tabular-nums"
               style={{ color: textColor }}
               aria-live="polite"
               aria-atomic="true"
             >
               {formatTime(remaining)}
-            </div>
+            </span>
+          </div>
 
-            {/* Progress ring (SVG) */}
-            <svg
-              className="absolute inset-0 w-full h-full max-w-full -z-10 overflow-visible"
-              viewBox="0 0 100 100"
-              preserveAspectRatio="xMidYMid meet"
-              aria-hidden="true"
+          {/* Progress bar - full width but constrained */}
+          <Progress value={progress} className="w-full max-w-xs h-2 md:h-3" />
+
+          {/* Controls - side-by-side on mobile vertical for compactness */}
+          <div className="flex flex-row items-center justify-center gap-6 md:gap-8 mt-2 md:mt-4">
+            <Button
+              variant="outline"
+              size="lg"
+              className="h-14 w-32 md:h-16 md:w-40 text-lg"
+              onClick={handleReset}
+              aria-label="Reset countdown timer"
             >
-              <circle
-                cx="50"
-                cy="50"
-                r="45"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                className="text-secondary opacity-20"
-              />
-              <circle
-                cx="50"
-                cy="50"
-                r="45"
-                fill="none"
-                stroke={progressColor}
-                strokeWidth="3"
-                strokeDasharray={`${2 * Math.PI * 45}`}
-                strokeDashoffset={`${2 * Math.PI * 45 * (1 - progress / 100)}`}
-                strokeLinecap="round"
-                transform="rotate(-90 50 50)"
-                className="transition-all duration-1000"
-              />
-            </svg>
-          </div>
-
-          {/* Progress bar (alternative) */}
-          <div className="w-full">
-            <Progress value={progress} className="h-2" />
-          </div>
-
-          {/* Control buttons - side-by-side with optimized sizing */}
-          <div className="flex flex-row items-center justify-center gap-6 w-full">
+              <RotateCcw className="h-5 w-5 mr-2" aria-hidden="true" />
+              Reset
+            </Button>
             {!isRunning && !isPaused && (
               <Button
-                onClick={handleStart}
                 size="lg"
-                className="h-14 w-32 sm:w-40 text-base sm:text-lg font-semibold active:scale-95 transition-transform"
+                className="h-14 w-40 md:h-16 md:w-56 text-lg"
+                onClick={handleStart}
                 aria-label="Start countdown timer"
               >
-                <Play className="h-5 w-5 sm:h-6 sm:w-6 mr-2" aria-hidden="true" />
+                <Play className="h-5 w-5 mr-2" aria-hidden="true" />
                 Start
               </Button>
             )}
-
             {isRunning && !isPaused && (
               <Button
-                onClick={handlePause}
                 size="lg"
                 variant="secondary"
-                className="h-14 w-32 sm:w-40 text-base sm:text-lg font-semibold active:scale-95 transition-transform"
+                className="h-14 w-40 md:h-16 md:w-56 text-lg"
+                onClick={handlePause}
                 aria-label="Pause countdown timer"
               >
-                <Pause className="h-5 w-5 sm:h-6 sm:w-6 mr-2" aria-hidden="true" />
+                <Pause className="h-5 w-5 mr-2" aria-hidden="true" />
                 Pause
               </Button>
             )}
-
             {isPaused && (
               <Button
-                onClick={handleResume}
                 size="lg"
-                className="h-14 w-32 sm:w-40 text-base sm:text-lg font-semibold active:scale-95 transition-transform"
+                className="h-14 w-40 md:h-16 md:w-56 text-lg"
+                onClick={handleResume}
                 aria-label="Resume countdown timer"
               >
-                <Play className="h-5 w-5 sm:h-6 sm:w-6 mr-2" aria-hidden="true" />
+                <Play className="h-5 w-5 mr-2" aria-hidden="true" />
                 Resume
               </Button>
             )}
-
-            <Button
-              onClick={handleReset}
-              size="lg"
-              variant="outline"
-              className="h-14 w-32 sm:w-40 text-base sm:text-lg font-semibold active:scale-95 transition-transform"
-              aria-label="Reset countdown timer"
-            >
-              <RotateCcw
-                className="h-5 w-5 sm:h-6 sm:w-6 mr-2"
-                aria-hidden="true"
-              />
-              Reset
-            </Button>
           </div>
-        </main>
+        </div>
 
         {/* Settings Drawer */}
         <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
