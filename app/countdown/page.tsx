@@ -266,7 +266,7 @@ export default function CountdownTimerPage() {
         </div>
 
         {/* Content wrapper - centered, constrained width with more padding */}
-        <div className="w-full max-w-sm sm:max-w-md flex flex-col items-center space-y-3 md:space-y-6 px-2">
+        <div className="w-full max-w-sm sm:max-w-md flex flex-col items-center space-y-3 md:space-y-6 px-2 -mt-8 sm:-mt-6">
           {/* Status label (READY/COMPLETE) - smaller font, tight margin */}
           <h2
             className="text-lg sm:text-xl md:text-2xl font-semibold tracking-wide"
@@ -297,19 +297,8 @@ export default function CountdownTimerPage() {
           {/* Progress bar - constrained width */}
           <Progress value={progress} className="w-full max-w-[280px] sm:max-w-xs h-2 md:h-3" />
 
-          {/* Controls - narrower buttons with more gap */}
+          {/* Controls - Start on left, Reset on right */}
           <div className="flex flex-row items-center justify-center gap-4 sm:gap-6 md:gap-8 mt-2 md:mt-4 w-full">
-            <Button
-              variant="outline"
-              size="lg"
-              className="h-12 w-24 sm:h-14 sm:w-28 md:h-16 md:w-40 text-base sm:text-lg"
-              onClick={handleReset}
-              aria-label="Reset countdown timer"
-            >
-              <RotateCcw className="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2" aria-hidden="true" />
-              <span className="hidden sm:inline">Reset</span>
-              <span className="sm:hidden">↻</span>
-            </Button>
             {!isRunning && !isPaused && (
               <Button
                 size="lg"
@@ -319,7 +308,6 @@ export default function CountdownTimerPage() {
               >
                 <Play className="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2" aria-hidden="true" />
                 <span className="hidden sm:inline">Start</span>
-                <span className="sm:hidden">▷</span>
               </Button>
             )}
             {isRunning && !isPaused && (
@@ -332,7 +320,6 @@ export default function CountdownTimerPage() {
               >
                 <Pause className="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2" aria-hidden="true" />
                 <span className="hidden sm:inline">Pause</span>
-                <span className="sm:hidden">⏸</span>
               </Button>
             )}
             {isPaused && (
@@ -344,9 +331,18 @@ export default function CountdownTimerPage() {
               >
                 <Play className="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2" aria-hidden="true" />
                 <span className="hidden sm:inline">Resume</span>
-                <span className="sm:hidden">▷</span>
               </Button>
             )}
+            <Button
+              variant="outline"
+              size="lg"
+              className="h-12 w-24 sm:h-14 sm:w-28 md:h-16 md:w-40 text-base sm:text-lg"
+              onClick={handleReset}
+              aria-label="Reset countdown timer"
+            >
+              <RotateCcw className="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2" aria-hidden="true" />
+              <span className="hidden sm:inline">Reset</span>
+            </Button>
           </div>
         </div>
 
