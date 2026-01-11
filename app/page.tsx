@@ -112,6 +112,22 @@ export default function Home() {
           </div>
           <h1 className="text-4xl font-bold text-foreground">Timerist</h1>
           <p className="text-muted-foreground">Timer Controls Component Demo</p>
+          
+          {/* Navigation Links */}
+          <nav className="mt-6 flex flex-wrap justify-center gap-4">
+            <a
+              href="/countdown"
+              className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors font-medium"
+            >
+              Countdown Timer
+            </a>
+            <a
+              href="/timer-example"
+              className="px-4 py-2 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/80 transition-colors font-medium"
+            >
+              Timer Example
+            </a>
+          </nav>
         </header>
 
         <div className="grid gap-8 md:grid-cols-2">
