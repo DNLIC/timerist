@@ -244,7 +244,7 @@ export default function CountdownTimerPage() {
 
   return (
       <div
-        className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center px-4 sm:px-6 md:px-8 py-2 md:py-6 relative"
+        className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center px-6 sm:px-8 md:px-12 py-2 md:py-6 relative"
         style={{
           paddingTop: `calc(env(safe-area-inset-top) + 0.5rem)`,
           paddingBottom: `calc(env(safe-area-inset-bottom) + 0.5rem)`,
@@ -265,11 +265,11 @@ export default function CountdownTimerPage() {
           </Button>
         </div>
 
-        {/* Content wrapper - centered, constrained width */}
-        <div className="w-full max-w-md flex flex-col items-center space-y-3 md:space-y-6">
+        {/* Content wrapper - centered, constrained width with more padding */}
+        <div className="w-full max-w-sm sm:max-w-md flex flex-col items-center space-y-3 md:space-y-6 px-2">
           {/* Status label (READY/COMPLETE) - smaller font, tight margin */}
           <h2
-            className="text-xl md:text-2xl font-semibold tracking-wide"
+            className="text-lg sm:text-xl md:text-2xl font-semibold tracking-wide"
             aria-live="polite"
             aria-atomic="true"
           >
@@ -282,10 +282,10 @@ export default function CountdownTimerPage() {
                   : "Ready"}
           </h2>
 
-          {/* Prominent timer digits - viewport-scaled for better fit */}
-          <div className="text-center font-mono font-bold leading-none">
+          {/* Prominent timer digits - smaller on mobile to prevent overflow */}
+          <div className="text-center font-mono font-bold leading-none w-full overflow-hidden">
             <span
-              className="text-8xl sm:text-9xl md:text-[12rem] lg:text-[14rem] tabular-nums"
+              className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[12rem] tabular-nums inline-block"
               style={{ color: textColor }}
               aria-live="polite"
               aria-atomic="true"
@@ -294,53 +294,57 @@ export default function CountdownTimerPage() {
             </span>
           </div>
 
-          {/* Progress bar - full width but constrained */}
-          <Progress value={progress} className="w-full max-w-xs h-2 md:h-3" />
+          {/* Progress bar - constrained width */}
+          <Progress value={progress} className="w-full max-w-[280px] sm:max-w-xs h-2 md:h-3" />
 
-          {/* Controls - side-by-side on mobile vertical for compactness */}
-          <div className="flex flex-row items-center justify-center gap-6 md:gap-8 mt-2 md:mt-4">
+          {/* Controls - narrower buttons with more gap */}
+          <div className="flex flex-row items-center justify-center gap-4 sm:gap-6 md:gap-8 mt-2 md:mt-4 w-full">
             <Button
               variant="outline"
               size="lg"
-              className="h-14 w-32 md:h-16 md:w-40 text-lg"
+              className="h-12 w-24 sm:h-14 sm:w-28 md:h-16 md:w-40 text-base sm:text-lg"
               onClick={handleReset}
               aria-label="Reset countdown timer"
             >
-              <RotateCcw className="h-5 w-5 mr-2" aria-hidden="true" />
-              Reset
+              <RotateCcw className="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2" aria-hidden="true" />
+              <span className="hidden sm:inline">Reset</span>
+              <span className="sm:hidden">↻</span>
             </Button>
             {!isRunning && !isPaused && (
               <Button
                 size="lg"
-                className="h-14 w-40 md:h-16 md:w-56 text-lg"
+                className="h-12 w-28 sm:h-14 sm:w-36 md:h-16 md:w-56 text-base sm:text-lg"
                 onClick={handleStart}
                 aria-label="Start countdown timer"
               >
-                <Play className="h-5 w-5 mr-2" aria-hidden="true" />
-                Start
+                <Play className="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2" aria-hidden="true" />
+                <span className="hidden sm:inline">Start</span>
+                <span className="sm:hidden">▷</span>
               </Button>
             )}
             {isRunning && !isPaused && (
               <Button
                 size="lg"
                 variant="secondary"
-                className="h-14 w-40 md:h-16 md:w-56 text-lg"
+                className="h-12 w-28 sm:h-14 sm:w-36 md:h-16 md:w-56 text-base sm:text-lg"
                 onClick={handlePause}
                 aria-label="Pause countdown timer"
               >
-                <Pause className="h-5 w-5 mr-2" aria-hidden="true" />
-                Pause
+                <Pause className="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2" aria-hidden="true" />
+                <span className="hidden sm:inline">Pause</span>
+                <span className="sm:hidden">⏸</span>
               </Button>
             )}
             {isPaused && (
               <Button
                 size="lg"
-                className="h-14 w-40 md:h-16 md:w-56 text-lg"
+                className="h-12 w-28 sm:h-14 sm:w-36 md:h-16 md:w-56 text-base sm:text-lg"
                 onClick={handleResume}
                 aria-label="Resume countdown timer"
               >
-                <Play className="h-5 w-5 mr-2" aria-hidden="true" />
-                Resume
+                <Play className="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2" aria-hidden="true" />
+                <span className="hidden sm:inline">Resume</span>
+                <span className="sm:hidden">▷</span>
               </Button>
             )}
           </div>
