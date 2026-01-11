@@ -63,8 +63,14 @@ export function CircularProgress({
 
   return (
     <div
-      className={cn("relative inline-flex items-center justify-center", className)}
-      style={{ width: size, height: size }}
+      className={cn("relative inline-flex items-center justify-center flex-shrink-0", className)}
+      style={{ 
+        width: "100%", 
+        height: "100%",
+        aspectRatio: "1",
+        minWidth: 0,
+        minHeight: 0
+      }}
       role="progressbar"
       aria-valuemin={0}
       aria-valuemax={max}
@@ -72,9 +78,12 @@ export function CircularProgress({
       aria-label={`Progress: ${Math.round(percentage)}%`}
     >
       <svg
-        width={size}
-        height={size}
+        width="100%"
+        height="100%"
+        viewBox={`0 0 ${size} ${size}`}
         className="transform -rotate-90"
+        preserveAspectRatio="xMidYMid meet"
+        style={{ width: "100%", height: "100%" }}
         aria-hidden="true"
       >
         {/* Background circle */}

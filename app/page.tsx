@@ -105,7 +105,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
-      <div className="max-w-4xl mx-auto space-y-8">
+      <div className="max-w-4xl mx-auto space-y-8 min-w-0">
         <header className="text-center space-y-2 relative">
           <div className="absolute top-0 right-0">
             <ModeToggle />
@@ -168,11 +168,20 @@ export default function Home() {
             <h2 className="text-2xl font-semibold text-foreground">
               Timer Display
             </h2>
-            <div className="p-8 bg-card border border-border rounded-lg shadow-lg text-center">
+            <div className="p-8 bg-card border border-border rounded-lg shadow-lg text-center w-full min-w-0 overflow-visible">
               <div className="text-sm uppercase tracking-wide text-muted-foreground mb-4">
                 {phaseLabel}
               </div>
-              <div className="text-7xl md:text-8xl font-mono font-bold text-primary mb-4 tabular-nums">
+              <div 
+                className="font-mono font-bold text-primary mb-4 tabular-nums leading-none text-center whitespace-nowrap min-w-0"
+                style={{
+                  fontSize: "clamp(3rem, 10vw, 10rem)", // Increased max to 10rem
+                  width: "auto",
+                  minWidth: "0",
+                  overflow: "visible",
+                  textOverflow: "clip",
+                }}
+              >
                 {formatTime(duration)}
               </div>
               <div className="text-lg text-muted-foreground">

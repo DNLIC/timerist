@@ -265,8 +265,8 @@ export default function CountdownTimerPage() {
           </Button>
         </div>
 
-        {/* Content wrapper - centered, constrained width with more padding */}
-        <div className="w-full max-w-sm sm:max-w-md flex flex-col items-center space-y-3 md:space-y-6 px-2 -mt-8 sm:-mt-6">
+        {/* Content wrapper - responsive width constraints */}
+        <div className="w-full max-w-sm sm:max-w-md md:max-w-2xl lg:max-w-4xl xl:max-w-6xl flex flex-col items-center space-y-3 md:space-y-6 px-2 -mt-8 sm:-mt-6 overflow-visible">
           {/* Status label (READY/COMPLETE) - smaller font, tight margin */}
           <h2
             className="text-lg sm:text-xl md:text-2xl font-semibold tracking-wide"
@@ -282,11 +282,15 @@ export default function CountdownTimerPage() {
                   : "Ready"}
           </h2>
 
-          {/* Prominent timer digits - smaller on mobile to prevent overflow */}
-          <div className="text-center font-mono font-bold leading-none w-full overflow-hidden">
+          {/* Prominent timer digits - responsive sizing that expands on larger screens */}
+          <div className="text-center font-mono font-bold leading-none w-full overflow-visible px-2">
             <span
-              className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[12rem] tabular-nums inline-block"
-              style={{ color: textColor }}
+              className="tabular-nums inline-block whitespace-nowrap"
+              style={{ 
+                color: textColor,
+                fontSize: "clamp(3rem, 12vw, 10rem)", // Responsive: min 3rem, scales with viewport, max 10rem
+                lineHeight: "1",
+              }}
               aria-live="polite"
               aria-atomic="true"
             >
@@ -294,8 +298,8 @@ export default function CountdownTimerPage() {
             </span>
           </div>
 
-          {/* Progress bar - constrained width */}
-          <Progress value={progress} className="w-full max-w-[280px] sm:max-w-xs h-2 md:h-3" />
+          {/* Progress bar - responsive width */}
+          <Progress value={progress} className="w-full max-w-[280px] sm:max-w-xs md:max-w-md lg:max-w-lg h-2 md:h-3" />
 
           {/* Controls - Start on left, Reset on right */}
           <div className="flex flex-row items-center justify-center gap-4 sm:gap-6 md:gap-8 mt-2 md:mt-4 w-full">

@@ -309,7 +309,7 @@ export function TimerControls({
       className={cn(
         "flex flex-col gap-4 p-6 bg-card border rounded-lg shadow-lg",
         "transition-all duration-500 ease-in-out",
-        "relative overflow-hidden", // For overlay
+        "relative overflow-visible", // Changed from overflow-hidden to prevent text clipping
         // Phase-based border color (subtle)
         phaseLabel?.toLowerCase() === "work"
           ? "border-destructive/20 dark:border-destructive/30"
@@ -347,25 +347,49 @@ export function TimerControls({
       )}
       {/* Timer Display with Circular Progress */}
       {showTimerDisplay && duration !== undefined && (
-        <div className="flex flex-col items-center justify-center py-6 relative z-10">
-          <div className="relative inline-flex items-center justify-center" style={{ width: 240, height: 240 }}>
-            <CircularProgress
-              value={progressPercentage}
-              current={duration}
-              max={initialDuration || duration}
-              size={240}
-              strokeWidth={12}
-              phase={phaseLabel}
-              animated={isActive}
-              className="absolute"
-            />
-            <div className="relative z-10 flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center py-6 relative z-10 w-full min-w-0 overflow-visible">
+          <div className="relative flex items-center justify-center min-w-0 w-full" style={{ maxWidth: "none" }}>
+            {/* Circular Progress - positioned absolutely, doesn't constrain text */}
+            <div 
+              className="absolute inset-0 flex items-center justify-center pointer-events-none"
+              style={{ 
+                aspectRatio: "1",
+                maxWidth: "min(360px, 90vw)",
+                maxHeight: "min(360px, 90vw)",
+                left: "50%",
+                top: "50%",
+                transform: "translate(-50%, -50%)"
+              }}
+            >
+              <CircularProgress
+                value={progressPercentage}
+                current={duration}
+                max={initialDuration || duration}
+                size={240}
+                strokeWidth={12}
+                phase={phaseLabel}
+                animated={isActive}
+                className="w-full h-full"
+              />
+            </div>
+            {/* Timer Text - centered, can scale freely */}
+            <div className="relative z-10 flex flex-col items-center justify-center min-w-0" style={{ width: "auto", maxWidth: "none" }}>
               <div className={cn(
-                "text-5xl md:text-6xl font-mono font-bold tabular-nums transition-all duration-300",
+                "font-mono font-bold tabular-nums transition-all duration-300",
+                "leading-none whitespace-nowrap inline-block",
                 isWarningZone
-                  ? "text-destructive animate-pulse scale-105"
+                  ? "text-destructive animate-pulse"
                   : "text-foreground"
-              )}>
+              )}
+              style={{
+                fontSize: "clamp(2.5rem, 8vw, 6rem)",
+                lineHeight: "1",
+                overflow: "visible",
+                textOverflow: "clip",
+                width: "auto",
+                minWidth: "0",
+                maxWidth: "none",
+              }}>
                 {formatTime(duration)}
               </div>
               {phaseLabel && (

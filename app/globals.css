@@ -134,6 +134,28 @@
     }
   }
   
+  /* Prevent text truncation in timer displays */
+  .break-keep {
+    word-break: keep-all;
+    overflow-wrap: normal;
+  }
+  
+  /* Timer display container - prevent truncation */
+  .timer-display-container {
+    min-width: 0;
+    width: 100%;
+    overflow: visible;
+  }
+  
+  .timer-display-text {
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
+    min-width: 0;
+    width: auto;
+    max-width: 100%;
+  }
+  
   /* Screen reader only utility */
   .sr-only {
     position: absolute;
