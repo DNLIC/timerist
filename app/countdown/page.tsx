@@ -253,24 +253,24 @@ export default function CountdownTimerPage() {
         }}
       >
         {/* Header with menu button */}
-        <header className="flex justify-end p-1 sm:p-2 md:p-4">
+        <header className="flex justify-end p-2">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setDrawerOpen(true)}
-            className="h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14"
+            className="h-10 w-10 sm:h-12 sm:w-12"
             aria-label="Open settings menu"
           >
-            <Menu className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7" aria-hidden="true" />
+            <Menu className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
           </Button>
         </header>
 
-        {/* Main timer display - takes 60-70% of screen height */}
-        <main className="flex-1 flex flex-col items-center justify-center px-2 sm:px-4 md:px-6 lg:px-8 max-w-full overflow-x-hidden">
+        {/* Main timer display - optimized for vertical mobile */}
+        <main className="flex-1 flex flex-col items-center justify-center px-4 max-w-md mx-auto w-full space-y-3">
           {/* Phase indicator */}
-          <div className="mb-1 sm:mb-2 md:mb-4">
+          <div>
             <span
-              className="text-xs sm:text-sm md:text-base lg:text-lg font-medium text-muted-foreground uppercase tracking-wide"
+              className="text-sm sm:text-base font-medium text-muted-foreground uppercase tracking-wide"
               aria-live="polite"
               aria-atomic="true"
             >
@@ -284,10 +284,10 @@ export default function CountdownTimerPage() {
             </span>
           </div>
 
-          {/* Timer display - huge scalable font with proper width constraints */}
-          <div className="relative w-full max-w-full flex items-center justify-center mb-2 sm:mb-4 md:mb-6 lg:mb-8 overflow-hidden">
+          {/* Timer display - responsive font scaling starting at text-8xl */}
+          <div className="relative w-full flex items-center justify-center overflow-hidden">
             <div
-              className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[12rem] font-bold font-mono tabular-nums leading-none select-none whitespace-nowrap"
+              className="text-8xl sm:text-9xl md:text-[12rem] lg:text-[16rem] font-bold font-mono tabular-nums leading-none select-none whitespace-nowrap"
               style={{ color: textColor }}
               aria-live="polite"
               aria-atomic="true"
@@ -328,22 +328,21 @@ export default function CountdownTimerPage() {
           </div>
 
           {/* Progress bar (alternative) */}
-          <div className="w-full max-w-md mb-3 sm:mb-4 md:mb-6 lg:mb-8 px-2">
-            <Progress value={progress} className="h-1.5 sm:h-2" />
+          <div className="w-full">
+            <Progress value={progress} className="h-2" />
           </div>
 
-          {/* Control buttons - smaller and side-by-side on mobile */}
-          <div className="flex flex-row items-center justify-center gap-2 sm:gap-3 md:gap-4 lg:gap-6 w-full max-w-md sm:max-w-lg md:max-w-2xl px-2">
+          {/* Control buttons - side-by-side with optimized sizing */}
+          <div className="flex flex-row items-center justify-center gap-6 w-full">
             {!isRunning && !isPaused && (
               <Button
                 onClick={handleStart}
                 size="lg"
-                className="h-12 flex-1 sm:h-14 sm:flex-initial sm:w-32 md:h-16 md:w-40 text-base sm:text-lg md:text-xl font-semibold active:scale-95 transition-transform"
+                className="h-14 w-32 sm:w-40 text-base sm:text-lg font-semibold active:scale-95 transition-transform"
                 aria-label="Start countdown timer"
               >
-                <Play className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 mr-1.5 sm:mr-2" aria-hidden="true" />
-                <span className="hidden sm:inline">Start</span>
-                <span className="sm:hidden">▷</span>
+                <Play className="h-5 w-5 sm:h-6 sm:w-6 mr-2" aria-hidden="true" />
+                Start
               </Button>
             )}
 
@@ -352,12 +351,11 @@ export default function CountdownTimerPage() {
                 onClick={handlePause}
                 size="lg"
                 variant="secondary"
-                className="h-12 flex-1 sm:h-14 sm:flex-initial sm:w-32 md:h-16 md:w-40 text-base sm:text-lg md:text-xl font-semibold active:scale-95 transition-transform"
+                className="h-14 w-32 sm:w-40 text-base sm:text-lg font-semibold active:scale-95 transition-transform"
                 aria-label="Pause countdown timer"
               >
-                <Pause className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 mr-1.5 sm:mr-2" aria-hidden="true" />
-                <span className="hidden sm:inline">Pause</span>
-                <span className="sm:hidden">⏸</span>
+                <Pause className="h-5 w-5 sm:h-6 sm:w-6 mr-2" aria-hidden="true" />
+                Pause
               </Button>
             )}
 
@@ -365,12 +363,11 @@ export default function CountdownTimerPage() {
               <Button
                 onClick={handleResume}
                 size="lg"
-                className="h-12 flex-1 sm:h-14 sm:flex-initial sm:w-32 md:h-16 md:w-40 text-base sm:text-lg md:text-xl font-semibold active:scale-95 transition-transform"
+                className="h-14 w-32 sm:w-40 text-base sm:text-lg font-semibold active:scale-95 transition-transform"
                 aria-label="Resume countdown timer"
               >
-                <Play className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 mr-1.5 sm:mr-2" aria-hidden="true" />
-                <span className="hidden sm:inline">Resume</span>
-                <span className="sm:hidden">▷</span>
+                <Play className="h-5 w-5 sm:h-6 sm:w-6 mr-2" aria-hidden="true" />
+                Resume
               </Button>
             )}
 
@@ -378,15 +375,14 @@ export default function CountdownTimerPage() {
               onClick={handleReset}
               size="lg"
               variant="outline"
-              className="h-12 flex-1 sm:h-14 sm:flex-initial sm:w-32 md:h-16 md:w-40 text-base sm:text-lg md:text-xl font-semibold active:scale-95 transition-transform"
+              className="h-14 w-32 sm:w-40 text-base sm:text-lg font-semibold active:scale-95 transition-transform"
               aria-label="Reset countdown timer"
             >
               <RotateCcw
-                className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 mr-1.5 sm:mr-2"
+                className="h-5 w-5 sm:h-6 sm:w-6 mr-2"
                 aria-hidden="true"
               />
-              <span className="hidden sm:inline">Reset</span>
-              <span className="sm:hidden">↻</span>
+              Reset
             </Button>
           </div>
         </main>
