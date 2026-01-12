@@ -282,6 +282,28 @@
         .timer-settings {
             overflow-x: hidden;
         }
+        
+        /* Version number */
+        .version-number {
+            position: fixed;
+            bottom: 0.5rem;
+            right: 0.5rem;
+            font-size: 0.625rem;
+            color: hsl(var(--muted-foreground));
+            opacity: 0.6;
+            font-family: monospace;
+            z-index: 1000;
+            pointer-events: none;
+            user-select: none;
+        }
+        
+        @media (min-width: 768px) {
+            .version-number {
+                font-size: 0.75rem;
+                bottom: 1rem;
+                right: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -316,6 +338,9 @@
             </div>
         </div>
     </div>
+    
+    <!-- Version number -->
+    <div class="version-number">v1.1</div>
     
     <script src="scripts/dark-mode-toggle.js"></script>
     <script src="scripts/countdown.js"></script>
