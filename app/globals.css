@@ -156,6 +156,33 @@
     max-width: 100%;
   }
   
+  /* Enhanced responsive timer display for tablets/iPads */
+  .timer-display-text-responsive {
+    /* Base mobile scaling */
+    font-size: clamp(3rem, 12vw, 10rem);
+  }
+  
+  /* iPad portrait (768px+) - use viewport height for better vertical scaling */
+  @media (min-width: 768px) {
+    .timer-display-text-responsive {
+      font-size: clamp(4rem, min(18vh, 16vw), 16rem);
+    }
+  }
+  
+  /* iPad landscape and larger tablets (1024px+) */
+  @media (min-width: 1024px) {
+    .timer-display-text-responsive {
+      font-size: clamp(5rem, min(20vh, 18vw), 20rem);
+    }
+  }
+  
+  /* Large desktop (1440px+) */
+  @media (min-width: 1440px) {
+    .timer-display-text-responsive {
+      font-size: clamp(6rem, min(22vh, 20vw), 24rem);
+    }
+  }
+  
   /* Screen reader only utility */
   .sr-only {
     position: absolute;
