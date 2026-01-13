@@ -32,7 +32,13 @@ export function TimerLayout({
   return (
     <div
       className={cn(
-        "min-h-screen bg-background text-foreground flex flex-col items-center justify-center px-6 sm:px-8 md:px-12 lg:px-16 py-4 md:py-8 lg:py-12 relative",
+        "min-h-screen bg-background text-foreground flex flex-col items-center",
+        // In landscape, use justify-between to ensure buttons stay visible
+        "justify-center",
+        "px-6 sm:px-8 md:px-12 lg:px-16",
+        "py-4 md:py-8 lg:py-12",
+        "timer-layout-landscape",
+        "relative",
         className
       )}
       style={{
@@ -52,14 +58,19 @@ export function TimerLayout({
       {/* Content wrapper - responsive width constraints with better vertical spacing */}
       <div
         className={cn(
-          "w-full flex flex-col items-center justify-center",
+          "w-full flex flex-col items-center",
+          // Use justify-start in landscape to ensure buttons stay at bottom
+          "justify-center",
+          // Reduce spacing in landscape mode via CSS class
           "space-y-4 sm:space-y-6 md:space-y-8 lg:space-y-10",
+          "timer-content-landscape",
           "px-2 overflow-visible",
           "min-h-0 flex-1", // Allow flex to grow and fill space
           maxWidthClasses[maxWidth]
         )}
         style={{
           // Use viewport height for better vertical utilization on tablets
+          // In landscape, ensure we don't exceed viewport height
           minHeight: "min(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 4rem, 600px)",
         }}
       >

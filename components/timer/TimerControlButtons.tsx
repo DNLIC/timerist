@@ -37,7 +37,13 @@ export function TimerControlButtons({
   return (
     <div
       className={cn(
-        "flex flex-row items-center justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-10 mt-2 md:mt-4 lg:mt-6 w-full",
+        "flex flex-row items-center justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-10",
+        "mt-2 md:mt-4 lg:mt-6",
+        // Reduce margin and gap in landscape to keep buttons visible
+        "timer-buttons-landscape",
+        "w-full",
+        // Ensure buttons stay visible in landscape
+        "flex-shrink-0",
         className
       )}
     >

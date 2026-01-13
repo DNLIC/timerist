@@ -162,8 +162,15 @@
     font-size: clamp(3rem, 12vw, 10rem);
   }
   
+  /* Landscape orientation - reduce size to fit better */
+  @media (orientation: landscape) {
+    .timer-display-text-responsive {
+      font-size: clamp(2.5rem, 8vw, 6rem);
+    }
+  }
+  
   /* iPad portrait (768px+) - use viewport height for better vertical scaling */
-  @media (min-width: 768px) {
+  @media (min-width: 768px) and (orientation: portrait) {
     .timer-display-text-responsive {
       font-size: clamp(4rem, min(18vh, 16vw), 16rem);
     }
@@ -176,10 +183,126 @@
     }
   }
   
+  /* Landscape on larger screens - use viewport height for scaling */
+  @media (min-width: 768px) and (orientation: landscape) {
+    .timer-display-text-responsive {
+      font-size: clamp(3rem, min(12vh, 10vw), 8rem);
+    }
+  }
+  
   /* Large desktop (1440px+) */
   @media (min-width: 1440px) {
     .timer-display-text-responsive {
       font-size: clamp(6rem, min(22vh, 20vw), 24rem);
+    }
+  }
+  
+  /* Landscape orientation utilities - compact layout */
+  @media (orientation: landscape) {
+    /* Timer layout - reduce padding and spacing */
+    .timer-layout-landscape {
+      padding-top: 0.5rem !important;
+      padding-bottom: 0.5rem !important;
+      justify-content: flex-start !important;
+    }
+    
+    @media (min-width: 768px) {
+      .timer-layout-landscape {
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .timer-layout-landscape {
+        padding-top: 1.5rem !important;
+        padding-bottom: 1.5rem !important;
+      }
+    }
+    
+    /* Ensure content wrapper fits in viewport and buttons stay visible */
+    .timer-content-landscape {
+      max-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 2rem) !important;
+      justify-content: space-between !important;
+      padding-bottom: 0.5rem !important;
+    }
+    
+    @media (min-width: 768px) {
+      .timer-content-landscape {
+        padding-bottom: 1rem !important;
+      }
+    }
+    
+    /* Timer content wrapper - reduce spacing */
+    .timer-content-landscape > * + * {
+      margin-top: 0.25rem !important;
+    }
+    
+    @media (min-width: 640px) {
+      .timer-content-landscape > * + * {
+        margin-top: 0.5rem !important;
+      }
+    }
+    
+    @media (min-width: 768px) {
+      .timer-content-landscape > * + * {
+        margin-top: 0.75rem !important;
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .timer-content-landscape > * + * {
+        margin-top: 1rem !important;
+      }
+    }
+    
+    /* Timer display - reduce min-height */
+    .timer-display-landscape {
+      min-height: 120px !important;
+    }
+    
+    @media (min-width: 640px) {
+      .timer-display-landscape {
+        min-height: 150px !important;
+      }
+    }
+    
+    @media (min-width: 768px) {
+      .timer-display-landscape {
+        min-height: 180px !important;
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .timer-display-landscape {
+        min-height: 200px !important;
+      }
+    }
+    
+    /* Timer buttons - reduce margin and gap */
+    .timer-buttons-landscape {
+      margin-top: 0.25rem !important;
+      gap: 0.5rem !important;
+    }
+    
+    @media (min-width: 640px) {
+      .timer-buttons-landscape {
+        gap: 0.75rem !important;
+      }
+    }
+    
+    @media (min-width: 768px) {
+      .timer-buttons-landscape {
+        margin-top: 0.5rem !important;
+        gap: 1rem !important;
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .timer-buttons-landscape {
+        margin-top: 0.75rem !important;
+        gap: 1.5rem !important;
+      }
     }
   }
   
