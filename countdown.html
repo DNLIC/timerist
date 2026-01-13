@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Countdown Timer - Timerist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        };
+    </script>
     <link rel="stylesheet" href="styles/timerist-design-system.css">
     <style>
         /* Full viewport height and vertical centering */
@@ -312,6 +318,21 @@
     </button>
     
     <div class="container">
+        <svg
+            width="240"
+            height="50"
+            viewBox="0 0 240 50"
+            xmlns="http://www.w3.org/2000/svg"
+            class="text-black dark:text-white mx-auto block mb-6"
+        >
+            <!-- Minimal stopwatch icon -->
+            <circle cx="20" cy="25" r="15" fill="none" stroke="currentColor" stroke-width="2"/>
+            <line x1="20" y1="25" x2="20" y2="12" stroke="currentColor" stroke-width="2"/>
+            <line x1="20" y1="25" x2="32" y2="25" stroke="currentColor" stroke-width="2"/>
+            <!-- Text -->
+            <text x="50" y="35" font-family="sans-serif" font-size="24" fill="currentColor">Timerist</text>
+        </svg>
+        
         <a href="index.html" class="back-link">← Back to Timers</a>
         
         <div class="timer-container">
