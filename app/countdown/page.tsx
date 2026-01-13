@@ -42,6 +42,11 @@ export default function CountdownTimerPage() {
   const [bgColor, setBgColor] = useState("#ffffff")
   const [textColor, setTextColor] = useState("#000000")
   const [progressColor, setProgressColor] = useState("#3b82f6")
+  
+  // Version and build info state
+  const [appVersion, setAppVersion] = useState<string>("")
+  const [buildTime, setBuildTime] = useState<string>("")
+  const [buildDate, setBuildDate] = useState<string>("")
 
   // Refs
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
@@ -68,6 +73,24 @@ export default function CountdownTimerPage() {
     if (savedAudio !== null) {
       setAudioEnabled(savedAudio === "true")
     }
+  }, [])
+
+  // Load version and build info
+  useEffect(() => {
+    const loadVersionInfo = async () => {
+      try {
+        const response = await fetch('/version.json?t=' + Date.now())
+        if (response.ok) {
+          const data = await response.json()
+          setAppVersion(data.version || "")
+          setBuildTime(data.buildTime || "")
+          setBuildDate(data.buildDate || "")
+        }
+      } catch (error) {
+        console.warn("Could not load version info:", error)
+      }
+    }
+    loadVersionInfo()
   }, [])
 
   // Save to localStorage
@@ -452,10 +475,46 @@ export default function CountdownTimerPage() {
                   General Info
                 </AccordionTrigger>
                 <AccordionContent>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    Used in fitness for planks, stretches, recovery periods, or any
-                    single-duration timing. Simple and distraction-free.
-                  </p>
+                  <div className="space-y-4">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Used in fitness for planks, stretches, recovery periods, or any
+                      single-duration timing. Simple and distraction-free.
+                    </p>
+                    
+                    {/* Version and Build Info */}
+                    <div className="pt-4 border-t border-border space-y-3">
+                      {appVersion && (
+                        <div>
+                          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                            Version
+                          </Label>
+                          <p className="text-sm font-mono text-foreground mt-1">
+                            {appVersion}
+                          </p>
+                        </div>
+                      )}
+                      {buildDate && (
+                        <div>
+                          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                            Build Date & Time
+                          </Label>
+                          <p className="text-sm text-foreground mt-1">
+                            {buildDate}
+                          </p>
+                          {buildTime && (
+                            <p className="text-xs text-muted-foreground mt-1 font-mono">
+                              {new Date(buildTime).toISOString()}
+                            </p>
+                          )}
+                        </div>
+                      )}
+                      {!appVersion && !buildDate && (
+                        <p className="text-xs text-muted-foreground italic">
+                          Version information not available
+                        </p>
+                      )}
+                    </div>
+                  </div>
                 </AccordionContent>
               </AccordionItem>
             </Accordion>

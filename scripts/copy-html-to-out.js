@@ -13,6 +13,11 @@ const htmlFiles = [
   'custom.html'
 ];
 
+// JSON files to copy from public directory
+const jsonFiles = [
+  'version.json'
+];
+
 // Directories to copy
 const dirsToCopy = [
   'styles',
@@ -30,6 +35,20 @@ if (!fs.existsSync(outDir)) {
 // Copy HTML files
 htmlFiles.forEach(file => {
   const src = path.join(rootDir, file);
+  const dest = path.join(outDir, file);
+  
+  if (fs.existsSync(src)) {
+    fs.copyFileSync(src, dest);
+    console.log(`✓ Copied ${file}`);
+  } else {
+    console.warn(`⚠ File not found: ${file}`);
+  }
+});
+
+// Copy JSON files from public directory
+const publicDir = path.join(rootDir, 'public');
+jsonFiles.forEach(file => {
+  const src = path.join(publicDir, file);
   const dest = path.join(outDir, file);
   
   if (fs.existsSync(src)) {

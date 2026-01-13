@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "export": "next build && npm run copy-html",
+    "update-version": "node scripts/update-version.js",
+    "build": "npm run update-version && next build",
+    "export": "npm run update-version && next build && npm run copy-html",
     "copy-html": "node scripts/copy-html-to-out.js",
     "start": "next start",
     "lint": "next lint",
