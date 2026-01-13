@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timerist Logo Options Preview</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      padding: 40px;
+      line-height: 1.6;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .option {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 30px 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .day-mode, .night-mode {
+      padding: 20px;
+      border-radius: 6px;
+      margin: 15px 0;
+    }
+    .day-mode {
+      background: #fff;
+      border: 1px solid #ccc;
+    }
+    .night-mode {
+      background: #1a1a1a;
+      color: white;
+      border: 1px solid #444;
+    }
+    .header-example {
+      font-size: 20px;
+      margin: 15px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo {
+      font-weight: bold;
+    }
+    .separator {
+      color: #888;
+    }
+    svg {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Timerist Logo Options Preview</h1>
+    <p>These are small text-based logo variations designed to fit in a mobile masthead (≈200×50px). 
+       You can copy any of the <code>&lt;svg&gt;</code> blocks directly into your timer HTML files for testing spacing next to the hamburger menu.</p>
+
+    <div class="option">
+      <h2>Option 1: Simple Modern Sans-Serif</h2>
+      
+      <div class="day-mode">
+        <h3>Day Mode</h3>
+        <svg width="200" height="50" viewBox="0 0 200 50">
+          <text x="10" y="35" font-family="sans-serif" font-size="24" fill="black">Timerist</text>
+        </svg>
+        <div class="header-example">
+          <span class="logo">Timerist</span> <span class="separator">|</span> Stopwatch
+        </div>
+      </div>
+      
+      <div class="night-mode">
+        <h3>Night Mode</h3>
+        <svg width="200" height="50" viewBox="0 0 200 50">
+          <rect width="200" height="50" fill="black"/>
+          <text x="10" y="35" font-family="sans-serif" font-size="24" fill="white">Timerist</text>
+        </svg>
+        <div class="header-example">
+          <span class="logo">Timerist</span> <span class="separator">|</span> Tabata
+        </div>
+      </div>
+    </div>
+
+    <div class="option">
+      <h2>Option 2: Bold Modern Sans-Serif</h2>
+      
+      <div class="day-mode">
+        <h3>Day Mode</h3>
+        <svg width="200" height="50" viewBox="0 0 200 50">
+          <text x="10" y="35" font-family="sans-serif" font-size="24" font-weight="bold" fill="black">Timerist</text>
+        </svg>
+      </div>
+      
+      <div class="night-mode">
+        <h3>Night Mode</h3>
+        <svg width="200" height="50" viewBox="0 0 200 50">
+          <rect width="200" height="50" fill="black"/>
+          <text x="10" y="35" font-family="sans-serif" font-size="24" font-weight="bold" fill="white">Timerist</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="option">
+      <h2>Option 3: Two-Color Split (Black and Gray)</h2>
+      
+      <div class="day-mode">
+        <h3>Day Mode</h3>
+        <svg width="200" height="50" viewBox="0 0 200 50">
+          <text x="10" y="35" font-family="sans-serif" font-size="24" fill="black">Time</text>
+          <text x="85" y="35" font-family="sans-serif" font-size="24" fill="gray">rist</text>
+        </svg>
+      </div>
+      
+      <div class="night-mode">
+        <h3>Night Mode</h3>
+        <svg width="200" height="50" viewBox="0 0 200 50">
+          <rect width="200" height="50" fill="black"/>
+          <text x="10" y="35" font-family="sans-serif" font-size="24" fill="white">Time</text>
+          <text x="85" y="35" font-family="sans-serif" font-size="24" fill="lightgray">rist</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="option">
+      <h2>Option 4: Italicized Modern Sans-Serif</h2>
+      
+      <div class="day-mode">
+        <h3>Day Mode</h3>
+        <svg width="200" height="50" viewBox="0 0 200 50">
+          <text x="10" y="35" font-family="sans-serif" font-size="24" font-style="italic" fill="black">Timerist</text>
+        </svg>
+      </div>
+      
+      <div class="night-mode">
+        <h3>Night Mode</h3>
+        <svg width="200" height="50" viewBox="0 0 200 50">
+          <rect width="200" height="50" fill="black"/>
+          <text x="10" y="35" font-family="sans-serif" font-size="24" font-style="italic" fill="white">Timerist</text>
+        </svg>
+      </div>
+    </div>
+
+    <p style="text-align:center; margin-top:60px;">
+      Feel free to copy any SVG code into your timer prototypes. Let me know which one you like best or if you'd like tweaks (different font, size, letter spacing, etc.)!
+    </p>
+  </div>
+
+</body>
+</html>

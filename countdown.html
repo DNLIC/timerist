@@ -39,6 +39,44 @@
             padding: 1rem;
             margin: 0 auto;
             overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Logo styling - positioned at top */
+        .container > svg:first-of-type {
+            position: absolute;
+            top: clamp(1rem, 3vw, 2rem);
+            left: 50%;
+            transform: translateX(-50%);
+            margin: 0 !important;
+            z-index: 10;
+            flex-shrink: 0;
+            display: block !important;
+            width: 240px;
+            height: 50px;
+        }
+        
+        /* Ensure logo is visible in light and dark mode */
+        #timerist-logo {
+            color: hsl(var(--foreground));
+        }
+        
+        #timerist-logo circle,
+        #timerist-logo line {
+            stroke: currentColor;
+        }
+        
+        #timerist-logo .logo-text {
+            fill: currentColor;
+        }
+        
+        .dark #timerist-logo {
+            color: hsl(var(--foreground));
+        }
+        
+        /* Adjust back-link spacing when logo is present */
+        .container > .back-link {
+            margin-top: clamp(4rem, 8vw, 6rem);
         }
         
         @media (min-width: 640px) {
@@ -323,14 +361,15 @@
             height="50"
             viewBox="0 0 240 50"
             xmlns="http://www.w3.org/2000/svg"
-            class="text-black dark:text-white mx-auto block mb-6"
+            id="timerist-logo"
+            style="position: absolute; top: clamp(1rem, 3vw, 2rem); left: 50%; transform: translateX(-50%); z-index: 10; display: block; width: 240px; height: 50px;"
         >
             <!-- Minimal stopwatch icon -->
             <circle cx="20" cy="25" r="15" fill="none" stroke="currentColor" stroke-width="2"/>
             <line x1="20" y1="25" x2="20" y2="12" stroke="currentColor" stroke-width="2"/>
             <line x1="20" y1="25" x2="32" y2="25" stroke="currentColor" stroke-width="2"/>
             <!-- Text -->
-            <text x="50" y="35" font-family="sans-serif" font-size="24" fill="currentColor">Timerist</text>
+            <text x="50" y="35" font-family="sans-serif" font-size="24" fill="currentColor" class="logo-text">Timerist</text>
         </svg>
         
         <a href="index.html" class="back-link">← Back to Timers</a>
