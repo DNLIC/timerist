@@ -32,6 +32,7 @@ export function TimerProgressBar({
       className={cn(
         "relative w-full overflow-hidden rounded-full bg-primary/20",
         "max-w-[280px] sm:max-w-xs md:max-w-md lg:max-w-xl xl:max-w-2xl",
+        "my-2 sm:my-4",
         heightClasses[height],
         className
       )}

@@ -37,25 +37,28 @@ export function TimerControlButtons({
   return (
     <div
       className={cn(
-        "flex flex-row items-center justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-10",
-        "mt-2 md:mt-4 lg:mt-6",
+        "flex flex-row items-center justify-center",
+        "gap-3 sm:gap-4 md:gap-6 lg:gap-8",
+        "mt-4 sm:mt-6 md:mt-8 lg:mt-10",
         // Reduce margin and gap in landscape to keep buttons visible
         "timer-buttons-landscape",
         "w-full",
         // Ensure buttons stay visible in landscape
         "flex-shrink-0",
+        // Prevent buttons from wrapping too early
+        "flex-wrap sm:flex-nowrap",
         className
       )}
     >
       {!isRunning && !isPaused && (
         <Button
           size="lg"
-          className="h-12 w-28 sm:h-14 sm:w-36 md:h-16 md:w-56 lg:h-20 lg:w-72 text-base sm:text-lg md:text-xl"
+          className="h-12 w-32 sm:h-14 sm:w-40 md:h-16 md:w-48 lg:h-20 lg:w-64 text-base sm:text-lg md:text-xl font-semibold"
           onClick={onStart}
           aria-label="Start timer"
         >
           <Play
-            className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 mr-1.5 sm:mr-2"
+            className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 mr-2"
             aria-hidden="true"
           />
           {showLabels && <span className="hidden sm:inline">Start</span>}
@@ -65,12 +68,12 @@ export function TimerControlButtons({
         <Button
           size="lg"
           variant="secondary"
-          className="h-12 w-28 sm:h-14 sm:w-36 md:h-16 md:w-56 lg:h-20 lg:w-72 text-base sm:text-lg md:text-xl"
+          className="h-12 w-32 sm:h-14 sm:w-40 md:h-16 md:w-48 lg:h-20 lg:w-64 text-base sm:text-lg md:text-xl font-semibold"
           onClick={onPause}
           aria-label="Pause timer"
         >
           <Pause
-            className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 mr-1.5 sm:mr-2"
+            className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 mr-2"
             aria-hidden="true"
           />
           {showLabels && <span className="hidden sm:inline">Pause</span>}
@@ -79,12 +82,12 @@ export function TimerControlButtons({
       {isPaused && (
         <Button
           size="lg"
-          className="h-12 w-28 sm:h-14 sm:w-36 md:h-16 md:w-56 lg:h-20 lg:w-72 text-base sm:text-lg md:text-xl"
+          className="h-12 w-32 sm:h-14 sm:w-40 md:h-16 md:w-48 lg:h-20 lg:w-64 text-base sm:text-lg md:text-xl font-semibold"
           onClick={onResume}
           aria-label="Resume timer"
         >
           <Play
-            className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 mr-1.5 sm:mr-2"
+            className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 mr-2"
             aria-hidden="true"
           />
           {showLabels && <span className="hidden sm:inline">Resume</span>}
@@ -93,12 +96,12 @@ export function TimerControlButtons({
       <Button
         variant="outline"
         size="lg"
-        className="h-12 w-24 sm:h-14 sm:w-28 md:h-16 md:w-40 lg:h-20 lg:w-56 text-base sm:text-lg md:text-xl"
+        className="h-12 w-28 sm:h-14 sm:w-36 md:h-16 md:w-44 lg:h-20 lg:w-60 text-base sm:text-lg md:text-xl font-semibold"
         onClick={onReset}
         aria-label="Reset timer"
       >
         <RotateCcw
-          className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 mr-1.5 sm:mr-2"
+          className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 mr-2"
           aria-hidden="true"
         />
         {showLabels && <span className="hidden sm:inline">Reset</span>}

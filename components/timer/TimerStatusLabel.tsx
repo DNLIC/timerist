@@ -36,6 +36,7 @@ export function TimerStatusLabel({
     <h2
       className={cn(
         "text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold tracking-wide",
+        "mb-2 sm:mb-4",
         className
       )}
       aria-live="polite"

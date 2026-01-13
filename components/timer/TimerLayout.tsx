@@ -61,8 +61,8 @@ export function TimerLayout({
           "w-full flex flex-col items-center",
           // Use justify-start in landscape to ensure buttons stay at bottom
           "justify-center",
-          // Reduce spacing in landscape mode via CSS class
-          "space-y-4 sm:space-y-6 md:space-y-8 lg:space-y-10",
+          // Better spacing between elements
+          "space-y-6 sm:space-y-8 md:space-y-10 lg:space-y-12",
           "timer-content-landscape",
           "px-2 overflow-visible",
           "min-h-0 flex-1", // Allow flex to grow and fill space
