@@ -58,20 +58,41 @@
         
         /* Ensure logo is visible in light and dark mode */
         #timerist-logo {
-            color: hsl(var(--foreground));
+            color: #0a0a0a; /* Dark color for light mode */
         }
         
         #timerist-logo circle,
         #timerist-logo line {
-            stroke: currentColor;
+            stroke: #0a0a0a; /* Explicit dark color */
+            stroke-width: 2;
         }
         
         #timerist-logo .logo-text {
-            fill: currentColor;
+            fill: #0a0a0a; /* Explicit dark color */
         }
         
+        /* Dark mode styles */
         .dark #timerist-logo {
-            color: hsl(var(--foreground));
+            color: #fafafa; /* Light color for dark mode */
+        }
+        
+        .dark #timerist-logo circle,
+        .dark #timerist-logo line {
+            stroke: #fafafa; /* Explicit light color for dark mode */
+        }
+        
+        .dark #timerist-logo .logo-text {
+            fill: #fafafa; /* Explicit light color for dark mode */
+        }
+        
+        /* Additional dark mode selectors for explicit colors - html element gets the dark class */
+        html.dark #timerist-logo .logo-circle,
+        html.dark #timerist-logo .logo-line {
+            stroke: #fafafa !important;
+        }
+        
+        html.dark #timerist-logo .logo-text {
+            fill: #fafafa !important;
         }
         
         /* Adjust back-link spacing when logo is present */
@@ -362,14 +383,15 @@
             viewBox="0 0 240 50"
             xmlns="http://www.w3.org/2000/svg"
             id="timerist-logo"
-            style="position: absolute; top: clamp(1rem, 3vw, 2rem); left: 50%; transform: translateX(-50%); z-index: 10; display: block; width: 240px; height: 50px;"
+            style="position: absolute; top: clamp(1rem, 3vw, 2rem); left: 50%; transform: translateX(-50%); z-index: 10; display: block !important; width: 240px; height: 50px; visibility: visible; opacity: 1;"
         >
             <!-- Minimal stopwatch icon -->
-            <circle cx="20" cy="25" r="15" fill="none" stroke="currentColor" stroke-width="2"/>
-            <line x1="20" y1="25" x2="20" y2="12" stroke="currentColor" stroke-width="2"/>
-            <line x1="20" y1="25" x2="32" y2="25" stroke="currentColor" stroke-width="2"/>
+            <!-- Minimal stopwatch icon -->
+            <circle cx="20" cy="25" r="15" fill="none" stroke="#0a0a0a" stroke-width="2.5" class="logo-circle"/>
+            <line x1="20" y1="25" x2="20" y2="12" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
+            <line x1="20" y1="25" x2="32" y2="25" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
             <!-- Text -->
-            <text x="50" y="35" font-family="sans-serif" font-size="24" fill="currentColor" class="logo-text">Timerist</text>
+            <text x="50" y="35" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#0a0a0a" class="logo-text" style="font-weight: 600;">Timerist</text>
         </svg>
         
         <a href="index.html" class="back-link">← Back to Timers</a>
@@ -418,10 +440,46 @@
             attributeFilter: ['class']
         });
         
+        // Function to update logo colors based on theme
+        function updateLogoColors() {
+            const logo = document.getElementById('timerist-logo');
+            if (!logo) return;
+            
+            const isDark = document.documentElement.classList.contains('dark');
+            const lightColor = '#0a0a0a';
+            const darkColor = '#fafafa';
+            const color = isDark ? darkColor : lightColor;
+            
+            // Update all logo elements
+            const circles = logo.querySelectorAll('.logo-circle');
+            const lines = logo.querySelectorAll('.logo-line');
+            const text = logo.querySelector('.logo-text');
+            
+            circles.forEach(el => el.setAttribute('stroke', color));
+            lines.forEach(el => el.setAttribute('stroke', color));
+            if (text) text.setAttribute('fill', color);
+        }
+        
+        // Update logo on theme change
+        const themeObserver = new MutationObserver(() => {
+            updateLogoColors();
+        });
+        
+        themeObserver.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+        
+        // Initial logo color update
+        updateLogoColors();
+        
         const originalToggle = window.toggleTheme;
         window.toggleTheme = function() {
             originalToggle();
-            setTimeout(updateThemeIcon, 10);
+            setTimeout(() => {
+                updateThemeIcon();
+                updateLogoColors();
+            }, 10);
         };
     </script>
 </body>
