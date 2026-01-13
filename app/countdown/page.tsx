@@ -13,6 +13,7 @@ import {
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
 import { Menu, Moon, Sun } from "lucide-react"
+import Link from "next/link"
 import { useTheme } from "next-themes"
 import { cn } from "@/lib/utils"
 import {
@@ -260,6 +261,11 @@ export default function CountdownTimerPage() {
   return (
     <TimerLayout
       maxWidth="6xl"
+      leftHeaderContent={
+        <Link href="/" className="text-4xl font-bold text-foreground hover:opacity-80 transition-opacity">
+          Timerist
+        </Link>
+      }
       headerContent={
         <Button
           variant="ghost"

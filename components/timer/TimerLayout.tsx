@@ -8,8 +8,10 @@ export interface TimerLayoutProps {
   className?: string
   /** Maximum width constraints for responsive layout */
   maxWidth?: "sm" | "md" | "lg" | "xl" | "2xl" | "4xl" | "6xl" | "full"
-  /** Additional header content (e.g., menu button) */
+  /** Additional header content (e.g., menu button) - positioned on the right */
   headerContent?: React.ReactNode
+  /** Left header content (e.g., logo or title) - positioned on the left */
+  leftHeaderContent?: React.ReactNode
 }
 
 export function TimerLayout({
@@ -17,6 +19,7 @@ export function TimerLayout({
   className,
   maxWidth = "6xl",
   headerContent,
+  leftHeaderContent,
 }: TimerLayoutProps) {
   const maxWidthClasses = {
     sm: "max-w-sm",
@@ -48,10 +51,19 @@ export function TimerLayout({
         paddingRight: "env(safe-area-inset-right)",
       }}
     >
-      {/* Header content (e.g., menu button) */}
-      {headerContent && (
-        <div className="absolute top-2 right-2 md:top-4 md:right-4 lg:top-6 lg:right-6 z-10">
-          {headerContent}
+      {/* Header content - left and right */}
+      {(leftHeaderContent || headerContent) && (
+        <div className="absolute top-2 left-2 right-2 md:top-4 md:left-4 md:right-4 lg:top-6 lg:left-6 lg:right-6 z-10 flex items-center justify-between pointer-events-none">
+          {leftHeaderContent && (
+            <div className="flex items-center pointer-events-auto">
+              {leftHeaderContent}
+            </div>
+          )}
+          {headerContent && (
+            <div className="flex items-center pointer-events-auto">
+              {headerContent}
+            </div>
+          )}
         </div>
       )}
 
