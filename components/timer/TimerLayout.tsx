@@ -53,14 +53,14 @@ export function TimerLayout({
     >
       {/* Header content - left and right */}
       {(leftHeaderContent || headerContent) && (
-        <div className="absolute top-2 left-2 right-2 md:top-4 md:left-4 md:right-4 lg:top-6 lg:left-6 lg:right-6 z-10 flex items-center justify-between pointer-events-none">
+        <div className="absolute top-2 left-2 right-2 md:top-4 md:left-4 md:right-4 lg:top-6 lg:left-6 lg:right-6 z-10 flex items-center justify-between pointer-events-none gap-2">
           {leftHeaderContent && (
-            <div className="flex items-center pointer-events-auto">
+            <div className="flex items-center pointer-events-auto min-w-0 flex-shrink" style={{ maxWidth: '70%' }}>
               {leftHeaderContent}
             </div>
           )}
           {headerContent && (
-            <div className="flex items-center pointer-events-auto">
+            <div className="flex items-center pointer-events-auto flex-shrink-0">
               {headerContent}
             </div>
           )}

@@ -264,11 +264,11 @@ export default function CountdownTimerPage() {
       leftHeaderContent={
         <Link 
           href="/" 
-          className="text-4xl text-foreground hover:opacity-80 transition-opacity flex items-center h-10 pl-2 md:pl-3"
+          className="text-foreground hover:opacity-80 transition-opacity flex items-center h-10 pl-2 md:pl-3 min-w-0 overflow-hidden"
         >
-          <span className="font-bold">Timerist</span>
-          <span className="mx-2 text-foreground/60">|</span>
-          <span className="font-semibold">Countdown</span>
+          <span className="font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl whitespace-nowrap">Timerist</span>
+          <span className="mx-1 sm:mx-2 text-foreground/60 text-lg sm:text-2xl md:text-3xl lg:text-4xl flex-shrink-0">|</span>
+          <span className="font-semibold text-base sm:text-xl md:text-2xl lg:text-3xl truncate">Countdown</span>
         </Link>
       }
       headerContent={
