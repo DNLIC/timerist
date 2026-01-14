@@ -262,8 +262,13 @@ export default function CountdownTimerPage() {
     <TimerLayout
       maxWidth="6xl"
       leftHeaderContent={
-        <Link href="/" className="text-4xl font-bold text-foreground hover:opacity-80 transition-opacity">
-          Timerist
+        <Link 
+          href="/" 
+          className="text-4xl text-foreground hover:opacity-80 transition-opacity flex items-center h-10 pl-2 md:pl-3"
+        >
+          <span className="font-bold">Timerist</span>
+          <span className="mx-2 text-foreground/60">|</span>
+          <span className="font-semibold">Countdown</span>
         </Link>
       }
       headerContent={
