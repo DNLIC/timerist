@@ -50,7 +50,8 @@ export function TimerDisplay({
         "min-h-[200px] sm:min-h-[300px] md:min-h-[400px] lg:min-h-[500px]",
         // Reduce min-height in landscape to save space
         "timer-display-landscape",
-        "my-2 sm:my-4",
+        // Remove top margin since status label provides spacing above
+        "mt-0",
         className
       )}
     >

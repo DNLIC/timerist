@@ -78,6 +78,7 @@ export function TimerLayout({
           "timer-content-landscape",
           "px-2 overflow-visible",
           "min-h-0 flex-1", // Allow flex to grow and fill space
+          "relative", // Make relative so absolute children can position within
           maxWidthClasses[maxWidth]
         )}
         style={{
