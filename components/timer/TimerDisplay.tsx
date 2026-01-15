@@ -50,15 +50,18 @@ export function TimerDisplay({
         "min-h-[200px] sm:min-h-[300px] md:min-h-[400px] lg:min-h-[500px]",
         // Reduce min-height in landscape to save space
         "timer-display-landscape",
-        // Remove top margin since status label provides spacing above
-        "mt-0",
+        // Remove all margins to ensure precise spacing from status label
+        "m-0",
+        // Ensure it doesn't block pointer events
+        "pointer-events-none relative z-0",
         className
       )}
     >
       <span
         className={cn(
           "tabular-nums inline-block whitespace-nowrap",
-          !useCustomScaling && "timer-display-text-responsive"
+          !useCustomScaling && "timer-display-text-responsive",
+          "pointer-events-none"
         )}
         style={{
           color: textColor,

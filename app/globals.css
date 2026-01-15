@@ -197,6 +197,48 @@
     }
   }
   
+  /* Status label - 50% of timer display size */
+  .timer-status-label-responsive {
+    /* Base mobile scaling - 50% of timer display (3rem * 0.5 = 1.5rem, etc.) */
+    font-size: clamp(1.5rem, 6vw, 5rem);
+    line-height: 1;
+  }
+  
+  /* Landscape orientation - 50% of timer display */
+  @media (orientation: landscape) {
+    .timer-status-label-responsive {
+      font-size: clamp(1.25rem, 4vw, 3rem);
+    }
+  }
+  
+  /* iPad portrait (768px+) - 50% of timer display */
+  @media (min-width: 768px) and (orientation: portrait) {
+    .timer-status-label-responsive {
+      font-size: clamp(2rem, min(9vh, 8vw), 8rem);
+    }
+  }
+  
+  /* iPad landscape and larger tablets (1024px+) - 50% of timer display */
+  @media (min-width: 1024px) {
+    .timer-status-label-responsive {
+      font-size: clamp(2.5rem, min(10vh, 9vw), 10rem);
+    }
+  }
+  
+  /* Landscape on larger screens - 50% of timer display */
+  @media (min-width: 768px) and (orientation: landscape) {
+    .timer-status-label-responsive {
+      font-size: clamp(1.5rem, min(6vh, 5vw), 4rem);
+    }
+  }
+  
+  /* Large desktop (1440px+) - 50% of timer display */
+  @media (min-width: 1440px) {
+    .timer-status-label-responsive {
+      font-size: clamp(3rem, min(11vh, 10vw), 12rem);
+    }
+  }
+  
   /* Landscape orientation utilities - compact layout */
   @media (orientation: landscape) {
     /* Timer layout - reduce padding and spacing */

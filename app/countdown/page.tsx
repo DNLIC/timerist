@@ -204,6 +204,7 @@ export default function CountdownTimerPage() {
 
   // Handlers
   const handleStart = () => {
+    console.log("handleStart called")
     if (remaining === 0) {
       setRemaining(duration)
     }
@@ -212,14 +213,17 @@ export default function CountdownTimerPage() {
   }
 
   const handlePause = () => {
+    console.log("handlePause called")
     setIsPaused(true)
   }
 
   const handleResume = () => {
+    console.log("handleResume called")
     setIsPaused(false)
   }
 
   const handleReset = () => {
+    console.log("handleReset called")
     setIsRunning(false)
     setIsPaused(false)
     setRemaining(duration)
@@ -275,9 +279,12 @@ export default function CountdownTimerPage() {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => setDrawerOpen(true)}
+          onClick={() => {
+            console.log("Menu button clicked")
+            setDrawerOpen(true)
+          }}
           aria-label="Open settings menu"
-          className="h-10 w-10"
+          className="h-10 w-10 relative z-30"
         >
           <Menu className="h-6 w-6" aria-hidden="true" />
         </Button>

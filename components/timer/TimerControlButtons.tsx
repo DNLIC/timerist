@@ -47,6 +47,8 @@ export function TimerControlButtons({
         "flex-shrink-0",
         // Prevent buttons from wrapping too early
         "flex-wrap sm:flex-nowrap",
+        // Ensure buttons are clickable
+        "relative z-20",
         className
       )}
     >
