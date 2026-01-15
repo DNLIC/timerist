@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Countdown Timer - Timerist</title>
+    <title>HIIT - Timerist</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -12,7 +12,6 @@
     </script>
     <link rel="stylesheet" href="styles/timerist-design-system.css">
     <style>
-        /* Full viewport height and vertical centering */
         body {
             min-height: 100vh;
             display: flex;
@@ -42,7 +41,6 @@
             position: relative;
         }
         
-        /* Header with logo on left and menu on right */
         .header-top {
             position: absolute;
             top: clamp(1rem, 3vw, 2rem);
@@ -62,6 +60,7 @@
             display: block;
             width: 40px;
             height: 40px;
+            color: #0a0a0a;
         }
         
         .header-top a {
@@ -70,6 +69,26 @@
         
         .header-top a:hover {
             opacity: 0.7;
+        }
+        
+        #timerist-logo circle,
+        #timerist-logo line {
+            stroke: #0a0a0a;
+            stroke-width: 2.5;
+        }
+        
+        .dark #timerist-logo {
+            color: #fafafa;
+        }
+        
+        .dark #timerist-logo circle,
+        .dark #timerist-logo line {
+            stroke: #fafafa;
+        }
+        
+        html.dark #timerist-logo .logo-circle,
+        html.dark #timerist-logo .logo-line {
+            stroke: #fafafa !important;
         }
         
         .hamburger-menu {
@@ -147,73 +166,12 @@
             padding: 0.25rem;
         }
         
-        /* Ensure logo is visible in light and dark mode */
-        #timerist-logo {
-            color: #0a0a0a; /* Dark color for light mode */
-        }
-        
-        #timerist-logo circle,
-        #timerist-logo line {
-            stroke: #0a0a0a; /* Explicit dark color */
-            stroke-width: 2.5;
-        }
-        
-        #timerist-logo .logo-text {
-            fill: #0a0a0a; /* Explicit dark color */
-        }
-        
-        /* Dark mode styles */
-        .dark #timerist-logo {
-            color: #fafafa; /* Light color for dark mode */
-        }
-        
-        .dark #timerist-logo circle,
-        .dark #timerist-logo line {
-            stroke: #fafafa; /* Explicit light color for dark mode */
-        }
-        
-        .dark #timerist-logo .logo-text {
-            fill: #fafafa; /* Explicit light color for dark mode */
-        }
-        
-        /* Additional dark mode selectors for explicit colors - html element gets the dark class */
-        html.dark #timerist-logo .logo-circle,
-        html.dark #timerist-logo .logo-line {
-            stroke: #fafafa !important;
-        }
-        
-        html.dark #timerist-logo .logo-text {
-            fill: #fafafa !important;
-        }
-        
-        /* Adjust timer container spacing when header is present */
-        .timer-container {
-            margin-top: clamp(4rem, 8vw, 6rem);
-        }
-        
-        @media (min-width: 640px) {
-            .container {
-                padding: 2rem;
-            }
-        }
-        
-        @media (min-width: 768px) {
-            .container {
-                padding: 2rem 3rem;
-            }
-        }
-        
         .timer-container {
             max-width: 600px;
             margin: 0 auto;
             width: 100%;
             overflow-x: hidden;
-        }
-        
-        @media (min-width: 768px) {
-            .timer-container {
-                max-width: 90%;
-            }
+            margin-top: clamp(4rem, 8vw, 6rem);
         }
         
         .timer-display {
@@ -224,12 +182,9 @@
         .timer-label {
             font-size: clamp(0.75rem, 2vw, 1.25rem);
             margin-bottom: clamp(0.5rem, 2vw, 1.5rem);
-        }
-        
-        @media (min-width: 768px) {
-            .timer-label {
-                font-size: clamp(0.875rem, 2.5vw, 1.5rem);
-            }
+            color: hsl(var(--muted-foreground));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
         
         .timer-time {
@@ -237,24 +192,8 @@
             font-weight: 800;
             line-height: 1;
             margin: clamp(0.5rem, 2vw, 2rem) 0;
-            word-break: keep-all;
-            overflow-wrap: normal;
-            max-width: 100%;
-            overflow: hidden;
-            text-overflow: clip;
-            white-space: nowrap;
-        }
-        
-        @media (min-width: 768px) {
-            .timer-time {
-                font-size: clamp(8rem, 25vw, 16rem);
-            }
-        }
-        
-        @media (min-width: 1024px) {
-            .timer-time {
-                font-size: clamp(9rem, 26vw, 20rem);
-            }
+            color: hsl(var(--foreground));
+            font-family: 'Courier New', monospace;
         }
         
         .timer-controls {
@@ -270,36 +209,6 @@
             padding: clamp(0.75rem, 3vw, 1.25rem) clamp(1.25rem, 5vw, 2rem);
             font-size: clamp(1rem, 4vw, 1.25rem);
             font-weight: 600;
-            transition: all var(--transition-fast, 0.2s ease);
-        }
-        
-        .timer-controls .btn:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px hsl(var(--ring) / 0.4);
-        }
-        
-        .timer-controls .btn:focus-visible {
-            outline: 2px solid hsl(var(--ring));
-            outline-offset: 2px;
-        }
-        
-        @media (min-width: 768px) {
-            .timer-controls {
-                gap: clamp(1rem, 5vw, 2.5rem);
-            }
-            
-            .timer-display {
-                margin-bottom: clamp(3rem, 8vw, 6rem);
-                margin-top: clamp(1rem, 4vw, 3rem);
-            }
-            
-            .timer-label {
-                margin-bottom: clamp(1rem, 3vw, 2.5rem);
-            }
-            
-            .timer-time {
-                margin: clamp(1rem, 3vw, 3rem) 0;
-            }
         }
         
         .timer-settings {
@@ -311,13 +220,18 @@
             max-width: 100%;
         }
         
-        @media (min-width: 768px) {
-            .timer-settings {
-                grid-template-columns: repeat(2, minmax(200px, 1fr));
-                gap: 2.5rem;
-                max-width: 700px;
-                margin: clamp(2.5rem, 6vw, 5rem) auto 0;
-            }
+        .setting-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .setting-group label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: hsl(var(--muted-foreground));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
         
         .setting-group input {
@@ -333,113 +247,6 @@
             min-height: 44px;
         }
         
-        @media (min-width: 768px) {
-            .setting-group input {
-                padding: 1.25rem;
-                font-size: 1.5rem;
-                min-height: 64px;
-            }
-        }
-        
-        .back-link {
-            margin-bottom: clamp(1rem, 3vw, 2rem);
-            color: hsl(var(--foreground));
-            text-decoration: none;
-            transition: opacity var(--transition-fast, 0.2s ease);
-        }
-        
-        .back-link:hover {
-            opacity: 0.8;
-        }
-        
-        @media (min-width: 768px) {
-            .back-link {
-                margin-bottom: clamp(1.5rem, 4vw, 3rem);
-            }
-        }
-        
-        @media (max-width: 390px) {
-            .timer-settings {
-                grid-template-columns: 1fr;
-                gap: 0.75rem;
-            }
-            
-            .timer-controls {
-                gap: 0.5rem;
-            }
-            
-            .timer-controls .btn {
-                min-width: 80px;
-                padding: 0.625rem 1rem;
-                font-size: 0.875rem;
-            }
-            
-            .timer-time {
-                font-size: clamp(3rem, 18vw, 12rem);
-            }
-            
-            .container {
-                padding: 0.75rem;
-            }
-        }
-        
-        .setting-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        
-        @media (min-width: 768px) {
-            .setting-group {
-                gap: 0.75rem;
-            }
-        }
-        
-        .setting-group label {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: hsl(var(--muted-foreground));
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        
-        @media (min-width: 768px) {
-            .setting-group label {
-                font-size: 1rem;
-            }
-        }
-        
-        .setting-group input:focus {
-            outline: none;
-            border-color: hsl(var(--ring));
-            box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
-        }
-        
-        .setting-group input:focus-visible {
-            outline: 2px solid hsl(var(--ring));
-            outline-offset: 2px;
-        }
-        
-        /* Ensure dark mode colors work correctly */
-        .timer-time {
-            color: hsl(var(--foreground));
-        }
-        
-        .timer-label {
-            color: hsl(var(--muted-foreground));
-        }
-        
-        /* Prevent horizontal overflow on all elements */
-        .timer-display {
-            overflow-x: hidden;
-            max-width: 100%;
-        }
-        
-        .timer-settings {
-            overflow-x: hidden;
-        }
-        
-        /* Version number */
         .version-number {
             position: fixed;
             bottom: 0.5rem;
@@ -449,16 +256,6 @@
             opacity: 0.6;
             font-family: monospace;
             z-index: 1000;
-            pointer-events: none;
-            user-select: none;
-        }
-        
-        @media (min-width: 768px) {
-            .version-number {
-                font-size: 0.75rem;
-                bottom: 1rem;
-                right: 1rem;
-            }
         }
     </style>
 </head>
@@ -485,7 +282,7 @@
                 </a>
                 <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: hsl(var(--foreground));">timerist.com</span>
                 <span class="separator" style="color: hsl(var(--muted-foreground));">|</span>
-                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: hsl(var(--foreground));">Countdown</span>
+                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: hsl(var(--foreground));">HIIT</span>
             </div>
             
             <button class="hamburger-menu" onclick="toggleDrawer()" aria-label="Open settings menu">
@@ -495,7 +292,8 @@
         
         <div class="timer-container">
             <div class="timer-display">
-                <div class="timer-time" id="display">00:00</div>
+                <div class="timer-label">HIIT Timer</div>
+                <div class="timer-time" id="display">00:45</div>
             </div>
             
             <div class="timer-controls">
@@ -506,12 +304,24 @@
             
             <div class="timer-settings">
                 <div class="setting-group">
-                    <label for="minutes">Minutes</label>
-                    <input type="number" id="minutes" min="0" max="99" value="5" />
+                    <label for="workMinutes">Work (min)</label>
+                    <input type="number" id="workMinutes" min="0" max="59" value="0" />
                 </div>
                 <div class="setting-group">
-                    <label for="seconds">Seconds</label>
-                    <input type="number" id="seconds" min="0" max="59" value="0" />
+                    <label for="workSeconds">Work (sec)</label>
+                    <input type="number" id="workSeconds" min="0" max="59" value="45" />
+                </div>
+                <div class="setting-group">
+                    <label for="restMinutes">Rest (min)</label>
+                    <input type="number" id="restMinutes" min="0" max="59" value="0" />
+                </div>
+                <div class="setting-group">
+                    <label for="restSeconds">Rest (sec)</label>
+                    <input type="number" id="restSeconds" min="0" max="59" value="15" />
+                </div>
+                <div class="setting-group">
+                    <label for="rounds">Rounds</label>
+                    <input type="number" id="rounds" min="1" max="50" value="6" />
                 </div>
             </div>
         </div>
@@ -534,11 +344,10 @@
         </div>
     </div>
     
-    <!-- Version number -->
     <div class="version-number">v1.1</div>
     
     <script src="scripts/dark-mode-toggle.js"></script>
-    <script src="scripts/countdown.js"></script>
+    <script src="scripts/interval.js"></script>
     <script>
         function toggleDrawer() {
             const drawer = document.getElementById('settingsDrawer');
@@ -559,50 +368,39 @@
             const current = btn.textContent;
             btn.textContent = current === 'On' ? 'Off' : 'On';
         }
-    </script>
-    <script>
+        
         function updateThemeIcon() {
             const icon = document.getElementById('theme-icon');
             const isDark = document.documentElement.classList.contains('dark');
             icon.textContent = isDark ? '☀️' : '🌙';
         }
         
+        function updateLogoColors() {
+            const logo = document.getElementById('timerist-logo');
+            if (!logo) return;
+
+            const isDark = document.documentElement.classList.contains('dark');
+            const lightColor = '#0a0a0a';
+            const darkColor = '#fafafa';
+            const color = isDark ? darkColor : lightColor;
+
+            const circles = logo.querySelectorAll('.logo-circle');
+            const lines = logo.querySelectorAll('.logo-line');
+
+            circles.forEach(el => el.setAttribute('stroke', color));
+            lines.forEach(el => el.setAttribute('stroke', color));
+        }
+        
         updateThemeIcon();
-        const observer = new MutationObserver(updateThemeIcon);
+        const observer = new MutationObserver(() => {
+            updateThemeIcon();
+            updateLogoColors();
+        });
         observer.observe(document.documentElement, {
             attributes: true,
             attributeFilter: ['class']
         });
         
-        // Function to update logo colors based on theme
-        function updateLogoColors() {
-            const logo = document.getElementById('timerist-logo');
-            if (!logo) return;
-            
-            const isDark = document.documentElement.classList.contains('dark');
-            const lightColor = '#0a0a0a';
-            const darkColor = '#fafafa';
-            const color = isDark ? darkColor : lightColor;
-            
-            // Update all logo elements
-            const circles = logo.querySelectorAll('.logo-circle');
-            const lines = logo.querySelectorAll('.logo-line');
-            
-            circles.forEach(el => el.setAttribute('stroke', color));
-            lines.forEach(el => el.setAttribute('stroke', color));
-        }
-        
-        // Update logo on theme change
-        const themeObserver = new MutationObserver(() => {
-            updateLogoColors();
-        });
-        
-        themeObserver.observe(document.documentElement, {
-            attributes: true,
-            attributeFilter: ['class']
-        });
-        
-        // Initial logo color update
         updateLogoColors();
         
         const originalToggle = window.toggleTheme;

@@ -73,8 +73,8 @@ export function TimerLayout({
           "w-full flex flex-col items-center",
           // Use justify-start in landscape to ensure buttons stay at bottom
           "justify-center",
-          // Better spacing between elements
-          "space-y-6 sm:space-y-8 md:space-y-10 lg:space-y-12",
+          // Better spacing between elements - reduced by 50% to bring progress bar closer
+          "space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6",
           "timer-content-landscape",
           "px-2 overflow-visible",
           "min-h-0 flex-1", // Allow flex to grow and fill space

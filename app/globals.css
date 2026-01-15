@@ -209,6 +209,24 @@
     .timer-status-label-responsive {
       font-size: clamp(1.25rem, 4vw, 3rem);
     }
+    
+    /* Reduce top margin in landscape on mobile devices - bring status closer to timer */
+    .timer-status-landscape-mobile {
+      margin-top: 2.5rem !important;
+    }
+  }
+  
+  /* Landscape on larger screens - restore normal top margin */
+  @media (orientation: landscape) and (min-width: 768px) {
+    .timer-status-landscape-mobile {
+      margin-top: 2.0rem !important;
+    }
+  }
+  
+  @media (orientation: landscape) and (min-width: 1024px) {
+    .timer-status-landscape-mobile {
+      margin-top: 2.5rem !important;
+    }
   }
   
   /* iPad portrait (768px+) - 50% of timer display */
@@ -236,6 +254,35 @@
   @media (min-width: 1440px) {
     .timer-status-label-responsive {
       font-size: clamp(3rem, min(11vh, 10vw), 12rem);
+    }
+  }
+  
+  /* Progress bar spacing - responsive: smaller on mobile/tablet, 20px on large */
+  /* Must override space-y classes which add margin-top to all children */
+  .timer-progress-bar-spacing {
+    margin-top: clamp(8px, 2vw, 20px) !important;
+    margin-bottom: 0 !important;
+  }
+  
+  /* Override space-y classes for progress bar */
+  [class*="space-y-3"] > * > .timer-progress-bar-spacing,
+  [class*="space-y-4"] > * > .timer-progress-bar-spacing,
+  [class*="space-y-5"] > * > .timer-progress-bar-spacing,
+  [class*="space-y-6"] > * > .timer-progress-bar-spacing {
+    margin-top: clamp(8px, 2vw, 20px) !important;
+  }
+  
+  /* Medium screens - slightly more spacing */
+  @media (min-width: 768px) {
+    .timer-progress-bar-spacing {
+      margin-top: clamp(12px, 2.5vw, 20px) !important;
+    }
+  }
+  
+  /* Large screens - full 20px */
+  @media (min-width: 1024px) {
+    .timer-progress-bar-spacing {
+      margin-top: 20px !important;
     }
   }
   
@@ -275,27 +322,33 @@
       }
     }
     
-    /* Timer content wrapper - reduce spacing */
-    .timer-content-landscape > * + * {
-      margin-top: 0.25rem !important;
+    /* Timer content wrapper - reduce spacing by 50% */
+    /* Exclude progress bar from this rule - it has its own spacing */
+    .timer-content-landscape > * + *:not(.timer-progress-bar-spacing) {
+      margin-top: 0.125rem !important;
     }
     
     @media (min-width: 640px) {
-      .timer-content-landscape > * + * {
-        margin-top: 0.5rem !important;
+      .timer-content-landscape > * + *:not(.timer-progress-bar-spacing) {
+        margin-top: 0.25rem !important;
       }
     }
     
     @media (min-width: 768px) {
-      .timer-content-landscape > * + * {
-        margin-top: 0.75rem !important;
+      .timer-content-landscape > * + *:not(.timer-progress-bar-spacing) {
+        margin-top: 0.375rem !important;
       }
     }
     
     @media (min-width: 1024px) {
-      .timer-content-landscape > * + * {
-        margin-top: 1rem !important;
+      .timer-content-landscape > * + *:not(.timer-progress-bar-spacing) {
+        margin-top: 0.5rem !important;
       }
+    }
+    
+    /* Ensure progress bar has exactly 20px in landscape */
+    .timer-content-landscape > .timer-progress-bar-spacing {
+      margin-top: 20px !important;
     }
     
     /* Timer display - reduce min-height */
@@ -346,6 +399,16 @@
         gap: 1.5rem !important;
       }
     }
+    
+    /* Override all spacing rules for progress bar - must come last to override everything */
+    .timer-content-landscape > .timer-progress-bar-spacing {
+      margin-top: 20px !important;
+    }
+  }
+  
+  /* Override space-y utility classes for progress bar in all orientations */
+  [class*="space-y"] > .timer-progress-bar-spacing {
+    margin-top: 20px !important;
   }
   
   /* Screen reader only utility */

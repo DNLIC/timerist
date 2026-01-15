@@ -293,11 +293,11 @@ export default function CountdownTimerPage() {
       {/* Status label */}
       <TimerStatusLabel phase={phase} />
 
-      {/* Timer display */}
-      <TimerDisplay time={remaining} textColor={textColor} />
-
-      {/* Progress bar */}
-      <TimerProgressBar value={progress} progressColor={progressColor} />
+      {/* Timer display and progress bar - grouped to control spacing */}
+      <div className="flex flex-col items-center w-full">
+        <TimerDisplay time={remaining} textColor={textColor} />
+        <TimerProgressBar value={progress} progressColor={progressColor} />
+      </div>
 
       {/* Control buttons */}
       <TimerControlButtons

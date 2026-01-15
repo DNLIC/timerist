@@ -32,10 +32,16 @@ export function TimerProgressBar({
       className={cn(
         "relative w-full overflow-hidden rounded-full bg-primary/20",
         "max-w-[280px] sm:max-w-xs md:max-w-md lg:max-w-xl xl:max-w-2xl",
-        "my-2 sm:my-4",
+        // Set specific top margin to position just below timer (20px)
+        "timer-progress-bar-spacing",
         heightClasses[height],
         className
       )}
+      style={{
+        // Responsive spacing: smaller on mobile/tablet, 20px on large screens
+        marginTop: "clamp(8px, 2vw, 20px)",
+        marginBottom: "0",
+      }}
       value={value}
     >
       <ProgressPrimitive.Indicator

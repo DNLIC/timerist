@@ -71,6 +71,8 @@ export function TimerStatusLabel({
         "timer-status-label-responsive",
         // Prevent from touching top of screen
         "mt-8 sm:mt-12 md:mt-16",
+        // Reduce top margin in landscape on mobile
+        "timer-status-landscape-mobile",
         // Remove default margins to ensure precise spacing
         "m-0 p-0",
         // Ensure it doesn't block pointer events - make it non-interactive
