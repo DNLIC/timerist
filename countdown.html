@@ -58,6 +58,13 @@
             margin: 0 auto;
         }
         
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+        
         #timerist-logo {
             display: block;
             width: 40px;
@@ -83,10 +90,23 @@
             color: hsl(var(--foreground));
             font-size: 1.5rem;
             transition: opacity 0.2s;
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
         }
         
         .hamburger-menu:hover {
             opacity: 0.7;
+        }
+        
+        /* Mode toggle inside header */
+        .header-top .mode-toggle-btn {
+            position: relative;
+            top: auto;
+            right: auto;
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
         }
         
         .settings-drawer {
@@ -100,7 +120,7 @@
             border-left: 1px solid hsl(var(--border));
             box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
             transition: right 0.3s ease;
-            z-index: 1000;
+            z-index: 1002;
             overflow-y: auto;
         }
         
@@ -463,10 +483,6 @@
     </style>
 </head>
 <body>
-    <button class="mode-toggle-btn mode-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
-        <span id="theme-icon">🌙</span>
-    </button>
-    
     <div class="container">
         <div class="header-top">
             <div style="display: flex; align-items: center; gap: 0.75rem;">
@@ -488,9 +504,14 @@
                 <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: hsl(var(--foreground));">Countdown</span>
             </div>
             
-            <button class="hamburger-menu" onclick="toggleDrawer()" aria-label="Open settings menu">
-                ☰
-            </button>
+            <div class="header-actions">
+                <button class="mode-toggle-btn mode-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="hamburger-menu" onclick="toggleDrawer()" aria-label="Open settings menu">
+                    ☰
+                </button>
+            </div>
         </div>
         
         <div class="timer-container">
