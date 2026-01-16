@@ -213,6 +213,7 @@ export default function TimerExamplePage() {
       <div className="max-w-4xl mx-auto space-y-8 min-w-0">
         <header className="text-center space-y-2 relative">
           <div className="absolute top-0 right-0 flex items-center gap-2">
+            <ModeToggle />
             <Button
               variant="ghost"
               size="icon"
@@ -222,7 +223,6 @@ export default function TimerExamplePage() {
             >
               <Menu className="h-6 w-6" aria-hidden="true" />
             </Button>
-            <ModeToggle />
           </div>
           <h1 className="text-4xl font-bold text-foreground">Timer Example</h1>
           <p className="text-muted-foreground">
