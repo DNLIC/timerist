@@ -9,7 +9,12 @@ const htmlFiles = [
   'interval.html',
   'countdown.html',
   'stopwatch.html',
+  'stopwatch-splits.html',
   'emom.html',
+  'amrap.html',
+  'hiit.html',
+  'pomodoro.html',
+  'pyramid.html',
   'custom.html'
 ];
 
