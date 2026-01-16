@@ -3,12 +3,16 @@
 import React, { useState, useEffect, useRef } from "react"
 import { TimerControls, type TimerMode, MODE_DEFAULTS } from "@/components/TimerControls"
 import { ModeToggle } from "@/components/mode-toggle"
+import { Button } from "@/components/ui/button"
+import { Menu } from "lucide-react"
+import { TimerSettingsDrawer } from "@/components/timer"
 
 export default function TimerExamplePage() {
   // Timer state
   const [isRunning, setIsRunning] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
   const [mode, setMode] = useState<TimerMode>("tabata")
+  const [drawerOpen, setDrawerOpen] = useState(false)
   
   // Timer values
   const [duration, setDuration] = useState(20)
@@ -208,7 +212,16 @@ export default function TimerExamplePage() {
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-4xl mx-auto space-y-8 min-w-0">
         <header className="text-center space-y-2 relative">
-          <div className="absolute top-0 right-0">
+          <div className="absolute top-0 right-0 flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setDrawerOpen(true)}
+              aria-label="Open settings menu"
+              className="h-10 w-10"
+            >
+              <Menu className="h-6 w-6" aria-hidden="true" />
+            </Button>
             <ModeToggle />
           </div>
           <h1 className="text-4xl font-bold text-foreground">Timer Example</h1>
@@ -315,6 +328,26 @@ export default function TimerExamplePage() {
           </div>
         )}
       </div>
+      
+      {/* Settings Drawer */}
+      <TimerSettingsDrawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+        <div className="space-y-4">
+          <div>
+            <a
+              href="/"
+              className="block px-4 py-2 text-primary hover:bg-accent rounded-md transition-colors"
+            >
+              Home
+            </a>
+            <a
+              href="/countdown"
+              className="block px-4 py-2 text-primary hover:bg-accent rounded-md transition-colors"
+            >
+              Countdown Timer
+            </a>
+          </div>
+        </div>
+      </TimerSettingsDrawer>
     </div>
   )
 }

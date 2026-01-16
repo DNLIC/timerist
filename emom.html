@@ -74,6 +74,64 @@
             opacity: 0.7;
         }
         
+        .settings-drawer {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            background: hsl(var(--card));
+            border-left: 1px solid hsl(var(--border));
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .settings-drawer.open {
+            right: 0;
+        }
+        
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 999;
+        }
+        
+        .drawer-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .drawer-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid hsl(var(--border));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .drawer-content {
+            padding: 1.5rem;
+        }
+        
+        .drawer-close {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: hsl(var(--foreground));
+            padding: 0.25rem;
+        }
+        
         .container {
             position: relative;
             min-height: 100vh;
@@ -191,6 +249,10 @@
                 <span class="separator" style="color: hsl(var(--muted-foreground));">|</span>
                 <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: hsl(var(--foreground));">EMOM</span>
             </div>
+            
+            <button class="hamburger-menu" onclick="toggleDrawer()" aria-label="Open settings menu">
+                ☰
+            </button>
         </div>
         
         <div class="timer-container">
@@ -216,9 +278,36 @@
         </div>
     </div>
     
+    <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+    <div class="settings-drawer" id="settingsDrawer">
+        <div class="drawer-header">
+            <h2 style="font-size: 1.25rem; font-weight: 600; color: hsl(var(--foreground));">Settings</h2>
+            <button class="drawer-close" onclick="closeDrawer()">×</button>
+        </div>
+        <div class="drawer-content">
+            <div>
+                <a href="index.html" style="display: block; padding: 0.75rem; color: hsl(var(--primary)); text-decoration: none;">← Back to Timers</a>
+            </div>
+        </div>
+    </div>
+    
     <script src="scripts/dark-mode-toggle.js"></script>
     <script src="scripts/emom.js"></script>
     <script>
+        function toggleDrawer() {
+            const drawer = document.getElementById('settingsDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+            drawer.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+        
+        function closeDrawer() {
+            const drawer = document.getElementById('settingsDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+            drawer.classList.remove('open');
+            overlay.classList.remove('open');
+        }
+        
         function updateThemeIcon() {
             const icon = document.getElementById('theme-icon');
             const isDark = document.documentElement.classList.contains('dark');

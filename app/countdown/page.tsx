@@ -16,6 +16,7 @@ import { Menu, Moon, Sun } from "lucide-react"
 import Link from "next/link"
 import { useTheme } from "next-themes"
 import { cn } from "@/lib/utils"
+import { ModeToggle } from "@/components/mode-toggle"
 import {
   TimerLayout,
   TimerDisplay,
@@ -276,18 +277,23 @@ export default function CountdownTimerPage() {
         </Link>
       }
       headerContent={
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => {
-            console.log("Menu button clicked")
-            setDrawerOpen(true)
-          }}
-          aria-label="Open settings menu"
-          className="h-10 w-10 relative z-30"
-        >
-          <Menu className="h-6 w-6" aria-hidden="true" />
-        </Button>
+        <div className="flex items-center gap-2 relative z-30">
+          <div className="h-10 w-10 flex items-center justify-center">
+            <ModeToggle />
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              console.log("Menu button clicked")
+              setDrawerOpen(true)
+            }}
+            aria-label="Open settings menu"
+            className="h-10 w-10"
+          >
+            <Menu className="h-6 w-6" aria-hidden="true" />
+          </Button>
+        </div>
       }
     >
       {/* Status label */}
