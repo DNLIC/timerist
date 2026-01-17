@@ -119,7 +119,7 @@
         .hover\:bg-secondary\/90:hover { background-color: rgba(var(--secondary), 0.9); }
         
         .timer-display-large {
-            font-size: 6rem; /* text-8xl */
+            font-size: 4rem; /* Smaller for mobile */
             font-weight: 700; /* font-bold */
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* font-mono */
             font-variant-numeric: tabular-nums;
@@ -127,6 +127,14 @@
             color: rgb(var(--primary));
             transition: color 0.3s ease;
             margin-bottom: 1rem; /* mb-4 */
+            word-break: keep-all;
+            overflow-wrap: normal;
+        }
+        
+        @media (min-width: 390px) {
+            .timer-display-large {
+                font-size: 5rem;
+            }
         }
         
         @media (min-width: 768px) {
@@ -145,6 +153,8 @@
         
         .timer-display-block {
             padding: 1.5rem;
+            overflow: hidden;
+            box-sizing: border-box;
         }
         
         @media (min-width: 640px) {
@@ -249,6 +259,35 @@
             border: none;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            white-space: nowrap;
+            flex-shrink: 1;
+        }
+        
+        @media (max-width: 390px) {
+            .control-btn {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.75rem;
+            }
+        }
+        
+        .control-buttons-container {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+        
+        @media (min-width: 390px) {
+            .control-buttons-container {
+                gap: 0.75rem;
+            }
+        }
+        
+        @media (min-width: 640px) {
+            .control-buttons-container {
+                gap: 1rem;
+            }
         }
         
         .control-btn.btn-primary {
@@ -588,7 +627,7 @@
             
             <!-- Control Buttons and Adjust Time -->
             <div class="p-6 bg-card border border-border rounded-lg shadow-lg">
-                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; align-items: center;">
+                <div class="control-buttons-container">
                     <button class="control-btn btn-primary" id="resumeBtn" style="display: none;" aria-label="Resume timer">Resume</button>
                     <button class="control-btn btn-destructive" id="resetBtn" style="display: none;" aria-label="Reset timer">Reset</button>
                     <button class="control-btn btn-secondary" id="clearBtn" aria-label="Clear timer">Clear</button>
