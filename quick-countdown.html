@@ -354,6 +354,7 @@
             width: 44px;
             height: 44px;
             border-radius: var(--radius);
+            flex-shrink: 0;
         }
         
         .hamburger-menu:hover {
@@ -521,6 +522,63 @@
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
+            gap: 0.5rem;
+            min-width: 0;
+        }
+        
+        .header-top > div:first-child {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 0;
+            flex-shrink: 1;
+            overflow: hidden;
+        }
+        
+        /* iPhone 13 mini and similar small screens - make header more compact */
+        @media (max-width: 390px) {
+            .header-top {
+                padding: 0 0.75rem;
+            }
+            
+            .header-top > div:first-child {
+                gap: 0.5rem;
+            }
+            
+            /* Hide separator and "timerist.com" text on very small screens */
+            .header-top .separator,
+            .header-top > div:first-child > span:first-of-type {
+                display: none;
+            }
+            
+            /* Make "Quick Countdown" text smaller */
+            .header-top > div:first-child > span:last-of-type {
+                font-size: 0.875rem !important;
+            }
+            
+            /* Ensure logo doesn't shrink too much */
+            #timerist-logo {
+                width: 36px !important;
+                height: 36px !important;
+                flex-shrink: 0;
+            }
+        }
+        
+        /* Slightly larger screens (iPhone 13, 14, etc.) - show more but keep compact */
+        @media (min-width: 391px) and (max-width: 428px) {
+            .header-top {
+                padding: 0 1rem;
+            }
+            
+            /* Hide separator but keep timerist.com text */
+            .header-top .separator {
+                display: none;
+            }
+            
+            /* Make text smaller */
+            .header-top > div:first-child > span {
+                font-size: 0.875rem !important;
+            }
         }
         
         @media (min-width: 640px) {
@@ -540,6 +598,22 @@
             align-items: center;
             gap: 0.5rem;
             flex-shrink: 0;
+            min-width: fit-content;
+        }
+        
+        /* Ensure both buttons are always visible on small screens */
+        @media (max-width: 428px) {
+            .header-actions {
+                gap: 0.375rem;
+            }
+            
+            .header-actions .mode-toggle-btn,
+            .header-actions .hamburger-menu {
+                width: 40px;
+                height: 40px;
+                padding: 0.375rem;
+                font-size: 1.25rem;
+            }
         }
         
         .header-top .mode-toggle-btn {
@@ -560,6 +634,7 @@
             font-size: 1.5rem;
             transition: opacity 0.2s;
             border-radius: var(--radius);
+            min-width: 44px;
         }
         
         .header-top .mode-toggle-btn:hover {
