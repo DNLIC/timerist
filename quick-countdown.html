@@ -63,6 +63,40 @@
             background: rgb(var(--background));
             color: rgb(var(--foreground));
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        .container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 1200px;
+            padding: 1rem;
+            margin: 0 auto;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .timer-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            overflow-x: hidden;
+            margin-top: clamp(0.5rem, 1vw, 1rem);
+            width: 100%;
         }
         
         .bg-card { background-color: rgb(var(--card)); }
@@ -380,6 +414,18 @@
             margin: 0 auto;
         }
         
+        @media (min-width: 640px) {
+            .container {
+                padding: 2rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                padding: 2rem 3rem;
+            }
+        }
+        
         .header-actions {
             display: flex;
             align-items: center;
@@ -448,45 +494,38 @@
     </style>
 </head>
 <body>
-    <div class="min-h-screen p-4 md:p-8" style="background: rgb(var(--background))">
-        <div class="max-w-4xl mx-auto space-y-8" style="position: relative;">
-            <div class="header-top">
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <a href="index.html" style="display: flex; align-items: center; text-decoration: none; cursor: pointer;">
-                        <svg
-                            width="40"
-                            height="40"
-                            viewBox="0 0 40 40"
-                            xmlns="http://www.w3.org/2000/svg"
-                            id="timerist-logo"
-                        >
-                            <circle cx="20" cy="20" r="15" fill="none" stroke="#0a0a0a" stroke-width="2.5" class="logo-circle"/>
-                            <line x1="20" y1="20" x2="20" y2="8" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
-                            <line x1="20" y1="20" x2="30" y2="20" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
-                        </svg>
-                    </a>
-                    <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">timerist.com</span>
-                    <span class="separator" style="color: rgb(var(--muted-foreground));">|</span>
-                    <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">Quick Countdown</span>
-                </div>
-                
-                <div class="header-actions">
-                    <button class="mode-toggle-btn mode-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
-                        <span id="theme-icon">🌙</span>
-                    </button>
-                    <button class="hamburger-menu" onclick="toggleDrawer()" aria-label="Open Timer Setup menu">
-                        ☰
-                    </button>
-                </div>
+    <div class="container">
+        <div class="header-top">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <a href="index.html" style="display: flex; align-items: center; text-decoration: none; cursor: pointer;">
+                    <svg
+                        width="40"
+                        height="40"
+                        viewBox="0 0 40 40"
+                        xmlns="http://www.w3.org/2000/svg"
+                        id="timerist-logo"
+                    >
+                        <circle cx="20" cy="20" r="15" fill="none" stroke="#0a0a0a" stroke-width="2.5" class="logo-circle"/>
+                        <line x1="20" y1="20" x2="20" y2="8" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
+                        <line x1="20" y1="20" x2="30" y2="20" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
+                    </svg>
+                </a>
+                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">timerist.com</span>
+                <span class="separator" style="color: rgb(var(--muted-foreground));">|</span>
+                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">Quick Countdown</span>
             </div>
             
-            <header class="text-center space-y-2" style="margin-top: clamp(4rem, 8vw, 6rem);">
-                <h1 class="text-4xl font-bold" style="color: rgb(var(--foreground))">Quick Countdown</h1>
-                <p style="color: rgb(var(--muted-foreground))">
-                    Tap a preset to start instantly—no setup required
-                </p>
-            </header>
-            
+            <div class="header-actions">
+                <button class="mode-toggle-btn mode-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="hamburger-menu" onclick="toggleDrawer()" aria-label="Open Timer Setup menu">
+                    ☰
+                </button>
+            </div>
+        </div>
+        
+        <div class="timer-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
             <!-- Timer Display -->
             <div class="p-8 bg-card border border-border rounded-lg shadow-lg text-center">
                 <div class="timer-display-large" id="display">00:00</div>
@@ -498,8 +537,6 @@
                     <button class="control-btn btn-primary" id="resumeBtn" style="display: none;" aria-label="Resume timer">Resume</button>
                     <button class="control-btn btn-destructive" id="resetBtn" style="display: none;" aria-label="Reset timer">Reset</button>
                     <button class="control-btn btn-secondary" id="clearBtn" aria-label="Clear timer">Clear</button>
-                    <button class="adjust-btn" id="decreaseBtn" type="button" aria-label="Decrease time by 5 seconds">-5 sec</button>
-                    <button class="adjust-btn" id="increaseBtn" type="button" aria-label="Increase time by 5 seconds">+5 sec</button>
                 </div>
             </div>
             
@@ -621,8 +658,6 @@
         const resumeBtn = document.getElementById('resumeBtn');
         const resetBtn = document.getElementById('resetBtn');
         const clearBtn = document.getElementById('clearBtn');
-        const decreaseBtn = document.getElementById('decreaseBtn');
-        const increaseBtn = document.getElementById('increaseBtn');
         const quickSelectButtons = document.querySelectorAll('.quick-select-btn[data-seconds]');
         const customTimeInput = document.getElementById('customTimeInput');
         
@@ -808,8 +843,6 @@
         resumeBtn.addEventListener('click', togglePlayPause);
         resetBtn.addEventListener('click', resetTimer);
         clearBtn.addEventListener('click', clearTimer);
-        decreaseBtn.addEventListener('click', () => adjustTime(false));
-        increaseBtn.addEventListener('click', () => adjustTime(true));
         
         // Quick-select button listeners (auto-start)
         quickSelectButtons.forEach(btn => {
