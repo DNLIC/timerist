@@ -6,16 +6,13 @@
     <title>Quick Countdown - Timerist | HIIT Timer, Quick Rest Timer, Workout Countdown</title>
     <meta name="description" content="Quick Countdown timer for short rests, holds, or bursts in HIIT, CrossFit, or circuit training. Tap a preset to start instantly—no setup required.">
     
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Existing Design System CSS -->
+    <!-- Design System CSS -->
     <link rel="stylesheet" href="styles/timerist-design-system.css">
     <link rel="stylesheet" href="styles/themes.css">
     <link rel="stylesheet" href="styles/main.css">
     
     <style>
-        /* Styling matched exactly to samples: system-sans font, RGB vars, simple opacity hover no transforms */
+        /* Styling matched exactly to timer-example-complete.html shell: system-sans font, RGB vars, simple opacity hover */
         :root {
             --background: 245 247 250;
             --foreground: 51 51 51;
@@ -57,12 +54,24 @@
             --ring: 255 0 0;
         }
         
-        /* Apply system fonts globally - matches reference pages */
         body {
             background: rgb(var(--background));
             color: rgb(var(--foreground));
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
+        
+        .bg-card { background-color: rgb(var(--card)); }
+        .text-foreground { color: rgb(var(--foreground)); }
+        .text-muted-foreground { color: rgb(var(--muted-foreground)); }
+        .bg-primary { background-color: rgb(var(--primary)); }
+        .text-primary-foreground { color: rgb(var(--primary-foreground)); }
+        .bg-secondary { background-color: rgb(var(--secondary)); }
+        .text-secondary-foreground { color: rgb(var(--secondary-foreground)); }
+        .bg-destructive { background-color: rgb(var(--destructive)); }
+        .text-destructive-foreground { color: rgb(var(--destructive-foreground)); }
+        .border-border { border-color: rgb(var(--border)); }
+        .hover\:bg-primary\/90:hover { background-color: rgba(var(--primary), 0.9); }
+        .hover\:bg-secondary\/90:hover { background-color: rgba(var(--secondary), 0.9); }
         
         .timer-display-large {
             font-size: clamp(3rem, 15vw, 8rem);
@@ -81,7 +90,7 @@
             color: rgb(var(--destructive));
         }
         
-        /* Button base classes: px-4 py-2 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed */
+        /* Button base classes: px-4 py-2 rounded-md font-semibold uppercase tracking-wide text-sm */
         .quick-select-btn {
             display: inline-flex;
             align-items: center;
@@ -93,7 +102,7 @@
             font-weight: 600; /* font-semibold */
             letter-spacing: 0.025em; /* tracking-wide */
             text-transform: uppercase;
-            transition: all 0.2s; /* transition-all duration-200 */
+            transition: all 0.2s;
             cursor: pointer;
             border: none;
             background-color: rgb(var(--accent));
@@ -123,7 +132,7 @@
             font-weight: 600; /* font-semibold */
             letter-spacing: 0.025em; /* tracking-wide */
             text-transform: uppercase;
-            transition: all 0.2s; /* transition-all duration-200 */
+            transition: all 0.2s;
             cursor: pointer;
             border: none;
             background-color: rgb(var(--secondary));
@@ -152,7 +161,7 @@
             font-weight: 600; /* font-semibold */
             letter-spacing: 0.025em; /* tracking-wide */
             text-transform: uppercase;
-            transition: all 0.2s; /* transition-all duration-200 */
+            transition: all 0.2s;
             cursor: pointer;
             border: none;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -182,7 +191,7 @@
         }
         
         .control-btn.btn-destructive:hover:not(:disabled) {
-            background-color: rgba(var(--destructive), 0.9); /* hover:bg-destructive/90 */
+            background-color: rgba(var(--destructive), 0.9);
         }
         
         .control-btn:disabled {
@@ -242,13 +251,29 @@
             flex-shrink: 0;
         }
         
-        .header-top .mode-toggle-btn {
+        .mode-toggle-btn {
             position: relative;
             top: auto;
             right: auto;
             width: 44px;
             height: 44px;
             flex-shrink: 0;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgb(var(--foreground));
+            font-size: 1.5rem;
+            transition: opacity 0.2s;
+            border-radius: var(--radius);
+        }
+        
+        .mode-toggle-btn:hover {
+            opacity: 0.7;
+            background-color: rgb(var(--accent));
         }
         
         .settings-drawer {
@@ -463,7 +488,7 @@
         </div>
         
         <div class="header-actions">
-            <button class="mode-toggle-btn mode-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+            <button class="mode-toggle-btn" onclick="toggleTheme()" aria-label="Toggle theme">
                 <span id="theme-icon">🌙</span>
             </button>
             <button class="hamburger-menu" onclick="toggleDrawer()" aria-label="Open Timer Setup menu">
@@ -606,8 +631,28 @@
     </div>
     
     <!-- Scripts -->
-    <script src="scripts/dark-mode-toggle.js"></script>
     <script>
+        // Functionality integrated from quick-countdown_2.html
+        
+        // Theme Toggle Function (adapted for data-theme attribute)
+        function toggleTheme() {
+            const root = document.documentElement;
+            const currentTheme = root.getAttribute('data-theme');
+            const newTheme = currentTheme === 'style1' ? null : 'style1';
+            root.setAttribute('data-theme', newTheme || '');
+            localStorage.setItem('timerist-theme', newTheme || 'default');
+            updateThemeIcon();
+            updateLogoColors();
+        }
+        
+        // Initialize theme from localStorage
+        (function() {
+            const savedTheme = localStorage.getItem('timerist-theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme === 'default' ? '' : savedTheme);
+            }
+        })();
+        
         // Quick Countdown Timer Logic
         let currentTime = 0;
         let totalSeconds = 0;
@@ -882,54 +927,18 @@
         // Apply background color using a dynamically updated style element
         let customBgStyleElement = null;
         
-        // Convert hex to HSL format (for CSS variables)
-        function hexToHsl(hex) {
-            // Remove # if present
-            hex = hex.replace('#', '');
-            const r = parseInt(hex.substring(0, 2), 16) / 255;
-            const g = parseInt(hex.substring(2, 4), 16) / 255;
-            const b = parseInt(hex.substring(4, 6), 16) / 255;
-            
-            const max = Math.max(r, g, b);
-            const min = Math.min(r, g, b);
-            let h, s, l = (max + min) / 2;
-            
-            if (max === min) {
-                h = s = 0; // achromatic
-            } else {
-                const d = max - min;
-                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-                switch (max) {
-                    case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
-                    case g: h = ((b - r) / d + 2) / 6; break;
-                    case b: h = ((r - g) / d + 4) / 6; break;
-                }
-            }
-            
-            h = Math.round(h * 360);
-            s = Math.round(s * 100);
-            l = Math.round(l * 100);
-            
-            return `${h} ${s}% ${l}%`;
-        }
-        
         function applyBackgroundColor(color) {
-            // Ensure body exists before applying
             if (!document.body) {
-                // If body doesn't exist yet, wait for DOM to be ready
                 if (document.readyState === 'loading') {
                     document.addEventListener('DOMContentLoaded', () => applyBackgroundColor(color));
                     return;
                 }
             }
             
-            console.log('Applying background color:', color); // Debug log
-            
-            // Method 1: Apply directly to html and body elements as inline styles (highest priority)
+            // Apply directly to html and body elements as inline styles
             document.documentElement.style.backgroundColor = color;
             document.body.style.backgroundColor = color;
             
-            // Method 2: Also try with setProperty for maximum compatibility
             try {
                 document.documentElement.style.setProperty('background-color', color, 'important');
                 document.body.style.setProperty('background-color', color, 'important');
@@ -937,14 +946,12 @@
                 console.warn('setProperty with important failed, using fallback');
             }
             
-            // Method 3: Create or update a style element for custom background
-            // Remove existing one if it exists to avoid duplicates
+            // Create or update a style element for custom background
             const existingStyle = document.getElementById('custom-bg-style');
             if (existingStyle) {
                 existingStyle.remove();
             }
             
-            // Create new style element and append to body (ensures it loads after all stylesheets)
             customBgStyleElement = document.createElement('style');
             customBgStyleElement.id = 'custom-bg-style';
             customBgStyleElement.textContent = `
@@ -958,7 +965,6 @@
                 }
             `;
             
-            // Append to body to ensure it's loaded after all other styles
             document.body.appendChild(customBgStyleElement);
         }
         
@@ -966,14 +972,12 @@
         let customTimerHintStyleElement = null;
         
         function applyTimerColorToHints(color) {
-            // Create or update a style element for timer color on hints
             if (!customTimerHintStyleElement) {
                 customTimerHintStyleElement = document.createElement('style');
                 customTimerHintStyleElement.id = 'custom-timer-hint-style';
                 document.head.appendChild(customTimerHintStyleElement);
             }
             
-            // Apply timer color to hint texts with !important to override
             customTimerHintStyleElement.textContent = `
                 .quick-select-hint {
                     color: ${color} !important;
@@ -988,7 +992,6 @@
         let customButtonStyleElement = null;
         
         function applyButtonColor(color) {
-            // Create or update a style element for custom button colors
             if (!customButtonStyleElement) {
                 customButtonStyleElement = document.createElement('style');
                 customButtonStyleElement.id = 'custom-button-style';
@@ -1035,7 +1038,6 @@
         }
         
         // Save and apply colors
-        // Use both 'input' (for real-time) and 'change' (for final value) events
         bgColorPicker.addEventListener('input', function() {
             const color = this.value;
             applyBackgroundColor(color);
@@ -1082,15 +1084,6 @@
             attributes: true,
             attributeFilter: ['data-theme']
         });
-        
-        const originalToggle = window.toggleTheme;
-        window.toggleTheme = function() {
-            originalToggle();
-            setTimeout(() => {
-                updateThemeIcon();
-                updateLogoColors();
-            }, 10);
-        };
         
         // Logo Color Update
         function updateLogoColors() {
