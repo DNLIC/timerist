@@ -99,7 +99,22 @@
             width: 100%;
         }
         
-        @media (min-width: 768px) {
+        /* iPad vertical (portrait) - reduce top margin to nestle timer below header */
+        @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+            .timer-container {
+                margin-top: clamp(2rem, 2.5vw, 2.5rem);
+            }
+        }
+        
+        /* iPad horizontal (landscape) - increase top margin to clear header */
+        @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+            .timer-container {
+                margin-top: clamp(3rem, 4vw, 4rem);
+            }
+        }
+        
+        /* Desktop - keep original small margin */
+        @media (min-width: 1025px) {
             .timer-container {
                 margin-top: clamp(0.5rem, 1vw, 1rem);
             }
