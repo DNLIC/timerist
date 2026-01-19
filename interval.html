@@ -281,13 +281,6 @@
             margin-top: 2rem;
         }
         
-        @media (max-width: 768px) {
-            .interval-split-container {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-        }
-        
         @media (max-width: 390px) {
             .interval-split-container {
                 gap: 1.25rem;
@@ -320,7 +313,7 @@
         }
         
         .interval-rest .interval-label {
-            color: hsl(var(--secondary));
+            color: hsl(var(--foreground));
         }
         
         .time-input-group {
@@ -389,6 +382,12 @@
             grid-template-columns: repeat(2, 1fr);
             gap: 0.5rem;
             width: 100%;
+        }
+        
+        @media (max-width: 768px) {
+            .preset-buttons {
+                grid-template-columns: 1fr;
+            }
         }
         
         .preset-btn {
@@ -619,6 +618,17 @@
                         <button class="preset-btn" data-type="work" data-seconds="60">01:00</button>
                         <button class="preset-btn" data-type="work" data-seconds="90">01:30</button>
                         <button class="preset-btn" data-type="work" data-seconds="120">02:00</button>
+                        <button class="preset-btn" data-type="work" data-seconds="150">02:30</button>
+                        <button class="preset-btn" data-type="work" data-seconds="180">03:00</button>
+                        <button class="preset-btn" data-type="work" data-seconds="210">03:30</button>
+                        <button class="preset-btn" data-type="work" data-seconds="240">04:00</button>
+                        <button class="preset-btn" data-type="work" data-seconds="270">04:30</button>
+                        <button class="preset-btn" data-type="work" data-seconds="300">05:00</button>
+                        <button class="preset-btn" data-type="work" data-seconds="360">06:00</button>
+                        <button class="preset-btn" data-type="work" data-seconds="420">07:00</button>
+                        <button class="preset-btn" data-type="work" data-seconds="480">08:00</button>
+                        <button class="preset-btn" data-type="work" data-seconds="540">09:00</button>
+                        <button class="preset-btn" data-type="work" data-seconds="600">10:00</button>
                     </div>
                 </div>
                 
@@ -639,6 +649,17 @@
                         <button class="preset-btn" data-type="rest" data-seconds="60">01:00</button>
                         <button class="preset-btn" data-type="rest" data-seconds="90">01:30</button>
                         <button class="preset-btn" data-type="rest" data-seconds="120">02:00</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="150">02:30</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="180">03:00</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="210">03:30</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="240">04:00</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="270">04:30</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="300">05:00</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="360">06:00</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="420">07:00</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="480">08:00</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="540">09:00</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="600">10:00</button>
                     </div>
                 </div>
             </div>
