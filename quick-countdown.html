@@ -333,6 +333,18 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
+        /* Paused state - dark gray background with white text (daylight mode) */
+        .control-btn.btn-primary.paused {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+        }
+        
+        /* Dark mode paused state - lighter gray */
+        [data-theme="style1"] .control-btn.btn-primary.paused {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
         .control-btn.btn-secondary {
             background-color: rgb(var(--secondary));
             color: rgb(var(--secondary-foreground));
@@ -905,9 +917,16 @@
             if (isRunning || isPaused) {
                 resumeBtn.style.display = 'inline-block';
                 resumeBtn.textContent = isPaused ? 'Resume' : 'Pause';
+                // Add/remove paused class for styling
+                if (isPaused) {
+                    resumeBtn.classList.add('paused');
+                } else {
+                    resumeBtn.classList.remove('paused');
+                }
                 resetBtn.style.display = 'inline-block';
             } else {
                 resumeBtn.style.display = 'none';
+                resumeBtn.classList.remove('paused');
                 resetBtn.style.display = currentTime > 0 ? 'inline-block' : 'none';
             }
         }
