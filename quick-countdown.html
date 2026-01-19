@@ -334,15 +334,22 @@
         }
         
         /* Paused state - dark gray background with white text (daylight mode) */
-        .control-btn.btn-primary.paused {
-            background-color: rgb(100, 100, 100);
-            color: rgb(255, 255, 255);
+        /* Higher specificity to override hover/active states on mobile */
+        .control-btn.btn-primary.paused,
+        .control-btn.btn-primary.paused:hover,
+        .control-btn.btn-primary.paused:active,
+        .control-btn.btn-primary.paused:focus {
+            background-color: rgb(100, 100, 100) !important;
+            color: rgb(255, 255, 255) !important;
         }
         
         /* Dark mode paused state - lighter gray */
-        [data-theme="style1"] .control-btn.btn-primary.paused {
-            background-color: rgb(150, 150, 150);
-            color: rgb(0, 0, 0);
+        [data-theme="style1"] .control-btn.btn-primary.paused,
+        [data-theme="style1"] .control-btn.btn-primary.paused:hover,
+        [data-theme="style1"] .control-btn.btn-primary.paused:active,
+        [data-theme="style1"] .control-btn.btn-primary.paused:focus {
+            background-color: rgb(150, 150, 150) !important;
+            color: rgb(0, 0, 0) !important;
         }
         
         .control-btn.btn-secondary {
