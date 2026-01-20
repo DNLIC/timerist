@@ -5,6 +5,7 @@ const path = require('path');
 const htmlFiles = [
   'index.html',
   'quick-countdown.html',
+  'quick-interval.html',
   'tabata.html',
   'interval.html',
   'countdown.html',
