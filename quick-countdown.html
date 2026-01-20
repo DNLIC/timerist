@@ -65,7 +65,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             min-height: 100vh;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             margin: 0;
             padding: 0;
@@ -82,7 +82,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             width: 100%;
             max-width: 1200px;
             padding: 1rem;
@@ -95,28 +95,28 @@
             max-width: 1000px;
             margin: 0 auto;
             overflow-x: hidden;
-            margin-top: clamp(4rem, 6vw, 5rem);
+            margin-top: clamp(5rem, 8vw, 6rem);
             width: 100%;
         }
         
-        /* iPad vertical (portrait) - reduce top margin to nestle timer below header */
+        /* iPad vertical (portrait) - position timer below header */
         @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
             .timer-container {
-                margin-top: clamp(2rem, 2.5vw, 2.5rem);
+                margin-top: clamp(4rem, 6vw, 5rem);
             }
         }
         
-        /* iPad horizontal (landscape) - increase top margin to clear header */
+        /* iPad horizontal (landscape) - position timer below header */
         @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
             .timer-container {
-                margin-top: clamp(3rem, 4vw, 4rem);
+                margin-top: clamp(4.5rem, 7vw, 5.5rem);
             }
         }
         
-        /* Desktop - keep original small margin */
+        /* Desktop - position timer below header */
         @media (min-width: 1025px) {
             .timer-container {
-                margin-top: clamp(0.5rem, 1vw, 1rem);
+                margin-top: clamp(4rem, 6vw, 5rem);
             }
         }
         

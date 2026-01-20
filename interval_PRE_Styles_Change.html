@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interval Timer - Timerist</title>
+    <link rel="stylesheet" href="styles/timerist-design-system.css">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        .container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 1200px;
+            padding: 1rem;
+            margin: 0 auto;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .header-top {
+            position: absolute;
+            top: clamp(1rem, 3vw, 2rem);
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 clamp(1rem, 3vw, 2rem);
+            z-index: 10;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+        
+        .header-top .mode-toggle-btn {
+            position: relative;
+            top: auto;
+            right: auto;
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+        }
+        
+        #timerist-logo {
+            display: block;
+            width: 40px;
+            height: 40px;
+            color: #0a0a0a;
+        }
+        
+        .header-top a {
+            transition: opacity 0.2s ease;
+        }
+        
+        .header-top a:hover {
+            opacity: 0.7;
+        }
+        
+        #timerist-logo circle,
+        #timerist-logo line {
+            stroke: #0a0a0a;
+            stroke-width: 2.5;
+        }
+        
+        .dark #timerist-logo {
+            color: #fafafa;
+        }
+        
+        .dark #timerist-logo circle,
+        .dark #timerist-logo line {
+            stroke: #fafafa;
+        }
+        
+        html.dark #timerist-logo .logo-circle,
+        html.dark #timerist-logo .logo-line {
+            stroke: #fafafa !important;
+        }
+        
+        .hamburger-menu {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: hsl(var(--foreground));
+            font-size: 1.5rem;
+            transition: opacity 0.2s;
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+        }
+        
+        .hamburger-menu:hover {
+            opacity: 0.7;
+        }
+        
+        .settings-drawer {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            background: hsl(var(--card));
+            border-left: 1px solid hsl(var(--border));
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            z-index: 1002;
+            overflow-y: auto;
+        }
+        
+        .settings-drawer.open {
+            right: 0;
+        }
+        
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 999;
+        }
+        
+        .drawer-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .drawer-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid hsl(var(--border));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .drawer-content {
+            padding: 1.5rem;
+        }
+        
+        .drawer-close {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: hsl(var(--foreground));
+            padding: 0.25rem;
+        }
+        
+        .timer-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            overflow-x: hidden;
+            margin-top: clamp(4rem, 8vw, 6rem);
+        }
+        
+        .timer-controls {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .timer-controls .btn {
+            min-width: 80px;
+            padding: 0.75rem 1.25rem;
+        }
+        
+        /* Rounds Input Group */
+        .rounds-setting {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .rounds-setting label {
+            display: block;
+            margin-bottom: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: hsl(var(--muted-foreground));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .rounds-input-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+        
+        .rounds-adjust-btn {
+            width: 44px;
+            height: 44px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            border: 2px solid hsl(var(--border));
+            border-radius: var(--radius);
+            background-color: hsl(var(--card));
+            color: hsl(var(--foreground));
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        
+        .rounds-adjust-btn:hover:not(:disabled) {
+            background-color: hsl(var(--accent));
+            border-color: hsl(var(--primary));
+            transform: scale(1.05);
+        }
+        
+        .rounds-adjust-btn:active:not(:disabled) {
+            transform: scale(0.95);
+        }
+        
+        .rounds-adjust-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .rounds-input-group input {
+            width: 80px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            background-color: hsl(var(--background));
+            border: 2px solid hsl(var(--input));
+            border-radius: var(--radius);
+            padding: 0.5rem;
+            color: hsl(var(--foreground));
+            min-height: 44px;
+        }
+        
+        .rounds-input-group input:focus {
+            outline: none;
+            border-color: hsl(var(--ring));
+            box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+        }
+        
+        /* Split Screen Layout */
+        .interval-split-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        /* Ensure columns stay side-by-side on all screen sizes */
+        @media (max-width: 768px) {
+            .interval-split-container {
+                gap: 0.75rem;
+            }
+        }
+        
+        @media (max-width: 390px) {
+            .interval-split-container {
+                gap: 1.25rem;
+            }
+        }
+        
+        .interval-side {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        @media (max-width: 390px) {
+            .interval-side {
+                gap: 0.5rem;
+            }
+        }
+        
+        .interval-label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: hsl(var(--foreground));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .interval-work .interval-label {
+            color: hsl(var(--primary));
+        }
+        
+        .interval-rest .interval-label {
+            color: hsl(var(--foreground));
+        }
+        
+        .time-input-group {
+            width: 100%;
+        }
+        
+        .time-input-group input {
+            width: 100%;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            padding: 0.625rem;
+            border: 2px solid hsl(var(--input));
+            border-radius: var(--radius);
+            background-color: hsl(var(--background));
+            color: hsl(var(--foreground));
+            min-height: 44px;
+        }
+        
+        .time-input-group input:focus {
+            outline: none;
+            border-color: hsl(var(--ring));
+            box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+        }
+        
+        .adjust-buttons {
+            display: flex;
+            gap: 0.5rem;
+            width: 100%;
+        }
+        
+        .time-adjust-btn {
+            flex: 1;
+            min-height: 44px;
+            font-size: 1rem;
+            font-weight: 700;
+            border: 2px solid hsl(var(--border));
+            border-radius: var(--radius);
+            background-color: hsl(var(--card));
+            color: hsl(var(--foreground));
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .time-adjust-btn:hover:not(:disabled) {
+            background-color: hsl(var(--accent));
+            border-color: hsl(var(--primary));
+            transform: scale(1.05);
+        }
+        
+        .time-adjust-btn:active:not(:disabled) {
+            transform: scale(0.95);
+        }
+        
+        .time-adjust-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            width: 100%;
+        }
+        
+        /* Mobile and tablet: stack preset buttons vertically, keep columns side-by-side */
+        @media (max-width: 1024px) {
+            .preset-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .preset-btn {
+            padding: 0.75rem 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: 2px solid hsl(var(--border));
+            border-radius: var(--radius);
+            background-color: hsl(var(--card));
+            color: hsl(var(--foreground));
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            min-height: 44px;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+        
+        .preset-btn:hover:not(:disabled) {
+            background-color: hsl(var(--accent));
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .preset-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        
+        .preset-btn.active {
+            background-color: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+            border-color: hsl(var(--primary));
+        }
+        
+        .interval-rest .preset-btn.active {
+            background-color: hsl(var(--secondary));
+            color: hsl(var(--secondary-foreground));
+            border-color: hsl(var(--secondary));
+        }
+        
+        .timer-running .preset-btn,
+        .timer-running .time-adjust-btn,
+        .timer-running .rounds-adjust-btn {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .timer-running .preset-btn:hover,
+        .timer-running .time-adjust-btn:hover,
+        .timer-running .rounds-adjust-btn:hover {
+            transform: none;
+            border-color: hsl(var(--border));
+        }
+        
+        .round-info {
+            margin-top: 1.25rem;
+            font-size: 1rem;
+            color: hsl(var(--muted-foreground));
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .time-input-group input {
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+            
+            .adjust-buttons {
+                gap: 0.375rem;
+            }
+            
+            .time-adjust-btn {
+                font-size: 0.9rem;
+            }
+            
+            .preset-buttons {
+                gap: 0.375rem;
+                grid-template-columns: 1fr; /* Ensure single column on mobile */
+            }
+            
+            .preset-btn {
+                padding: 0.625rem 0.375rem;
+                font-size: 0.75rem;
+            }
+            
+            .rounds-input-group {
+                gap: 0.5rem;
+            }
+            
+            .rounds-adjust-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.3rem;
+            }
+            
+            .rounds-input-group input {
+                width: 70px;
+                font-size: 1rem;
+                padding: 0.375rem;
+            }
+        }
+        
+        @media (max-width: 390px) {
+            .timer-controls {
+                gap: 0.5rem;
+            }
+            
+            .timer-controls .btn {
+                min-width: 70px;
+                padding: 0.625rem 1rem;
+                font-size: 0.875rem;
+            }
+            
+            .interval-label {
+                font-size: 0.875rem;
+            }
+            
+            .time-input-group input {
+                padding: 0.5rem;
+                font-size: 0.85rem;
+            }
+            
+            .adjust-buttons {
+                gap: 0.25rem;
+            }
+            
+            .time-adjust-btn {
+                font-size: 0.85rem;
+                min-height: 40px;
+            }
+            
+            .preset-buttons {
+                gap: 0.25rem;
+            }
+            
+            .preset-btn {
+                padding: 0.5rem 0.25rem;
+                font-size: 0.7rem;
+                min-height: 40px;
+            }
+            
+            .rounds-adjust-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 1.2rem;
+            }
+            
+            .rounds-input-group input {
+                width: 60px;
+                font-size: 0.9rem;
+                padding: 0.3125rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-top">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <a href="index.html" style="display: flex; align-items: center; text-decoration: none; cursor: pointer;">
+                    <svg
+                        width="40"
+                        height="40"
+                        viewBox="0 0 40 40"
+                        xmlns="http://www.w3.org/2000/svg"
+                        id="timerist-logo"
+                    >
+                        <circle cx="20" cy="20" r="15" fill="none" stroke="#0a0a0a" stroke-width="2.5" class="logo-circle"/>
+                        <line x1="20" y1="20" x2="20" y2="8" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
+                        <line x1="20" y1="20" x2="30" y2="20" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
+                    </svg>
+                </a>
+                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: hsl(var(--foreground));">timerist.com</span>
+                <span class="separator" style="color: hsl(var(--muted-foreground));">|</span>
+                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: hsl(var(--foreground));">Interval</span>
+            </div>
+            
+            <div class="header-actions">
+                <button class="mode-toggle-btn mode-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="hamburger-menu" onclick="toggleDrawer()" aria-label="Open settings menu">
+                    ☰
+                </button>
+            </div>
+        </div>
+        
+        <div class="timer-container">
+            <div class="timer-display">
+                <div class="timer-label" id="phaseLabel">Work</div>
+                <div class="timer-time" id="display">00:00</div>
+                <div class="round-info">
+                    Round <span id="round">1</span> of <span id="totalRounds">5</span>
+                </div>
+            </div>
+            
+            <!-- Number of Rounds -->
+            <div class="rounds-setting">
+                <label for="rounds">Number of Rounds</label>
+                <div class="rounds-input-group">
+                    <button class="rounds-adjust-btn" id="roundsDecreaseBtn" type="button">−</button>
+                    <input type="text" id="rounds" value="5" readonly />
+                    <button class="rounds-adjust-btn" id="roundsIncreaseBtn" type="button">+</button>
+                </div>
+            </div>
+            
+            <div class="timer-controls">
+                <button class="btn btn-primary" id="startBtn">Start</button>
+                <button class="btn btn-secondary" id="pauseBtn" disabled>Pause</button>
+                <button class="btn btn-destructive" id="resetBtn">Reset</button>
+                <button class="btn btn-secondary" id="clearBtn">Clear</button>
+            </div>
+            
+            <!-- Split Screen: Work (Left) and Rest (Right) -->
+            <div class="interval-split-container">
+                <!-- Work Side (Left) -->
+                <div class="interval-side interval-work">
+                    <div class="interval-label">Work</div>
+                    <div class="time-input-group">
+                        <input type="text" id="workTime" value="00:30" pattern="[0-9]{2}:[0-9]{2}" placeholder="MM:SS" />
+                    </div>
+                    <div class="adjust-buttons">
+                        <button class="time-adjust-btn" id="workDecreaseBtn" type="button">−5</button>
+                        <button class="time-adjust-btn" id="workIncreaseBtn" type="button">+5</button>
+                    </div>
+                    <div class="preset-buttons">
+                        <button class="preset-btn" data-type="work" data-seconds="15">00:15</button>
+                        <button class="preset-btn" data-type="work" data-seconds="30">00:30</button>
+                        <button class="preset-btn" data-type="work" data-seconds="45">00:45</button>
+                        <button class="preset-btn" data-type="work" data-seconds="60">01:00</button>
+                        <button class="preset-btn" data-type="work" data-seconds="90">01:30</button>
+                        <button class="preset-btn" data-type="work" data-seconds="120">02:00</button>
+                        <button class="preset-btn" data-type="work" data-seconds="150">02:30</button>
+                        <button class="preset-btn" data-type="work" data-seconds="180">03:00</button>
+                        <button class="preset-btn" data-type="work" data-seconds="210">03:30</button>
+                        <button class="preset-btn" data-type="work" data-seconds="240">04:00</button>
+                        <button class="preset-btn" data-type="work" data-seconds="270">04:30</button>
+                        <button class="preset-btn" data-type="work" data-seconds="300">05:00</button>
+                        <button class="preset-btn" data-type="work" data-seconds="360">06:00</button>
+                        <button class="preset-btn" data-type="work" data-seconds="420">07:00</button>
+                        <button class="preset-btn" data-type="work" data-seconds="480">08:00</button>
+                        <button class="preset-btn" data-type="work" data-seconds="540">09:00</button>
+                        <button class="preset-btn" data-type="work" data-seconds="600">10:00</button>
+                    </div>
+                </div>
+                
+                <!-- Rest Side (Right) -->
+                <div class="interval-side interval-rest">
+                    <div class="interval-label">Rest</div>
+                    <div class="time-input-group">
+                        <input type="text" id="restTime" value="00:10" pattern="[0-9]{2}:[0-9]{2}" placeholder="MM:SS" />
+                    </div>
+                    <div class="adjust-buttons">
+                        <button class="time-adjust-btn" id="restDecreaseBtn" type="button">−5</button>
+                        <button class="time-adjust-btn" id="restIncreaseBtn" type="button">+5</button>
+                    </div>
+                    <div class="preset-buttons">
+                        <button class="preset-btn" data-type="rest" data-seconds="15">00:15</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="30">00:30</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="45">00:45</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="60">01:00</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="90">01:30</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="120">02:00</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="150">02:30</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="180">03:00</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="210">03:30</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="240">04:00</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="270">04:30</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="300">05:00</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="360">06:00</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="420">07:00</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="480">08:00</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="540">09:00</button>
+                        <button class="preset-btn" data-type="rest" data-seconds="600">10:00</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+    <div class="settings-drawer" id="settingsDrawer">
+        <div class="drawer-header">
+            <h2 style="font-size: 1.25rem; font-weight: 600; color: hsl(var(--foreground));">Settings</h2>
+            <button class="drawer-close" onclick="closeDrawer()">×</button>
+        </div>
+        <div class="drawer-content">
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: hsl(var(--foreground)); font-weight: 600;">Audio Feedback</label>
+                <button class="btn btn-outline" id="audioToggle" onclick="toggleAudio()">On</button>
+            </div>
+            <div>
+                <a href="index.html" style="display: block; padding: 0.75rem; color: hsl(var(--primary)); text-decoration: none;">← Back to Timers</a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="scripts/dark-mode-toggle.js"></script>
+    <script src="scripts/interval.js"></script>
+    <script>
+        function toggleDrawer() {
+            const drawer = document.getElementById('settingsDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+            drawer.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+        
+        function closeDrawer() {
+            const drawer = document.getElementById('settingsDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+            drawer.classList.remove('open');
+            overlay.classList.remove('open');
+        }
+        
+        function toggleAudio() {
+            const btn = document.getElementById('audioToggle');
+            const current = btn.textContent;
+            btn.textContent = current === 'On' ? 'Off' : 'On';
+        }
+        
+        function updateLogoColors() {
+            const logo = document.getElementById('timerist-logo');
+            if (!logo) return;
+            
+            const isDark = document.documentElement.classList.contains('dark');
+            const lightColor = '#0a0a0a';
+            const darkColor = '#fafafa';
+            const color = isDark ? darkColor : lightColor;
+            
+            const circles = logo.querySelectorAll('.logo-circle');
+            const lines = logo.querySelectorAll('.logo-line');
+            
+            circles.forEach(el => el.setAttribute('stroke', color));
+            lines.forEach(el => el.setAttribute('stroke', color));
+        }
+        
+        const themeObserver = new MutationObserver(() => {
+            updateLogoColors();
+        });
+        themeObserver.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+        
+        updateLogoColors();
+        
+        const originalToggle = window.toggleTheme;
+        window.toggleTheme = function() {
+            originalToggle();
+            setTimeout(() => {
+                updateLogoColors();
+            }, 10);
+        };
+    </script>
+    <script>
+        function updateThemeIcon() {
+            const icon = document.getElementById('theme-icon');
+            const isDark = document.documentElement.classList.contains('dark');
+            icon.textContent = isDark ? '☀️' : '🌙';
+        }
+        
+        updateThemeIcon();
+        const observer = new MutationObserver(updateThemeIcon);
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+        
+        const originalToggle = window.toggleTheme;
+        window.toggleTheme = function() {
+            originalToggle();
+            setTimeout(updateThemeIcon, 10);
+        };
+        
+        // Update phase label color based on phase
+        const phaseLabel = document.getElementById('phaseLabel');
+        const phaseObserver = new MutationObserver(() => {
+            const isWork = phaseLabel.textContent === 'Work';
+            phaseLabel.style.color = isWork 
+                ? 'hsl(var(--primary))' 
+                : 'hsl(var(--secondary))';
+        });
+        phaseObserver.observe(phaseLabel, {
+            childList: true,
+            characterData: true,
+            subtree: true
+        });
+    </script>
+</body>
+</html>

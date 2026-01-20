@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Countdown - Timerist | HIIT Timer, Quick Rest Timer, Workout Countdown</title>
+    <meta name="description" content="Quick Countdown timer for short rests, holds, or bursts in HIIT, CrossFit, or circuit training. Tap a preset to start instantly—no setup required.">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Existing Design System CSS -->
+    <link rel="stylesheet" href="styles/timerist-design-system.css">
+    <link rel="stylesheet" href="styles/themes.css">
+    <link rel="stylesheet" href="styles/main.css">
+    
+    <style>
+        /* Styling matched exactly to samples: system-sans font, RGB vars, simple opacity hover no transforms */
+        :root {
+            --background: 245 247 250;
+            --foreground: 51 51 51;
+            --card: 255 255 255;
+            --card-foreground: 51 51 51;
+            --primary: 74 144 226;
+            --primary-foreground: 255 255 255;
+            --secondary: 80 200 120;
+            --secondary-foreground: 255 255 255;
+            --muted: 102 102 102;
+            --muted-foreground: 153 153 153;
+            --accent: 225 232 237;
+            --accent-foreground: 51 51 51;
+            --destructive: 231 76 60;
+            --destructive-foreground: 255 255 255;
+            --border: 225 232 237;
+            --input: 225 232 237;
+            --ring: 74 144 226;
+            --radius: 0.5rem;
+        }
+        
+        [data-theme="style1"] {
+            --background: 0 0 0;
+            --foreground: 255 255 255;
+            --card: 26 26 26;
+            --card-foreground: 255 255 255;
+            --primary: 255 0 0;
+            --primary-foreground: 255 255 255;
+            --secondary: 0 255 0;
+            --secondary-foreground: 0 0 0;
+            --muted: 204 204 204;
+            --muted-foreground: 153 153 153;
+            --accent: 51 51 51;
+            --accent-foreground: 255 255 255;
+            --destructive: 255 0 0;
+            --destructive-foreground: 255 255 255;
+            --border: 51 51 51;
+            --input: 51 51 51;
+            --ring: 255 0 0;
+        }
+        
+        /* Apply system fonts globally - matches reference pages */
+        body {
+            background: rgb(var(--background));
+            color: rgb(var(--foreground));
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .timer-display-large {
+            font-size: clamp(3rem, 15vw, 8rem);
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            line-height: 1;
+            color: rgb(var(--primary));
+            transition: color 0.3s ease;
+        }
+        
+        .timer-display-large.warning {
+            color: #f59e0b;
+        }
+        
+        .timer-display-large.danger {
+            color: rgb(var(--destructive));
+        }
+        
+        /* Button base classes: px-4 py-2 rounded-md font-semibold uppercase tracking-wide transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed */
+        .quick-select-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            padding: 0.5rem 1rem; /* px-4 py-2 */
+            border-radius: 0.375rem; /* rounded-md */
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 600; /* font-semibold */
+            letter-spacing: 0.025em; /* tracking-wide */
+            text-transform: uppercase;
+            transition: all 0.2s; /* transition-all duration-200 */
+            cursor: pointer;
+            border: none;
+            background-color: rgb(var(--accent));
+            color: rgb(var(--accent-foreground));
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .quick-select-btn:hover:not(:disabled) {
+            background-color: rgba(var(--primary), 0.9); /* hover:bg-primary/90 */
+            color: rgb(var(--primary-foreground));
+        }
+        
+        .quick-select-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Adjust buttons: bg-secondary text-secondary-foreground hover:bg-secondary/90 */
+        .adjust-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            padding: 0.5rem 1rem; /* px-4 py-2 */
+            border-radius: 0.375rem; /* rounded-md */
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 600; /* font-semibold */
+            letter-spacing: 0.025em; /* tracking-wide */
+            text-transform: uppercase;
+            transition: all 0.2s; /* transition-all duration-200 */
+            cursor: pointer;
+            border: none;
+            background-color: rgb(var(--secondary));
+            color: rgb(var(--secondary-foreground));
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .adjust-btn:hover:not(:disabled) {
+            background-color: rgba(var(--secondary), 0.9); /* hover:bg-secondary/90 */
+        }
+        
+        .adjust-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Control buttons: bg-primary text-primary-foreground hover:bg-primary/90 */
+        .control-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            padding: 0.5rem 1rem; /* px-4 py-2 */
+            border-radius: 0.375rem; /* rounded-md */
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 600; /* font-semibold */
+            letter-spacing: 0.025em; /* tracking-wide */
+            text-transform: uppercase;
+            transition: all 0.2s; /* transition-all duration-200 */
+            cursor: pointer;
+            border: none;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .control-btn.btn-primary {
+            background-color: rgb(var(--primary));
+            color: rgb(var(--primary-foreground));
+        }
+        
+        .control-btn.btn-primary:hover:not(:disabled) {
+            background-color: rgba(var(--primary), 0.9); /* hover:bg-primary/90 */
+        }
+        
+        .control-btn.btn-secondary {
+            background-color: rgb(var(--secondary));
+            color: rgb(var(--secondary-foreground));
+        }
+        
+        .control-btn.btn-secondary:hover:not(:disabled) {
+            background-color: rgba(var(--secondary), 0.9); /* hover:bg-secondary/90 */
+        }
+        
+        .control-btn.btn-destructive {
+            background-color: rgb(var(--destructive));
+            color: rgb(var(--destructive-foreground));
+        }
+        
+        .control-btn.btn-destructive:hover:not(:disabled) {
+            background-color: rgba(var(--destructive), 0.9); /* hover:bg-destructive/90 */
+        }
+        
+        .control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .header-top {
+            position: absolute;
+            top: clamp(1rem, 3vw, 2rem);
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 clamp(1rem, 3vw, 2rem);
+            z-index: 10;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header-top a {
+            transition: opacity 0.2s ease;
+        }
+        
+        .header-top a:hover {
+            opacity: 0.7;
+        }
+        
+        .hamburger-menu {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgb(var(--foreground));
+            font-size: 1.5rem;
+            transition: opacity 0.2s;
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            border-radius: var(--radius);
+        }
+        
+        .hamburger-menu:hover {
+            opacity: 0.7;
+            background-color: rgb(var(--accent));
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+        
+        .header-top .mode-toggle-btn {
+            position: relative;
+            top: auto;
+            right: auto;
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+        }
+        
+        .settings-drawer {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            background: rgb(var(--card));
+            border-left: 1px solid rgb(var(--border));
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            z-index: 1002;
+            overflow-y: auto;
+        }
+        
+        .settings-drawer.open {
+            right: 0;
+        }
+        
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 1001;
+        }
+        
+        .drawer-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .drawer-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgb(var(--border));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .drawer-content {
+            padding: 1.5rem;
+        }
+        
+        .drawer-section {
+            margin-bottom: 2rem;
+        }
+        
+        .drawer-section h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: rgb(var(--foreground));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .drawer-section p {
+            color: rgb(var(--muted-foreground));
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        .drawer-close {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: rgb(var(--foreground));
+            padding: 0.25rem;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius);
+        }
+        
+        .drawer-close:hover {
+            background-color: rgb(var(--accent));
+        }
+        
+        .color-picker-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+        }
+        
+        .color-picker-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .color-picker-item label {
+            min-width: 120px;
+            font-size: 0.875rem;
+            color: rgb(var(--foreground));
+            font-weight: 500;
+        }
+        
+        .color-picker-item input[type="color"] {
+            width: 60px;
+            height: 40px;
+            border: 2px solid rgb(var(--border));
+            border-radius: var(--radius);
+            cursor: pointer;
+        }
+        
+        .custom-time-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid rgb(var(--input));
+            border-radius: var(--radius);
+            background-color: rgb(var(--background));
+            color: rgb(var(--foreground));
+            font-size: 1.125rem;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            min-height: 48px;
+        }
+        
+        .custom-time-input:focus {
+            outline: none;
+            border-color: rgb(var(--ring));
+            box-shadow: 0 0 0 2px rgba(var(--ring), 0.2);
+        }
+        
+        .quick-select-hint {
+            font-size: 0.75rem;
+            color: rgb(var(--muted-foreground));
+            text-align: center;
+            margin-bottom: 0.5rem;
+            font-style: italic;
+            font-weight: 500;
+        }
+        
+        .adjust-hint {
+            font-size: 0.75rem;
+            color: rgb(var(--muted-foreground));
+            text-align: center;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .timer-running .quick-select-btn:not(.reset-btn) {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
+        .timer-running .adjust-btn {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
+        @media (max-width: 480px) {
+            .timer-display-large {
+                font-size: clamp(2.5rem, 12vw, 6rem);
+            }
+            
+            .quick-select-btn {
+                font-size: 0.875rem;
+                padding: 0.5rem 1rem;
+            }
+            
+            .control-btn {
+                font-size: 0.875rem;
+                padding: 0.5rem 1rem;
+            }
+        }
+        
+        @media (orientation: landscape) and (max-height: 600px) {
+            .timer-display-large {
+                font-size: clamp(2rem, 10vw, 5rem);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header-top">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <a href="index.html" style="display: flex; align-items: center; text-decoration: none; cursor: pointer;">
+                <svg
+                    width="40"
+                    height="40"
+                    viewBox="0 0 40 40"
+                    xmlns="http://www.w3.org/2000/svg"
+                    id="timerist-logo"
+                    style="display: block; width: 40px; height: 40px; color: #0a0a0a;"
+                >
+                    <circle cx="20" cy="20" r="15" fill="none" stroke="#0a0a0a" stroke-width="2.5" class="logo-circle"/>
+                    <line x1="20" y1="20" x2="20" y2="8" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
+                    <line x1="20" y1="20" x2="30" y2="20" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
+                </svg>
+            </a>
+            <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">timerist.com</span>
+            <span style="color: rgb(var(--muted-foreground));">|</span>
+            <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">Quick Countdown</span>
+        </div>
+        
+        <div class="header-actions">
+            <button class="mode-toggle-btn mode-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                <span id="theme-icon">🌙</span>
+            </button>
+            <button class="hamburger-menu" onclick="toggleDrawer()" aria-label="Open Timer Setup menu">
+                ☰
+            </button>
+        </div>
+    </div>
+    
+    <!-- Main Timer Container -->
+    <div class="container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding-top: clamp(5rem, 10vw, 7rem); padding-bottom: 2rem;">
+        <!-- Timer Display -->
+        <div class="timer-display" style="text-align: center; margin-bottom: 2rem;">
+            <div class="timer-display-large" id="display">00:00</div>
+        </div>
+        
+        <!-- Quick-Select Buttons Row -->
+        <div style="width: 100%; max-width: 800px; margin-bottom: 1.5rem;">
+            <p class="quick-select-hint">Tap to start instantly</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 0.5rem; padding: 0 1rem;">
+                <button class="quick-select-btn" data-seconds="15" title="Starts 00:15 countdown">00:15</button>
+                <button class="quick-select-btn" data-seconds="30" title="Starts 00:30 countdown">00:30</button>
+                <button class="quick-select-btn" data-seconds="45" title="Starts 00:45 countdown">00:45</button>
+                <button class="quick-select-btn" data-seconds="60" title="Starts 01:00 countdown">01:00</button>
+                <button class="quick-select-btn" data-seconds="75" title="Starts 01:15 countdown">01:15</button>
+                <button class="quick-select-btn" data-seconds="90" title="Starts 01:30 countdown">01:30</button>
+                <button class="quick-select-btn" data-seconds="105" title="Starts 01:45 countdown">01:45</button>
+                <button class="quick-select-btn" data-seconds="120" title="Starts 02:00 countdown">02:00</button>
+                <button class="quick-select-btn" data-seconds="135" title="Starts 02:15 countdown">02:15</button>
+                <button class="quick-select-btn" data-seconds="150" title="Starts 02:30 countdown">02:30</button>
+                <button class="quick-select-btn" data-seconds="165" title="Starts 02:45 countdown">02:45</button>
+                <button class="quick-select-btn" data-seconds="180" title="Starts 03:00 countdown">03:00</button>
+                <button class="quick-select-btn" data-seconds="195" title="Starts 03:15 countdown">03:15</button>
+                <button class="quick-select-btn" data-seconds="210" title="Starts 03:30 countdown">03:30</button>
+                <button class="quick-select-btn" data-seconds="225" title="Starts 03:45 countdown">03:45</button>
+                <button class="quick-select-btn" data-seconds="240" title="Starts 04:00 countdown">04:00</button>
+                <button class="quick-select-btn" data-seconds="255" title="Starts 04:15 countdown">04:15</button>
+                <button class="quick-select-btn" data-seconds="270" title="Starts 04:30 countdown">04:30</button>
+                <button class="quick-select-btn" data-seconds="285" title="Starts 04:45 countdown">04:45</button>
+                <button class="quick-select-btn" data-seconds="300" title="Starts 05:00 countdown">05:00</button>
+            </div>
+        </div>
+        
+        <!-- Fine-Tune Controls -->
+        <div style="width: 100%; max-width: 400px; margin-bottom: 2rem; padding: 0 1rem;">
+            <p class="adjust-hint">Adjust time: -5s   +5s</p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button class="adjust-btn" id="decreaseBtn" type="button" aria-label="Decrease time by 5 seconds">-5 sec</button>
+                <button class="adjust-btn" id="increaseBtn" type="button" aria-label="Increase time by 5 seconds">+5 sec</button>
+            </div>
+        </div>
+        
+        <!-- Operation Buttons -->
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; padding: 0 1rem;">
+            <button class="btn btn-primary control-btn" id="startBtn" style="display: none;" aria-label="Start timer">Start</button>
+            <button class="btn btn-secondary control-btn" id="pauseBtn" style="display: none;" aria-label="Pause timer">Pause</button>
+            <button class="btn btn-destructive control-btn" id="resetBtn" style="display: none;" aria-label="Reset timer">Reset</button>
+        </div>
+    </div>
+    
+    <!-- Drawer Overlay -->
+    <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+    
+    <!-- Settings Drawer -->
+    <div class="settings-drawer" id="settingsDrawer">
+        <div class="drawer-header">
+            <h2 style="font-size: 1rem; font-weight: 600; color: rgb(var(--foreground)); text-transform: uppercase; letter-spacing: 0.05em;">Timer Setup</h2>
+            <button class="drawer-close" onclick="closeDrawer()" aria-label="Close drawer">×</button>
+        </div>
+        <div class="drawer-content">
+            <!-- Setup Content -->
+            <div class="drawer-section">
+                <h3>Setup Content</h3>
+                <label for="customTimeInput" style="display: block; margin-bottom: 0.5rem; font-size: 0.75rem; font-weight: 600; color: rgb(var(--muted-foreground)); text-transform: uppercase; letter-spacing: 0.05em;">
+                    Custom Starting Time (seconds)
+                </label>
+                <input 
+                    type="number" 
+                    id="customTimeInput" 
+                    class="custom-time-input" 
+                    min="0" 
+                    max="600" 
+                    value="30" 
+                    placeholder="30"
+                    aria-label="Custom starting time in seconds"
+                >
+                <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.5rem;">
+                    Note: Quick-select buttons override this setting.
+                </p>
+            </div>
+            
+            <!-- Setup Colors -->
+            <div class="drawer-section">
+                <h3>Setup Colors</h3>
+                <div class="color-picker-group">
+                    <div class="color-picker-item">
+                        <label for="bgColor">Background</label>
+                        <input type="color" id="bgColor" aria-label="Background color">
+                    </div>
+                    <div class="color-picker-item">
+                        <label for="timerColor">Timer Text</label>
+                        <input type="color" id="timerColor" aria-label="Timer text color">
+                    </div>
+                    <div class="color-picker-item">
+                        <label for="buttonColor">Button Accents</label>
+                        <input type="color" id="buttonColor" aria-label="Button accent color">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- About This Timer -->
+            <div class="drawer-section">
+                <h3>About This Timer</h3>
+                <p>
+                    Quick Countdown is perfect for short rests, holds, or bursts in HIIT, CrossFit, or circuit training. 
+                    Tap a preset to start instantly—no setup required.
+                </p>
+                <p style="margin-top: 0.75rem;">
+                    <strong>Keywords:</strong> HIIT timer, quick rest timer, workout countdown, fitness interval tool, CrossFit timer, circuit training timer.
+                </p>
+                <p style="margin-top: 0.75rem;">
+                    Pair with our <a href="interval.html" style="color: rgb(var(--primary)); text-decoration: underline;">Interval Timer</a> or 
+                    <a href="tabata.html" style="color: rgb(var(--primary)); text-decoration: underline;">Tabata Timer</a> for full sessions.
+                </p>
+            </div>
+            
+            <!-- General Info -->
+            <div class="drawer-section">
+                <h3>General Info</h3>
+                <p><strong>Version:</strong> v0.1</p>
+                <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
+            </div>
+            
+            <!-- Footer Links -->
+            <div class="drawer-section" style="border-top: 1px solid rgb(var(--border)); padding-top: 1.5rem; margin-top: 2rem;">
+                <a href="index.html" style="display: block; padding: 0.75rem; color: rgb(var(--primary)); text-decoration: none; border-radius: var(--radius); transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='rgb(var(--accent))'" onmouseout="this.style.backgroundColor='transparent'">
+                    ← Back to Timers
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="scripts/dark-mode-toggle.js"></script>
+    <script>
+        // Quick Countdown Timer Logic
+        let currentTime = 0;
+        let totalSeconds = 0;
+        let interval = null;
+        let isRunning = false;
+        
+        const display = document.getElementById('display');
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const decreaseBtn = document.getElementById('decreaseBtn');
+        const increaseBtn = document.getElementById('increaseBtn');
+        const quickSelectButtons = document.querySelectorAll('.quick-select-btn[data-seconds]');
+        const customTimeInput = document.getElementById('customTimeInput');
+        
+        // Format time as MM:SS
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+        
+        // Update display with color coding
+        function updateDisplay() {
+            display.textContent = formatTime(currentTime);
+            
+            // Color coding: normal -> warning (last 30%) -> danger (last 10%)
+            display.classList.remove('warning', 'danger');
+            if (totalSeconds > 0) {
+                const percentRemaining = currentTime / totalSeconds;
+                if (percentRemaining <= 0.1) {
+                    display.classList.add('danger');
+                } else if (percentRemaining <= 0.3) {
+                    display.classList.add('warning');
+                }
+            }
+            
+            // Add running class for styling
+            if (isRunning) {
+                document.body.classList.add('timer-running');
+            } else {
+                document.body.classList.remove('timer-running');
+            }
+        }
+        
+        // Start timer
+        function startTimer() {
+            if (currentTime <= 0) return;
+            
+            isRunning = true;
+            startBtn.style.display = 'none';
+            pauseBtn.style.display = 'inline-block';
+            resetBtn.style.display = 'inline-block';
+            
+            interval = setInterval(() => {
+                currentTime--;
+                updateDisplay();
+                
+                if (currentTime <= 0) {
+                    stopTimer();
+                    playSound();
+                    showDoneMessage();
+                }
+            }, 1000);
+        }
+        
+        // Pause timer
+        function pauseTimer() {
+            isRunning = false;
+            clearInterval(interval);
+            startBtn.style.display = 'inline-block';
+            startBtn.textContent = 'Resume';
+            pauseBtn.style.display = 'none';
+            resetBtn.style.display = 'inline-block';
+        }
+        
+        // Stop timer (called when countdown reaches 0)
+        function stopTimer() {
+            isRunning = false;
+            clearInterval(interval);
+            interval = null;
+            startBtn.style.display = 'none';
+            pauseBtn.style.display = 'none';
+            resetBtn.style.display = 'inline-block';
+            updateDisplay();
+        }
+        
+        // Reset timer
+        function resetTimer() {
+            isRunning = false;
+            clearInterval(interval);
+            interval = null;
+            currentTime = totalSeconds;
+            updateDisplay();
+            startBtn.textContent = 'Start';
+            startBtn.style.display = totalSeconds > 0 ? 'inline-block' : 'none';
+            pauseBtn.style.display = 'none';
+            resetBtn.style.display = 'none';
+        }
+        
+        // Set time from quick-select button (AUTO-STARTS)
+        function setTimeAndStart(seconds) {
+            if (isRunning) return; // Don't allow changing time while running
+            
+            totalSeconds = seconds;
+            currentTime = seconds;
+            updateDisplay();
+            
+            // Auto-start the timer
+            startTimer();
+        }
+        
+        // Adjust time by ±5 seconds (DOES NOT START)
+        function adjustTime(increment) {
+            if (isRunning) return; // Don't allow adjusting while running
+            
+            const adjustment = increment ? 5 : -5;
+            const newTime = Math.max(0, currentTime + adjustment);
+            
+            currentTime = newTime;
+            totalSeconds = newTime;
+            updateDisplay();
+            
+            // Show/hide start button based on time
+            if (currentTime > 0) {
+                startBtn.style.display = 'inline-block';
+                startBtn.textContent = 'Start';
+            } else {
+                startBtn.style.display = 'none';
+            }
+        }
+        
+        // Play sound when timer completes
+        function playSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (e) {
+                console.log('Audio not available');
+            }
+        }
+        
+        // Show "Done!" message
+        function showDoneMessage() {
+            const originalText = display.textContent;
+            display.textContent = 'Done!';
+            display.classList.add('danger');
+            
+            setTimeout(() => {
+                updateDisplay();
+            }, 2000);
+        }
+        
+        // Event Listeners
+        startBtn.addEventListener('click', startTimer);
+        pauseBtn.addEventListener('click', pauseTimer);
+        resetBtn.addEventListener('click', resetTimer);
+        decreaseBtn.addEventListener('click', () => adjustTime(false));
+        increaseBtn.addEventListener('click', () => adjustTime(true));
+        
+        // Quick-select button listeners (auto-start)
+        quickSelectButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const seconds = parseInt(this.getAttribute('data-seconds'));
+                setTimeAndStart(seconds);
+            });
+        });
+        
+        // Custom time input (optional, from drawer)
+        customTimeInput.addEventListener('change', function() {
+            const seconds = parseInt(this.value) || 0;
+            if (seconds > 0 && !isRunning) {
+                totalSeconds = seconds;
+                currentTime = seconds;
+                updateDisplay();
+                if (currentTime > 0) {
+                    startBtn.style.display = 'inline-block';
+                    startBtn.textContent = 'Start';
+                }
+            }
+        });
+        
+        // Drawer Functions
+        function toggleDrawer() {
+            const drawer = document.getElementById('settingsDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+            drawer.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+        
+        function closeDrawer() {
+            const drawer = document.getElementById('settingsDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+            drawer.classList.remove('open');
+            overlay.classList.remove('open');
+        }
+        
+        // Color Picker Handlers (persist to localStorage)
+        const bgColorPicker = document.getElementById('bgColor');
+        const timerColorPicker = document.getElementById('timerColor');
+        const buttonColorPicker = document.getElementById('buttonColor');
+        
+        // Get current background color from computed styles
+        function getCurrentBackgroundColor() {
+            const computed = window.getComputedStyle(document.body);
+            return computed.backgroundColor || '#ffffff';
+        }
+        
+        // Convert rgb/rgba to hex
+        function rgbToHex(rgb) {
+            if (!rgb) return '#ffffff';
+            const match = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+            if (match) {
+                const r = parseInt(match[1]).toString(16).padStart(2, '0');
+                const g = parseInt(match[2]).toString(16).padStart(2, '0');
+                const b = parseInt(match[3]).toString(16).padStart(2, '0');
+                return `#${r}${g}${b}`;
+            }
+            return '#ffffff';
+        }
+        
+        // Load saved colors
+        function loadColors() {
+            const savedBg = localStorage.getItem('quickCountdown-bgColor');
+            const savedTimer = localStorage.getItem('quickCountdown-timerColor');
+            const savedButton = localStorage.getItem('quickCountdown-buttonColor');
+            
+            if (savedBg) {
+                bgColorPicker.value = savedBg;
+                applyBackgroundColor(savedBg);
+            } else {
+                // Set default to current background
+                const currentBg = getCurrentBackgroundColor();
+                const hexBg = rgbToHex(currentBg);
+                bgColorPicker.value = hexBg;
+            }
+            
+            if (savedTimer) {
+                timerColorPicker.value = savedTimer;
+                applyTimerColorToHints(savedTimer);
+            } else {
+                // Set default timer color
+                const isDark = document.documentElement.getAttribute('data-theme') === 'style1';
+                const defaultTimerColor = isDark ? '#fafafa' : '#0a0a0a';
+                timerColorPicker.value = defaultTimerColor;
+                applyTimerColorToHints(defaultTimerColor);
+            }
+            
+            if (savedButton) {
+                buttonColorPicker.value = savedButton;
+                applyButtonColor(savedButton);
+            } else {
+                // Set default button color
+                const isDark = document.documentElement.getAttribute('data-theme') === 'style1';
+                buttonColorPicker.value = isDark ? '#fafafa' : '#0a0a0a';
+            }
+        }
+        
+        // Apply background color using a dynamically updated style element
+        let customBgStyleElement = null;
+        
+        // Convert hex to HSL format (for CSS variables)
+        function hexToHsl(hex) {
+            // Remove # if present
+            hex = hex.replace('#', '');
+            const r = parseInt(hex.substring(0, 2), 16) / 255;
+            const g = parseInt(hex.substring(2, 4), 16) / 255;
+            const b = parseInt(hex.substring(4, 6), 16) / 255;
+            
+            const max = Math.max(r, g, b);
+            const min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+            
+            if (max === min) {
+                h = s = 0; // achromatic
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+                    case g: h = ((b - r) / d + 2) / 6; break;
+                    case b: h = ((r - g) / d + 4) / 6; break;
+                }
+            }
+            
+            h = Math.round(h * 360);
+            s = Math.round(s * 100);
+            l = Math.round(l * 100);
+            
+            return `${h} ${s}% ${l}%`;
+        }
+        
+        function applyBackgroundColor(color) {
+            // Ensure body exists before applying
+            if (!document.body) {
+                // If body doesn't exist yet, wait for DOM to be ready
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', () => applyBackgroundColor(color));
+                    return;
+                }
+            }
+            
+            console.log('Applying background color:', color); // Debug log
+            
+            // Method 1: Apply directly to html and body elements as inline styles (highest priority)
+            document.documentElement.style.backgroundColor = color;
+            document.body.style.backgroundColor = color;
+            
+            // Method 2: Also try with setProperty for maximum compatibility
+            try {
+                document.documentElement.style.setProperty('background-color', color, 'important');
+                document.body.style.setProperty('background-color', color, 'important');
+            } catch (e) {
+                console.warn('setProperty with important failed, using fallback');
+            }
+            
+            // Method 3: Create or update a style element for custom background
+            // Remove existing one if it exists to avoid duplicates
+            const existingStyle = document.getElementById('custom-bg-style');
+            if (existingStyle) {
+                existingStyle.remove();
+            }
+            
+            // Create new style element and append to body (ensures it loads after all stylesheets)
+            customBgStyleElement = document.createElement('style');
+            customBgStyleElement.id = 'custom-bg-style';
+            customBgStyleElement.textContent = `
+                html {
+                    background-color: ${color} !important;
+                    background: ${color} !important;
+                }
+                body {
+                    background-color: ${color} !important;
+                    background: ${color} !important;
+                }
+            `;
+            
+            // Append to body to ensure it's loaded after all other styles
+            document.body.appendChild(customBgStyleElement);
+        }
+        
+        // Apply timer color to hint texts using a dynamically updated style element
+        let customTimerHintStyleElement = null;
+        
+        function applyTimerColorToHints(color) {
+            // Create or update a style element for timer color on hints
+            if (!customTimerHintStyleElement) {
+                customTimerHintStyleElement = document.createElement('style');
+                customTimerHintStyleElement.id = 'custom-timer-hint-style';
+                document.head.appendChild(customTimerHintStyleElement);
+            }
+            
+            // Apply timer color to hint texts with !important to override
+            customTimerHintStyleElement.textContent = `
+                .quick-select-hint {
+                    color: ${color} !important;
+                }
+                .adjust-hint {
+                    color: ${color} !important;
+                }
+            `;
+        }
+        
+        // Apply button colors using a dynamically updated style element
+        let customButtonStyleElement = null;
+        
+        function applyButtonColor(color) {
+            // Create or update a style element for custom button colors
+            if (!customButtonStyleElement) {
+                customButtonStyleElement = document.createElement('style');
+                customButtonStyleElement.id = 'custom-button-style';
+                document.head.appendChild(customButtonStyleElement);
+            }
+            
+            // Convert hex to rgba for hover (90% opacity like samples)
+            function hexToRgba(hex, alpha) {
+                const r = parseInt(hex.slice(1, 3), 16);
+                const g = parseInt(hex.slice(3, 5), 16);
+                const b = parseInt(hex.slice(5, 7), 16);
+                return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+            }
+            
+            const hoverColor = hexToRgba(color, 0.9);
+            
+            // Apply button color to all button types with !important to override
+            customButtonStyleElement.textContent = `
+                .quick-select-btn:not(:disabled) {
+                    background-color: ${color} !important;
+                    border-color: ${color} !important;
+                }
+                .quick-select-btn:hover:not(:disabled) {
+                    background-color: ${hoverColor} !important;
+                    border-color: ${hoverColor} !important;
+                }
+                .adjust-btn:not(:disabled) {
+                    background-color: ${color} !important;
+                    border-color: ${color} !important;
+                }
+                .adjust-btn:hover:not(:disabled) {
+                    background-color: ${hoverColor} !important;
+                    border-color: ${hoverColor} !important;
+                }
+                .control-btn.btn-primary:not(:disabled) {
+                    background-color: ${color} !important;
+                    border-color: ${color} !important;
+                }
+                .control-btn.btn-primary:hover:not(:disabled) {
+                    background-color: ${hoverColor} !important;
+                    border-color: ${hoverColor} !important;
+                }
+            `;
+        }
+        
+        // Save and apply colors
+        // Use both 'input' (for real-time) and 'change' (for final value) events
+        bgColorPicker.addEventListener('input', function() {
+            const color = this.value;
+            applyBackgroundColor(color);
+        });
+        
+        bgColorPicker.addEventListener('change', function() {
+            const color = this.value;
+            localStorage.setItem('quickCountdown-bgColor', color);
+            applyBackgroundColor(color);
+        });
+        
+        timerColorPicker.addEventListener('input', function() {
+            const color = this.value;
+            applyTimerColorToHints(color);
+        });
+        
+        timerColorPicker.addEventListener('change', function() {
+            const color = this.value;
+            localStorage.setItem('quickCountdown-timerColor', color);
+            applyTimerColorToHints(color);
+        });
+        
+        buttonColorPicker.addEventListener('input', function() {
+            const color = this.value;
+            applyButtonColor(color);
+        });
+        
+        buttonColorPicker.addEventListener('change', function() {
+            const color = this.value;
+            localStorage.setItem('quickCountdown-buttonColor', color);
+            applyButtonColor(color);
+        });
+        
+        // Theme Icon Update
+        function updateThemeIcon() {
+            const icon = document.getElementById('theme-icon');
+            const isDark = document.documentElement.getAttribute('data-theme') === 'style1';
+            icon.textContent = isDark ? '☀️' : '🌙';
+        }
+        
+        updateThemeIcon();
+        const observer = new MutationObserver(updateThemeIcon);
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-theme']
+        });
+        
+        const originalToggle = window.toggleTheme;
+        window.toggleTheme = function() {
+            originalToggle();
+            setTimeout(() => {
+                updateThemeIcon();
+                updateLogoColors();
+            }, 10);
+        };
+        
+        // Logo Color Update
+        function updateLogoColors() {
+            const logo = document.getElementById('timerist-logo');
+            if (!logo) return;
+            
+            const isDark = document.documentElement.getAttribute('data-theme') === 'style1';
+            const lightColor = '#0a0a0a';
+            const darkColor = '#fafafa';
+            const color = isDark ? darkColor : lightColor;
+            
+            const circles = logo.querySelectorAll('.logo-circle');
+            const lines = logo.querySelectorAll('.logo-line');
+            
+            circles.forEach(el => el.setAttribute('stroke', color));
+            lines.forEach(el => el.setAttribute('stroke', color));
+        }
+        
+        const themeObserver = new MutationObserver(() => {
+            updateLogoColors();
+        });
+        themeObserver.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-theme']
+        });
+        
+        // Initialize
+        updateLogoColors();
+        loadColors();
+        updateDisplay();
+        
+        // Set release date
+        document.getElementById('releaseDate').textContent = new Date().toISOString().split('T')[0];
+    </script>
+</body>
+</html>
