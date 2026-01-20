@@ -18,9 +18,10 @@ chmod +x .git/hooks/pre-commit
 chmod +x scripts/increment-timer-versions.sh
 ```
 
-## Supported Timer Files
+## Supported Files
 
-The following timer files are automatically versioned:
+### Individual Timer Files
+The following timer files are automatically versioned when THEY are committed:
 - stopwatch.html
 - stopwatch-splits.html
 - interval.html
@@ -35,9 +36,13 @@ The following timer files are automatically versioned:
 - pyramid.html
 - custom.html
 
+### Site-Wide Version
+When `main.html` or `index.html` are committed (indicating a site-wide deployment), the site version in `public/version.json` is also incremented by 0.01. This version is displayed on the main index page.
+
 ## How It Works
 
-1. When you stage timer files for commit (`git add`)
+### Individual Timer Files
+1. When you stage a timer file for commit (`git add stopwatch.html`)
 2. The pre-commit hook runs automatically
 3. It checks which timer files are staged
 4. For each staged timer file, it:
@@ -46,6 +51,14 @@ The following timer files are automatically versioned:
    - Updates the file
    - Re-stages the updated file
 5. The commit proceeds with the incremented version numbers
+
+### Site-Wide Deployment
+1. When you stage `main.html` or `index.html` for commit
+2. The script detects this as a site-wide update
+3. It increments the version in `public/version.json` by 0.01
+4. Updates the build date and time
+5. Re-stages the updated `version.json` file
+6. Individual timer files can still be incremented in the same commit if they're also staged
 
 ## Manual Usage
 
