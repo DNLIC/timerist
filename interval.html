@@ -309,6 +309,45 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
+        /* Clear button hover - dark gray like quick countdown timer */
+        #clearBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode Clear button hover - lighter gray */
+        [data-theme="style1"] #clearBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        /* Start button hover - dark gray like Set Up button */
+        #startBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode Start button hover - lighter gray */
+        [data-theme="style1"] #startBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        /* Pause button hover - dark gray (when not paused) */
+        #pauseBtn:hover:not(:disabled):not(.paused) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode Pause button hover - lighter gray (when not paused) */
+        [data-theme="style1"] #pauseBtn:hover:not(:disabled):not(.paused) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
         .control-btn.btn-destructive {
             background-color: rgb(var(--destructive));
             color: rgb(var(--destructive-foreground));
@@ -317,6 +356,19 @@
         .control-btn.btn-destructive:hover:not(:disabled) {
             background-color: rgba(var(--destructive), 0.9);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Reset button hover - dark gray like Set Up button */
+        #resetBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode Reset button hover - lighter gray */
+        [data-theme="style1"] #resetBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
         }
         
         .control-btn:disabled {
@@ -784,6 +836,172 @@
         html[data-theme="style1"] #timerist-logo .logo-line {
             stroke: #fafafa !important;
         }
+        
+        /* Rounds Slider Styles */
+        .rounds-slider-container {
+            margin-bottom: 1.5rem;
+        }
+        
+        .rounds-slider-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: rgb(var(--muted-foreground));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+            text-align: center;
+        }
+        
+        .rounds-slider-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .rounds-slider-value {
+            min-width: 3rem;
+            text-align: center;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: rgb(var(--foreground));
+            font-family: 'Courier New', monospace;
+        }
+        
+        .rounds-slider {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: rgb(var(--input));
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        
+        .rounds-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgb(var(--primary));
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .rounds-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 4px rgba(var(--primary), 0.2);
+        }
+        
+        .rounds-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgb(var(--primary));
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        
+        .rounds-slider::-moz-range-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 4px rgba(var(--primary), 0.2);
+        }
+        
+        .rounds-slider:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .rounds-slider:disabled::-webkit-slider-thumb {
+            cursor: not-allowed;
+        }
+        
+        .rounds-slider:disabled::-moz-range-thumb {
+            cursor: not-allowed;
+        }
+        
+        /* Preset Interval Buttons */
+        .quick-select-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 1.125rem;
+            font-weight: 500;
+            line-height: 1.2;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            background-color: rgb(var(--primary));
+            color: rgb(var(--primary-foreground));
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            min-width: 0;
+            width: 100%;
+        }
+        
+        @media (min-width: 640px) {
+            .quick-select-btn {
+                min-width: 100px;
+                font-size: 1.25rem;
+                height: 2.5rem;
+            }
+        }
+        
+        .quick-select-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+        
+        @media (min-width: 480px) {
+            .quick-select-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (min-width: 640px) {
+            .quick-select-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        @media (orientation: landscape) and (max-height: 500px) {
+            .quick-select-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        .quick-select-btn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode hover state - use lighter gray */
+        [data-theme="style1"] .quick-select-btn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        .quick-select-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .quick-select-btn.selected {
+            font-weight: 700;
+        }
+        
+        .timer-running .quick-select-btn:not(.reset-btn):not(.selected) {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -822,9 +1040,9 @@
             <!-- Timer Display -->
             <div class="timer-display-block bg-card border border-border rounded-lg shadow-lg text-center">
                 <div class="phase-label" id="phaseLabel">Work</div>
-                <div class="timer-display-large" id="display">00:30</div>
+                <div class="timer-display-large" id="display">00:00</div>
                 <div class="round-info">
-                    Round <span id="round">1</span> of <span id="totalRounds">5</span>
+                    Round <span id="round">1</span> of <span id="totalRounds">0</span>
                 </div>
             </div>
             
@@ -836,6 +1054,46 @@
                     <button class="control-btn btn-destructive" id="resetBtn" style="display: none;" aria-label="Reset timer">Reset</button>
                     <button class="control-btn btn-secondary" id="clearBtn" aria-label="Clear timer">Clear</button>
                     <button class="control-btn btn-primary" id="setupBtn" style="display: none;" aria-label="Set up timer">Set Up</button>
+                </div>
+            </div>
+            
+            <!-- Rounds Slider and Preset Intervals -->
+            <div class="p-6 bg-card border border-border rounded-lg shadow-lg">
+                <!-- Rounds Slider -->
+                <div class="rounds-slider-container">
+                    <label class="rounds-slider-label" for="roundsSlider">Rounds</label>
+                    <div class="rounds-slider-wrapper">
+                        <span class="rounds-slider-value" id="roundsSliderValue">1</span>
+                        <input 
+                            type="range" 
+                            id="roundsSlider" 
+                            min="1" 
+                            max="12" 
+                            value="1" 
+                            class="rounds-slider"
+                            aria-label="Select number of rounds"
+                        >
+                        <span class="rounds-slider-value">12</span>
+                    </div>
+                </div>
+                
+                <!-- Preset Interval Buttons -->
+                <label class="text-sm font-semibold uppercase tracking-wide mb-4 block" style="color: rgb(var(--muted-foreground)); text-align: center; margin-top: 1.5rem;">
+                    Quick Presets
+                </label>
+                <div class="quick-select-grid">
+                    <button class="quick-select-btn" data-work="30" data-rest="30" aria-label="30 seconds work, 30 seconds rest">30/30</button>
+                    <button class="quick-select-btn" data-work="45" data-rest="15" aria-label="45 seconds work, 15 seconds rest">45/15</button>
+                    <button class="quick-select-btn" data-work="60" data-rest="30" aria-label="60 seconds work, 30 seconds rest">60/30</button>
+                    <button class="quick-select-btn" data-work="45" data-rest="45" aria-label="45 seconds work, 45 seconds rest">45/45</button>
+                    <button class="quick-select-btn" data-work="60" data-rest="60" aria-label="60 seconds work, 60 seconds rest">60/60</button>
+                    <button class="quick-select-btn" data-work="30" data-rest="60" aria-label="30 seconds work, 60 seconds rest">30/60</button>
+                    <button class="quick-select-btn" data-work="20" data-rest="10" aria-label="20 seconds work, 10 seconds rest">20/10</button>
+                    <button class="quick-select-btn" data-work="40" data-rest="20" aria-label="40 seconds work, 20 seconds rest">40/20</button>
+                    <button class="quick-select-btn" data-work="90" data-rest="30" aria-label="90 seconds work, 30 seconds rest">90/30</button>
+                    <button class="quick-select-btn" data-work="120" data-rest="60" aria-label="2 minutes work, 1 minute rest">2:00/1:00</button>
+                    <button class="quick-select-btn" data-work="180" data-rest="60" aria-label="3 minutes work, 1 minute rest">3:00/1:00</button>
+                    <button class="quick-select-btn" data-work="60" data-rest="30" aria-label="1 minute work, 30 seconds rest">1:00/30</button>
                 </div>
             </div>
         </div>
@@ -864,7 +1122,7 @@
                             type="text" 
                             id="workTimeInput" 
                             class="custom-time-input" 
-                            value="00:30"
+                            value="00:00"
                             pattern="[0-9]{2}:[0-9]{2}"
                             placeholder="MM:SS"
                             aria-label="Work time"
@@ -882,7 +1140,7 @@
                             type="text" 
                             id="restTimeInput" 
                             class="custom-time-input" 
-                            value="00:10"
+                            value="00:00"
                             pattern="[0-9]{2}:[0-9]{2}"
                             placeholder="MM:SS"
                             aria-label="Rest time"
@@ -899,7 +1157,7 @@
                         <input 
                             type="text" 
                             id="roundsInput" 
-                            value="5"
+                            value="0"
                             aria-label="Number of rounds"
                         >
                         <button class="rounds-adjust-btn" id="roundsIncreaseBtn" type="button" aria-label="Increase rounds">+</button>
@@ -936,9 +1194,9 @@
         let isPaused = false;
         let isWorkPhase = true;
         let currentRound = 1;
-        let workTime = 30;
-        let restTime = 10;
-        let totalRounds = 5;
+        let workTime = 0;
+        let restTime = 0;
+        let totalRounds = 0;
         
         const display = document.getElementById('display');
         const phaseLabel = document.getElementById('phaseLabel');
@@ -958,6 +1216,8 @@
         const workIncreaseBtn = document.getElementById('workIncreaseBtn');
         const restDecreaseBtn = document.getElementById('restDecreaseBtn');
         const restIncreaseBtn = document.getElementById('restIncreaseBtn');
+        const roundsSlider = document.getElementById('roundsSlider');
+        const roundsSliderValue = document.getElementById('roundsSliderValue');
         
         // Parse MM:SS format to seconds
         function parseTime(timeString) {
@@ -1035,6 +1295,7 @@
             workIncreaseBtn.disabled = true;
             restDecreaseBtn.disabled = true;
             restIncreaseBtn.disabled = true;
+            if (roundsSlider) roundsSlider.disabled = true;
         }
         
         // Enable inputs when timer is stopped
@@ -1048,6 +1309,7 @@
             workIncreaseBtn.disabled = false;
             restDecreaseBtn.disabled = false;
             restIncreaseBtn.disabled = false;
+            if (roundsSlider) roundsSlider.disabled = false;
         }
         
         // Check if timer has valid data to proceed
@@ -1133,7 +1395,7 @@
             if (workTime === 0 && restTime === 0) {
                 workTime = parseTime(workTimeInput.value);
                 restTime = parseTime(restTimeInput.value);
-                totalRounds = parseInt(roundsInput.value) || 5;
+                totalRounds = parseInt(roundsInput.value) || 0;
                 currentTime = workTime;
                 currentRound = 1;
                 isWorkPhase = true;
@@ -1246,6 +1508,16 @@
             workTimeInput.value = '00:00';
             restTimeInput.value = '00:00';
             roundsInput.value = '0';
+            
+            // Reset rounds slider to 1
+            if (roundsSlider && roundsSliderValue) {
+                roundsSlider.value = 1;
+                roundsSliderValue.textContent = '1';
+            }
+            
+            // Clear selected preset button
+            const presetButtons = document.querySelectorAll('.quick-select-btn[data-work][data-rest]');
+            presetButtons.forEach(btn => btn.classList.remove('selected'));
             
             // Reset timer state to zero
             workTime = 0;
@@ -1369,6 +1641,62 @@
             }
         });
         
+        // Rounds Slider
+        if (roundsSlider && roundsSliderValue) {
+            // Update slider value display
+            roundsSlider.addEventListener('input', function() {
+                const value = parseInt(this.value);
+                roundsSliderValue.textContent = value;
+                
+                // Update rounds input and totalRounds
+                if (!isRunning) {
+                    roundsInput.value = value;
+                    totalRounds = value;
+                    resetTimer();
+                    updateDisplay();
+                }
+            });
+            
+            // Sync slider with rounds input when changed via other means
+            roundsInput.addEventListener('input', function() {
+                const value = parseInt(this.value) || 1;
+                const clampedValue = Math.max(1, Math.min(12, value));
+                roundsSlider.value = clampedValue;
+                roundsSliderValue.textContent = clampedValue;
+            });
+        }
+        
+        // Preset Interval Buttons
+        const presetButtons = document.querySelectorAll('.quick-select-btn[data-work][data-rest]');
+        
+        presetButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (isRunning) return; // Don't allow changing presets while running
+                
+                const workSeconds = parseInt(this.getAttribute('data-work'));
+                const restSeconds = parseInt(this.getAttribute('data-rest'));
+                const selectedRounds = parseInt(roundsSlider.value) || 1;
+                
+                // Update work and rest time inputs
+                workTimeInput.value = formatTime(workSeconds);
+                restTimeInput.value = formatTime(restSeconds);
+                roundsInput.value = selectedRounds;
+                
+                // Update timer state
+                workTime = workSeconds;
+                restTime = restSeconds;
+                totalRounds = selectedRounds;
+                
+                // Update selected button state
+                presetButtons.forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+                
+                // Reset timer with new values
+                resetTimer();
+                updateDisplay();
+            });
+        });
+        
         // Drawer Functions
         function toggleDrawer() {
             const drawer = document.getElementById('settingsDrawer');
@@ -1387,8 +1715,20 @@
         // Initialize
         workTime = parseTime(workTimeInput.value);
         restTime = parseTime(restTimeInput.value);
-        totalRounds = parseInt(roundsInput.value) || 5;
+        totalRounds = parseInt(roundsInput.value) || 0;
         currentTime = workTime;
+        
+        // Initialize rounds slider
+        if (roundsSlider && roundsSliderValue) {
+            const initialRounds = Math.max(1, Math.min(12, totalRounds || 1));
+            roundsSlider.value = initialRounds;
+            roundsSliderValue.textContent = initialRounds;
+            if (totalRounds === 0) {
+                roundsInput.value = initialRounds;
+                totalRounds = initialRounds;
+            }
+        }
+        
         updateDisplay();
         
         // Set release date
