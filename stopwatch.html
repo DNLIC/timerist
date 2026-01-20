@@ -1031,6 +1031,17 @@
         const DARK_DEFAULT = '#e74c3c';
         const LIGHT_DEFAULT = '#4a90e2';
         
+        // Helper function to update theme icon (available across script blocks)
+        function updateThemeIconHelper() {
+            const icon = document.getElementById('theme-icon');
+            if (!icon) return;
+            const isDark = document.documentElement.classList.contains('dark');
+            icon.textContent = isDark ? '☀️' : '🌙';
+        }
+        
+        // Expose globally for use in other script blocks
+        window.updateThemeIconHelper = updateThemeIconHelper;
+        
         // Get current mode default color
         function getCurrentModeDefault() {
             const isDark = document.documentElement.classList.contains('dark');
@@ -1119,8 +1130,8 @@
             }
         }
         
-        // Tab Switching Logic
-        function switchTab(tabName) {
+        // Set tab state without switching theme (for drawer opening)
+        function setTabState(tabName, switchTheme = true) {
             const darkTab = document.getElementById('dark-tab-trigger');
             const lightTab = document.getElementById('light-tab-trigger');
             const darkContent = document.getElementById('dark-tab-content');
@@ -1135,11 +1146,18 @@
                 lightTab.setAttribute('aria-selected', 'false');
                 lightContent.setAttribute('data-state', 'inactive');
                 
-                // Switch to dark mode
-                if (!document.documentElement.classList.contains('dark')) {
+                // Switch to dark mode only if switchTheme is true
+                if (switchTheme && !document.documentElement.classList.contains('dark')) {
                     if (window.toggleTheme) {
                         window.toggleTheme();
                     }
+                    // Update theme icon after switching (wait for DOM to update)
+                    setTimeout(() => {
+                        updateThemeIconHelper();
+                        if (window.updateLogoColors) {
+                            window.updateLogoColors();
+                        }
+                    }, 100);
                 }
             } else {
                 lightTab.setAttribute('data-state', 'active');
@@ -1150,18 +1168,32 @@
                 darkTab.setAttribute('aria-selected', 'false');
                 darkContent.setAttribute('data-state', 'inactive');
                 
-                // Switch to light mode
-                if (document.documentElement.classList.contains('dark')) {
+                // Switch to light mode only if switchTheme is true
+                if (switchTheme && document.documentElement.classList.contains('dark')) {
                     if (window.toggleTheme) {
                         window.toggleTheme();
                     }
+                    // Update theme icon after switching (wait for DOM to update)
+                    setTimeout(() => {
+                        updateThemeIconHelper();
+                        if (window.updateLogoColors) {
+                            window.updateLogoColors();
+                        }
+                    }, 100);
                 }
             }
             
             // Update timer color after mode switch
-            setTimeout(() => {
-                loadTextColor();
-            }, 100);
+            if (switchTheme) {
+                setTimeout(() => {
+                    loadTextColor();
+                }, 100);
+            }
+        }
+        
+        // Tab Switching Logic (switches theme)
+        function switchTab(tabName) {
+            setTabState(tabName, true);
         }
         
         // Handle tab clicks
@@ -1255,13 +1287,9 @@
         // Initialize timer text color on load
         loadTextColor();
         
-        // Set initial tab based on current mode
+        // Set initial tab based on current mode (without switching theme)
         const isDark = document.documentElement.classList.contains('dark');
-        if (isDark) {
-            switchTab('dark');
-        } else {
-            switchTab('light');
-        }
+        setTabState(isDark ? 'dark' : 'light', false);
     </script>
     <script src="scripts/dark-mode-toggle.js"></script>
     <script>
@@ -1269,8 +1297,17 @@
         function toggleDrawer() {
             const drawer = document.getElementById('settingsDrawer');
             const overlay = document.getElementById('drawerOverlay');
+            const isOpen = drawer.classList.contains('open');
+            
             drawer.classList.toggle('open');
             overlay.classList.toggle('open');
+            
+            // When opening the drawer, set the tab to match current theme mode
+            if (!isOpen) {
+                const isDark = document.documentElement.classList.contains('dark');
+                // Set tab state without switching theme (just match current mode)
+                setTabState(isDark ? 'dark' : 'light', false);
+            }
         }
         
         function closeDrawer() {
@@ -1321,13 +1358,20 @@
             lines.forEach(el => el.setAttribute('stroke', color));
         }
         
-        // Theme icon update
+        // Theme icon update - use helper if available, otherwise define it
         function updateThemeIcon() {
-            const icon = document.getElementById('theme-icon');
-            if (!icon) return;
-            const isDark = document.documentElement.classList.contains('dark');
-            icon.textContent = isDark ? '☀️' : '🌙';
+            if (window.updateThemeIconHelper) {
+                window.updateThemeIconHelper();
+            } else {
+                const icon = document.getElementById('theme-icon');
+                if (!icon) return;
+                const isDark = document.documentElement.classList.contains('dark');
+                icon.textContent = isDark ? '☀️' : '🌙';
+            }
         }
+        
+        // Expose updateThemeIcon globally so it can be called from tab switching
+        window.updateThemeIcon = updateThemeIcon;
         
         // Watch for theme changes
         const themeObserver = new MutationObserver(() => {
