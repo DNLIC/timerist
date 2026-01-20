@@ -124,7 +124,7 @@
         .hover\:bg-secondary\/90:hover { background-color: rgba(var(--secondary), 0.9); }
         
         .timer-display-large {
-            font-size: 4rem;
+            font-size: 3rem;
             font-weight: 700;
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
             font-variant-numeric: tabular-nums;
@@ -134,17 +134,25 @@
             margin-bottom: 1rem;
             word-break: keep-all;
             overflow-wrap: normal;
+            letter-spacing: -0.02em;
         }
         
         @media (min-width: 390px) {
             .timer-display-large {
-                font-size: 5rem;
+                font-size: 3.5rem;
+            }
+        }
+        
+        @media (min-width: 428px) {
+            .timer-display-large {
+                font-size: 4rem;
             }
         }
         
         @media (min-width: 768px) {
             .timer-display-large {
                 font-size: 8rem;
+                letter-spacing: 0;
             }
         }
         
@@ -163,6 +171,31 @@
         @media (min-width: 768px) {
             .timer-display-block {
                 padding: 2rem;
+            }
+        }
+        
+        /* Ensure timer display fits on mobile screens */
+        @media (max-width: 767px) {
+            .timer-display-block {
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
+            }
+            
+            .timer-display-large {
+                transform: scale(0.95);
+                transform-origin: center;
+            }
+        }
+        
+        @media (max-width: 428px) {
+            .timer-display-large {
+                transform: scale(0.9);
+            }
+        }
+        
+        @media (max-width: 390px) {
+            .timer-display-large {
+                transform: scale(0.85);
             }
         }
         
