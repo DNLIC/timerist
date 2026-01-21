@@ -608,7 +608,7 @@
             
             /* Hide separator and "timerist.com" text on very small screens */
             .header-top .separator,
-            .header-top > div:first-child > span:first-of-type {
+            .header-top > div:first-child > a:nth-of-type(2) {
                 display: none;
             }
             
@@ -769,7 +769,7 @@
                         <line x1="20" y1="20" x2="30" y2="20" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
                     </svg>
                 </a>
-                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">timerist.com</span>
+                <a href="index.html" style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground)); text-decoration: none; cursor: pointer;">timerist.com</a>
                 <span class="separator" style="color: rgb(var(--muted-foreground));">|</span>
                 <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">Stopwatch</span>
             </div>
@@ -946,7 +946,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.21</p>
+                <p><strong>Version:</strong> v0.22</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
