@@ -3,10 +3,457 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EMOM Timer - Timerist</title>
+    <title>EMOM Timer - Timerist | Every Minute On the Minute Workout Timer</title>
+    <meta name="description" content="EMOM (Every Minute On the Minute) timer for structured workouts. Complete your work, rest for the remainder of each minute, then start again—perfect for interval training and fitness challenges.">
     <link rel="stylesheet" href="styles/timerist-design-system.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Header with logo on left and menu on right */
+        :root {
+            --background: 245 247 250;
+            --foreground: 51 51 51;
+            --card: 255 255 255;
+            --card-foreground: 51 51 51;
+            --primary: 74 144 226;
+            --primary-foreground: 255 255 255;
+            --secondary: 80 200 120;
+            --secondary-foreground: 255 255 255;
+            --muted: 102 102 102;
+            --muted-foreground: 153 153 153;
+            --accent: 225 232 237;
+            --accent-foreground: 51 51 51;
+            --destructive: 231 76 60;
+            --destructive-foreground: 255 255 255;
+            --border: 225 232 237;
+            --input: 225 232 237;
+            --ring: 74 144 226;
+            --radius: 0.5rem;
+        }
+        
+        .dark {
+            --background: 0 0 0;
+            --foreground: 255 255 255;
+            --card: 26 26 26;
+            --card-foreground: 255 255 255;
+            --primary: 74 144 226;
+            --primary-foreground: 255 255 255;
+            --secondary: 80 200 120;
+            --secondary-foreground: 255 255 255;
+            --muted: 204 204 204;
+            --muted-foreground: 153 153 153;
+            --accent: 51 51 51;
+            --accent-foreground: 255 255 255;
+            --destructive: 231 76 60;
+            --destructive-foreground: 255 255 255;
+            --border: 51 51 51;
+            --input: 51 51 51;
+            --ring: 74 144 226;
+        }
+        
+        body {
+            background: rgb(var(--background));
+            color: rgb(var(--foreground));
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        .container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            max-width: 1200px;
+            padding: 1rem;
+            margin: 0 auto;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .timer-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            overflow-x: hidden;
+            margin-top: clamp(4rem, 6vw, 5rem);
+            width: 100%;
+        }
+        
+        /* iPad vertical (portrait) - position timer below header */
+        @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+            .timer-container {
+                margin-top: clamp(3.5rem, 5vw, 4.5rem);
+            }
+        }
+        
+        /* iPad horizontal (landscape) - position timer below header */
+        @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+            .timer-container {
+                margin-top: clamp(4rem, 6vw, 5rem);
+            }
+        }
+        
+        /* Desktop - position timer below header */
+        @media (min-width: 1025px) {
+            .timer-container {
+                margin-top: clamp(3.5rem, 5vw, 4.5rem);
+            }
+        }
+        
+        .bg-card { background-color: rgb(var(--card)); }
+        .text-foreground { color: rgb(var(--foreground)); }
+        .text-muted-foreground { color: rgb(var(--muted-foreground)); }
+        .bg-primary { background-color: rgb(var(--primary)); }
+        .text-primary-foreground { color: rgb(var(--primary-foreground)); }
+        .bg-secondary { background-color: rgb(var(--secondary)); }
+        .text-secondary-foreground { color: rgb(var(--secondary-foreground)); }
+        .bg-destructive { background-color: rgb(var(--destructive)); }
+        .text-destructive-foreground { color: rgb(var(--destructive-foreground)); }
+        .border-border { border-color: rgb(var(--border)); }
+        .hover\:bg-primary\/90:hover { background-color: rgba(var(--primary), 0.9); }
+        .hover\:bg-secondary\/90:hover { background-color: rgba(var(--secondary), 0.9); }
+        
+        .timer-display-large {
+            font-size: 3rem;
+            font-weight: 700;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
+            color: rgb(var(--primary));
+            transition: color 0.3s ease;
+            margin-bottom: 1rem;
+            word-break: keep-all;
+            overflow-wrap: normal;
+            letter-spacing: -0.02em;
+        }
+        
+        @media (min-width: 390px) {
+            .timer-display-large {
+                font-size: 3.5rem;
+            }
+        }
+        
+        @media (min-width: 428px) {
+            .timer-display-large {
+                font-size: 4rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .timer-display-large {
+                font-size: 8rem;
+                letter-spacing: 0;
+            }
+        }
+        
+        .timer-display-block {
+            padding: 1.5rem;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        
+        @media (min-width: 640px) {
+            .timer-display-block {
+                padding: 2rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .timer-display-block {
+                padding: 2rem;
+            }
+        }
+        
+        /* Ensure timer display fits on mobile screens */
+        @media (max-width: 767px) {
+            .timer-display-block {
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
+            }
+            
+            .timer-display-large {
+                transform: scale(0.95);
+                transform-origin: center;
+            }
+        }
+        
+        @media (max-width: 428px) {
+            .timer-display-large {
+                transform: scale(0.9);
+            }
+        }
+        
+        @media (max-width: 390px) {
+            .timer-display-large {
+                transform: scale(0.85);
+            }
+        }
+        
+        .round-info {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: rgb(var(--muted-foreground));
+            margin-top: 0.75rem;
+        }
+        
+        @media (min-width: 768px) {
+            .round-info {
+                font-size: 1.25rem;
+            }
+        }
+        
+        .control-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            white-space: nowrap;
+            flex-shrink: 1;
+        }
+        
+        @media (max-width: 390px) {
+            .control-btn {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.75rem;
+            }
+        }
+        
+        .control-buttons-container {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+        
+        @media (min-width: 390px) {
+            .control-buttons-container {
+                gap: 0.75rem;
+            }
+        }
+        
+        @media (min-width: 640px) {
+            .control-buttons-container {
+                gap: 1rem;
+            }
+        }
+        
+        .control-btn.btn-primary {
+            background-color: rgb(var(--primary));
+            color: rgb(var(--primary-foreground));
+        }
+        
+        .control-btn.btn-primary:hover:not(:disabled) {
+            background-color: rgba(var(--primary), 0.9);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Start button hover - dark gray */
+        #startBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode Start button hover - lighter gray */
+        .dark #startBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        /* Pause button hover - dark gray (when not paused) */
+        #pauseBtn:hover:not(:disabled):not(.paused) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode Pause button hover - lighter gray (when not paused) */
+        .dark #pauseBtn:hover:not(:disabled):not(.paused) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        /* Paused state - dark gray background with white text */
+        .control-btn.btn-primary.paused,
+        .control-btn.btn-primary.paused:hover,
+        .control-btn.btn-primary.paused:active,
+        .control-btn.btn-primary.paused:focus {
+            background-color: rgb(100, 100, 100) !important;
+            color: rgb(255, 255, 255) !important;
+        }
+        
+        /* Dark mode paused state - lighter gray */
+        .dark .control-btn.btn-primary.paused,
+        .dark .control-btn.btn-primary.paused:hover,
+        .dark .control-btn.btn-primary.paused:active,
+        .dark .control-btn.btn-primary.paused:focus {
+            background-color: rgb(150, 150, 150) !important;
+            color: rgb(0, 0, 0) !important;
+        }
+        
+        .control-btn.btn-secondary {
+            background-color: rgb(var(--secondary));
+            color: rgb(var(--secondary-foreground));
+        }
+        
+        .control-btn.btn-secondary:hover:not(:disabled) {
+            background-color: rgba(var(--secondary), 0.9);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .control-btn.btn-destructive {
+            background-color: rgb(var(--destructive));
+            color: rgb(var(--destructive-foreground));
+        }
+        
+        .control-btn.btn-destructive:hover:not(:disabled) {
+            background-color: rgba(var(--destructive), 0.9);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Reset button hover - dark gray */
+        #resetBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode Reset button hover - lighter gray */
+        .dark #resetBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        .control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .hamburger-menu {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgb(var(--foreground));
+            font-size: 1.5rem;
+            transition: opacity 0.2s;
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius);
+            flex-shrink: 0;
+        }
+        
+        .hamburger-menu:hover {
+            opacity: 0.7;
+        }
+        
+        .settings-drawer {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            background: rgb(var(--card));
+            border-left: 1px solid rgb(var(--border));
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            z-index: 1002;
+            overflow-y: auto;
+        }
+        
+        .settings-drawer.open {
+            right: 0;
+        }
+        
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 1001;
+        }
+        
+        .drawer-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .drawer-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgb(var(--border));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .drawer-content {
+            padding: 1.5rem;
+        }
+        
+        .drawer-section {
+            margin-bottom: 2rem;
+        }
+        
+        .drawer-section h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: rgb(var(--foreground));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .drawer-section p {
+            color: rgb(var(--muted-foreground));
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        .drawer-close {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: rgb(var(--foreground));
+            padding: 0.25rem;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius);
+        }
+        
+        .drawer-close:hover {
+            opacity: 0.7;
+        }
+        
         .header-top {
             position: absolute;
             top: clamp(1rem, 3vw, 2rem);
@@ -20,6 +467,75 @@
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
+            gap: 0.5rem;
+            min-width: 0;
+        }
+        
+        .header-top > div:first-child {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 0;
+            flex-shrink: 1;
+            overflow: hidden;
+        }
+        
+        /* iPhone 13 mini and similar small screens - make header more compact */
+        @media (max-width: 390px) {
+            .header-top {
+                padding: 0 0.75rem;
+            }
+            
+            .header-top > div:first-child {
+                gap: 0.5rem;
+            }
+            
+            /* Hide separator and "timerist.com" text on very small screens */
+            .header-top .separator,
+            .header-top > div:first-child > span:first-of-type {
+                display: none;
+            }
+            
+            /* Make "EMOM" text smaller */
+            .header-top > div:first-child > span:last-of-type {
+                font-size: 0.875rem !important;
+            }
+            
+            /* Ensure logo doesn't shrink too much */
+            #timerist-logo {
+                width: 36px !important;
+                height: 36px !important;
+                flex-shrink: 0;
+            }
+        }
+        
+        /* Slightly larger screens (iPhone 13, 14, etc.) - show more but keep compact */
+        @media (min-width: 391px) and (max-width: 428px) {
+            .header-top {
+                padding: 0 1rem;
+            }
+            
+            /* Hide separator but keep timerist.com text */
+            .header-top .separator {
+                display: none;
+            }
+            
+            /* Make text smaller */
+            .header-top > div:first-child > span {
+                font-size: 0.875rem !important;
+            }
+        }
+        
+        @media (min-width: 640px) {
+            .container {
+                padding: 2rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                padding: 2rem 3rem;
+            }
         }
         
         .header-actions {
@@ -27,6 +543,22 @@
             align-items: center;
             gap: 0.5rem;
             flex-shrink: 0;
+            min-width: fit-content;
+        }
+        
+        /* Ensure both buttons are always visible on small screens */
+        @media (max-width: 428px) {
+            .header-actions {
+                gap: 0.375rem;
+            }
+            
+            .header-actions .mode-toggle-btn,
+            .header-actions .hamburger-menu {
+                width: 40px;
+                height: 40px;
+                padding: 0.375rem;
+                font-size: 1.25rem;
+            }
         }
         
         .header-top .mode-toggle-btn {
@@ -36,6 +568,36 @@
             width: 44px;
             height: 44px;
             flex-shrink: 0;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgb(var(--foreground));
+            font-size: 1.5rem;
+            transition: opacity 0.2s;
+            border-radius: var(--radius);
+            min-width: 44px;
+        }
+        
+        .header-top .mode-toggle-btn:hover,
+        .header-top .mode-toggle-btn:active {
+            opacity: 0.7;
+            background-color: rgba(var(--accent), 0.5);
+        }
+        
+        .header-top .mode-toggle-btn:focus {
+            outline: 2px solid rgb(var(--ring));
+            outline-offset: 2px;
+        }
+        
+        .header-top .mode-toggle-btn {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
         }
         
         #timerist-logo {
@@ -73,173 +635,164 @@
             stroke: #fafafa !important;
         }
         
-        .hamburger-menu {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: hsl(var(--foreground));
-            font-size: 1.5rem;
-            transition: opacity 0.2s;
-            width: 44px;
-            height: 44px;
-            flex-shrink: 0;
-        }
-        
-        .hamburger-menu:hover {
-            opacity: 0.7;
-        }
-        
-        .settings-drawer {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 100%;
-            max-width: 400px;
-            height: 100vh;
-            background: hsl(var(--card));
-            border-left: 1px solid hsl(var(--border));
-            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
-            transition: right 0.3s ease;
-            z-index: 1002;
-            overflow-y: auto;
-        }
-        
-        .settings-drawer.open {
-            right: 0;
-        }
-        
-        .drawer-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
-            z-index: 999;
-        }
-        
-        .drawer-overlay.open {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .drawer-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid hsl(var(--border));
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .drawer-content {
-            padding: 1.5rem;
-        }
-        
-        .drawer-close {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 1.5rem;
-            color: hsl(var(--foreground));
-            padding: 0.25rem;
-        }
-        
-        .container {
-            position: relative;
-            min-height: 100vh;
+        /* Setup Fields Styles */
+        .setup-fields {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding-top: clamp(4rem, 8vw, 6rem);
-        }
-        
-        .timer-container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .timer-controls {
-            display: flex;
             gap: 0.75rem;
-            justify-content: center;
-            margin-top: 1.5rem;
-            flex-wrap: wrap;
-        }
-        
-        .timer-controls .btn {
-            min-width: 80px;
-            padding: 0.75rem 1.25rem;
-        }
-        
-        .timer-settings {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-        
-        @media (max-width: 390px) {
-            .timer-settings {
-                grid-template-columns: 1fr;
-            }
-            
-            .timer-controls {
-                gap: 0.5rem;
-            }
-            
-            .timer-controls .btn {
-                min-width: 70px;
-                padding: 0.625rem 1rem;
-                font-size: 0.875rem;
-            }
+            margin-top: 0;
         }
         
         .setting-group {
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        /* Reduce padding on setup panel */
+        .setup-panel {
+            padding: 1rem 1.5rem !important;
         }
         
         .setting-group label {
             font-size: 0.875rem;
             font-weight: 600;
-            color: hsl(var(--muted-foreground));
+            color: rgb(var(--muted-foreground));
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
         
-        .setting-group input {
+        /* Tap-based number selector */
+        .number-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
             width: 100%;
-            padding: 0.625rem;
-            border: 2px solid hsl(var(--input));
+            border: 2px solid rgb(var(--input));
             border-radius: var(--radius);
-            background-color: hsl(var(--background));
-            color: hsl(var(--foreground));
-            font-size: 1rem;
+            background-color: rgb(var(--background));
+            overflow: hidden;
+        }
+        
+        .number-selector:focus-within {
+            border-color: rgb(var(--ring));
+            box-shadow: 0 0 0 2px rgba(var(--ring), 0.2);
+        }
+        
+        .number-selector.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        
+        /* Smaller size for main page selector */
+        .number-selector.compact .number-btn {
+            flex: 0 0 40px;
+            height: 40px;
+            font-size: 1.25rem;
+        }
+        
+        .number-selector.compact .number-display {
+            font-size: 1.125rem;
+            padding: 0.5rem;
+            min-height: 40px;
+        }
+        
+        .number-btn {
+            flex: 0 0 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgb(var(--accent));
+            color: rgb(var(--foreground));
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
             font-weight: 600;
-            text-align: center;
-            min-height: 44px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
         }
         
-        .setting-group input:focus {
+        .number-btn:hover:not(:disabled) {
+            background-color: rgba(var(--accent), 0.8);
+        }
+        
+        .number-btn:active:not(:disabled) {
+            background-color: rgba(var(--accent), 0.6);
+            transform: scale(0.95);
+        }
+        
+        .number-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .number-display {
+            flex: 1;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: rgb(var(--foreground));
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            padding: 0.75rem;
+            min-height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @media (max-width: 390px) {
+            .number-selector.compact .number-btn {
+                flex: 0 0 36px;
+                height: 36px;
+                font-size: 1.125rem;
+            }
+            
+            .number-selector.compact .number-display {
+                font-size: 1rem;
+                min-height: 36px;
+            }
+            
+            .number-btn {
+                flex: 0 0 48px;
+                height: 48px;
+                font-size: 1.25rem;
+            }
+            
+            .number-display {
+                font-size: 1.25rem;
+                min-height: 48px;
+            }
+        }
+        
+        /* Custom input styles for completion message */
+        .custom-time-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid rgb(var(--input));
+            border-radius: var(--radius);
+            background-color: rgb(var(--background));
+            color: rgb(var(--foreground));
+            font-size: 0.875rem;
+            font-weight: 500;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .custom-time-input:focus {
             outline: none;
-            border-color: hsl(var(--ring));
-            box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+            border-color: rgb(var(--ring));
+            box-shadow: 0 0 0 2px rgba(var(--ring), 0.2);
         }
         
-        .round-info {
-            margin-top: 1.25rem;
-            font-size: 1rem;
-            color: hsl(var(--muted-foreground));
-            text-align: center;
+        .timer-display-large.danger {
+            color: rgb(var(--destructive));
         }
     </style>
 </head>
@@ -260,13 +813,13 @@
                         <line x1="20" y1="20" x2="30" y2="20" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
                     </svg>
                 </a>
-                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: hsl(var(--foreground));">timerist.com</span>
-                <span class="separator" style="color: hsl(var(--muted-foreground));">|</span>
-                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: hsl(var(--foreground));">EMOM</span>
+                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">timerist.com</span>
+                <span class="separator" style="color: rgb(var(--muted-foreground));">|</span>
+                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">EMOM</span>
             </div>
             
             <div class="header-actions">
-                <button class="mode-toggle-btn mode-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                <button class="mode-toggle-btn mode-toggle" id="themeToggleBtn" aria-label="Toggle dark mode">
                     <span id="theme-icon">🌙</span>
                 </button>
                 <button class="hamburger-menu" onclick="toggleDrawer()" aria-label="Open settings menu">
@@ -275,48 +828,538 @@
             </div>
         </div>
         
-        <div class="timer-container">
-            <div class="timer-display">
-                <div class="timer-time" id="display">00:00</div>
+        <div class="timer-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <!-- Timer Display -->
+            <div class="timer-display-block bg-card border border-border rounded-lg shadow-lg text-center" id="timerDisplayBlock">
+                <div class="timer-display-large" id="timer-display">00:00</div>
                 <div class="round-info">
                     Minute <span id="minute">1</span> of <span id="totalMinutes">10</span>
                 </div>
             </div>
             
-            <div class="timer-controls">
-                <button class="btn btn-primary" id="startBtn">Start</button>
-                <button class="btn btn-secondary" id="pauseBtn" disabled>Pause</button>
-                <button class="btn btn-destructive" id="resetBtn">Reset</button>
+            <!-- Setup Fields -->
+            <div class="p-6 bg-card border border-border rounded-lg shadow-lg setup-panel">
+                <div class="setup-fields">
+                    <div class="setting-group">
+                        <label for="minutes">Total Minutes</label>
+                        <div class="number-selector compact" id="minutes-selector">
+                            <button class="number-btn" id="minutes-decrease" aria-label="Decrease minutes">−</button>
+                            <div class="number-display" id="minutes-display">10</div>
+                            <button class="number-btn" id="minutes-increase" aria-label="Increase minutes">+</button>
+                        </div>
+                    </div>
+                </div>
             </div>
             
-            <div class="timer-settings">
-                <div class="setting-group">
-                    <label for="minutes">Total Minutes</label>
-                    <input type="number" id="minutes" min="1" max="60" value="10" />
+            <!-- Control Buttons -->
+            <div class="p-6 bg-card border border-border rounded-lg shadow-lg">
+                <div class="control-buttons-container">
+                    <button class="control-btn btn-primary" id="startBtn" aria-label="Start EMOM timer">Start</button>
+                    <button class="control-btn btn-primary" id="pauseBtn" style="display: none;" aria-label="Pause EMOM timer">Pause</button>
+                    <button class="control-btn btn-destructive" id="resetBtn" style="display: none;" aria-label="Reset EMOM timer">Reset</button>
                 </div>
             </div>
         </div>
     </div>
     
+    <!-- Drawer Overlay -->
     <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+    
+    <!-- Settings Drawer -->
     <div class="settings-drawer" id="settingsDrawer">
         <div class="drawer-header">
-            <h2 style="font-size: 1.25rem; font-weight: 600; color: hsl(var(--foreground));">Settings</h2>
-            <button class="drawer-close" onclick="closeDrawer()">×</button>
+            <h2 style="font-size: 1rem; font-weight: 600; color: rgb(var(--foreground)); text-transform: uppercase; letter-spacing: 0.05em;">Settings</h2>
+            <button class="drawer-close" onclick="closeDrawer()" aria-label="Close drawer">×</button>
         </div>
         <div class="drawer-content">
-            <div>
-                <a href="index.html" style="display: block; padding: 0.75rem; color: hsl(var(--primary)); text-decoration: none;">← Back to Timers</a>
+            <!-- About This Timer -->
+            <div class="drawer-section">
+                <h3>About This Timer</h3>
+                <p>
+                    EMOM (Every Minute On the Minute) timer for structured workouts. Complete your work, rest for the remainder of each minute, then start again at the top of the next minute—perfect for interval training, fitness challenges, and time-based workout routines.
+                </p>
+                <p style="margin-top: 0.75rem;">
+                    <strong>Keywords:</strong> EMOM timer, every minute on the minute, EMOM workout, interval timer, fitness timer, workout timer, exercise timer, HIIT timer, time-based training.
+                </p>
+            </div>
+            
+            <!-- Timer Setup -->
+            <div class="drawer-section">
+                <h3>Timer Setup</h3>
+                
+                <div class="setup-fields">
+                    <div class="setting-group">
+                        <label for="drawer-minutes">Total Minutes</label>
+                        <div class="number-selector" id="drawer-minutes-selector">
+                            <button class="number-btn" id="drawer-minutes-decrease" aria-label="Decrease minutes">−</button>
+                            <div class="number-display" id="drawer-minutes-display">10</div>
+                            <button class="number-btn" id="drawer-minutes-increase" aria-label="Increase minutes">+</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 1.5rem;">
+                    <label for="doneMessageInput" style="display: block; margin-bottom: 0.5rem; font-size: 0.75rem; font-weight: 600; color: rgb(var(--muted-foreground)); text-transform: uppercase; letter-spacing: 0.05em;">
+                        End of Minute Message (14 characters max)
+                    </label>
+                    <input 
+                        type="text" 
+                        id="doneMessageInput" 
+                        class="custom-time-input" 
+                        maxlength="14"
+                        value="Minute"
+                        placeholder="Minute"
+                        aria-label="End of minute message"
+                    >
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.5rem;">
+                        Customize the message shown at the end of each minute.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- General Info -->
+            <div class="drawer-section">
+                <h3>General Info</h3>
+                <p><strong>Version:</strong> v0.12</p>
+                <p><strong>Released:</strong> <span id="releaseDate"></span></p>
             </div>
         </div>
     </div>
     
-    <script src="scripts/dark-mode-toggle.js"></script>
-    <script src="scripts/emom.js"></script>
     <script>
+        // EMOM Timer Logic
+        let currentTime = 0;
+        let interval = null;
+        let isRunning = false;
+        let isPaused = false;
+        let currentMinute = 1;
+        let totalMinutes = 10;
+        let showingMessage = false;
+        let messageCountdownInterval = null;
+        
+        const display = document.getElementById('timer-display');
+        const minuteDisplay = document.getElementById('minute');
+        const totalMinutesDisplay = document.getElementById('totalMinutes');
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        
+        // Tap-based number selectors
+        const minutesDisplay = document.getElementById('minutes-display');
+        const minutesDecrease = document.getElementById('minutes-decrease');
+        const minutesIncrease = document.getElementById('minutes-increase');
+        const minutesSelector = document.getElementById('minutes-selector');
+        
+        const drawerMinutesDisplay = document.getElementById('drawer-minutes-display');
+        const drawerMinutesDecrease = document.getElementById('drawer-minutes-decrease');
+        const drawerMinutesIncrease = document.getElementById('drawer-minutes-increase');
+        const drawerMinutesSelector = document.getElementById('drawer-minutes-selector');
+        const doneMessageInput = document.getElementById('doneMessageInput');
+        
+        // Get done message from localStorage or use default
+        function getDoneMessage() {
+            const saved = localStorage.getItem('emom-doneMessage');
+            return saved || 'Minute';
+        }
+        
+        // Save done message to localStorage
+        function saveDoneMessage(message) {
+            if (message && message.trim()) {
+                localStorage.setItem('emom-doneMessage', message.trim());
+            } else {
+                localStorage.setItem('emom-doneMessage', 'Minute');
+            }
+        }
+        
+        // Calculate font size to fit text in timer display
+        function calculateFontSize(text) {
+            // Get the base font size from CSS (clamp values)
+            const computedStyle = window.getComputedStyle(display);
+            const baseSize = parseFloat(computedStyle.fontSize) || 64;
+            const maxWidth = display.offsetWidth || window.innerWidth * 0.9;
+            const charCount = text.length;
+            
+            // For monospace font, each character is roughly 0.6-0.65 of font size in width
+            // Use a more conservative estimate
+            const charWidthRatio = 0.65;
+            const paddingFactor = 0.85; // Leave 15% padding on sides
+            
+            const estimatedWidth = charCount * baseSize * charWidthRatio;
+            const maxAllowedWidth = maxWidth * paddingFactor;
+            
+            if (estimatedWidth > maxAllowedWidth) {
+                // Scale down proportionally
+                const scaleFactor = maxAllowedWidth / estimatedWidth;
+                const newSize = baseSize * scaleFactor;
+                // Don't go below 40% of original size to maintain readability
+                return Math.max(newSize, baseSize * 0.4);
+            }
+            
+            return baseSize;
+        }
+        
+        // Show completion message with round number and count down 3 seconds
+        function showDoneMessage(roundNumber, isFinalRound = false) {
+            const customMessage = getDoneMessage();
+            const message = `${customMessage} ${roundNumber} of ${totalMinutes}`;
+            const originalFontSize = display.style.fontSize;
+            
+            // Set the message with round info
+            display.textContent = message;
+            display.classList.add('danger');
+            
+            // Calculate and apply font size
+            const fontSize = calculateFontSize(message);
+            display.style.fontSize = `${fontSize}px`;
+            
+            // Count down 3 seconds
+            let countdownSeconds = 3;
+            messageCountdownInterval = setInterval(() => {
+                countdownSeconds--;
+                
+                if (countdownSeconds > 0) {
+                    // Show countdown in the display
+                    display.textContent = `${message} (${countdownSeconds})`;
+                } else {
+                    // Clear countdown interval
+                    clearInterval(messageCountdownInterval);
+                    messageCountdownInterval = null;
+                    
+                    // Restore original display
+                    display.style.fontSize = originalFontSize || '';
+                    display.classList.remove('danger');
+                    
+                    // Reset showingMessage flag
+                    showingMessage = false;
+                    
+                    if (isFinalRound) {
+                        // Final round - just update display
+                        currentTime = 0;
+                        updateDisplay();
+                    } else {
+                        // Not final round - start next minute at 3 seconds (accounting for the 3-second message)
+                        currentTime = 3;
+                        updateDisplay();
+                        // Small delay to ensure state is properly set before resuming
+                        setTimeout(() => {
+                            // Resume the timer only if we're not showing a message
+                            if (!showingMessage && currentMinute <= totalMinutes) {
+                                startTimer();
+                            }
+                        }, 100);
+                    }
+                }
+            }, 1000);
+        }
+        
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+        
+        function updateMinutesValue(value) {
+            // Clamp value between 1 and 60
+            value = Math.max(1, Math.min(60, value));
+            totalMinutes = value;
+            
+            // Update displays
+            minutesDisplay.textContent = value;
+            if (drawerMinutesDisplay) drawerMinutesDisplay.textContent = value;
+            totalMinutesDisplay.textContent = value;
+        }
+        
+        function setMinutesDisabled(disabled) {
+            if (disabled) {
+                minutesSelector.classList.add('disabled');
+                if (drawerMinutesSelector) drawerMinutesSelector.classList.add('disabled');
+                minutesDecrease.disabled = true;
+                minutesIncrease.disabled = true;
+                if (drawerMinutesDecrease) drawerMinutesDecrease.disabled = true;
+                if (drawerMinutesIncrease) drawerMinutesIncrease.disabled = true;
+            } else {
+                minutesSelector.classList.remove('disabled');
+                if (drawerMinutesSelector) drawerMinutesSelector.classList.remove('disabled');
+                minutesDecrease.disabled = false;
+                minutesIncrease.disabled = false;
+                if (drawerMinutesDecrease) drawerMinutesDecrease.disabled = false;
+                if (drawerMinutesIncrease) drawerMinutesIncrease.disabled = false;
+            }
+        }
+        
+        function updateDisplay() {
+            display.textContent = formatTime(currentTime);
+            minuteDisplay.textContent = currentMinute;
+            totalMinutesDisplay.textContent = totalMinutes;
+            
+            // Update button visibility
+            if (isRunning && !isPaused) {
+                startBtn.style.display = 'none';
+                pauseBtn.style.display = 'inline-block';
+                pauseBtn.classList.remove('paused');
+                resetBtn.style.display = 'inline-block';
+            } else if (isPaused) {
+                startBtn.style.display = 'inline-block';
+                startBtn.textContent = 'Resume';
+                pauseBtn.style.display = 'none';
+                resetBtn.style.display = 'inline-block';
+            } else {
+                // Timer is stopped
+                startBtn.style.display = 'inline-block';
+                startBtn.textContent = 'Start';
+                pauseBtn.style.display = 'none';
+                resetBtn.style.display = (currentTime > 0 || currentMinute > 1) ? 'inline-block' : 'none';
+            }
+        }
+        
+        function playSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (e) {
+                // Silently fail if audio context is not available
+            }
+        }
+        
+        function startTimer() {
+            if (currentTime === 0 && currentMinute === 1) {
+                currentTime = 0;
+                currentMinute = 1;
+            }
+            
+            if (showingMessage) {
+                // Don't start if we're showing a message
+                return;
+            }
+            
+            // Don't start if interval is already running
+            if (interval !== null) {
+                return;
+            }
+            
+            isRunning = true;
+            isPaused = false;
+            setMinutesDisabled(true);
+            document.body.classList.add('timer-running');
+            
+            interval = setInterval(() => {
+                if (showingMessage) {
+                    // Pause counting while showing message
+                    return;
+                }
+                
+                currentTime++;
+                updateDisplay();
+                
+                // Every 60 seconds, show completion message
+                if (currentTime >= 60) {
+                    playSound();
+                    const completedMinute = currentMinute;
+                    
+                    // Pause the timer
+                    clearInterval(interval);
+                    interval = null;
+                    showingMessage = true;
+                    
+                    // Check if this was the last minute
+                    if (completedMinute >= totalMinutes) {
+                        // Finished all minutes - show final message
+                        // Keep currentMinute at totalMinutes (don't increment)
+                        currentMinute = totalMinutes;
+                        isRunning = false;
+                        isPaused = false;
+                        setMinutesDisabled(false);
+                        document.body.classList.remove('timer-running');
+                        playSound();
+                        showDoneMessage(completedMinute, true);
+                    } else {
+                        // Show message for this round, then continue at 57 seconds
+                        // Increment to next minute
+                        currentMinute = completedMinute + 1;
+                        showDoneMessage(completedMinute, false);
+                    }
+                    return;
+                }
+            }, 1000);
+            
+            updateDisplay();
+        }
+        
+        function pauseTimer() {
+            clearInterval(interval);
+            interval = null;
+            if (messageCountdownInterval) {
+                clearInterval(messageCountdownInterval);
+                messageCountdownInterval = null;
+            }
+            isRunning = false;
+            isPaused = true;
+            showingMessage = false;
+            // Restore normal display if message was showing
+            display.style.fontSize = '';
+            display.classList.remove('danger');
+            updateDisplay();
+        }
+        
+        function resumeTimer() {
+            if (isPaused && !showingMessage) {
+                startTimer();
+            }
+        }
+        
+        function resetTimer() {
+            clearInterval(interval);
+            interval = null;
+            if (messageCountdownInterval) {
+                clearInterval(messageCountdownInterval);
+                messageCountdownInterval = null;
+            }
+            isRunning = false;
+            isPaused = false;
+            showingMessage = false;
+            currentTime = 0;
+            currentMinute = 1;
+            setMinutesDisabled(false);
+            document.body.classList.remove('timer-running');
+            // Restore normal display if message was showing
+            display.style.fontSize = '';
+            display.classList.remove('danger');
+            updateDisplay();
+        }
+        
+        // Toggle play/pause
+        function togglePlayPause() {
+            if (isRunning && !isPaused) {
+                pauseTimer();
+            } else if (isPaused) {
+                resumeTimer();
+            } else {
+                startTimer();
+            }
+        }
+        
+        // Event Listeners
+        startBtn.addEventListener('click', togglePlayPause);
+        pauseBtn.addEventListener('click', pauseTimer);
+        resetBtn.addEventListener('click', resetTimer);
+        
+        // Main area number selector
+        minutesDecrease.addEventListener('click', () => {
+            if (!isRunning) {
+                updateMinutesValue(totalMinutes - 1);
+                updateDisplay();
+            }
+        });
+        
+        minutesIncrease.addEventListener('click', () => {
+            if (!isRunning) {
+                updateMinutesValue(totalMinutes + 1);
+                updateDisplay();
+            }
+        });
+        
+        // Drawer number selector
+        if (drawerMinutesDecrease) {
+            drawerMinutesDecrease.addEventListener('click', () => {
+                if (!isRunning) {
+                    updateMinutesValue(totalMinutes - 1);
+                    updateDisplay();
+                }
+            });
+        }
+        
+        if (drawerMinutesIncrease) {
+            drawerMinutesIncrease.addEventListener('click', () => {
+                if (!isRunning) {
+                    updateMinutesValue(totalMinutes + 1);
+                    updateDisplay();
+                }
+            });
+        }
+        
+        // Done message input handler
+        if (doneMessageInput) {
+            // Load saved message on page load
+            doneMessageInput.value = getDoneMessage();
+            
+            // Save message when changed
+            doneMessageInput.addEventListener('input', function() {
+                let value = this.value.trim();
+                // Limit to 14 characters
+                if (value.length > 14) {
+                    value = value.substring(0, 14);
+                    this.value = value;
+                }
+                saveDoneMessage(value || 'Minute');
+            });
+            
+            // Ensure value is set on blur
+            doneMessageInput.addEventListener('change', function() {
+                let value = this.value.trim();
+                if (!value) {
+                    value = 'Minute';
+                    this.value = value;
+                }
+                saveDoneMessage(value);
+            });
+        }
+        
+        // Initialize
+        updateMinutesValue(10);
+        updateDisplay();
+        
+        // Set release date and time
+        function updateReleaseDate() {
+            const now = new Date();
+            const releaseDateEl = document.getElementById('releaseDate');
+            if (releaseDateEl) {
+                const dateStr = now.toLocaleString('en-US', {
+                    timeZone: 'America/Los_Angeles',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: true
+                });
+                releaseDateEl.textContent = dateStr;
+            }
+        }
+        updateReleaseDate();
+        
+        // Helper function to update theme icon (available across script blocks)
+        function updateThemeIconHelper() {
+            const icon = document.getElementById('theme-icon');
+            if (!icon) return;
+            const isDark = document.documentElement.classList.contains('dark');
+            icon.textContent = isDark ? '☀️' : '🌙';
+        }
+        
+        // Expose globally for use in other script blocks
+        window.updateThemeIconHelper = updateThemeIconHelper;
+    </script>
+    <script src="scripts/dark-mode-toggle.js"></script>
+    <script>
+        // Drawer Functions
         function toggleDrawer() {
             const drawer = document.getElementById('settingsDrawer');
             const overlay = document.getElementById('drawerOverlay');
+            const isOpen = drawer.classList.contains('open');
+            
             drawer.classList.toggle('open');
             overlay.classList.toggle('open');
         }
@@ -328,29 +1371,31 @@
             overlay.classList.remove('open');
         }
         
-        function updateThemeIcon() {
-            const icon = document.getElementById('theme-icon');
-            const isDark = document.documentElement.classList.contains('dark');
-            icon.textContent = isDark ? '☀️' : '🌙';
-        }
-        
-        updateThemeIcon();
-        const observer = new MutationObserver(updateThemeIcon);
-        observer.observe(document.documentElement, {
-            attributes: true,
-            attributeFilter: ['class']
+        // Ensure theme toggle button works on mobile (iOS/Android)
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggleBtn = document.getElementById('themeToggleBtn');
+            if (themeToggleBtn) {
+                // Add both click and touchstart for maximum compatibility
+                themeToggleBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (window.toggleTheme) {
+                        window.toggleTheme();
+                    }
+                });
+                
+                // Also add touchstart for better mobile support
+                themeToggleBtn.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (window.toggleTheme) {
+                        window.toggleTheme();
+                    }
+                }, { passive: false });
+            }
         });
         
-        const originalToggle = window.toggleTheme;
-        window.toggleTheme = function() {
-            originalToggle();
-            setTimeout(() => {
-                updateThemeIcon();
-                updateLogoColors();
-            }, 10);
-        };
-        
-        // Function to update logo colors based on theme
+        // Logo color update for dark mode
         function updateLogoColors() {
             const logo = document.getElementById('timerist-logo');
             if (!logo) return;
@@ -367,15 +1412,43 @@
             lines.forEach(el => el.setAttribute('stroke', color));
         }
         
+        // Theme icon update - use helper if available, otherwise define it
+        function updateThemeIcon() {
+            if (window.updateThemeIconHelper) {
+                window.updateThemeIconHelper();
+            } else {
+                const icon = document.getElementById('theme-icon');
+                if (!icon) return;
+                const isDark = document.documentElement.classList.contains('dark');
+                icon.textContent = isDark ? '☀️' : '🌙';
+            }
+        }
+        
+        // Expose updateThemeIcon globally so it can be called from tab switching
+        window.updateThemeIcon = updateThemeIcon;
+        
+        // Watch for theme changes
         const themeObserver = new MutationObserver(() => {
             updateLogoColors();
+            updateThemeIcon();
         });
         themeObserver.observe(document.documentElement, {
             attributes: true,
             attributeFilter: ['class']
         });
         
+        // Override toggleTheme to update logo, icon
+        const originalToggle = window.toggleTheme;
+        window.toggleTheme = function() {
+            originalToggle();
+            setTimeout(() => {
+                updateLogoColors();
+                updateThemeIcon();
+            }, 10);
+        };
+        
         updateLogoColors();
+        updateThemeIcon();
     </script>
 </body>
 </html>
