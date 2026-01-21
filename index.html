@@ -520,10 +520,10 @@
         // Load version info
         async function loadVersionInfo() {
             try {
-                // Try public/version.json first (for static server), then /version.json (for Next.js)
-                let response = await fetch('public/version.json?t=' + Date.now());
+                // Try /version.json first (for Firebase hosting), then version.json (relative)
+                let response = await fetch('/version.json?t=' + Date.now());
                 if (!response.ok) {
-                    response = await fetch('/version.json?t=' + Date.now());
+                    response = await fetch('version.json?t=' + Date.now());
                 }
                 if (response.ok) {
                     const data = await response.json();
