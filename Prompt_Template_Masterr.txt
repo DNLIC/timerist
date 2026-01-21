@@ -1,0 +1,29 @@
+You are building [INSERT PAGE].html for Timerist by starting from the desired modern styled shell (use the structure and styles of [MASTTER PAGE].html or the latest [MASTTER PAGE].html as the reference) and integrating only the [INSERT TIMER]-specific functionality.
+
+Base file content:
+
+[   ]
+
+
+Functionality to add / preserve for [TIMER_NAME]:
+
+- Do NOT change any existing styles, classes, fonts, colors, button designs, hovers, layout structure, or CSS from the shell.
+- Remove or hide any elements from the shell that do not fit this timer (e.g. quick-select grid for countdown-style timers, ±5s adjust buttons).
+- Timer display: Keep the large centered display with MM:SS format. Add phase labels, round counters, or other status info specific to [TIMER_NAME] (e.g., "WORK"/"REST" for intervals, round number, AMRAP score, etc.). Apply color changes (normal primary color, warning yellow, danger red near end) if already present in the shell logic.
+- Controls: Use the shell's thumb-friendly bottom button pattern:
+  - Primary blue button: Start / Resume / Pause (toggle text accordingly)
+  - Destructive red button: Reset
+- Setup fields: Place timer-specific input fields (e.g., work/rest time, rounds, duration, etc.) in the main area for quick access, using grid layout similar to interval.html. Mirror the same fields in the "Setup Content" section of the drawer.
+- Hamburger menu / Drawer: Keep the shell’s drawer structure. In "Setup Content" include the setup fields + a short "About This Timer" paragraph describing typical use cases for [TIMER_NAME] and relevant SEO keywords (e.g. "Tabata timer, HIIT Tabata, 20/10 interval timer"). Keep "General Info" with Version v0.1 and release date.
+- JavaScript: Preserve and adapt the [TIMER_NAME]-specific vanilla JS logic (phase switching, round tracking, counting up/down, pause/resume/reset, end beeps/visual cues). Integrate it into the shell’s JS structure. Use simple beep sounds via AudioContext if needed.
+- Preserve all shell features: System fonts (-apple-system etc.), RGB CSS variables, simple hover states (opacity or subtle bg change only), Tailwind utility classes, dark/light mode via class toggle, hamburger menu, theme switcher with moon/sun icon, mobile-responsive layout.
+
+Important rules to follow strictly:
+- **Dark/Light mode only**: No references to multiple styles (style1, style2, style3) or URL parameters. Use Tailwind's dark: variants and document.documentElement.classList.toggle('dark').
+- **Button hovers**: Ensure hover states maintain visibility and contrast (e.g. hover:bg-primary/90). Never let buttons disappear on hover (no white-on-white or black-on-black).
+- **Top spacing**: Minimize vertical whitespace above the timer container. Pull the timer display and controls close under the header (use small pt- or mt- values like pt-2 or clamp for mobile). Optimize for portrait smartphone view so the timer is near the top with little wasted space.
+- **Adherence**: Use only ShadCN-inspired components and Tailwind utilities. No custom non-Tailwind CSS selectors, external libraries, or inline styles that override the shell. Match typography, spacing, shadows, and border-radius exactly from the shell.
+- **Mobile optimization**: Test layout for small screens (320–480px width). Keep header compact, hide separator/text if needed, ensure buttons are tappable.
+- **Do NOT add**: Inter font, HSL variables, hover transforms/scales/extra shadows, min-height extras, or any elements specific to other timers (e.g. quick-select presets unless required for this timer).
+
+Output the complete updated [TIMER_NAME].html code.

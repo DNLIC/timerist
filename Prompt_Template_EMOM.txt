@@ -1,0 +1,1466 @@
+You are building EMON.html for Timerist by starting from the desired modern styled shell (use the structure and styles of stopwatch.html or the latest stopwatch-splits.html as the reference) and integrating only the EMON-specific functionality.
+
+Base file content:
+
+[ 
+
+[<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch - Timerist | Fitness Stopwatch, Workout Timer, Exercise Timer</title>
+    <meta name="description" content="Simple stopwatch timer for tracking workout duration, exercise time, or any activity. Start, pause, and reset with ease—perfect for timing your fitness sessions.">
+    <link rel="stylesheet" href="styles/timerist-design-system.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --background: 245 247 250;
+            --foreground: 51 51 51;
+            --card: 255 255 255;
+            --card-foreground: 51 51 51;
+            --primary: 74 144 226;
+            --primary-foreground: 255 255 255;
+            --secondary: 80 200 120;
+            --secondary-foreground: 255 255 255;
+            --muted: 102 102 102;
+            --muted-foreground: 153 153 153;
+            --accent: 225 232 237;
+            --accent-foreground: 51 51 51;
+            --destructive: 231 76 60;
+            --destructive-foreground: 255 255 255;
+            --border: 225 232 237;
+            --input: 225 232 237;
+            --ring: 74 144 226;
+            --radius: 0.5rem;
+        }
+        
+        .dark {
+            --background: 0 0 0;
+            --foreground: 255 255 255;
+            --card: 26 26 26;
+            --card-foreground: 255 255 255;
+            --primary: 74 144 226;
+            --primary-foreground: 255 255 255;
+            --secondary: 80 200 120;
+            --secondary-foreground: 255 255 255;
+            --muted: 204 204 204;
+            --muted-foreground: 153 153 153;
+            --accent: 51 51 51;
+            --accent-foreground: 255 255 255;
+            --destructive: 231 76 60;
+            --destructive-foreground: 255 255 255;
+            --border: 51 51 51;
+            --input: 51 51 51;
+            --ring: 74 144 226;
+        }
+        
+        body {
+            background: rgb(var(--background));
+            color: rgb(var(--foreground));
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        .container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            max-width: 1200px;
+            padding: 1rem;
+            margin: 0 auto;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .timer-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            overflow-x: hidden;
+            margin-top: clamp(4rem, 6vw, 5rem);
+            width: 100%;
+        }
+        
+        /* iPad vertical (portrait) - position timer below header */
+        @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+            .timer-container {
+                margin-top: clamp(3.5rem, 5vw, 4.5rem);
+            }
+        }
+        
+        /* iPad horizontal (landscape) - position timer below header */
+        @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+            .timer-container {
+                margin-top: clamp(4rem, 6vw, 5rem);
+            }
+        }
+        
+        /* Desktop - position timer below header */
+        @media (min-width: 1025px) {
+            .timer-container {
+                margin-top: clamp(3.5rem, 5vw, 4.5rem);
+            }
+        }
+        
+        .bg-card { background-color: rgb(var(--card)); }
+        .text-foreground { color: rgb(var(--foreground)); }
+        .text-muted-foreground { color: rgb(var(--muted-foreground)); }
+        .bg-primary { background-color: rgb(var(--primary)); }
+        .text-primary-foreground { color: rgb(var(--primary-foreground)); }
+        .bg-secondary { background-color: rgb(var(--secondary)); }
+        .text-secondary-foreground { color: rgb(var(--secondary-foreground)); }
+        .bg-destructive { background-color: rgb(var(--destructive)); }
+        .text-destructive-foreground { color: rgb(var(--destructive-foreground)); }
+        .border-border { border-color: rgb(var(--border)); }
+        .hover\:bg-primary\/90:hover { background-color: rgba(var(--primary), 0.9); }
+        .hover\:bg-secondary\/90:hover { background-color: rgba(var(--secondary), 0.9); }
+        
+        .timer-display-large {
+            font-size: 3rem;
+            font-weight: 700;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
+            color: rgb(var(--primary));
+            transition: color 0.3s ease;
+            margin-bottom: 1rem;
+            word-break: keep-all;
+            overflow-wrap: normal;
+            letter-spacing: -0.02em;
+        }
+        
+        @media (min-width: 390px) {
+            .timer-display-large {
+                font-size: 3.5rem;
+            }
+        }
+        
+        @media (min-width: 428px) {
+            .timer-display-large {
+                font-size: 4rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .timer-display-large {
+                font-size: 8rem;
+                letter-spacing: 0;
+            }
+        }
+        
+        .timer-display-block {
+            padding: 1.5rem;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        
+        @media (min-width: 640px) {
+            .timer-display-block {
+                padding: 2rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .timer-display-block {
+                padding: 2rem;
+            }
+        }
+        
+        /* Ensure timer display fits on mobile screens */
+        @media (max-width: 767px) {
+            .timer-display-block {
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
+            }
+            
+            .timer-display-large {
+                transform: scale(0.95);
+                transform-origin: center;
+            }
+        }
+        
+        @media (max-width: 428px) {
+            .timer-display-large {
+                transform: scale(0.9);
+            }
+        }
+        
+        @media (max-width: 390px) {
+            .timer-display-large {
+                transform: scale(0.85);
+            }
+        }
+        
+        .control-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            white-space: nowrap;
+            flex-shrink: 1;
+        }
+        
+        @media (max-width: 390px) {
+            .control-btn {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.75rem;
+            }
+        }
+        
+        .control-buttons-container {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+        
+        @media (min-width: 390px) {
+            .control-buttons-container {
+                gap: 0.75rem;
+            }
+        }
+        
+        @media (min-width: 640px) {
+            .control-buttons-container {
+                gap: 1rem;
+            }
+        }
+        
+        .control-btn.btn-primary {
+            background-color: rgb(var(--primary));
+            color: rgb(var(--primary-foreground));
+        }
+        
+        .control-btn.btn-primary:hover:not(:disabled) {
+            background-color: rgba(var(--primary), 0.9);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Start button hover - dark gray */
+        #startBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode Start button hover - lighter gray */
+        .dark #startBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        /* Pause button hover - dark gray (when not paused) */
+        #pauseBtn:hover:not(:disabled):not(.paused) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode Pause button hover - lighter gray (when not paused) */
+        .dark #pauseBtn:hover:not(:disabled):not(.paused) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        /* Paused state - dark gray background with white text */
+        .control-btn.btn-primary.paused,
+        .control-btn.btn-primary.paused:hover,
+        .control-btn.btn-primary.paused:active,
+        .control-btn.btn-primary.paused:focus {
+            background-color: rgb(100, 100, 100) !important;
+            color: rgb(255, 255, 255) !important;
+        }
+        
+        /* Dark mode paused state - lighter gray */
+        .dark .control-btn.btn-primary.paused,
+        .dark .control-btn.btn-primary.paused:hover,
+        .dark .control-btn.btn-primary.paused:active,
+        .dark .control-btn.btn-primary.paused:focus {
+            background-color: rgb(150, 150, 150) !important;
+            color: rgb(0, 0, 0) !important;
+        }
+        
+        .control-btn.btn-secondary {
+            background-color: rgb(var(--secondary));
+            color: rgb(var(--secondary-foreground));
+        }
+        
+        .control-btn.btn-secondary:hover:not(:disabled) {
+            background-color: rgba(var(--secondary), 0.9);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .control-btn.btn-destructive {
+            background-color: rgb(var(--destructive));
+            color: rgb(var(--destructive-foreground));
+        }
+        
+        .control-btn.btn-destructive:hover:not(:disabled) {
+            background-color: rgba(var(--destructive), 0.9);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Reset button hover - dark gray */
+        #resetBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode Reset button hover - lighter gray */
+        .dark #resetBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        .control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .hamburger-menu {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgb(var(--foreground));
+            font-size: 1.5rem;
+            transition: opacity 0.2s;
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius);
+            flex-shrink: 0;
+        }
+        
+        .hamburger-menu:hover {
+            opacity: 0.7;
+        }
+        
+        .settings-drawer {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            background: rgb(var(--card));
+            border-left: 1px solid rgb(var(--border));
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            z-index: 1002;
+            overflow-y: auto;
+        }
+        
+        .settings-drawer.open {
+            right: 0;
+        }
+        
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 1001;
+        }
+        
+        .drawer-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .drawer-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgb(var(--border));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .drawer-content {
+            padding: 1.5rem;
+        }
+        
+        .drawer-section {
+            margin-bottom: 2rem;
+        }
+        
+        .drawer-section h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: rgb(var(--foreground));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .drawer-section p {
+            color: rgb(var(--muted-foreground));
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        /* Color Picker Styles - shadcn/ui compliant */
+        .color-picker-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: rgb(var(--foreground));
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        
+        /* Tabs Styles - shadcn/ui compliant */
+        .tabs {
+            width: 100%;
+        }
+        
+        .tabs-list {
+            display: inline-flex;
+            height: 2.5rem;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.375rem;
+            background-color: rgb(var(--muted));
+            padding: 0.25rem;
+            color: rgb(var(--muted-foreground));
+            margin-bottom: 1rem;
+        }
+        
+        .tabs-trigger {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            border-radius: 0.25rem;
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: rgb(var(--muted-foreground));
+            outline: none;
+            flex: 1;
+        }
+        
+        .tabs-trigger:hover {
+            color: rgb(var(--foreground));
+        }
+        
+        .tabs-trigger[data-state="active"] {
+            background-color: rgb(var(--background));
+            color: rgb(var(--foreground));
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        
+        .tabs-trigger:focus-visible {
+            outline: 2px solid rgb(var(--ring));
+            outline-offset: 2px;
+        }
+        
+        .tabs-content {
+            margin-top: 0.5rem;
+            outline: none;
+        }
+        
+        .tabs-content[data-state="inactive"] {
+            display: none;
+        }
+        
+        .tabs-content[data-state="active"] {
+            display: block;
+        }
+        
+        /* Responsive grid for color picker sections */
+        @media (max-width: 640px) {
+            .grid.grid-cols-2 {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .tabs-list {
+                height: auto;
+                flex-wrap: wrap;
+            }
+            
+            .tabs-trigger {
+                flex: 1 1 auto;
+                min-width: 50%;
+            }
+        }
+        
+        .color-swatch-btn {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 9999px;
+            border: 1px solid rgb(209, 213, 219);
+            cursor: pointer;
+            transition: all 0.2s;
+            outline: none;
+        }
+        
+        .color-swatch-btn:hover {
+            box-shadow: 0 0 0 2px rgba(var(--primary), 0.5);
+        }
+        
+        .color-swatch-btn:focus-visible {
+            outline: 2px solid rgb(var(--ring));
+            outline-offset: 2px;
+        }
+        
+        .color-swatch-btn.selected {
+            border-color: rgb(var(--primary));
+            border-width: 2px;
+            box-shadow: 0 0 0 2px rgba(var(--primary), 0.2);
+        }
+        
+        .color-input {
+            outline: none;
+        }
+        
+        .color-input:hover {
+            border-color: rgba(var(--primary), 0.8) !important;
+        }
+        
+        .color-input:focus {
+            border-color: rgb(var(--primary)) !important;
+            box-shadow: 0 0 0 2px rgba(var(--primary), 0.2);
+        }
+        
+        .drawer-close {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: rgb(var(--foreground));
+            padding: 0.25rem;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius);
+        }
+        
+        .drawer-close:hover {
+            opacity: 0.7;
+        }
+        
+        .header-top {
+            position: absolute;
+            top: clamp(1rem, 3vw, 2rem);
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 clamp(1rem, 3vw, 2rem);
+            z-index: 10;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 0.5rem;
+            min-width: 0;
+        }
+        
+        .header-top > div:first-child {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 0;
+            flex-shrink: 1;
+            overflow: hidden;
+        }
+        
+        /* iPhone 13 mini and similar small screens - make header more compact */
+        @media (max-width: 390px) {
+            .header-top {
+                padding: 0 0.75rem;
+            }
+            
+            .header-top > div:first-child {
+                gap: 0.5rem;
+            }
+            
+            /* Hide separator and "timerist.com" text on very small screens */
+            .header-top .separator,
+            .header-top > div:first-child > span:first-of-type {
+                display: none;
+            }
+            
+            /* Make "Stopwatch" text smaller */
+            .header-top > div:first-child > span:last-of-type {
+                font-size: 0.875rem !important;
+            }
+            
+            /* Ensure logo doesn't shrink too much */
+            #timerist-logo {
+                width: 36px !important;
+                height: 36px !important;
+                flex-shrink: 0;
+            }
+        }
+        
+        /* Slightly larger screens (iPhone 13, 14, etc.) - show more but keep compact */
+        @media (min-width: 391px) and (max-width: 428px) {
+            .header-top {
+                padding: 0 1rem;
+            }
+            
+            /* Hide separator but keep timerist.com text */
+            .header-top .separator {
+                display: none;
+            }
+            
+            /* Make text smaller */
+            .header-top > div:first-child > span {
+                font-size: 0.875rem !important;
+            }
+        }
+        
+        @media (min-width: 640px) {
+            .container {
+                padding: 2rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                padding: 2rem 3rem;
+            }
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+            min-width: fit-content;
+        }
+        
+        /* Ensure both buttons are always visible on small screens */
+        @media (max-width: 428px) {
+            .header-actions {
+                gap: 0.375rem;
+            }
+            
+            .header-actions .mode-toggle-btn,
+            .header-actions .hamburger-menu {
+                width: 40px;
+                height: 40px;
+                padding: 0.375rem;
+                font-size: 1.25rem;
+            }
+        }
+        
+        .header-top .mode-toggle-btn {
+            position: relative;
+            top: auto;
+            right: auto;
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgb(var(--foreground));
+            font-size: 1.5rem;
+            transition: opacity 0.2s;
+            border-radius: var(--radius);
+            min-width: 44px;
+        }
+        
+        .header-top .mode-toggle-btn:hover,
+        .header-top .mode-toggle-btn:active {
+            opacity: 0.7;
+            background-color: rgba(var(--accent), 0.5);
+        }
+        
+        .header-top .mode-toggle-btn:focus {
+            outline: 2px solid rgb(var(--ring));
+            outline-offset: 2px;
+        }
+        
+        .header-top .mode-toggle-btn {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        
+        #timerist-logo {
+            display: block;
+            width: 40px;
+            height: 40px;
+            color: #0a0a0a;
+        }
+        
+        .header-top a {
+            transition: opacity 0.2s ease;
+        }
+        
+        .header-top a:hover {
+            opacity: 0.7;
+        }
+        
+        #timerist-logo circle,
+        #timerist-logo line {
+            stroke: #0a0a0a;
+            stroke-width: 2.5;
+        }
+        
+        .dark #timerist-logo {
+            color: #fafafa;
+        }
+        
+        .dark #timerist-logo circle,
+        .dark #timerist-logo line {
+            stroke: #fafafa;
+        }
+        
+        html.dark #timerist-logo .logo-circle,
+        html.dark #timerist-logo .logo-line {
+            stroke: #fafafa !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-top">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <a href="index.html" style="display: flex; align-items: center; text-decoration: none; cursor: pointer;">
+                    <svg
+                        width="40"
+                        height="40"
+                        viewBox="0 0 40 40"
+                        xmlns="http://www.w3.org/2000/svg"
+                        id="timerist-logo"
+                    >
+                        <circle cx="20" cy="20" r="15" fill="none" stroke="#0a0a0a" stroke-width="2.5" class="logo-circle"/>
+                        <line x1="20" y1="20" x2="20" y2="8" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
+                        <line x1="20" y1="20" x2="30" y2="20" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
+                    </svg>
+                </a>
+                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">timerist.com</span>
+                <span class="separator" style="color: rgb(var(--muted-foreground));">|</span>
+                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">Stopwatch</span>
+            </div>
+            
+            <div class="header-actions">
+                <button class="mode-toggle-btn mode-toggle" id="themeToggleBtn" aria-label="Toggle dark mode">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="hamburger-menu" onclick="toggleDrawer()" aria-label="Open settings menu">
+                    ☰
+                </button>
+            </div>
+        </div>
+        
+        <div class="timer-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <!-- Timer Display -->
+            <div class="timer-display-block bg-card border border-border rounded-lg shadow-lg text-center" id="timerDisplayBlock">
+                <div class="timer-display-large" id="timer-display">00:00:00</div>
+            </div>
+            
+            <!-- Control Buttons -->
+            <div class="p-6 bg-card border border-border rounded-lg shadow-lg">
+                <div class="control-buttons-container">
+                    <button class="control-btn btn-primary" id="startBtn" aria-label="Start stopwatch">Start</button>
+                    <button class="control-btn btn-primary" id="pauseBtn" style="display: none;" aria-label="Pause stopwatch">Pause</button>
+                    <button class="control-btn btn-destructive" id="resetBtn" style="display: none;" aria-label="Reset stopwatch">Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Drawer Overlay -->
+    <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+    
+    <!-- Settings Drawer -->
+    <div class="settings-drawer" id="settingsDrawer">
+        <div class="drawer-header">
+            <h2 style="font-size: 1rem; font-weight: 600; color: rgb(var(--foreground)); text-transform: uppercase; letter-spacing: 0.05em;">Settings</h2>
+            <button class="drawer-close" onclick="closeDrawer()" aria-label="Close drawer">×</button>
+        </div>
+        <div class="drawer-content">
+            <!-- About This Timer -->
+            <div class="drawer-section">
+                <h3>About This Timer</h3>
+                <p>
+                    Simple stopwatch timer for tracking workout duration, exercise time, or any activity. 
+                    Start, pause, and reset with ease—perfect for timing your fitness sessions, runs, or any timed activity.
+                </p>
+                <p style="margin-top: 0.75rem;">
+                    <strong>Keywords:</strong> stopwatch, fitness stopwatch, workout timer, exercise timer, running timer, activity timer, time tracker.
+                </p>
+            </div>
+            
+            <!-- Timer Setup -->
+            <div class="drawer-section">
+                <h3>Timer Setup</h3>
+                
+                <!-- Setup Colors -->
+                <div class="p-4">
+                    <label class="color-picker-label" for="timer-text-color-picker" style="margin-bottom: 1rem; display: block;">Timer Text Color</label>
+                    
+                    <!-- Tabs Component -->
+                    <div class="tabs" data-tabs="color-picker-tabs">
+                        <div class="tabs-list" role="tablist">
+                            <button 
+                                class="tabs-trigger" 
+                                role="tab"
+                                data-tab="dark"
+                                data-state="active"
+                                aria-selected="true"
+                                aria-controls="dark-tab-content"
+                                id="dark-tab-trigger"
+                            >
+                                Night Mode
+                            </button>
+                            <button 
+                                class="tabs-trigger" 
+                                role="tab"
+                                data-tab="light"
+                                data-state="inactive"
+                                aria-selected="false"
+                                aria-controls="light-tab-content"
+                                id="light-tab-trigger"
+                            >
+                                Light Mode
+                            </button>
+                        </div>
+                        
+                        <!-- Dark Mode Tab Content -->
+                        <div 
+                            class="tabs-content" 
+                            id="dark-tab-content"
+                            role="tabpanel"
+                            data-state="active"
+                            aria-labelledby="dark-tab-trigger"
+                        >
+                            <!-- Dark Mode Default Button -->
+                            <button 
+                                id="defaultDarkBtn" 
+                                type="button"
+                                class="w-full mb-3 px-3 py-2 rounded-md text-xs font-medium cursor-pointer transition-colors text-white"
+                                style="background-color: #e74c3c; border: 1px solid #e74c3c;"
+                            >
+                                Return to Default
+                            </button>
+                            
+                            <!-- Color Swatches Grid - Bright colors visible on black -->
+                            <div class="grid grid-cols-3 gap-3 mb-4">
+                                <button class="color-swatch-btn dark-mode-swatch w-10 h-10 rounded-full border border-gray-300 hover:ring-2 hover:ring-primary/50 transition" data-color="#e74c3c" data-mode="dark" aria-label="Default Red" title="Default Red" tabindex="0" type="button" style="background-color: #e74c3c;"></button>
+                                <button class="color-swatch-btn dark-mode-swatch w-10 h-10 rounded-full border border-gray-300 hover:ring-2 hover:ring-primary/50 transition" data-color="#ffffff" data-mode="dark" aria-label="White" title="White" tabindex="0" type="button" style="background-color: #ffffff;"></button>
+                                <button class="color-swatch-btn dark-mode-swatch w-10 h-10 rounded-full border border-gray-300 hover:ring-2 hover:ring-primary/50 transition" data-color="#ef4444" data-mode="dark" aria-label="Bright Red" title="Bright Red" tabindex="0" type="button" style="background-color: #ef4444;"></button>
+                                <button class="color-swatch-btn dark-mode-swatch w-10 h-10 rounded-full border border-gray-300 hover:ring-2 hover:ring-primary/50 transition" data-color="#3b82f6" data-mode="dark" aria-label="Bright Blue" title="Bright Blue" tabindex="0" type="button" style="background-color: #3b82f6;"></button>
+                                <button class="color-swatch-btn dark-mode-swatch w-10 h-10 rounded-full border border-gray-300 hover:ring-2 hover:ring-primary/50 transition" data-color="#22c55e" data-mode="dark" aria-label="Bright Green" title="Bright Green" tabindex="0" type="button" style="background-color: #22c55e;"></button>
+                                <button class="color-swatch-btn dark-mode-swatch w-10 h-10 rounded-full border border-gray-300 hover:ring-2 hover:ring-primary/50 transition" data-color="#eab308" data-mode="dark" aria-label="Yellow" title="Yellow" tabindex="0" type="button" style="background-color: #eab308;"></button>
+                                <button class="color-swatch-btn dark-mode-swatch w-10 h-10 rounded-full border border-gray-300 hover:ring-2 hover:ring-primary/50 transition" data-color="#f97316" data-mode="dark" aria-label="Orange" title="Orange" tabindex="0" type="button" style="background-color: #f97316;"></button>
+                                <button class="color-swatch-btn dark-mode-swatch w-10 h-10 rounded-full border border-gray-300 hover:ring-2 hover:ring-primary/50 transition" data-color="#ec4899" data-mode="dark" aria-label="Pink" title="Pink" tabindex="0" type="button" style="background-color: #ec4899;"></button>
+                                <button class="color-swatch-btn dark-mode-swatch w-10 h-10 rounded-full border border-gray-300 hover:ring-2 hover:ring-primary/50 transition" data-color="#06b6d4" data-mode="dark" aria-label="Cyan" title="Cyan" tabindex="0" type="button" style="background-color: #06b6d4;"></button>
+                                <button class="color-swatch-btn dark-mode-swatch w-10 h-10 rounded-full border border-gray-300 hover:ring-2 hover:ring-primary/50 transition" data-color="#10b981" data-mode="dark" aria-label="Emerald" title="Emerald" tabindex="0" type="button" style="background-color: #10b981;"></button>
+                                <button class="color-swatch-btn dark-mode-swatch w-10 h-10 rounded-full border border-gray-300 hover:ring-2 hover:ring-primary/50 transition" data-color="#8b5cf6" data-mode="dark" aria-label="Violet" title="Violet" tabindex="0" type="button" style="background-color: #8b5cf6;"></button>
+                                <button class="color-swatch-btn dark-mode-swatch w-10 h-10 rounded-full border border-gray-300 hover:ring-2 hover:ring-primary/50 transition" data-color="#f43f5e" data-mode="dark" aria-label="Rose" title="Rose" tabindex="0" type="button" style="background-color: #f43f5e;"></button>
+                            </div>
+                        </div>
+                        
+                        <!-- Light Mode Tab Content -->
+                        <div 
+                            class="tabs-content" 
+                            id="light-tab-content"
+                            role="tabpanel"
+                            data-state="inactive"
+                            aria-labelledby="light-tab-trigger"
+                        >
+                            <!-- Light Mode Default Button -->
+                            <button 
+                                id="defaultLightBtn" 
+                                type="button"
+                                class="w-full mb-3 px-3 py-2 rounded-md text-xs font-medium cursor-pointer transition-colors text-white"
+                                style="background-color: #4a90e2; border: 1px solid #4a90e2;"
+                            >
+                                Return to Default
+                            </button>
+                            
+                            <!-- Color Swatches Grid - Dark colors visible on white -->
+                            <div class="grid grid-cols-3 gap-3 mb-4">
+                                <button class="color-swatch-btn light-mode-swatch w-10 h-10 rounded-full border border-gray-300 hover:ring-2 hover:ring-primary/50 transition" data-color="#4a90e2" data-mode="light" aria-label="Default Blue" title="Default Blue" tabindex="0" type="button" style="background-color: #4a90e2;"></button>
+                                <button class="color-swatch-btn light-mode-swatch w-10 h-10 rounded-full border border-gray-300 hover:ring-2 hover:ring-primary/50 transition" data-color="#000000" data-mode="light" aria-label="Black" title="Black" tabindex="0" type="button" style="background-color: #000000;"></button>
+                                <button class="color-swatch-btn light-mode-swatch w-10 h-10 rounded-full border border-gray-300 hover:ring-2 hover:ring-primary/50 transition" data-color="#0f172a" data-mode="light" aria-label="Slate 900" title="Slate 900" tabindex="0" type="button" style="background-color: #0f172a;"></button>
+                                <button class="color-swatch-btn light-mode-swatch w-10 h-10 rounded-full border border-gray-300 hover:ring-2 hover:ring-primary/50 transition" data-color="#1e293b" data-mode="light" aria-label="Slate 800" title="Slate 800" tabindex="0" type="button" style="background-color: #1e293b;"></button>
+                                <button class="color-swatch-btn light-mode-swatch w-10 h-10 rounded-full border border-gray-300 hover:ring-2 hover:ring-primary/50 transition" data-color="#334155" data-mode="light" aria-label="Slate 700" title="Slate 700" tabindex="0" type="button" style="background-color: #334155;"></button>
+                                <button class="color-swatch-btn light-mode-swatch w-10 h-10 rounded-full border border-gray-300 hover:ring-2 hover:ring-primary/50 transition" data-color="#475569" data-mode="light" aria-label="Slate 600" title="Slate 600" tabindex="0" type="button" style="background-color: #475569;"></button>
+                                <button class="color-swatch-btn light-mode-swatch w-10 h-10 rounded-full border border-gray-300 hover:ring-2 hover:ring-primary/50 transition" data-color="#64748b" data-mode="light" aria-label="Slate 500" title="Slate 500" tabindex="0" type="button" style="background-color: #64748b;"></button>
+                                <button class="color-swatch-btn light-mode-swatch w-10 h-10 rounded-full border border-gray-300 hover:ring-2 hover:ring-primary/50 transition" data-color="#dc2626" data-mode="light" aria-label="Dark Red" title="Dark Red" tabindex="0" type="button" style="background-color: #dc2626;"></button>
+                                <button class="color-swatch-btn light-mode-swatch w-10 h-10 rounded-full border border-gray-300 hover:ring-2 hover:ring-primary/50 transition" data-color="#1e40af" data-mode="light" aria-label="Dark Blue" title="Dark Blue" tabindex="0" type="button" style="background-color: #1e40af;"></button>
+                                <button class="color-swatch-btn light-mode-swatch w-10 h-10 rounded-full border border-gray-300 hover:ring-2 hover:ring-primary/50 transition" data-color="#166534" data-mode="light" aria-label="Dark Green" title="Dark Green" tabindex="0" type="button" style="background-color: #166534;"></button>
+                                <button class="color-swatch-btn light-mode-swatch w-10 h-10 rounded-full border border-gray-300 hover:ring-2 hover:ring-primary/50 transition" data-color="#7c2d12" data-mode="light" aria-label="Dark Orange" title="Dark Orange" tabindex="0" type="button" style="background-color: #7c2d12;"></button>
+                                <button class="color-swatch-btn light-mode-swatch w-10 h-10 rounded-full border border-gray-300 hover:ring-2 hover:ring-primary/50 transition" data-color="#6b21a8" data-mode="light" aria-label="Dark Purple" title="Dark Purple" tabindex="0" type="button" style="background-color: #6b21a8;"></button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Native Color Input -->
+                    <div class="mb-4">
+                        <input 
+                            type="color" 
+                            id="timer-text-color-picker" 
+                            class="color-input w-12 h-12 rounded-md cursor-pointer transition-colors"
+                            style="border: 1px solid rgb(var(--input)); background-color: rgb(var(--background));"
+                            aria-label="Custom timer text color"
+                        />
+                    </div>
+                </div>
+            </div>
+            
+            <!-- General Info -->
+            <div class="drawer-section">
+                <h3>General Info</h3>
+                <p><strong>Version:</strong> v0.1</p>
+                <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Stopwatch Logic
+        let elapsedTime = 0;
+        let interval = null;
+        let isRunning = false;
+        let isPaused = false;
+        
+        const display = document.getElementById('timer-display');
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const mins = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+        
+        function updateDisplay() {
+            display.textContent = formatTime(elapsedTime);
+            
+            // Add running class for styling
+            if (isRunning) {
+                document.body.classList.add('timer-running');
+            } else {
+                document.body.classList.remove('timer-running');
+            }
+            
+            // Update button visibility
+            if (isRunning && !isPaused) {
+                startBtn.style.display = 'none';
+                pauseBtn.style.display = 'inline-block';
+                pauseBtn.classList.remove('paused');
+                resetBtn.style.display = 'inline-block';
+            } else if (isPaused) {
+                startBtn.style.display = 'inline-block';
+                startBtn.textContent = 'Resume';
+                pauseBtn.style.display = 'none';
+                resetBtn.style.display = 'inline-block';
+            } else {
+                // Timer is stopped
+                startBtn.style.display = 'inline-block';
+                startBtn.textContent = 'Start';
+                pauseBtn.style.display = 'none';
+                resetBtn.style.display = elapsedTime > 0 ? 'inline-block' : 'none';
+            }
+        }
+        
+        function startTimer() {
+            isRunning = true;
+            isPaused = false;
+            
+            interval = setInterval(() => {
+                elapsedTime++;
+                updateDisplay();
+            }, 1000);
+            
+            updateDisplay();
+        }
+        
+        function pauseTimer() {
+            isRunning = false;
+            isPaused = true;
+            clearInterval(interval);
+            interval = null;
+            updateDisplay();
+        }
+        
+        function resumeTimer() {
+            if (isPaused) {
+                startTimer();
+            }
+        }
+        
+        function resetTimer() {
+            clearInterval(interval);
+            interval = null;
+            isRunning = false;
+            isPaused = false;
+            elapsedTime = 0;
+            updateDisplay();
+        }
+        
+        // Toggle play/pause
+        function togglePlayPause() {
+            if (isRunning && !isPaused) {
+                pauseTimer();
+            } else if (isPaused) {
+                resumeTimer();
+            } else {
+                startTimer();
+            }
+        }
+        
+        // Event Listeners
+        startBtn.addEventListener('click', togglePlayPause);
+        pauseBtn.addEventListener('click', pauseTimer);
+        resetBtn.addEventListener('click', resetTimer);
+        
+        // Initialize
+        updateDisplay();
+        
+        // Set release date
+        document.getElementById('releaseDate').textContent = new Date().toISOString().split('T')[0];
+        
+        // Timer Text Color Picker with Mode-Specific Defaults
+        const timerDisplay = document.getElementById('timer-display');
+        const DARK_DEFAULT_KEY = 'timerTextColorDark';
+        const LIGHT_DEFAULT_KEY = 'timerTextColorLight';
+        const DARK_DEFAULT = '#e74c3c';
+        const LIGHT_DEFAULT = '#4a90e2';
+        
+        // Helper function to update theme icon (available across script blocks)
+        function updateThemeIconHelper() {
+            const icon = document.getElementById('theme-icon');
+            if (!icon) return;
+            const isDark = document.documentElement.classList.contains('dark');
+            icon.textContent = isDark ? '☀️' : '🌙';
+        }
+        
+        // Expose globally for use in other script blocks
+        window.updateThemeIconHelper = updateThemeIconHelper;
+        
+        // Get current mode default color
+        function getCurrentModeDefault() {
+            const isDark = document.documentElement.classList.contains('dark');
+            const darkDefault = localStorage.getItem(DARK_DEFAULT_KEY) || DARK_DEFAULT;
+            const lightDefault = localStorage.getItem(LIGHT_DEFAULT_KEY) || LIGHT_DEFAULT;
+            return isDark ? darkDefault : lightDefault;
+        }
+        
+        // Apply timer text color (only if current mode matches)
+        function applyTextColor(color, mode) {
+            if (!timerDisplay) return;
+            const isDark = document.documentElement.classList.contains('dark');
+            
+            // Only apply if the mode matches
+            if ((mode === 'dark' && isDark) || (mode === 'light' && !isDark)) {
+                timerDisplay.style.color = color;
+            }
+        }
+        
+        // Save mode-specific default
+        function saveModeDefault(color, mode) {
+            if (mode === 'dark') {
+                localStorage.setItem(DARK_DEFAULT_KEY, color);
+            } else {
+                localStorage.setItem(LIGHT_DEFAULT_KEY, color);
+            }
+        }
+        
+        // Reset to dark mode default (hardcoded default)
+        function resetToDarkDefault() {
+            // Reset to hardcoded default
+            saveModeDefault(DARK_DEFAULT, 'dark');
+            
+            // If currently in dark mode, apply it
+            if (document.documentElement.classList.contains('dark')) {
+                timerDisplay.style.color = DARK_DEFAULT;
+            }
+            
+            // Update color input
+            const colorInput = document.getElementById('timer-text-color-picker');
+            if (colorInput) {
+                colorInput.value = DARK_DEFAULT;
+            }
+            
+            // Remove selected state from all swatches
+            document.querySelectorAll('.color-swatch-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+        }
+        
+        // Reset to light mode default (hardcoded default)
+        function resetToLightDefault() {
+            // Reset to hardcoded default
+            saveModeDefault(LIGHT_DEFAULT, 'light');
+            
+            // If currently in light mode, apply it
+            if (!document.documentElement.classList.contains('dark')) {
+                timerDisplay.style.color = LIGHT_DEFAULT;
+            }
+            
+            // Update color input
+            const colorInput = document.getElementById('timer-text-color-picker');
+            if (colorInput) {
+                colorInput.value = LIGHT_DEFAULT;
+            }
+            
+            // Remove selected state from all swatches
+            document.querySelectorAll('.color-swatch-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+        }
+        
+        // Load saved timer text color on page load
+        function loadTextColor() {
+            const isDark = document.documentElement.classList.contains('dark');
+            const darkDefault = localStorage.getItem(DARK_DEFAULT_KEY) || DARK_DEFAULT;
+            const lightDefault = localStorage.getItem(LIGHT_DEFAULT_KEY) || LIGHT_DEFAULT;
+            const currentDefault = isDark ? darkDefault : lightDefault;
+            
+            timerDisplay.style.color = currentDefault;
+            
+            // Update color input
+            const colorInput = document.getElementById('timer-text-color-picker');
+            if (colorInput) {
+                colorInput.value = currentDefault;
+            }
+        }
+        
+        // Set tab state without switching theme (for drawer opening)
+        function setTabState(tabName, switchTheme = true) {
+            const darkTab = document.getElementById('dark-tab-trigger');
+            const lightTab = document.getElementById('light-tab-trigger');
+            const darkContent = document.getElementById('dark-tab-content');
+            const lightContent = document.getElementById('light-tab-content');
+            
+            if (tabName === 'dark') {
+                darkTab.setAttribute('data-state', 'active');
+                darkTab.setAttribute('aria-selected', 'true');
+                darkContent.setAttribute('data-state', 'active');
+                
+                lightTab.setAttribute('data-state', 'inactive');
+                lightTab.setAttribute('aria-selected', 'false');
+                lightContent.setAttribute('data-state', 'inactive');
+                
+                // Switch to dark mode only if switchTheme is true
+                if (switchTheme && !document.documentElement.classList.contains('dark')) {
+                    if (window.toggleTheme) {
+                        window.toggleTheme();
+                    }
+                    // Update theme icon after switching (wait for DOM to update)
+                    setTimeout(() => {
+                        updateThemeIconHelper();
+                        if (window.updateLogoColors) {
+                            window.updateLogoColors();
+                        }
+                    }, 100);
+                }
+            } else {
+                lightTab.setAttribute('data-state', 'active');
+                lightTab.setAttribute('aria-selected', 'true');
+                lightContent.setAttribute('data-state', 'active');
+                
+                darkTab.setAttribute('data-state', 'inactive');
+                darkTab.setAttribute('aria-selected', 'false');
+                darkContent.setAttribute('data-state', 'inactive');
+                
+                // Switch to light mode only if switchTheme is true
+                if (switchTheme && document.documentElement.classList.contains('dark')) {
+                    if (window.toggleTheme) {
+                        window.toggleTheme();
+                    }
+                    // Update theme icon after switching (wait for DOM to update)
+                    setTimeout(() => {
+                        updateThemeIconHelper();
+                        if (window.updateLogoColors) {
+                            window.updateLogoColors();
+                        }
+                    }, 100);
+                }
+            }
+            
+            // Update timer color after mode switch
+            if (switchTheme) {
+                setTimeout(() => {
+                    loadTextColor();
+                }, 100);
+            }
+        }
+        
+        // Tab Switching Logic (switches theme)
+        function switchTab(tabName) {
+            setTabState(tabName, true);
+        }
+        
+        // Handle tab clicks
+        const darkTab = document.getElementById('dark-tab-trigger');
+        const lightTab = document.getElementById('light-tab-trigger');
+        
+        if (darkTab) {
+            darkTab.addEventListener('click', () => switchTab('dark'));
+        }
+        
+        if (lightTab) {
+            lightTab.addEventListener('click', () => switchTab('light'));
+        }
+        
+        // Handle color swatch clicks
+        document.querySelectorAll('.color-swatch-btn').forEach(swatch => {
+            swatch.addEventListener('click', function() {
+                const color = this.getAttribute('data-color');
+                const mode = this.getAttribute('data-mode');
+                
+                // Save as default for this mode
+                saveModeDefault(color, mode);
+                
+                // Update selected state (only in current tab)
+                const currentTab = document.querySelector('.tabs-trigger[data-state="active"]');
+                if (currentTab && currentTab.getAttribute('data-tab') === mode) {
+                    document.querySelectorAll(`.color-swatch-btn[data-mode="${mode}"]`).forEach(s => s.classList.remove('selected'));
+                    this.classList.add('selected');
+                }
+                
+                // Apply color if we're in the matching mode
+                applyTextColor(color, mode);
+                
+                // Update color input
+                const colorInput = document.getElementById('timer-text-color-picker');
+                if (colorInput) {
+                    colorInput.value = color;
+                }
+            });
+            
+            // Keyboard accessibility
+            swatch.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click();
+                }
+            });
+        });
+        
+        // Handle native color input
+        const colorInput = document.getElementById('timer-text-color-picker');
+        if (colorInput) {
+            colorInput.addEventListener('input', function(e) {
+                const color = e.target.value;
+                const isDark = document.documentElement.classList.contains('dark');
+                const mode = isDark ? 'dark' : 'light';
+                
+                // Save as default for current mode
+                saveModeDefault(color, mode);
+                
+                // Apply color
+                timerDisplay.style.color = color;
+                
+                // Remove selected state from swatches when using custom color
+                document.querySelectorAll('.color-swatch-btn').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+            });
+        }
+        
+        // Handle default buttons
+        const defaultDarkBtn = document.getElementById('defaultDarkBtn');
+        if (defaultDarkBtn) {
+            defaultDarkBtn.addEventListener('click', resetToDarkDefault);
+        }
+        
+        const defaultLightBtn = document.getElementById('defaultLightBtn');
+        if (defaultLightBtn) {
+            defaultLightBtn.addEventListener('click', resetToLightDefault);
+        }
+        
+        // Watch for theme changes to update timer color
+        const colorThemeObserver = new MutationObserver(() => {
+            loadTextColor();
+        });
+        colorThemeObserver.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+        
+        // Initialize timer text color on load
+        loadTextColor();
+        
+        // Set initial tab based on current mode (without switching theme)
+        const isDark = document.documentElement.classList.contains('dark');
+        setTabState(isDark ? 'dark' : 'light', false);
+    </script>
+    <script src="scripts/dark-mode-toggle.js"></script>
+    <script>
+        // Drawer Functions
+        function toggleDrawer() {
+            const drawer = document.getElementById('settingsDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+            const isOpen = drawer.classList.contains('open');
+            
+            drawer.classList.toggle('open');
+            overlay.classList.toggle('open');
+            
+            // When opening the drawer, set the tab to match current theme mode
+            if (!isOpen) {
+                const isDark = document.documentElement.classList.contains('dark');
+                // Set tab state without switching theme (just match current mode)
+                setTabState(isDark ? 'dark' : 'light', false);
+            }
+        }
+        
+        function closeDrawer() {
+            const drawer = document.getElementById('settingsDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+            drawer.classList.remove('open');
+            overlay.classList.remove('open');
+        }
+        
+        // Ensure theme toggle button works on mobile (iOS/Android)
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggleBtn = document.getElementById('themeToggleBtn');
+            if (themeToggleBtn) {
+                // Add both click and touchstart for maximum compatibility
+                themeToggleBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (window.toggleTheme) {
+                        window.toggleTheme();
+                    }
+                });
+                
+                // Also add touchstart for better mobile support
+                themeToggleBtn.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (window.toggleTheme) {
+                        window.toggleTheme();
+                    }
+                }, { passive: false });
+            }
+        });
+        
+        // Logo color update for dark mode
+        function updateLogoColors() {
+            const logo = document.getElementById('timerist-logo');
+            if (!logo) return;
+            
+            const isDark = document.documentElement.classList.contains('dark');
+            const lightColor = '#0a0a0a';
+            const darkColor = '#fafafa';
+            const color = isDark ? darkColor : lightColor;
+            
+            const circles = logo.querySelectorAll('.logo-circle');
+            const lines = logo.querySelectorAll('.logo-line');
+            
+            circles.forEach(el => el.setAttribute('stroke', color));
+            lines.forEach(el => el.setAttribute('stroke', color));
+        }
+        
+        // Theme icon update - use helper if available, otherwise define it
+        function updateThemeIcon() {
+            if (window.updateThemeIconHelper) {
+                window.updateThemeIconHelper();
+            } else {
+                const icon = document.getElementById('theme-icon');
+                if (!icon) return;
+                const isDark = document.documentElement.classList.contains('dark');
+                icon.textContent = isDark ? '☀️' : '🌙';
+            }
+        }
+        
+        // Expose updateThemeIcon globally so it can be called from tab switching
+        window.updateThemeIcon = updateThemeIcon;
+        
+        // Watch for theme changes
+        const themeObserver = new MutationObserver(() => {
+            updateLogoColors();
+            updateThemeIcon();
+        });
+        themeObserver.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+        
+        // Override toggleTheme to update logo, icon
+        const originalToggle = window.toggleTheme;
+        window.toggleTheme = function() {
+            originalToggle();
+            setTimeout(() => {
+                updateLogoColors();
+                updateThemeIcon();
+            }, 10);
+        };
+        
+        updateLogoColors();
+        updateThemeIcon();
+    </script>
+</body>
+</html>
+]
+
+  ]
+
+
+Functionality to add / preserve for [EMOM]:
+
+- Do NOT change any existing styles, classes, fonts, colors, button designs, hovers, layout structure, or CSS from the shell.
+- Remove or hide any elements from the shell that do not fit this timer (e.g. quick-select grid for countdown-style timers, ±5s adjust buttons).
+- Timer display: Keep the large centered display with MM:SS format. Add phase labels, round counters, or other status info specific to [EMOM] (e.g., "WORK"/"REST" for intervals, round number, AMRAP score, etc.). Apply color changes (normal primary color, warning yellow, danger red near end) if already present in the shell logic.
+- Controls: Use the shell's thumb-friendly bottom button pattern:
+  - Primary blue button: Start / Resume / Pause (toggle text accordingly)
+  - Destructive red button: Reset
+- Setup fields: Place timer-specific input fields (e.g., work/rest time, rounds, duration, etc.) in the main area for quick access, using grid layout similar to interval.html. Mirror the same fields in the "Setup Content" section of the drawer.
+- Hamburger menu / Drawer: Keep the shell’s drawer structure. In "Setup Content" include the setup fields + a short "About This Timer" paragraph describing typical use cases for [EMOM] and relevant SEO keywords (e.g. "Tabata timer, HIIT Tabata, 20/10 interval timer"). Keep "General Info" with Version v0.1 and release date.
+- JavaScript: Preserve and adapt the [EMOME]-specific vanilla JS logic (phase switching, round tracking, counting up/down, pause/resume/reset, end beeps/visual cues). Integrate it into the shell’s JS structure. Use simple beep sounds via AudioContext if needed.
+- Preserve all shell features: System fonts (-apple-system etc.), RGB CSS variables, simple hover states (opacity or subtle bg change only), Tailwind utility classes, dark/light mode via class toggle, hamburger menu, theme switcher with moon/sun icon, mobile-responsive layout.
+
+Important rules to follow strictly:
+- **Dark/Light mode only**: No references to multiple styles (style1, style2, style3) or URL parameters. Use Tailwind's dark: variants and document.documentElement.classList.toggle('dark').
+- **Button hovers**: Ensure hover states maintain visibility and contrast (e.g. hover:bg-primary/90). Never let buttons disappear on hover (no white-on-white or black-on-black).
+- **Top spacing**: Minimize vertical whitespace above the timer container. Pull the timer display and controls close under the header (use small pt- or mt- values like pt-2 or clamp for mobile). Optimize for portrait smartphone view so the timer is near the top with little wasted space.
+- **Adherence**: Use only ShadCN-inspired components and Tailwind utilities. No custom non-Tailwind CSS selectors, external libraries, or inline styles that override the shell. Match typography, spacing, shadows, and border-radius exactly from the shell.
+- **Mobile optimization**: Test layout for small screens (320–480px width). Keep header compact, hide separator/text if needed, ensure buttons are tappable.
+- **Do NOT add**: Inter font, HSL variables, hover transforms/scales/extra shadows, min-height extras, or any elements specific to other timers (e.g. quick-select presets unless required for this timer).
+
+Output the complete updated EMOM.html code.
