@@ -4,10 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EMOM Timer - Timerist | Every Minute On the Minute Workout Timer</title>
-    <meta name="description" content="EMOM (Every Minute On the Minute) timer for structured workouts. Complete your work, rest for the remainder of each minute, then start again—perfect for interval training and fitness challenges.">
+    <meta name="description" content="EMOM (Every Minute On the Minute) timer for structured workouts. Each round is exactly 60 seconds—complete your work, then start again on the next minute.">
     <link rel="stylesheet" href="styles/timerist-design-system.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
         :root {
             --background: 245 247 250;
             --foreground: 51 51 51;
@@ -29,24 +39,24 @@
             --radius: 0.5rem;
         }
         
-        .dark {
+        [data-theme="style1"] {
             --background: 0 0 0;
             --foreground: 255 255 255;
             --card: 26 26 26;
             --card-foreground: 255 255 255;
-            --primary: 74 144 226;
+            --primary: 255 0 0;
             --primary-foreground: 255 255 255;
-            --secondary: 80 200 120;
-            --secondary-foreground: 255 255 255;
+            --secondary: 0 255 0;
+            --secondary-foreground: 0 0 0;
             --muted: 204 204 204;
             --muted-foreground: 153 153 153;
             --accent: 51 51 51;
             --accent-foreground: 255 255 255;
-            --destructive: 231 76 60;
+            --destructive: 255 0 0;
             --destructive-foreground: 255 255 255;
             --border: 51 51 51;
             --input: 51 51 51;
-            --ring: 74 144 226;
+            --ring: 255 0 0;
         }
         
         body {
@@ -85,28 +95,28 @@
             max-width: 1000px;
             margin: 0 auto;
             overflow-x: hidden;
-            margin-top: clamp(4rem, 6vw, 5rem);
+            margin-top: clamp(5rem, 8vw, 6rem);
             width: 100%;
         }
         
         /* iPad vertical (portrait) - position timer below header */
         @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
             .timer-container {
-                margin-top: clamp(3.5rem, 5vw, 4.5rem);
+                margin-top: clamp(4rem, 6vw, 5rem);
             }
         }
         
         /* iPad horizontal (landscape) - position timer below header */
         @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
             .timer-container {
-                margin-top: clamp(4rem, 6vw, 5rem);
+                margin-top: clamp(4.5rem, 7vw, 5.5rem);
             }
         }
         
         /* Desktop - position timer below header */
         @media (min-width: 1025px) {
             .timer-container {
-                margin-top: clamp(3.5rem, 5vw, 4.5rem);
+                margin-top: clamp(4rem, 6vw, 5rem);
             }
         }
         
@@ -124,36 +134,36 @@
         .hover\:bg-secondary\/90:hover { background-color: rgba(var(--secondary), 0.9); }
         
         .timer-display-large {
-            font-size: 3rem;
-            font-weight: 700;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 4rem; /* Smaller for mobile */
+            font-weight: 700; /* font-bold */
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* font-mono */
             font-variant-numeric: tabular-nums;
             line-height: 1;
             color: rgb(var(--primary));
             transition: color 0.3s ease;
-            margin-bottom: 1rem;
+            margin-bottom: 1rem; /* mb-4 */
             word-break: keep-all;
             overflow-wrap: normal;
-            letter-spacing: -0.02em;
         }
         
         @media (min-width: 390px) {
             .timer-display-large {
-                font-size: 3.5rem;
-            }
-        }
-        
-        @media (min-width: 428px) {
-            .timer-display-large {
-                font-size: 4rem;
+                font-size: 5rem;
             }
         }
         
         @media (min-width: 768px) {
             .timer-display-large {
-                font-size: 8rem;
-                letter-spacing: 0;
+                font-size: 8rem; /* md:text-9xl */
             }
+        }
+        
+        .timer-display-large.warning {
+            color: #f59e0b;
+        }
+        
+        .timer-display-large.danger {
+            color: rgb(var(--destructive));
         }
         
         .timer-display-block {
@@ -174,41 +184,20 @@
             }
         }
         
-        /* Ensure timer display fits on mobile screens */
-        @media (max-width: 767px) {
-            .timer-display-block {
-                padding-left: 0.75rem;
-                padding-right: 0.75rem;
-            }
-            
-            .timer-display-large {
-                transform: scale(0.95);
-                transform-origin: center;
-            }
-        }
-        
-        @media (max-width: 428px) {
-            .timer-display-large {
-                transform: scale(0.9);
-            }
-        }
-        
-        @media (max-width: 390px) {
-            .timer-display-large {
-                transform: scale(0.85);
-            }
+        /* EMOM: Hide phase label */
+        .phase-label {
+            display: none;
         }
         
         .round-info {
-            font-size: 1.125rem;
-            font-weight: 500;
+            font-size: 0.875rem;
             color: rgb(var(--muted-foreground));
             margin-top: 0.75rem;
         }
         
         @media (min-width: 768px) {
             .round-info {
-                font-size: 1.25rem;
+                font-size: 1rem;
             }
         }
         
@@ -263,33 +252,21 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
-        /* Start button hover - dark gray */
-        #startBtn:hover:not(:disabled) {
+        /* Set Up button hover - dark gray like quick countdown timer */
+        #setupBtn:hover:not(:disabled) {
             background-color: rgb(100, 100, 100);
             color: rgb(255, 255, 255);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
-        /* Dark mode Start button hover - lighter gray */
-        .dark #startBtn:hover:not(:disabled) {
+        /* Dark mode Set Up button hover - lighter gray */
+        [data-theme="style1"] #setupBtn:hover:not(:disabled) {
             background-color: rgb(150, 150, 150);
             color: rgb(0, 0, 0);
         }
         
-        /* Pause button hover - dark gray (when not paused) */
-        #pauseBtn:hover:not(:disabled):not(.paused) {
-            background-color: rgb(100, 100, 100);
-            color: rgb(255, 255, 255);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        
-        /* Dark mode Pause button hover - lighter gray (when not paused) */
-        .dark #pauseBtn:hover:not(:disabled):not(.paused) {
-            background-color: rgb(150, 150, 150);
-            color: rgb(0, 0, 0);
-        }
-        
-        /* Paused state - dark gray background with white text */
+        /* Paused state - dark gray background with white text (daylight mode) */
+        /* Higher specificity to override hover/active states on mobile */
         .control-btn.btn-primary.paused,
         .control-btn.btn-primary.paused:hover,
         .control-btn.btn-primary.paused:active,
@@ -299,10 +276,10 @@
         }
         
         /* Dark mode paused state - lighter gray */
-        .dark .control-btn.btn-primary.paused,
-        .dark .control-btn.btn-primary.paused:hover,
-        .dark .control-btn.btn-primary.paused:active,
-        .dark .control-btn.btn-primary.paused:focus {
+        [data-theme="style1"] .control-btn.btn-primary.paused,
+        [data-theme="style1"] .control-btn.btn-primary.paused:hover,
+        [data-theme="style1"] .control-btn.btn-primary.paused:active,
+        [data-theme="style1"] .control-btn.btn-primary.paused:focus {
             background-color: rgb(150, 150, 150) !important;
             color: rgb(0, 0, 0) !important;
         }
@@ -317,6 +294,45 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
+        /* Clear button hover - dark gray like quick countdown timer */
+        #clearBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode Clear button hover - lighter gray */
+        [data-theme="style1"] #clearBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        /* Start button hover - dark gray like Set Up button */
+        #startBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode Start button hover - lighter gray */
+        [data-theme="style1"] #startBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        /* Pause button hover - dark gray (when not paused) */
+        #pauseBtn:hover:not(:disabled):not(.paused) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode Pause button hover - lighter gray (when not paused) */
+        [data-theme="style1"] #pauseBtn:hover:not(:disabled):not(.paused) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
         .control-btn.btn-destructive {
             background-color: rgb(var(--destructive));
             color: rgb(var(--destructive-foreground));
@@ -327,7 +343,7 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
-        /* Reset button hover - dark gray */
+        /* Reset button hover - dark gray like Set Up button */
         #resetBtn:hover:not(:disabled) {
             background-color: rgb(100, 100, 100);
             color: rgb(255, 255, 255);
@@ -335,7 +351,7 @@
         }
         
         /* Dark mode Reset button hover - lighter gray */
-        .dark #resetBtn:hover:not(:disabled) {
+        [data-theme="style1"] #resetBtn:hover:not(:disabled) {
             background-color: rgb(150, 150, 150);
             color: rgb(0, 0, 0);
         }
@@ -454,6 +470,177 @@
             opacity: 0.7;
         }
         
+        .custom-time-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid rgb(var(--input));
+            border-radius: var(--radius);
+            background-color: rgb(var(--background));
+            color: rgb(var(--foreground));
+            font-size: 1.125rem;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            min-height: 48px;
+        }
+        
+        .custom-time-input:focus {
+            outline: none;
+            border-color: rgb(var(--ring));
+            box-shadow: 0 0 0 2px rgba(var(--ring), 0.2);
+        }
+        
+        .custom-time-input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: rgb(var(--muted-foreground));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .rounds-input-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        
+        .rounds-adjust-btn {
+            width: 44px;
+            height: 44px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            border: 2px solid rgb(var(--border));
+            border-radius: var(--radius);
+            background-color: rgb(var(--card));
+            color: rgb(var(--foreground));
+            cursor: pointer;
+            transition: opacity 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        
+        .rounds-adjust-btn:hover:not(:disabled) {
+            opacity: 0.7;
+        }
+        
+        .rounds-adjust-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .rounds-input-group input {
+            flex: 0 1 auto;
+            width: 80px;
+            max-width: 100px;
+            text-align: center;
+            font-size: 1.125rem;
+            font-weight: 600;
+            background-color: rgb(var(--background));
+            border: 2px solid rgb(var(--input));
+            border-radius: var(--radius);
+            padding: 0.75rem;
+            color: rgb(var(--foreground));
+            min-height: 48px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .rounds-input-group input:focus {
+            outline: none;
+            border-color: rgb(var(--ring));
+            box-shadow: 0 0 0 2px rgba(var(--ring), 0.2);
+        }
+        
+        .rounds-input-group input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .time-input-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        
+        .time-adjust-btn {
+            width: 44px;
+            height: 44px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            border: 2px solid rgb(var(--border));
+            border-radius: var(--radius);
+            background-color: rgb(var(--card));
+            color: rgb(var(--foreground));
+            cursor: pointer;
+            transition: opacity 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        
+        .time-adjust-btn:hover:not(:disabled) {
+            opacity: 0.7;
+        }
+        
+        .time-adjust-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .time-input-group input {
+            flex: 1;
+        }
+        
+        @media (max-width: 390px) {
+            .time-adjust-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 0.75rem;
+            }
+            
+            .time-input-group {
+                gap: 0.5rem;
+            }
+            
+            .rounds-input-group {
+                gap: 0.5rem;
+            }
+            
+            .rounds-input-group input {
+                width: 60px;
+                max-width: 80px;
+                padding: 0.5rem;
+            }
+            
+            .rounds-adjust-btn {
+                width: 40px;
+                height: 40px;
+            }
+        }
+        
+        .timer-running .custom-time-input:not(:disabled),
+        .timer-running .rounds-adjust-btn:not(:disabled),
+        .timer-running .time-adjust-btn:not(:disabled) {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
         .header-top {
             position: absolute;
             top: clamp(1rem, 3vw, 2rem);
@@ -496,7 +683,7 @@
                 display: none;
             }
             
-            /* Make "EMOM" text smaller */
+            /* Make "EMOM Timer" text smaller */
             .header-top > div:first-child > span:last-of-type {
                 font-size: 0.875rem !important;
             }
@@ -621,178 +808,103 @@
             stroke-width: 2.5;
         }
         
-        .dark #timerist-logo {
+        [data-theme="style1"] #timerist-logo {
             color: #fafafa;
         }
         
-        .dark #timerist-logo circle,
-        .dark #timerist-logo line {
+        [data-theme="style1"] #timerist-logo circle,
+        [data-theme="style1"] #timerist-logo line {
             stroke: #fafafa;
         }
         
-        html.dark #timerist-logo .logo-circle,
-        html.dark #timerist-logo .logo-line {
+        html[data-theme="style1"] #timerist-logo .logo-circle,
+        html[data-theme="style1"] #timerist-logo .logo-line {
             stroke: #fafafa !important;
         }
         
-        /* Setup Fields Styles */
-        .setup-fields {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.75rem;
-            margin-top: 0;
+        /* Rounds Slider Styles */
+        .rounds-slider-container {
+            margin-bottom: 1.5rem;
         }
         
-        .setting-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            width: 100%;
-            max-width: 300px;
-        }
-        
-        /* Reduce padding on setup panel */
-        .setup-panel {
-            padding: 1rem 1.5rem !important;
-        }
-        
-        .setting-group label {
+        .rounds-slider-label {
+            display: block;
             font-size: 0.875rem;
             font-weight: 600;
             color: rgb(var(--muted-foreground));
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+            text-align: center;
         }
         
-        /* Tap-based number selector */
-        .number-selector {
+        .rounds-slider-wrapper {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            width: 100%;
-            border: 2px solid rgb(var(--input));
-            border-radius: var(--radius);
-            background-color: rgb(var(--background));
-            overflow: hidden;
+            gap: 1rem;
         }
         
-        .number-selector:focus-within {
-            border-color: rgb(var(--ring));
-            box-shadow: 0 0 0 2px rgba(var(--ring), 0.2);
-        }
-        
-        .number-selector.disabled {
-            opacity: 0.5;
-            pointer-events: none;
-        }
-        
-        /* Smaller size for main page selector */
-        .number-selector.compact .number-btn {
-            flex: 0 0 40px;
-            height: 40px;
-            font-size: 1.25rem;
-        }
-        
-        .number-selector.compact .number-display {
+        .rounds-slider-value {
+            min-width: 3rem;
+            text-align: center;
             font-size: 1.125rem;
-            padding: 0.5rem;
-            min-height: 40px;
-        }
-        
-        .number-btn {
-            flex: 0 0 56px;
-            height: 56px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: rgb(var(--accent));
-            color: rgb(var(--foreground));
-            border: none;
-            cursor: pointer;
-            font-size: 1.5rem;
             font-weight: 600;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: rgb(var(--foreground));
+            font-family: 'Courier New', monospace;
+        }
+        
+        .rounds-slider {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: rgb(var(--input));
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        
+        .rounds-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgb(var(--primary));
+            cursor: pointer;
             transition: all 0.2s;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-            user-select: none;
-            -webkit-user-select: none;
         }
         
-        .number-btn:hover:not(:disabled) {
-            background-color: rgba(var(--accent), 0.8);
+        .rounds-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 4px rgba(var(--primary), 0.2);
         }
         
-        .number-btn:active:not(:disabled) {
-            background-color: rgba(var(--accent), 0.6);
-            transform: scale(0.95);
+        .rounds-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgb(var(--primary));
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
         }
         
-        .number-btn:disabled {
+        .rounds-slider::-moz-range-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 4px rgba(var(--primary), 0.2);
+        }
+        
+        .rounds-slider:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
         
-        .number-display {
-            flex: 1;
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: rgb(var(--foreground));
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-            padding: 0.75rem;
-            min-height: 56px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .rounds-slider:disabled::-webkit-slider-thumb {
+            cursor: not-allowed;
         }
         
-        @media (max-width: 390px) {
-            .number-selector.compact .number-btn {
-                flex: 0 0 36px;
-                height: 36px;
-                font-size: 1.125rem;
-            }
-            
-            .number-selector.compact .number-display {
-                font-size: 1rem;
-                min-height: 36px;
-            }
-            
-            .number-btn {
-                flex: 0 0 48px;
-                height: 48px;
-                font-size: 1.25rem;
-            }
-            
-            .number-display {
-                font-size: 1.25rem;
-                min-height: 48px;
-            }
-        }
-        
-        /* Custom input styles for completion message */
-        .custom-time-input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid rgb(var(--input));
-            border-radius: var(--radius);
-            background-color: rgb(var(--background));
-            color: rgb(var(--foreground));
-            font-size: 0.875rem;
-            font-weight: 500;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-        
-        .custom-time-input:focus {
-            outline: none;
-            border-color: rgb(var(--ring));
-            box-shadow: 0 0 0 2px rgba(var(--ring), 0.2);
-        }
-        
-        .timer-display-large.danger {
-            color: rgb(var(--destructive));
+        .rounds-slider:disabled::-moz-range-thumb {
+            cursor: not-allowed;
         }
     </style>
 </head>
@@ -815,14 +927,14 @@
                 </a>
                 <a href="index.html" style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground)); text-decoration: none; cursor: pointer;">timerist.com</a>
                 <span class="separator" style="color: rgb(var(--muted-foreground));">|</span>
-                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">EMOM</span>
+                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">EMOM Timer</span>
             </div>
             
             <div class="header-actions">
                 <button class="mode-toggle-btn mode-toggle" id="themeToggleBtn" aria-label="Toggle dark mode">
                     <span id="theme-icon">🌙</span>
                 </button>
-                <button class="hamburger-menu" onclick="toggleDrawer()" aria-label="Open settings menu">
+                <button class="hamburger-menu" onclick="toggleDrawer()" aria-label="Open Timer Setup menu">
                     ☰
                 </button>
             </div>
@@ -830,33 +942,44 @@
         
         <div class="timer-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
             <!-- Timer Display -->
-            <div class="timer-display-block bg-card border border-border rounded-lg shadow-lg text-center" id="timerDisplayBlock">
-                <div class="timer-display-large" id="timer-display">00:00</div>
+            <div class="timer-display-block bg-card border border-border rounded-lg shadow-lg text-center">
+                <!-- EMOM: Phase label hidden via CSS -->
+                <div class="phase-label" id="phaseLabel" style="display: none;">Work</div>
+                <div class="timer-display-large" id="display">01:00</div>
                 <div class="round-info">
-                    Minute <span id="minute">1</span> of <span id="totalMinutes">10</span>
-                </div>
-            </div>
-            
-            <!-- Setup Fields -->
-            <div class="p-6 bg-card border border-border rounded-lg shadow-lg setup-panel">
-                <div class="setup-fields">
-                    <div class="setting-group">
-                        <label for="minutes">Total Minutes</label>
-                        <div class="number-selector compact" id="minutes-selector">
-                            <button class="number-btn" id="minutes-decrease" aria-label="Decrease minutes">−</button>
-                            <div class="number-display" id="minutes-display">10</div>
-                            <button class="number-btn" id="minutes-increase" aria-label="Increase minutes">+</button>
-                        </div>
-                    </div>
+                    Round <span id="round">1</span> of <span id="totalRounds">10</span>
                 </div>
             </div>
             
             <!-- Control Buttons -->
             <div class="p-6 bg-card border border-border rounded-lg shadow-lg">
                 <div class="control-buttons-container">
-                    <button class="control-btn btn-primary" id="startBtn" aria-label="Start EMOM timer">Start</button>
-                    <button class="control-btn btn-primary" id="pauseBtn" style="display: none;" aria-label="Pause EMOM timer">Pause</button>
-                    <button class="control-btn btn-destructive" id="resetBtn" style="display: none;" aria-label="Reset EMOM timer">Reset</button>
+                    <button class="control-btn btn-primary" id="startBtn" aria-label="Start timer">Start</button>
+                    <button class="control-btn btn-primary" id="pauseBtn" style="display: none;" aria-label="Pause timer">Pause</button>
+                    <button class="control-btn btn-destructive" id="resetBtn" style="display: none;" aria-label="Reset timer">Reset</button>
+                    <button class="control-btn btn-secondary" id="clearBtn" aria-label="Clear timer">Clear</button>
+                    <button class="control-btn btn-primary" id="setupBtn" style="display: none;" aria-label="Set up timer">Set Up</button>
+                </div>
+            </div>
+            
+            <!-- Rounds Slider -->
+            <div class="p-6 bg-card border border-border rounded-lg shadow-lg">
+                <!-- Rounds Slider -->
+                <div class="rounds-slider-container">
+                    <label class="rounds-slider-label" for="roundsSlider">Total Rounds</label>
+                    <div class="rounds-slider-wrapper">
+                        <span class="rounds-slider-value" id="roundsSliderValue">10</span>
+                        <input 
+                            type="range" 
+                            id="roundsSlider" 
+                            min="1" 
+                            max="20" 
+                            value="10" 
+                            class="rounds-slider"
+                            aria-label="Select number of rounds"
+                        >
+                        <span class="rounds-slider-value">20</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -868,229 +991,222 @@
     <!-- Settings Drawer -->
     <div class="settings-drawer" id="settingsDrawer">
         <div class="drawer-header">
-            <h2 style="font-size: 1rem; font-weight: 600; color: rgb(var(--foreground)); text-transform: uppercase; letter-spacing: 0.05em;">Settings</h2>
+            <h2 style="font-size: 1rem; font-weight: 600; color: rgb(var(--foreground)); text-transform: uppercase; letter-spacing: 0.05em;">Timer Setup</h2>
             <button class="drawer-close" onclick="closeDrawer()" aria-label="Close drawer">×</button>
         </div>
         <div class="drawer-content">
+            <!-- Setup Content -->
+            <div class="drawer-section">
+                <h3>Setup Content</h3>
+                
+                <!-- EMOM: Work Time is fixed at 60 seconds, hidden/disabled -->
+                <div class="input-group" style="display: none;">
+                    <label for="workTimeInput">Work Time (MM:SS)</label>
+                    <div class="time-input-group">
+                        <button class="time-adjust-btn" id="workDecreaseBtn" type="button" aria-label="Decrease work time by 10 seconds" disabled>−10</button>
+                        <input 
+                            type="text" 
+                            id="workTimeInput" 
+                            class="custom-time-input" 
+                            value="01:00"
+                            pattern="[0-9]{2}:[0-9]{2}"
+                            placeholder="MM:SS"
+                            aria-label="Work time"
+                            disabled
+                        >
+                        <button class="time-adjust-btn" id="workIncreaseBtn" type="button" aria-label="Increase work time by 10 seconds" disabled>+10</button>
+                    </div>
+                </div>
+                
+                <!-- EMOM: Rest Time is 0, hidden -->
+                <div class="input-group" style="display: none;">
+                    <label for="restTimeInput">Rest Time (MM:SS)</label>
+                    <div class="time-input-group">
+                        <button class="time-adjust-btn" id="restDecreaseBtn" type="button" aria-label="Decrease rest time by 10 seconds" disabled>−10</button>
+                        <input 
+                            type="text" 
+                            id="restTimeInput" 
+                            class="custom-time-input" 
+                            value="00:00"
+                            pattern="[0-9]{2}:[0-9]{2}"
+                            placeholder="MM:SS"
+                            aria-label="Rest time"
+                            disabled
+                        >
+                        <button class="time-adjust-btn" id="restIncreaseBtn" type="button" aria-label="Increase rest time by 10 seconds" disabled>+10</button>
+                    </div>
+                </div>
+                
+                <!-- Number of Rounds -->
+                <div class="input-group">
+                    <label for="roundsInput">Total Rounds</label>
+                    <div class="rounds-input-group">
+                        <button class="rounds-adjust-btn" id="roundsDecreaseBtn" type="button" aria-label="Decrease rounds">−</button>
+                        <input 
+                            type="text" 
+                            id="roundsInput" 
+                            value="10"
+                            aria-label="Number of rounds"
+                        >
+                        <button class="rounds-adjust-btn" id="roundsIncreaseBtn" type="button" aria-label="Increase rounds">+</button>
+                    </div>
+                </div>
+            </div>
+            
             <!-- About This Timer -->
             <div class="drawer-section">
                 <h3>About This Timer</h3>
                 <p>
-                    EMOM (Every Minute On the Minute) timer for structured workouts. Complete your work, rest for the remainder of each minute, then start again at the top of the next minute—perfect for interval training, fitness challenges, and time-based workout routines.
+                    EMOM (Every Minute On the Minute) timer for structured workouts. Each round is exactly 60 seconds. 
+                    When the countdown reaches 0, a beep sounds and the timer immediately resets to 60 seconds for the next round.
                 </p>
                 <p style="margin-top: 0.75rem;">
                     <strong>Keywords:</strong> EMOM timer, every minute on the minute, EMOM workout, interval timer, fitness timer, workout timer, exercise timer, HIIT timer, time-based training.
                 </p>
             </div>
             
-            <!-- Timer Setup -->
-            <div class="drawer-section">
-                <h3>Timer Setup</h3>
-                
-                <div class="setup-fields">
-                    <div class="setting-group">
-                        <label for="drawer-minutes">Total Minutes</label>
-                        <div class="number-selector" id="drawer-minutes-selector">
-                            <button class="number-btn" id="drawer-minutes-decrease" aria-label="Decrease minutes">−</button>
-                            <div class="number-display" id="drawer-minutes-display">10</div>
-                            <button class="number-btn" id="drawer-minutes-increase" aria-label="Increase minutes">+</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div style="margin-top: 1.5rem;">
-                    <label for="doneMessageInput" style="display: block; margin-bottom: 0.5rem; font-size: 0.75rem; font-weight: 600; color: rgb(var(--muted-foreground)); text-transform: uppercase; letter-spacing: 0.05em;">
-                        End of Minute Message (14 characters max)
-                    </label>
-                    <input 
-                        type="text" 
-                        id="doneMessageInput" 
-                        class="custom-time-input" 
-                        maxlength="14"
-                        value="Minute"
-                        placeholder="Minute"
-                        aria-label="End of minute message"
-                    >
-                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.5rem;">
-                        Customize the message shown at the end of each minute.
-                    </p>
-                </div>
-            </div>
-            
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.13</p>
-                <p><strong>Released:</strong> <span id="releaseDate"></span></p>
+                <p><strong>Version:</strong> v0.12</p>
+                <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
     </div>
     
     <script>
-        // EMOM Timer Logic
-        let currentTime = 0;
+        // EMOM Timer Logic - based on quick-interval.html
+        let currentTime = 60; // EMOM: Start at 60 seconds
         let interval = null;
         let isRunning = false;
         let isPaused = false;
-        let currentMinute = 1;
-        let totalMinutes = 10;
-        let showingMessage = false;
-        let messageCountdownInterval = null;
+        let currentRound = 1;
+        let workTime = 60; // EMOM: Fixed at 60 seconds
+        let restTime = 0; // EMOM: No rest phase
+        let totalRounds = 10;
         
-        const display = document.getElementById('timer-display');
-        const minuteDisplay = document.getElementById('minute');
-        const totalMinutesDisplay = document.getElementById('totalMinutes');
+        const display = document.getElementById('display');
+        const phaseLabel = document.getElementById('phaseLabel');
+        const roundDisplay = document.getElementById('round');
+        const totalRoundsDisplay = document.getElementById('totalRounds');
         const startBtn = document.getElementById('startBtn');
         const pauseBtn = document.getElementById('pauseBtn');
         const resetBtn = document.getElementById('resetBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const setupBtn = document.getElementById('setupBtn');
+        const workTimeInput = document.getElementById('workTimeInput');
+        const restTimeInput = document.getElementById('restTimeInput');
+        const roundsInput = document.getElementById('roundsInput');
+        const roundsDecreaseBtn = document.getElementById('roundsDecreaseBtn');
+        const roundsIncreaseBtn = document.getElementById('roundsIncreaseBtn');
+        const workDecreaseBtn = document.getElementById('workDecreaseBtn');
+        const workIncreaseBtn = document.getElementById('workIncreaseBtn');
+        const restDecreaseBtn = document.getElementById('restDecreaseBtn');
+        const restIncreaseBtn = document.getElementById('restIncreaseBtn');
+        const roundsSlider = document.getElementById('roundsSlider');
+        const roundsSliderValue = document.getElementById('roundsSliderValue');
         
-        // Tap-based number selectors
-        const minutesDisplay = document.getElementById('minutes-display');
-        const minutesDecrease = document.getElementById('minutes-decrease');
-        const minutesIncrease = document.getElementById('minutes-increase');
-        const minutesSelector = document.getElementById('minutes-selector');
-        
-        const drawerMinutesDisplay = document.getElementById('drawer-minutes-display');
-        const drawerMinutesDecrease = document.getElementById('drawer-minutes-decrease');
-        const drawerMinutesIncrease = document.getElementById('drawer-minutes-increase');
-        const drawerMinutesSelector = document.getElementById('drawer-minutes-selector');
-        const doneMessageInput = document.getElementById('doneMessageInput');
-        
-        // Get done message from localStorage or use default
-        function getDoneMessage() {
-            const saved = localStorage.getItem('emom-doneMessage');
-            return saved || 'Minute';
+        // Parse MM:SS format to seconds
+        function parseTime(timeString) {
+            const parts = timeString.split(':');
+            if (parts.length !== 2) return 0;
+            const minutes = parseInt(parts[0]) || 0;
+            const seconds = parseInt(parts[1]) || 0;
+            return (minutes * 60) + seconds;
         }
         
-        // Save done message to localStorage
-        function saveDoneMessage(message) {
-            if (message && message.trim()) {
-                localStorage.setItem('emom-doneMessage', message.trim());
-            } else {
-                localStorage.setItem('emom-doneMessage', 'Minute');
-            }
-        }
-        
-        // Calculate font size to fit text in timer display
-        function calculateFontSize(text) {
-            // Get the base font size from CSS (clamp values)
-            const computedStyle = window.getComputedStyle(display);
-            const baseSize = parseFloat(computedStyle.fontSize) || 64;
-            const maxWidth = display.offsetWidth || window.innerWidth * 0.9;
-            const charCount = text.length;
-            
-            // For monospace font, each character is roughly 0.6-0.65 of font size in width
-            // Use a more conservative estimate
-            const charWidthRatio = 0.65;
-            const paddingFactor = 0.85; // Leave 15% padding on sides
-            
-            const estimatedWidth = charCount * baseSize * charWidthRatio;
-            const maxAllowedWidth = maxWidth * paddingFactor;
-            
-            if (estimatedWidth > maxAllowedWidth) {
-                // Scale down proportionally
-                const scaleFactor = maxAllowedWidth / estimatedWidth;
-                const newSize = baseSize * scaleFactor;
-                // Don't go below 40% of original size to maintain readability
-                return Math.max(newSize, baseSize * 0.4);
-            }
-            
-            return baseSize;
-        }
-        
-        // Show completion message with round number and count down 3 seconds
-        function showDoneMessage(roundNumber, isFinalRound = false) {
-            const customMessage = getDoneMessage();
-            const message = `${customMessage} ${roundNumber} of ${totalMinutes}`;
-            const originalFontSize = display.style.fontSize;
-            
-            // Set the message with round info
-            display.textContent = message;
-            display.classList.add('danger');
-            
-            // Calculate and apply font size
-            const fontSize = calculateFontSize(message);
-            display.style.fontSize = `${fontSize}px`;
-            
-            // Count down 3 seconds
-            let countdownSeconds = 3;
-            messageCountdownInterval = setInterval(() => {
-                countdownSeconds--;
-                
-                if (countdownSeconds > 0) {
-                    // Show countdown in the display
-                    display.textContent = `${message} (${countdownSeconds})`;
-                } else {
-                    // Clear countdown interval
-                    clearInterval(messageCountdownInterval);
-                    messageCountdownInterval = null;
-                    
-                    // Restore original display
-                    display.style.fontSize = originalFontSize || '';
-                    display.classList.remove('danger');
-                    
-                    // Reset showingMessage flag
-                    showingMessage = false;
-                    
-                    if (isFinalRound) {
-                        // Final round - just update display
-                        currentTime = 0;
-                        updateDisplay();
-                    } else {
-                        // Not final round - start next minute at 3 seconds (accounting for the 3-second message)
-                        currentTime = 3;
-                        updateDisplay();
-                        // Small delay to ensure state is properly set before resuming
-                        setTimeout(() => {
-                            // Resume the timer only if we're not showing a message
-                            if (!showingMessage && currentMinute <= totalMinutes) {
-                                startTimer();
-                            }
-                        }, 100);
-                    }
-                }
-            }, 1000);
-        }
-        
+        // Format seconds to MM:SS
         function formatTime(seconds) {
             const mins = Math.floor(seconds / 60);
             const secs = seconds % 60;
             return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
         }
         
-        function updateMinutesValue(value) {
-            // Clamp value between 1 and 60
-            value = Math.max(1, Math.min(60, value));
-            totalMinutes = value;
+        // Validate and format time input
+        function validateTimeInput(input) {
+            let value = input.value.replace(/[^0-9:]/g, ''); // Remove non-numeric except colon
             
-            // Update displays
-            minutesDisplay.textContent = value;
-            if (drawerMinutesDisplay) drawerMinutesDisplay.textContent = value;
-            totalMinutesDisplay.textContent = value;
-        }
-        
-        function setMinutesDisabled(disabled) {
-            if (disabled) {
-                minutesSelector.classList.add('disabled');
-                if (drawerMinutesSelector) drawerMinutesSelector.classList.add('disabled');
-                minutesDecrease.disabled = true;
-                minutesIncrease.disabled = true;
-                if (drawerMinutesDecrease) drawerMinutesDecrease.disabled = true;
-                if (drawerMinutesIncrease) drawerMinutesIncrease.disabled = true;
-            } else {
-                minutesSelector.classList.remove('disabled');
-                if (drawerMinutesSelector) drawerMinutesSelector.classList.remove('disabled');
-                minutesDecrease.disabled = false;
-                minutesIncrease.disabled = false;
-                if (drawerMinutesDecrease) drawerMinutesDecrease.disabled = false;
-                if (drawerMinutesIncrease) drawerMinutesIncrease.disabled = false;
+            // Auto-format as user types
+            if (value.length === 1 && /[0-9]/.test(value)) {
+                value = '00:0' + value;
+            } else if (value.length === 2 && /[0-9]{2}/.test(value)) {
+                value = '00:' + value;
+            } else if (value.length === 3 && /[0-9]:[0-9]/.test(value)) {
+                value = '0' + value;
+            } else if (value.length === 4 && /[0-9]{2}[0-9]{2}/.test(value)) {
+                value = value.substring(0, 2) + ':' + value.substring(2);
             }
+            
+            // Ensure MM:SS format
+            if (value.match(/^[0-9]{1,2}:[0-9]{1,2}$/)) {
+                const parts = value.split(':');
+                const mins = parts[0].padStart(2, '0');
+                const secs = parts[1].padStart(2, '0');
+                value = mins + ':' + secs;
+            }
+            
+            input.value = value;
+            return value;
         }
         
+        // Adjust time by ±10 seconds (disabled for EMOM)
+        function adjustTime(input, increment) {
+            // EMOM: Work time is fixed at 60 seconds, no adjustments allowed
+            return;
+        }
+        
+        // Disable inputs when timer is running
+        function disableInputs() {
+            roundsInput.disabled = true;
+            roundsDecreaseBtn.disabled = true;
+            roundsIncreaseBtn.disabled = true;
+            if (roundsSlider) roundsSlider.disabled = true;
+        }
+        
+        // Enable inputs when timer is stopped
+        function enableInputs() {
+            roundsInput.disabled = false;
+            roundsDecreaseBtn.disabled = false;
+            roundsIncreaseBtn.disabled = false;
+            if (roundsSlider) roundsSlider.disabled = false;
+        }
+        
+        // Check if timer has valid data to proceed
+        function hasValidTimerData() {
+            return workTime > 0 && totalRounds > 0; // EMOM: Only need workTime (60) and rounds
+        }
+        
+        // Update display with color coding
         function updateDisplay() {
             display.textContent = formatTime(currentTime);
-            minuteDisplay.textContent = currentMinute;
-            totalMinutesDisplay.textContent = totalMinutes;
+            // EMOM: Phase label is hidden, but keep it for compatibility
+            phaseLabel.textContent = 'Work';
+            roundDisplay.textContent = currentRound;
+            totalRoundsDisplay.textContent = totalRounds;
+            
+            // Color coding: normal -> warning (last 30%) -> danger (last 10%)
+            display.classList.remove('warning', 'danger');
+            const phaseDuration = workTime; // EMOM: Always work phase
+            if (phaseDuration > 0) {
+                const percentRemaining = currentTime / phaseDuration;
+                if (percentRemaining <= 0.1) {
+                    display.classList.add('danger');
+                } else if (percentRemaining <= 0.3) {
+                    display.classList.add('warning');
+                }
+            }
+            
+            // Add running class for styling
+            if (isRunning) {
+                document.body.classList.add('timer-running');
+                disableInputs();
+            } else {
+                document.body.classList.remove('timer-running');
+                enableInputs();
+            }
+            
+            // Check if timer has valid data
+            const isValid = hasValidTimerData();
             
             // Update button visibility
             if (isRunning && !isPaused) {
@@ -1098,20 +1214,164 @@
                 pauseBtn.style.display = 'inline-block';
                 pauseBtn.classList.remove('paused');
                 resetBtn.style.display = 'inline-block';
+                setupBtn.style.display = 'none';
             } else if (isPaused) {
                 startBtn.style.display = 'inline-block';
                 startBtn.textContent = 'Resume';
                 pauseBtn.style.display = 'none';
                 resetBtn.style.display = 'inline-block';
+                setupBtn.style.display = 'none';
             } else {
-                // Timer is stopped
-                startBtn.style.display = 'inline-block';
-                startBtn.textContent = 'Start';
-                pauseBtn.style.display = 'none';
-                resetBtn.style.display = (currentTime > 0 || currentMinute > 1) ? 'inline-block' : 'none';
+                // Timer is not running
+                if (isValid) {
+                    // Has valid data - show normal buttons
+                    startBtn.style.display = 'inline-block';
+                    startBtn.textContent = 'Start';
+                    pauseBtn.style.display = 'none';
+                    resetBtn.style.display = 'inline-block';
+                    setupBtn.style.display = 'none';
+                } else {
+                    // No valid data - show Set Up button
+                    startBtn.style.display = 'none';
+                    pauseBtn.style.display = 'none';
+                    resetBtn.style.display = 'none';
+                    setupBtn.style.display = 'inline-block';
+                }
             }
         }
         
+        // Start timer
+        function startTimer() {
+            // EMOM: Initialize from defaults if needed
+            if (workTime === 0) {
+                workTime = 60; // EMOM: Fixed at 60 seconds
+                restTime = 0; // EMOM: No rest phase
+            }
+            if (currentTime === 0) {
+                currentTime = workTime; // EMOM: Reset to 60
+                currentRound = 1;
+            }
+            
+            if (currentTime <= 0) return;
+            
+            isRunning = true;
+            isPaused = false;
+            
+            interval = setInterval(() => {
+                currentTime--;
+                updateDisplay();
+                
+                // EMOM: When countdown reaches 0, beep, reset to 60, increment round
+                if (currentTime <= 0) {
+                    playSound();
+                    
+                    // Increment round
+                    currentRound++;
+                    
+                    // Check if we've completed all rounds
+                    if (currentRound > totalRounds) {
+                        // Finished all rounds - stop timer
+                        stopTimer();
+                        display.textContent = 'Complete';
+                        display.classList.add('danger');
+                        return;
+                    }
+                    
+                    // EMOM: Reset to 60 seconds (no rest phase)
+                    currentTime = 60;
+                    updateDisplay();
+                }
+            }, 1000);
+            
+            updateDisplay();
+        }
+        
+        // Pause timer
+        function pauseTimer() {
+            isRunning = false;
+            isPaused = true;
+            clearInterval(interval);
+            interval = null;
+            updateDisplay();
+        }
+        
+        // Resume timer
+        function resumeTimer() {
+            if (isPaused) {
+                startTimer();
+            }
+        }
+        
+        // Toggle play/pause
+        function togglePlayPause() {
+            if (isRunning && !isPaused) {
+                pauseTimer();
+            } else if (isPaused) {
+                resumeTimer();
+            } else {
+                startTimer();
+            }
+        }
+        
+        // Stop timer (called when countdown reaches 0)
+        function stopTimer() {
+            isRunning = false;
+            isPaused = false;
+            clearInterval(interval);
+            interval = null;
+            updateDisplay();
+        }
+        
+        // Reset timer
+        function resetTimer() {
+            // Stop the timer
+            clearInterval(interval);
+            interval = null;
+            isRunning = false;
+            isPaused = false;
+            
+            // EMOM: Get current values from inputs
+            totalRounds = parseInt(roundsInput.value) || 10;
+            workTime = 60; // EMOM: Fixed at 60 seconds
+            restTime = 0; // EMOM: No rest phase
+            
+            // Reset to round 1, 60 seconds
+            currentTime = 60;
+            currentRound = 1;
+            
+            // Update display immediately (this will enable inputs and check validity)
+            updateDisplay();
+        }
+        
+        // Clear timer (sets to 00:00)
+        function clearTimer() {
+            // Stop the timer first
+            clearInterval(interval);
+            interval = null;
+            isRunning = false;
+            isPaused = false;
+            
+            // EMOM: Reset to defaults
+            roundsInput.value = '10';
+            
+            // Reset rounds slider to 10
+            if (roundsSlider && roundsSliderValue) {
+                roundsSlider.value = 10;
+                roundsSliderValue.textContent = '10';
+            }
+            
+            // Reset timer state
+            workTime = 60; // EMOM: Fixed at 60 seconds
+            restTime = 0; // EMOM: No rest phase
+            totalRounds = 10;
+            currentTime = 60; // EMOM: Start at 60 seconds
+            currentRound = 1;
+            
+            // Update display (this will enable inputs and show Set Up button)
+            updateDisplay();
+        }
+        
+        // Play sound when timer completes
         function playSound() {
             try {
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -1130,118 +1390,12 @@
                 oscillator.start(audioContext.currentTime);
                 oscillator.stop(audioContext.currentTime + 0.5);
             } catch (e) {
-                // Silently fail if audio context is not available
+                console.log('Audio not available');
             }
         }
         
-        function startTimer() {
-            if (currentTime === 0 && currentMinute === 1) {
-                currentTime = 0;
-                currentMinute = 1;
-            }
-            
-            if (showingMessage) {
-                // Don't start if we're showing a message
-                return;
-            }
-            
-            // Don't start if interval is already running
-            if (interval !== null) {
-                return;
-            }
-            
-            isRunning = true;
-            isPaused = false;
-            setMinutesDisabled(true);
-            document.body.classList.add('timer-running');
-            
-            interval = setInterval(() => {
-                if (showingMessage) {
-                    // Pause counting while showing message
-                    return;
-                }
-                
-                currentTime++;
-                updateDisplay();
-                
-                // Every 60 seconds, show completion message
-                if (currentTime >= 60) {
-                    playSound();
-                    const completedMinute = currentMinute;
-                    
-                    // Pause the timer
-                    clearInterval(interval);
-                    interval = null;
-                    showingMessage = true;
-                    
-                    // Check if this was the last minute
-                    if (completedMinute >= totalMinutes) {
-                        // Finished all minutes - show final message
-                        // Keep currentMinute at totalMinutes (don't increment)
-                        currentMinute = totalMinutes;
-                        isRunning = false;
-                        isPaused = false;
-                        setMinutesDisabled(false);
-                        document.body.classList.remove('timer-running');
-                        playSound();
-                        showDoneMessage(completedMinute, true);
-                    } else {
-                        // Show message for this round, then continue at 57 seconds
-                        // Increment to next minute
-                        currentMinute = completedMinute + 1;
-                        showDoneMessage(completedMinute, false);
-                    }
-                    return;
-                }
-            }, 1000);
-            
-            updateDisplay();
-        }
-        
-        function pauseTimer() {
-            clearInterval(interval);
-            interval = null;
-            if (messageCountdownInterval) {
-                clearInterval(messageCountdownInterval);
-                messageCountdownInterval = null;
-            }
-            isRunning = false;
-            isPaused = true;
-            showingMessage = false;
-            // Restore normal display if message was showing
-            display.style.fontSize = '';
-            display.classList.remove('danger');
-            updateDisplay();
-        }
-        
-        function resumeTimer() {
-            if (isPaused && !showingMessage) {
-                startTimer();
-            }
-        }
-        
-        function resetTimer() {
-            clearInterval(interval);
-            interval = null;
-            if (messageCountdownInterval) {
-                clearInterval(messageCountdownInterval);
-                messageCountdownInterval = null;
-            }
-            isRunning = false;
-            isPaused = false;
-            showingMessage = false;
-            currentTime = 0;
-            currentMinute = 1;
-            setMinutesDisabled(false);
-            document.body.classList.remove('timer-running');
-            // Restore normal display if message was showing
-            display.style.fontSize = '';
-            display.classList.remove('danger');
-            updateDisplay();
-        }
-        
-        // Toggle play/pause
-        function togglePlayPause() {
+        // Event Listeners
+        startBtn.addEventListener('click', function() {
             if (isRunning && !isPaused) {
                 pauseTimer();
             } else if (isPaused) {
@@ -1249,117 +1403,105 @@
             } else {
                 startTimer();
             }
-        }
+        });
         
-        // Event Listeners
-        startBtn.addEventListener('click', togglePlayPause);
         pauseBtn.addEventListener('click', pauseTimer);
         resetBtn.addEventListener('click', resetTimer);
+        clearBtn.addEventListener('click', clearTimer);
+        setupBtn.addEventListener('click', function() {
+            toggleDrawer();
+        });
         
-        // Main area number selector
-        minutesDecrease.addEventListener('click', () => {
+        // Time adjustment buttons (disabled for EMOM)
+        workDecreaseBtn.addEventListener('click', function() {
+            // EMOM: Work time is fixed at 60 seconds
+        });
+        
+        workIncreaseBtn.addEventListener('click', function() {
+            // EMOM: Work time is fixed at 60 seconds
+        });
+        
+        restDecreaseBtn.addEventListener('click', function() {
+            // EMOM: No rest phase
+        });
+        
+        restIncreaseBtn.addEventListener('click', function() {
+            // EMOM: No rest phase
+        });
+        
+        // Rounds adjustment buttons
+        roundsDecreaseBtn.addEventListener('click', function() {
+            if (isRunning) return;
+            let rounds = parseInt(roundsInput.value) || 10;
+            rounds = Math.max(1, rounds - 1);
+            roundsInput.value = rounds;
+            totalRounds = rounds;
             if (!isRunning) {
-                updateMinutesValue(totalMinutes - 1);
-                updateDisplay();
+                resetTimer();
+                updateDisplay(); // Update button visibility based on validity
             }
         });
         
-        minutesIncrease.addEventListener('click', () => {
+        roundsIncreaseBtn.addEventListener('click', function() {
+            if (isRunning) return;
+            let rounds = parseInt(roundsInput.value) || 10;
+            rounds = Math.min(99, rounds + 1);
+            roundsInput.value = rounds;
+            totalRounds = rounds;
             if (!isRunning) {
-                updateMinutesValue(totalMinutes + 1);
-                updateDisplay();
+                resetTimer();
+                updateDisplay(); // Update button visibility based on validity
             }
         });
         
-        // Drawer number selector
-        if (drawerMinutesDecrease) {
-            drawerMinutesDecrease.addEventListener('click', () => {
-                if (!isRunning) {
-                    updateMinutesValue(totalMinutes - 1);
-                    updateDisplay();
-                }
-            });
-        }
+        // Input validation and updates
+        workTimeInput.addEventListener('input', function() {
+            // EMOM: Work time is fixed at 60 seconds
+            this.value = '01:00';
+        });
         
-        if (drawerMinutesIncrease) {
-            drawerMinutesIncrease.addEventListener('click', () => {
-                if (!isRunning) {
-                    updateMinutesValue(totalMinutes + 1);
-                    updateDisplay();
-                }
-            });
-        }
+        restTimeInput.addEventListener('input', function() {
+            // EMOM: Rest time is fixed at 0
+            this.value = '00:00';
+        });
         
-        // Done message input handler
-        if (doneMessageInput) {
-            // Load saved message on page load
-            doneMessageInput.value = getDoneMessage();
-            
-            // Save message when changed
-            doneMessageInput.addEventListener('input', function() {
-                let value = this.value.trim();
-                // Limit to 14 characters
-                if (value.length > 14) {
-                    value = value.substring(0, 14);
-                    this.value = value;
-                }
-                saveDoneMessage(value || 'Minute');
-            });
-            
-            // Ensure value is set on blur
-            doneMessageInput.addEventListener('change', function() {
-                let value = this.value.trim();
-                if (!value) {
-                    value = 'Minute';
-                    this.value = value;
-                }
-                saveDoneMessage(value);
-            });
-        }
-        
-        // Initialize
-        updateMinutesValue(10);
-        updateDisplay();
-        
-        // Set release date and time
-        function updateReleaseDate() {
-            const now = new Date();
-            const releaseDateEl = document.getElementById('releaseDate');
-            if (releaseDateEl) {
-                const dateStr = now.toLocaleString('en-US', {
-                    timeZone: 'America/Los_Angeles',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                    hour12: true
-                });
-                releaseDateEl.textContent = dateStr;
+        roundsInput.addEventListener('input', function() {
+            if (!isRunning) {
+                totalRounds = parseInt(this.value) || 10;
+                resetTimer();
+                updateDisplay(); // Update button visibility based on validity
             }
-        }
-        updateReleaseDate();
+        });
         
-        // Helper function to update theme icon (available across script blocks)
-        function updateThemeIconHelper() {
-            const icon = document.getElementById('theme-icon');
-            if (!icon) return;
-            const isDark = document.documentElement.classList.contains('dark');
-            icon.textContent = isDark ? '☀️' : '🌙';
+        // Rounds Slider
+        if (roundsSlider && roundsSliderValue) {
+            // Update slider value display
+            roundsSlider.addEventListener('input', function() {
+                const value = parseInt(this.value);
+                roundsSliderValue.textContent = value;
+                
+                // Update rounds input and totalRounds
+                if (!isRunning) {
+                    roundsInput.value = value;
+                    totalRounds = value;
+                    resetTimer();
+                    updateDisplay();
+                }
+            });
+            
+            // Sync slider with rounds input when changed via other means
+            roundsInput.addEventListener('input', function() {
+                const value = parseInt(this.value) || 10;
+                const clampedValue = Math.max(1, Math.min(20, value));
+                roundsSlider.value = clampedValue;
+                roundsSliderValue.textContent = clampedValue;
+            });
         }
         
-        // Expose globally for use in other script blocks
-        window.updateThemeIconHelper = updateThemeIconHelper;
-    </script>
-    <script src="scripts/dark-mode-toggle.js"></script>
-    <script>
         // Drawer Functions
         function toggleDrawer() {
             const drawer = document.getElementById('settingsDrawer');
             const overlay = document.getElementById('drawerOverlay');
-            const isOpen = drawer.classList.contains('open');
-            
             drawer.classList.toggle('open');
             overlay.classList.toggle('open');
         }
@@ -1371,6 +1513,31 @@
             overlay.classList.remove('open');
         }
         
+        // Initialize
+        workTime = 60; // EMOM: Fixed at 60 seconds
+        restTime = 0; // EMOM: No rest phase
+        totalRounds = parseInt(roundsInput.value) || 10;
+        currentTime = 60; // EMOM: Start at 60 seconds
+        currentRound = 1;
+        
+        // Initialize rounds slider
+        if (roundsSlider && roundsSliderValue) {
+            const initialRounds = Math.max(1, Math.min(20, totalRounds || 10));
+            roundsSlider.value = initialRounds;
+            roundsSliderValue.textContent = initialRounds;
+            if (totalRounds === 0) {
+                roundsInput.value = initialRounds;
+                totalRounds = initialRounds;
+            }
+        }
+        
+        updateDisplay();
+        
+        // Set release date
+        document.getElementById('releaseDate').textContent = new Date().toISOString().split('T')[0];
+    </script>
+    <script src="scripts/dark-mode-toggle.js"></script>
+    <script>
         // Ensure theme toggle button works on mobile (iOS/Android)
         document.addEventListener('DOMContentLoaded', function() {
             const themeToggleBtn = document.getElementById('themeToggleBtn');
@@ -1400,7 +1567,7 @@
             const logo = document.getElementById('timerist-logo');
             if (!logo) return;
             
-            const isDark = document.documentElement.classList.contains('dark');
+            const isDark = document.documentElement.getAttribute('data-theme') === 'style1';
             const lightColor = '#0a0a0a';
             const darkColor = '#fafafa';
             const color = isDark ? darkColor : lightColor;
@@ -1412,20 +1579,13 @@
             lines.forEach(el => el.setAttribute('stroke', color));
         }
         
-        // Theme icon update - use helper if available, otherwise define it
+        // Theme icon update
         function updateThemeIcon() {
-            if (window.updateThemeIconHelper) {
-                window.updateThemeIconHelper();
-            } else {
-                const icon = document.getElementById('theme-icon');
-                if (!icon) return;
-                const isDark = document.documentElement.classList.contains('dark');
-                icon.textContent = isDark ? '☀️' : '🌙';
-            }
+            const icon = document.getElementById('theme-icon');
+            if (!icon) return;
+            const isDark = document.documentElement.getAttribute('data-theme') === 'style1';
+            icon.textContent = isDark ? '☀️' : '🌙';
         }
-        
-        // Expose updateThemeIcon globally so it can be called from tab switching
-        window.updateThemeIcon = updateThemeIcon;
         
         // Watch for theme changes
         const themeObserver = new MutationObserver(() => {
@@ -1434,7 +1594,7 @@
         });
         themeObserver.observe(document.documentElement, {
             attributes: true,
-            attributeFilter: ['class']
+            attributeFilter: ['data-theme', 'class']
         });
         
         // Override toggleTheme to update logo, icon
