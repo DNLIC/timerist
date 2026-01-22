@@ -9,6 +9,7 @@ const htmlFiles = [
   'quick-hiit.html',
   'tabata.html',
   'interval.html',
+  'main.html',
   'countdown.html',
   'stopwatch.html',
   'stopwatch-splits.html',
