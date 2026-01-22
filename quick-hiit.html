@@ -985,8 +985,8 @@
             border-radius: 0.5rem;
             font-size: 1.125rem;
             font-weight: 500;
-            line-height: 1.2;
-            height: 2.5rem;
+            line-height: 1.3;
+            min-height: 2.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -999,20 +999,30 @@
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
             min-width: 0;
             width: 100%;
+            text-align: center;
+            white-space: normal;
+            word-wrap: break-word;
         }
         
         @media (min-width: 640px) {
             .quick-select-btn {
                 min-width: 100px;
                 font-size: 1.25rem;
-                height: 2.5rem;
+                min-height: 2.5rem;
             }
         }
         
         .quick-select-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(1, 1fr);
             gap: 0.5rem;
+        }
+        
+        /* Default to single column for narrow screens (iPhone 13 and similar) */
+        @media (min-width: 420px) {
+            .quick-select-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
         
         @media (min-width: 480px) {
@@ -1031,6 +1041,11 @@
             .quick-select-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
+        }
+        
+        /* Class to force single column when text wrapping is detected */
+        .quick-select-grid.single-column {
+            grid-template-columns: repeat(1, 1fr) !important;
         }
         
         .quick-select-btn:hover:not(:disabled) {
@@ -2622,6 +2637,65 @@
     </script>
     <script src="scripts/dark-mode-toggle.js"></script>
     <script>
+        // Function to detect text wrapping and adjust grid layout
+        function checkButtonTextWrapping() {
+            const grid = document.querySelector('.quick-select-grid');
+            const buttons = document.querySelectorAll('.quick-select-btn');
+            
+            if (!grid || buttons.length === 0) return;
+            
+            let hasWrappedText = false;
+            
+            buttons.forEach(button => {
+                // Get the computed line height
+                const lineHeight = parseFloat(window.getComputedStyle(button).lineHeight);
+                const padding = parseFloat(window.getComputedStyle(button).paddingTop) + 
+                               parseFloat(window.getComputedStyle(button).paddingBottom);
+                
+                // Calculate expected single-line height (line-height + padding)
+                const expectedSingleLineHeight = lineHeight + padding;
+                
+                // Get actual button height
+                const actualHeight = button.offsetHeight;
+                
+                // If actual height is significantly more than single line, text is wrapping
+                // Use a threshold of 1.5x to account for slight variations
+                if (actualHeight > expectedSingleLineHeight * 1.5) {
+                    hasWrappedText = true;
+                }
+            });
+            
+            // If any button text wraps, switch to single column
+            if (hasWrappedText) {
+                grid.classList.add('single-column');
+            } else {
+                // Only remove single-column class if screen is wide enough
+                // This prevents flickering on narrow screens
+                const screenWidth = window.innerWidth;
+                if (screenWidth >= 420) {
+                    grid.classList.remove('single-column');
+                }
+            }
+        }
+        
+        // Check on load and resize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initial check after a short delay to ensure layout is complete
+            setTimeout(checkButtonTextWrapping, 100);
+            
+            // Check on window resize with debouncing
+            let resizeTimeout;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(checkButtonTextWrapping, 150);
+            });
+            
+            // Also check when orientation changes
+            window.addEventListener('orientationchange', function() {
+                setTimeout(checkButtonTextWrapping, 200);
+            });
+        });
+        
         // Ensure theme toggle button works on mobile (iOS/Android)
         document.addEventListener('DOMContentLoaded', function() {
             const themeToggleBtn = document.getElementById('themeToggleBtn');
