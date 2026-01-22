@@ -3,13 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <title>Custom Timer - Timerist</title>
+    <title>AMRAP - Timerist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        };
+    </script>
     <link rel="stylesheet" href="styles/timerist-design-system.css">
     <style>
-        /* Header with logo on left and menu on right */
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        .container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 1200px;
+            padding: 1rem;
+            margin: 0 auto;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
         .header-top {
             position: absolute;
             top: clamp(1rem, 3vw, 2rem);
@@ -87,9 +118,6 @@
             color: hsl(var(--foreground));
             font-size: 1.5rem;
             transition: opacity 0.2s;
-            width: 44px;
-            height: 44px;
-            flex-shrink: 0;
         }
         
         .hamburger-menu:hover {
@@ -154,47 +182,64 @@
             padding: 0.25rem;
         }
         
-        .container {
-            position: relative;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding-top: clamp(4rem, 8vw, 6rem);
+        .timer-container {
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+            overflow-x: hidden;
+            margin-top: clamp(4rem, 8vw, 6rem);
         }
         
-        .timer-container {
-            max-width: 800px;
-            margin: 0 auto;
+        .timer-display {
+            margin-bottom: clamp(1.5rem, 5vw, 4rem);
+            margin-top: clamp(0.5rem, 2vw, 1.5rem);
+        }
+        
+        .timer-label {
+            font-size: clamp(0.75rem, 2vw, 1.25rem);
+            margin-bottom: clamp(0.5rem, 2vw, 1.5rem);
+            color: hsl(var(--muted-foreground));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .timer-time {
+            font-size: clamp(4rem, 20vw, 14rem);
+            font-weight: 800;
+            line-height: 1;
+            margin: clamp(0.5rem, 2vw, 2rem) 0;
+            color: hsl(var(--foreground));
+            font-family: 'Courier New', monospace;
         }
         
         .timer-controls {
             display: flex;
-            gap: 0.75rem;
+            gap: clamp(0.75rem, 4vw, 2rem);
             justify-content: center;
-            margin-top: 1.5rem;
+            margin-top: clamp(2rem, 6vw, 5rem);
             flex-wrap: wrap;
         }
         
         .timer-controls .btn {
-            min-width: 80px;
-            padding: 0.75rem 1.25rem;
+            min-width: clamp(100px, 20vw, 180px);
+            padding: clamp(0.75rem, 3vw, 1.25rem) clamp(1.25rem, 5vw, 2rem);
+            font-size: clamp(1rem, 4vw, 1.25rem);
+            font-weight: 600;
         }
         
         .timer-settings {
-            margin-top: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: clamp(2rem, 5vw, 4rem);
+            width: 100%;
+            max-width: 100%;
         }
         
         .setting-group {
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            padding: 1.5rem;
-            background-color: hsl(var(--card));
-            border: 1px solid hsl(var(--border));
-            border-radius: var(--radius);
         }
         
         .setting-group label {
@@ -214,53 +259,23 @@
             color: hsl(var(--foreground));
             font-size: 1rem;
             font-weight: 600;
+            text-align: center;
             min-height: 44px;
         }
         
-        .setting-group input[type="text"] {
-            text-align: left;
-        }
-        
-        .setting-group input[type="number"] {
-            text-align: center;
-        }
-        
-        .setting-group input:focus {
-            outline: none;
-            border-color: hsl(var(--ring));
-            box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
-        }
-        
-        #phasesContainer {
-            display: grid;
-            gap: 1rem;
-        }
-        
-        @media (max-width: 390px) {
-            .timer-controls {
-                gap: 0.5rem;
-            }
-            
-            .timer-controls .btn {
-                min-width: 70px;
-                padding: 0.625rem 1rem;
-                font-size: 0.875rem;
-            }
-            
-            .setting-group {
-                padding: 1rem;
-            }
-        }
-        
-        .round-info {
-            margin-top: 1.25rem;
-            font-size: 1rem;
+        .version-number {
+            position: fixed;
+            bottom: 0.5rem;
+            right: 0.5rem;
+            font-size: 0.625rem;
             color: hsl(var(--muted-foreground));
-            text-align: center;
+            opacity: 0.6;
+            font-family: monospace;
+            z-index: 1000;
         }
     </style>
 </head>
-<body class="font-sans">
+<body>
     <div class="container">
         <div class="header-top">
             <div style="display: flex; align-items: center; gap: 0.75rem;">
@@ -279,7 +294,7 @@
                 </a>
                 <a href="index.html" style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: hsl(var(--foreground)); text-decoration: none; cursor: pointer;">timerist.com</a>
                 <span class="separator" style="color: hsl(var(--muted-foreground));">|</span>
-                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: hsl(var(--foreground));">Custom Timer</span>
+                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: hsl(var(--foreground));">AMRAP</span>
             </div>
             
             <div class="header-actions">
@@ -294,11 +309,8 @@
         
         <div class="timer-container">
             <div class="timer-display">
-                <div class="timer-label" id="phaseLabel">Phase 1</div>
-                <div class="timer-time" id="display">00:00</div>
-                <div class="round-info">
-                    Phase <span id="phase">1</span> of <span id="totalPhases">3</span>
-                </div>
+                <div class="timer-label">AMRAP Timer</div>
+                <div class="timer-time" id="display">20:00</div>
             </div>
             
             <div class="timer-controls">
@@ -309,12 +321,12 @@
             
             <div class="timer-settings">
                 <div class="setting-group">
-                    <label for="phaseCount">Number of Phases</label>
-                    <input type="number" id="phaseCount" min="1" max="10" value="3" />
-                    <button class="btn btn-secondary" id="updatePhases" style="margin-top: 0.625rem; width: 100%;">Update Phases</button>
+                    <label for="minutes">Minutes</label>
+                    <input type="number" id="minutes" min="0" max="60" value="20" />
                 </div>
-                <div id="phasesContainer">
-                    <!-- Phases will be dynamically generated here -->
+                <div class="setting-group">
+                    <label for="seconds">Seconds</label>
+                    <input type="number" id="seconds" min="0" max="59" value="0" />
                 </div>
             </div>
         </div>
@@ -327,14 +339,20 @@
             <button class="drawer-close" onclick="closeDrawer()">×</button>
         </div>
         <div class="drawer-content">
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: hsl(var(--foreground)); font-weight: 600;">Audio Feedback</label>
+                <button class="btn btn-outline" id="audioToggle" onclick="toggleAudio()">On</button>
+            </div>
             <div>
                 <a href="index.html" style="display: block; padding: 0.75rem; color: hsl(var(--primary)); text-decoration: none;">← Back to Timers</a>
             </div>
         </div>
     </div>
     
+    <div class="version-number">v1.1</div>
+    
     <script src="scripts/dark-mode-toggle.js"></script>
-    <script src="scripts/custom.js"></script>
+    <script src="scripts/countdown.js"></script>
     <script>
         function toggleDrawer() {
             const drawer = document.getElementById('settingsDrawer');
@@ -350,18 +368,45 @@
             overlay.classList.remove('open');
         }
         
+        function toggleAudio() {
+            const btn = document.getElementById('audioToggle');
+            const current = btn.textContent;
+            btn.textContent = current === 'On' ? 'Off' : 'On';
+        }
+        
         function updateThemeIcon() {
             const icon = document.getElementById('theme-icon');
             const isDark = document.documentElement.classList.contains('dark');
             icon.textContent = isDark ? '☀️' : '🌙';
         }
         
+        function updateLogoColors() {
+            const logo = document.getElementById('timerist-logo');
+            if (!logo) return;
+
+            const isDark = document.documentElement.classList.contains('dark');
+            const lightColor = '#0a0a0a';
+            const darkColor = '#fafafa';
+            const color = isDark ? darkColor : lightColor;
+
+            const circles = logo.querySelectorAll('.logo-circle');
+            const lines = logo.querySelectorAll('.logo-line');
+
+            circles.forEach(el => el.setAttribute('stroke', color));
+            lines.forEach(el => el.setAttribute('stroke', color));
+        }
+        
         updateThemeIcon();
-        const observer = new MutationObserver(updateThemeIcon);
+        const observer = new MutationObserver(() => {
+            updateThemeIcon();
+            updateLogoColors();
+        });
         observer.observe(document.documentElement, {
             attributes: true,
             attributeFilter: ['class']
         });
+        
+        updateLogoColors();
         
         const originalToggle = window.toggleTheme;
         window.toggleTheme = function() {
@@ -371,33 +416,6 @@
                 updateLogoColors();
             }, 10);
         };
-        
-        // Function to update logo colors based on theme
-        function updateLogoColors() {
-            const logo = document.getElementById('timerist-logo');
-            if (!logo) return;
-            
-            const isDark = document.documentElement.classList.contains('dark');
-            const lightColor = '#0a0a0a';
-            const darkColor = '#fafafa';
-            const color = isDark ? darkColor : lightColor;
-            
-            const circles = logo.querySelectorAll('.logo-circle');
-            const lines = logo.querySelectorAll('.logo-line');
-            
-            circles.forEach(el => el.setAttribute('stroke', color));
-            lines.forEach(el => el.setAttribute('stroke', color));
-        }
-        
-        const themeObserver = new MutationObserver(() => {
-            updateLogoColors();
-        });
-        themeObserver.observe(document.documentElement, {
-            attributes: true,
-            attributeFilter: ['class']
-        });
-        
-        updateLogoColors();
     </script>
 </body>
 </html>

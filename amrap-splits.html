@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMRAP Timer - Timerist | Workout AMRAP Timer, As Many Rounds As Possible</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <title>AMRAP Splits Timer - Timerist | Workout AMRAP Timer, As Many Rounds As Possible</title>
     <meta name="description" content="AMRAP timer for workouts - track rounds while the countdown runs. Set minutes/seconds and start fast with big digits, pause/resume, and reset. Great for HIIT, CrossFit, and home training.">
     <link rel="stylesheet" href="styles/timerist-design-system.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -136,9 +139,10 @@
         .timer-display-large {
             font-size: 4rem; /* Smaller for mobile */
             font-weight: 700; /* font-bold */
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* font-mono */
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; /* font-sans */
             font-variant-numeric: tabular-nums;
             line-height: 1;
+            letter-spacing: -0.02em; /* tracking-tight */
             color: rgb(var(--primary));
             transition: color 0.3s ease;
             margin-bottom: 0; /* tighter */
@@ -823,9 +827,56 @@
         html.dark #timerist-logo .logo-line {
             stroke: #fafafa !important;
         }
+        
+        .splits-display {
+            padding: 1.5rem;
+            background-color: rgb(var(--card));
+            border: 1px solid rgb(var(--border));
+            border-radius: var(--radius);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            margin-top: 1rem;
+        }
+        
+        .splits-display h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: rgb(var(--foreground));
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .splits-display ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1rem 0;
+        }
+        
+        .splits-display li {
+            padding: 0.5rem;
+            font-size: 1rem;
+            color: rgb(var(--foreground));
+            border-bottom: 1px solid rgb(var(--border));
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+        
+        .splits-display li:last-child {
+            border-bottom: none;
+        }
+        
+        #total-elapsed {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: rgb(var(--foreground));
+            text-align: center;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
     </style>
 </head>
-<body>
+<body class="font-sans">
     <div class="container">
         <div class="header-top">
             <div style="display: flex; align-items: center; gap: 0.75rem;">
@@ -844,7 +895,7 @@
                 </a>
                 <a href="index.html" style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground)); text-decoration: none; cursor: pointer;">timerist.com</a>
                 <span class="separator" style="color: rgb(var(--muted-foreground));">|</span>
-                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">AMRAP Timer</span>
+                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">AMRAP Splits Timer</span>
             </div>
             
             <div class="header-actions">
@@ -874,6 +925,13 @@
                     <button class="control-btn btn-secondary" id="clearBtn" aria-label="Clear timer">Clear</button>
                     <button class="control-btn btn-primary" id="complete-round" disabled aria-label="Round completed">Round Completed</button>
                 </div>
+            </div>
+            
+            <!-- Splits Display -->
+            <div id="splits" class="splits-display" aria-live="polite">
+                <h3>Split Times</h3>
+                <ul id="splits-list"></ul>
+                <div id="total-elapsed">Total Elapsed: 00:00</div>
             </div>
         </div>
     </div>
@@ -947,6 +1005,9 @@
         let isRunning = false;
         let isPaused = false;
         let rounds = 0;
+        let lastSplitTime = 0;
+        let splits = [];
+        let timerDone = false;
 
         const display = document.getElementById('display');
         const statusLabel = document.getElementById('statusLabel');
@@ -1042,15 +1103,18 @@
         }
 
         function updateDisplay() {
-            display.textContent = formatTime(currentTime);
-
-            display.classList.remove('warning', 'danger');
-            if (totalSeconds > 0) {
-                const percentRemaining = currentTime / totalSeconds;
-                if (percentRemaining <= 0.1) {
-                    display.classList.add('danger');
-                } else if (percentRemaining <= 0.3) {
-                    display.classList.add('warning');
+            // Don't update display text if timer is done - keep the done message
+            if (!timerDone) {
+                display.textContent = formatTime(currentTime);
+                display.style.fontSize = '';
+                display.classList.remove('warning', 'danger');
+                if (totalSeconds > 0) {
+                    const percentRemaining = currentTime / totalSeconds;
+                    if (percentRemaining <= 0.1) {
+                        display.classList.add('danger');
+                    } else if (percentRemaining <= 0.3) {
+                        display.classList.add('warning');
+                    }
                 }
             }
 
@@ -1066,6 +1130,7 @@
                 setupBtn.style.display = 'none';
                 resetBtn.style.display = 'inline-block';
                 clearBtn.style.display = 'inline-block';
+                completeRoundBtn.style.display = 'inline-block';
             } else if (isPaused) {
                 document.body.classList.remove('timer-running');
                 setInputsDisabled(true);
@@ -1077,11 +1142,23 @@
                 setupBtn.style.display = 'none';
                 resetBtn.style.display = 'inline-block';
                 clearBtn.style.display = 'inline-block';
+                completeRoundBtn.style.display = 'inline-block';
             } else {
                 document.body.classList.remove('timer-running');
                 setInputsDisabled(false);
                 
-                if (totalSeconds > 0) {
+                // If timer is done, show Set Up button and Start button (to restart with same time)
+                if (timerDone) {
+                    statusLabel.textContent = 'Set time';
+                    startPauseBtn.textContent = 'Start';
+                    startPauseBtn.classList.remove('paused');
+                    startPauseBtn.setAttribute('aria-label', 'Start timer');
+                    startPauseBtn.style.display = 'inline-block';
+                    setupBtn.style.display = 'inline-block';
+                    resetBtn.style.display = 'inline-block';
+                    clearBtn.style.display = 'inline-block';
+                    completeRoundBtn.style.display = 'none';
+                } else if (totalSeconds > 0) {
                     // Has time set - show Start and Reset
                     statusLabel.textContent = 'Ready';
                     startPauseBtn.textContent = 'Start';
@@ -1091,6 +1168,7 @@
                     setupBtn.style.display = 'none';
                     resetBtn.style.display = 'inline-block';
                     clearBtn.style.display = 'inline-block';
+                    completeRoundBtn.style.display = 'none';
                 } else {
                     // No time set - show Set Up button
                     statusLabel.textContent = 'Set time';
@@ -1098,6 +1176,7 @@
                     setupBtn.style.display = 'inline-block';
                     resetBtn.style.display = 'none';
                     clearBtn.style.display = 'inline-block';
+                    completeRoundBtn.style.display = 'none';
                 }
             }
         }
@@ -1126,7 +1205,7 @@
 
         function showDoneMessage() {
             const message = getDoneMessage();
-            const originalFontSize = display.style.fontSize;
+            timerDone = true;
 
             display.textContent = message;
             display.classList.add('danger');
@@ -1134,10 +1213,7 @@
             const fontSize = calculateFontSize(message);
             display.style.fontSize = `${fontSize}px`;
 
-            setTimeout(() => {
-                display.style.fontSize = originalFontSize || '';
-                updateDisplay();
-            }, 2000);
+            // Keep message displayed until cleared - don't auto-hide
         }
 
         function stopTimer() {
@@ -1157,14 +1233,19 @@
             if (currentTime <= 0) return;
 
             isRunning = true;
+            const wasPaused = isPaused;
             isPaused = false;
             clearInterval(interval);
             interval = null;
 
-            // Reset rounds on fresh start
-            if (!isPaused) {
+            // Reset rounds on fresh start (not when resuming from pause)
+            if (!wasPaused) {
                 rounds = 0;
                 roundsDisplay.textContent = 'Rounds: 0';
+                lastSplitTime = 0;
+                splits = [];
+                document.getElementById('splits-list').innerHTML = '';
+                document.getElementById('total-elapsed').textContent = 'Total Elapsed: 00:00';
             }
             completeRoundBtn.disabled = false;
 
@@ -1176,8 +1257,12 @@
                     playSound();
                     showDoneMessage();
                     completeRoundBtn.disabled = true;
+                    updateDisplay(); // Update to hide Round Completed button and show Set Up
                     return;
                 }
+                // Update total elapsed display every second
+                let currentElapsed = totalSeconds - currentTime;
+                document.getElementById('total-elapsed').textContent = `Total Elapsed: ${Math.floor(currentElapsed / 60).toString().padStart(2, '0')}:${(currentElapsed % 60).toString().padStart(2, '0')}`;
                 updateDisplay();
             }, 1000);
 
@@ -1205,8 +1290,12 @@
                 return;
             }
 
-            // Fresh start
-            totalSeconds = readDurationFromInputs();
+            // Fresh start or restart after timer done
+            timerDone = false;
+            // If timer was done, keep the existing totalSeconds, otherwise read from inputs
+            if (totalSeconds <= 0) {
+                totalSeconds = readDurationFromInputs();
+            }
             currentTime = totalSeconds;
             startTimer();
         }
@@ -1216,10 +1305,15 @@
             interval = null;
             isRunning = false;
             isPaused = false;
+            timerDone = false;
             totalSeconds = readDurationFromInputs();
             currentTime = totalSeconds;
             rounds = 0;
             roundsDisplay.textContent = 'Rounds: 0';
+            lastSplitTime = 0;
+            splits = [];
+            document.getElementById('splits-list').innerHTML = '';
+            document.getElementById('total-elapsed').textContent = 'Total Elapsed: 00:00';
             completeRoundBtn.disabled = true;
             updateDisplay();
         }
@@ -1229,6 +1323,7 @@
             interval = null;
             isRunning = false;
             isPaused = false;
+            timerDone = false;
             
             // Clear inputs
             minutesInput.value = '0';
@@ -1239,6 +1334,10 @@
             currentTime = 0;
             rounds = 0;
             roundsDisplay.textContent = 'Rounds: 0';
+            lastSplitTime = 0;
+            splits = [];
+            document.getElementById('splits-list').innerHTML = '';
+            document.getElementById('total-elapsed').textContent = 'Total Elapsed: 00:00';
             completeRoundBtn.disabled = true;
             
             updateDisplay();
@@ -1293,12 +1392,28 @@
         completeRoundBtn.addEventListener('click', () => {
             if (interval && isRunning && !isPaused) {
                 rounds++;
+                // Calculate elapsed = totalSeconds - currentTime
+                let currentElapsed = totalSeconds - currentTime;
+                // Split time for this round = currentElapsed - lastSplitTime
+                let splitTime = currentElapsed - lastSplitTime;
+                splits.push(splitTime);
+                lastSplitTime = currentElapsed;
+                // Update rounds display
                 roundsDisplay.textContent = 'Rounds: ' + rounds;
+                // Add to splits list
+                let li = document.createElement('li');
+                const splitTimeFormatted = `${Math.floor(splitTime / 60).toString().padStart(2, '0')}:${(splitTime % 60).toString().padStart(2, '0')}`;
+                const elapsedTimeFormatted = `${Math.floor(currentElapsed / 60).toString().padStart(2, '0')}:${(currentElapsed % 60).toString().padStart(2, '0')}`;
+                li.textContent = `Round ${rounds}: ${splitTimeFormatted} (Elapsed: ${elapsedTimeFormatted})`;
+                document.getElementById('splits-list').appendChild(li);
+                // Update total elapsed
+                document.getElementById('total-elapsed').textContent = `Total Elapsed: ${Math.floor(currentElapsed / 60).toString().padStart(2, '0')}:${(currentElapsed % 60).toString().padStart(2, '0')}`;
             }
         });
 
         function onTimeChange() {
             if (isRunning || isPaused) return;
+            timerDone = false;
             totalSeconds = readDurationFromInputs();
             currentTime = totalSeconds;
             updateDisplay();

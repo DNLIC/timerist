@@ -9,6 +9,31 @@ const config: Config = {
   ],
   theme: {
   	extend: {
+  		fontFamily: {
+  			sans: [
+  				'"Inter var"',
+  				'Inter',
+  				'ui-sans-serif',
+  				'system-ui',
+  				'sans-serif',
+  				'-apple-system',
+  				'BlinkMacSystemFont',
+  				'"Segoe UI"',
+  				'Roboto',
+  				'"Helvetica Neue"',
+  				'Arial',
+  			],
+  			mono: [
+  				'ui-monospace',
+  				'SFMono-Regular',
+  				'Menlo',
+  				'Monaco',
+  				'Consolas',
+  				'"Liberation Mono"',
+  				'"Courier New"',
+  				'monospace',
+  			],
+  		},
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',

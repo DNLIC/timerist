@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <title>Stopwatch - Timerist | Fitness Stopwatch Timer, Workout Timer</title>
     <meta name="description" content="Simple and accurate stopwatch timer for tracking workout duration, exercise time, or any timed activity. Start, pause, and reset with ease.">
     <link rel="stylesheet" href="styles/timerist-design-system.css">
@@ -126,7 +129,7 @@
         .timer-display-large {
             font-size: 3rem;
             font-weight: 700;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             font-variant-numeric: tabular-nums;
             line-height: 1;
             color: rgb(var(--primary));
@@ -134,7 +137,7 @@
             margin-bottom: 1rem;
             word-break: keep-all;
             overflow-wrap: normal;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.02em; /* tracking-tight */
         }
         
         @media (min-width: 390px) {
@@ -752,7 +755,7 @@
         }
     </style>
 </head>
-<body>
+<body class="font-sans">
     <div class="container">
         <div class="header-top">
             <div style="display: flex; align-items: center; gap: 0.75rem;">
@@ -946,7 +949,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.22</p>
+                <p><strong>Version:</strong> v0.23</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>

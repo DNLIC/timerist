@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <title>HIIT Timer - Timerist | High Intensity Interval Training Timer, Tabata, 30/30, 4x4 Norwegian</title>
     <meta name="description" content="HIIT timer with preset protocols (Tabata, 30/30, 4x4 Norwegian) and custom intervals. Includes warm-up, cool-down, sets, and motivational phase labels for high-intensity workouts.">
     <link rel="stylesheet" href="styles/timerist-design-system.css">
@@ -136,9 +139,10 @@
         .timer-display-large {
             font-size: 4rem; /* Smaller for mobile */
             font-weight: 700; /* font-bold */
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* font-mono */
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; /* font-sans */
             font-variant-numeric: tabular-nums;
             line-height: 1;
+            letter-spacing: -0.02em; /* tracking-tight */
             color: rgb(var(--primary));
             transition: color 0.3s ease;
             margin-bottom: 1rem; /* mb-4 */
@@ -679,7 +683,7 @@
         .timer-running .custom-time-input:not(:disabled),
         .timer-running .rounds-adjust-btn:not(:disabled),
         .timer-running .time-adjust-btn:not(:disabled),
-        .timer-running .preset-btn:not(:disabled) {
+        .timer-running .preset-select:not(:disabled) {
             opacity: 0.5;
             cursor: not-allowed;
             pointer-events: none;
@@ -866,62 +870,79 @@
             stroke: #fafafa !important;
         }
         
-        /* HIIT ADDITION: Preset buttons styling */
-        .preset-buttons {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            margin-bottom: 1.5rem;
-        }
-        
-        .preset-btn {
-            padding: 0.5rem 1rem;
+        /* HIIT ADDITION: Preset select dropdown styling (shadcn/ui compatible) */
+        .preset-select {
+            width: 100%;
+            padding: 0.5rem 2.5rem 0.5rem 0.75rem;
             border-radius: var(--radius);
             font-size: 0.875rem;
             font-weight: 500;
-            border: 2px solid rgb(var(--border));
-            background-color: rgb(var(--card));
+            border: 1px solid rgb(var(--input));
+            background-color: rgb(var(--background));
             color: rgb(var(--foreground));
             cursor: pointer;
             transition: all 0.2s;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            background-size: 1rem;
+            min-height: 2.5rem;
         }
         
-        .preset-btn:hover:not(:disabled) {
+        .preset-select:hover:not(:disabled) {
             border-color: rgb(var(--ring));
-            background-color: rgba(var(--ring), 0.1);
         }
         
-        .preset-btn.active {
-            background-color: rgb(var(--primary));
-            color: rgb(var(--primary-foreground));
-            border-color: rgb(var(--primary));
+        .preset-select:focus {
+            outline: none;
+            border-color: rgb(var(--ring));
+            box-shadow: 0 0 0 2px rgba(var(--ring), 0.2);
         }
         
-        /* Active preset button hover - gray like other timers */
-        .preset-btn.active:hover:not(:disabled) {
-            background-color: rgb(100, 100, 100);
-            color: rgb(255, 255, 255);
-            border-color: rgb(100, 100, 100);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        
-        /* Dark mode active preset button hover - lighter gray */
-        [data-theme="style1"] .preset-btn.active:hover:not(:disabled) {
-            background-color: rgb(150, 150, 150);
-            color: rgb(0, 0, 0);
-            border-color: rgb(150, 150, 150);
-        }
-        
-        .preset-btn:disabled {
+        .preset-select:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            background-color: rgb(var(--muted));
+        }
+        
+        /* Dark mode select styling */
+        [data-theme="style1"] .preset-select {
+            background-color: rgb(var(--card));
+            border-color: rgb(var(--border));
+        }
+        
+        [data-theme="style1"] .preset-select:focus {
+            border-color: rgb(var(--ring));
+        }
+        
+        /* Current preset display */
+        .current-preset-display {
+            margin-top: 0.75rem;
+            font-size: 0.875rem;
+            color: rgb(var(--muted-foreground));
+            padding: 0.5rem;
+            background-color: rgba(var(--accent), 0.5);
+            border-radius: var(--radius);
+            text-align: center;
+        }
+        
+        .current-preset-display strong {
+            color: rgb(var(--foreground));
+            font-weight: 600;
         }
         
         @media (max-width: 390px) {
-            .preset-btn {
-                padding: 0.4rem 0.75rem;
+            .preset-select {
+                padding: 0.4rem 2rem 0.4rem 0.625rem;
                 font-size: 0.75rem;
+                min-height: 2.25rem;
+            }
+            
+            .current-preset-display {
+                font-size: 0.75rem;
+                padding: 0.375rem;
             }
         }
         
@@ -1040,7 +1061,7 @@
         }
     </style>
 </head>
-<body>
+<body class="font-sans">
     <div class="container">
         <div class="header-top">
             <div style="display: flex; align-items: center; gap: 0.75rem;">
@@ -1078,7 +1099,7 @@
                 <div class="phase-label" id="phaseLabel">Work</div>
                 <div class="timer-display-large" id="display">00:00</div>
                 <div class="round-info">
-                    Round <span id="round">1</span> of <span id="totalRounds">0</span>
+                    Round <span id="round">1</span> of <span id="totalRounds">0</span> | <span id="presetNameDisplay">Custom</span>
                 </div>
             </div>
             
@@ -1106,6 +1127,7 @@
                             data-warmup="30" 
                             data-cooldown="60" 
                             data-sets="1"
+                            data-preset="tabata"
                             aria-label="Tabata: 20 seconds work, 10 seconds rest, 8 rounds">Tabata</button>
                     <button class="quick-select-btn" 
                             data-work="30" 
@@ -1114,6 +1136,7 @@
                             data-warmup="30" 
                             data-cooldown="60" 
                             data-sets="1"
+                            data-preset="3030"
                             aria-label="30/30: 30 seconds work, 30 seconds rest, 10 rounds">30/30</button>
                     <button class="quick-select-btn" 
                             data-work="240" 
@@ -1122,6 +1145,7 @@
                             data-warmup="60" 
                             data-cooldown="60" 
                             data-sets="1"
+                            data-preset="4x4"
                             aria-label="4x4 Norwegian: 4 minutes work, 3 minutes rest, 4 rounds">4×4 Norwegian</button>
                     <!-- HIIT PRESET ADDITION: Little Method -->
                     <button class="quick-select-btn" 
@@ -1131,6 +1155,7 @@
                             data-warmup="180" 
                             data-cooldown="300" 
                             data-sets="1"
+                            data-preset="littlemethod"
                             aria-label="Little Method: 60 seconds work, 75 seconds rest, 10 rounds">Little Method (60/75 ×10)</button>
                     <!-- HIIT PRESET ADDITION: Gibala -->
                     <button class="quick-select-btn" 
@@ -1140,6 +1165,7 @@
                             data-warmup="180" 
                             data-cooldown="300" 
                             data-sets="1"
+                            data-preset="gibala"
                             aria-label="Gibala: 60 seconds work, 75 seconds rest, 8 rounds">Gibala</button>
                     <!-- HIIT PRESET ADDITION: 40/20 -->
                     <button class="quick-select-btn" 
@@ -1149,6 +1175,7 @@
                             data-warmup="180" 
                             data-cooldown="300" 
                             data-sets="1"
+                            data-preset="4020"
                             aria-label="40/20: 40 seconds work, 20 seconds rest, 10 rounds">40/20 ×10</button>
                     <!-- HIIT PRESET ADDITION: 20/40 -->
                     <button class="quick-select-btn" 
@@ -1158,6 +1185,7 @@
                             data-warmup="180" 
                             data-cooldown="300" 
                             data-sets="1"
+                            data-preset="2040"
                             aria-label="20/40: 20 seconds work, 40 seconds rest, 10 rounds">20/40 ×10</button>
                     <!-- HIIT PRESET ADDITION: 60/60 -->
                     <button class="quick-select-btn" 
@@ -1167,6 +1195,7 @@
                             data-warmup="180" 
                             data-cooldown="300" 
                             data-sets="1"
+                            data-preset="6060"
                             aria-label="60/60: 60 seconds work, 60 seconds rest, 10 rounds">60/60 ×10</button>
                     <!-- HIIT PRESET ADDITION: 45/45 -->
                     <button class="quick-select-btn" 
@@ -1176,6 +1205,7 @@
                             data-warmup="180" 
                             data-cooldown="300" 
                             data-sets="1"
+                            data-preset="4545"
                             aria-label="45/45: 45 seconds work, 45 seconds rest, 10 rounds">45/45 ×10</button>
                     <!-- HIIT PRESET ADDITION: Sprint SIT -->
                     <button class="quick-select-btn" 
@@ -1185,6 +1215,7 @@
                             data-warmup="180" 
                             data-cooldown="300" 
                             data-sets="1"
+                            data-preset="sprintsit"
                             aria-label="Sprint SIT: 30 seconds work, 240 seconds rest, 4 rounds">Sprint SIT (30/240 ×4)</button>
                 </div>
             </div>
@@ -1205,26 +1236,29 @@
             <div class="drawer-section">
                 <h3>Setup Content</h3>
                 
-                <!-- HIIT ADDITION: Preset buttons -->
-                <div class="preset-buttons">
-                    <button class="preset-btn" id="presetTabata" type="button">Tabata</button>
-                    <button class="preset-btn" id="preset3030" type="button">30/30</button>
-                    <button class="preset-btn" id="preset4x4" type="button">4×4 Norwegian</button>
-                    <!-- HIIT PRESET ADDITION: Little Method -->
-                    <button class="preset-btn" id="presetLittleMethod" type="button">Little Method</button>
-                    <!-- HIIT PRESET ADDITION: Gibala -->
-                    <button class="preset-btn" id="presetGibala" type="button">Gibala</button>
-                    <!-- HIIT PRESET ADDITION: 40/20 -->
-                    <button class="preset-btn" id="preset4020" type="button">40/20</button>
-                    <!-- HIIT PRESET ADDITION: 20/40 -->
-                    <button class="preset-btn" id="preset2040" type="button">20/40</button>
-                    <!-- HIIT PRESET ADDITION: 60/60 -->
-                    <button class="preset-btn" id="preset6060" type="button">60/60</button>
-                    <!-- HIIT PRESET ADDITION: 45/45 -->
-                    <button class="preset-btn" id="preset4545" type="button">45/45</button>
-                    <!-- HIIT PRESET ADDITION: Sprint SIT -->
-                    <button class="preset-btn" id="presetSprintSIT" type="button">Sprint SIT</button>
-                    <button class="preset-btn active" id="presetCustom" type="button">Custom</button>
+                <!-- HIIT ADDITION: Preset selector dropdown -->
+                <div class="input-group">
+                    <label for="presetSelect">Timer Preset</label>
+                    <select 
+                        id="presetSelect" 
+                        class="preset-select"
+                        aria-label="Select timer preset"
+                    >
+                        <option value="custom" selected>Custom</option>
+                        <option value="tabata">Tabata</option>
+                        <option value="3030">30/30</option>
+                        <option value="4x4">4×4 Norwegian</option>
+                        <option value="littlemethod">Little Method</option>
+                        <option value="gibala">Gibala</option>
+                        <option value="4020">40/20</option>
+                        <option value="2040">20/40</option>
+                        <option value="6060">60/60</option>
+                        <option value="4545">45/45</option>
+                        <option value="sprintsit">Sprint SIT</option>
+                    </select>
+                    <div class="current-preset-display" id="currentPresetDisplay">
+                        Current Timer: <strong>Custom</strong>
+                    </div>
                 </div>
                 
                 <!-- Work Time -->
@@ -1457,6 +1491,7 @@
         const phaseLabel = document.getElementById('phaseLabel');
         const roundDisplay = document.getElementById('round');
         const totalRoundsDisplay = document.getElementById('totalRounds');
+        const presetNameDisplay = document.getElementById('presetNameDisplay');
         const startBtn = document.getElementById('startBtn');
         const pauseBtn = document.getElementById('pauseBtn');
         const resetBtn = document.getElementById('resetBtn');
@@ -1499,24 +1534,9 @@
         const setRestMinIncreaseBtn = document.getElementById('setRestMinIncreaseBtn');
         const setRestSecDecreaseBtn = document.getElementById('setRestSecDecreaseBtn');
         const setRestSecIncreaseBtn = document.getElementById('setRestSecIncreaseBtn');
-        const presetTabata = document.getElementById('presetTabata');
-        const preset3030 = document.getElementById('preset3030');
-        const preset4x4 = document.getElementById('preset4x4');
-        // HIIT PRESET ADDITION: Little Method
-        const presetLittleMethod = document.getElementById('presetLittleMethod');
-        // HIIT PRESET ADDITION: Gibala
-        const presetGibala = document.getElementById('presetGibala');
-        // HIIT PRESET ADDITION: 40/20
-        const preset4020 = document.getElementById('preset4020');
-        // HIIT PRESET ADDITION: 20/40
-        const preset2040 = document.getElementById('preset2040');
-        // HIIT PRESET ADDITION: 60/60
-        const preset6060 = document.getElementById('preset6060');
-        // HIIT PRESET ADDITION: 45/45
-        const preset4545 = document.getElementById('preset4545');
-        // HIIT PRESET ADDITION: Sprint SIT
-        const presetSprintSIT = document.getElementById('presetSprintSIT');
-        const presetCustom = document.getElementById('presetCustom');
+        // HIIT ADDITION: Preset select dropdown
+        const presetSelect = document.getElementById('presetSelect');
+        const currentPresetDisplay = document.getElementById('currentPresetDisplay');
         
         // Parse MM:SS format to seconds
         function parseTime(timeString) {
@@ -1661,25 +1681,8 @@
             setRestMinIncreaseBtn.disabled = true;
             setRestSecDecreaseBtn.disabled = true;
             setRestSecIncreaseBtn.disabled = true;
-            // Disable preset buttons
-            presetTabata.disabled = true;
-            preset3030.disabled = true;
-            preset4x4.disabled = true;
-            // HIIT PRESET ADDITION: Little Method
-            presetLittleMethod.disabled = true;
-            // HIIT PRESET ADDITION: Gibala
-            presetGibala.disabled = true;
-            // HIIT PRESET ADDITION: 40/20
-            preset4020.disabled = true;
-            // HIIT PRESET ADDITION: 20/40
-            preset2040.disabled = true;
-            // HIIT PRESET ADDITION: 60/60
-            preset6060.disabled = true;
-            // HIIT PRESET ADDITION: 45/45
-            preset4545.disabled = true;
-            // HIIT PRESET ADDITION: Sprint SIT
-            presetSprintSIT.disabled = true;
-            presetCustom.disabled = true;
+            // Disable preset select
+            presetSelect.disabled = true;
         }
         
         // Enable inputs when timer is stopped
@@ -1722,25 +1725,8 @@
             setRestMinIncreaseBtn.disabled = false;
             setRestSecDecreaseBtn.disabled = false;
             setRestSecIncreaseBtn.disabled = false;
-            // Enable preset buttons
-            presetTabata.disabled = false;
-            preset3030.disabled = false;
-            preset4x4.disabled = false;
-            // HIIT PRESET ADDITION: Little Method
-            presetLittleMethod.disabled = false;
-            // HIIT PRESET ADDITION: Gibala
-            presetGibala.disabled = false;
-            // HIIT PRESET ADDITION: 40/20
-            preset4020.disabled = false;
-            // HIIT PRESET ADDITION: 20/40
-            preset2040.disabled = false;
-            // HIIT PRESET ADDITION: 60/60
-            preset6060.disabled = false;
-            // HIIT PRESET ADDITION: 45/45
-            preset4545.disabled = false;
-            // HIIT PRESET ADDITION: Sprint SIT
-            presetSprintSIT.disabled = false;
-            presetCustom.disabled = false;
+            // Enable preset select
+            presetSelect.disabled = false;
         }
         
         // HIIT ADDITION: Preset configurations
@@ -1834,33 +1820,44 @@
             }
         };
         
+        // HIIT ADDITION: Get preset display name
+        function getPresetDisplayName(presetName) {
+            const displayNames = {
+                'custom': 'Custom',
+                'tabata': 'Tabata',
+                '3030': '30/30',
+                '4x4': '4×4 Norwegian',
+                'littlemethod': 'Little Method',
+                'gibala': 'Gibala',
+                '4020': '40/20',
+                '2040': '20/40',
+                '6060': '60/60',
+                '4545': '45/45',
+                'sprintsit': 'Sprint SIT'
+            };
+            return displayNames[presetName] || 'Custom';
+        }
+        
+        // HIIT ADDITION: Update current preset display
+        function updateCurrentPresetDisplay(presetName) {
+            const displayName = getPresetDisplayName(presetName);
+            currentPresetDisplay.innerHTML = 'Current Timer: <strong>' + displayName + '</strong>';
+        }
+        
         // HIIT ADDITION: Apply preset
         function applyPreset(presetName) {
+            selectedPreset = presetName;
+            
+            // Update select value
+            presetSelect.value = presetName;
+            
+            // Update current preset display
+            updateCurrentPresetDisplay(presetName);
+            
             if (presetName === 'custom') {
-                selectedPreset = 'custom';
-                // Update active button
-                presetTabata.classList.remove('active');
-                preset3030.classList.remove('active');
-                preset4x4.classList.remove('active');
-                // HIIT PRESET ADDITION: Little Method
-                presetLittleMethod.classList.remove('active');
-                // HIIT PRESET ADDITION: Gibala
-                presetGibala.classList.remove('active');
-                // HIIT PRESET ADDITION: 40/20
-                preset4020.classList.remove('active');
-                // HIIT PRESET ADDITION: 20/40
-                preset2040.classList.remove('active');
-                // HIIT PRESET ADDITION: 60/60
-                preset6060.classList.remove('active');
-                // HIIT PRESET ADDITION: 45/45
-                preset4545.classList.remove('active');
-                // HIIT PRESET ADDITION: Sprint SIT
-                presetSprintSIT.classList.remove('active');
-                presetCustom.classList.add('active');
                 return; // Don't change inputs for custom
             }
             
-            selectedPreset = presetName;
             const preset = presets[presetName];
             
             // Update inputs
@@ -1878,47 +1875,6 @@
             warmupTime = preset.warmup;
             cooldownTime = preset.cooldown;
             totalSets = preset.sets;
-            
-            // Update active button
-            presetTabata.classList.remove('active');
-            preset3030.classList.remove('active');
-            preset4x4.classList.remove('active');
-            // HIIT PRESET ADDITION: Little Method
-            presetLittleMethod.classList.remove('active');
-            // HIIT PRESET ADDITION: Gibala
-            presetGibala.classList.remove('active');
-            // HIIT PRESET ADDITION: 40/20
-            preset4020.classList.remove('active');
-            // HIIT PRESET ADDITION: 20/40
-            preset2040.classList.remove('active');
-            // HIIT PRESET ADDITION: 60/60
-            preset6060.classList.remove('active');
-            // HIIT PRESET ADDITION: 45/45
-            preset4545.classList.remove('active');
-            // HIIT PRESET ADDITION: Sprint SIT
-            presetSprintSIT.classList.remove('active');
-            presetCustom.classList.remove('active');
-            if (presetName === 'tabata') {
-                presetTabata.classList.add('active');
-            } else if (presetName === '3030') {
-                preset3030.classList.add('active');
-            } else if (presetName === '4x4') {
-                preset4x4.classList.add('active');
-            } else if (presetName === 'littlemethod') {
-                presetLittleMethod.classList.add('active');
-            } else if (presetName === 'gibala') {
-                presetGibala.classList.add('active');
-            } else if (presetName === '4020') {
-                preset4020.classList.add('active');
-            } else if (presetName === '2040') {
-                preset2040.classList.add('active');
-            } else if (presetName === '6060') {
-                preset6060.classList.add('active');
-            } else if (presetName === '4545') {
-                preset4545.classList.add('active');
-            } else if (presetName === 'sprintsit') {
-                presetSprintSIT.classList.add('active');
-            }
             
             // Update set rest visibility
             updateSetRestVisibility();
@@ -2008,6 +1964,9 @@
                 roundDisplay.textContent = currentRound;
                 totalRoundsDisplay.textContent = totalRounds;
             }
+            
+            // Update preset name display
+            presetNameDisplay.textContent = getPresetDisplayName(selectedPreset);
             
             // Color coding: normal -> warning (last 30%) -> danger (last 10%)
             display.classList.remove('warning', 'danger');
@@ -2449,77 +2408,10 @@
             }
         });
         
-        // HIIT ADDITION: Preset button event listeners
-        presetTabata.addEventListener('click', function() {
+        // HIIT ADDITION: Preset select dropdown event listener
+        presetSelect.addEventListener('change', function() {
             if (!isRunning) {
-                applyPreset('tabata');
-            }
-        });
-        
-        preset3030.addEventListener('click', function() {
-            if (!isRunning) {
-                applyPreset('3030');
-            }
-        });
-        
-        preset4x4.addEventListener('click', function() {
-            if (!isRunning) {
-                applyPreset('4x4');
-            }
-        });
-        
-        // HIIT PRESET ADDITION: Little Method
-        presetLittleMethod.addEventListener('click', function() {
-            if (!isRunning) {
-                applyPreset('littlemethod');
-            }
-        });
-        
-        // HIIT PRESET ADDITION: Gibala
-        presetGibala.addEventListener('click', function() {
-            if (!isRunning) {
-                applyPreset('gibala');
-            }
-        });
-        
-        // HIIT PRESET ADDITION: 40/20
-        preset4020.addEventListener('click', function() {
-            if (!isRunning) {
-                applyPreset('4020');
-            }
-        });
-        
-        // HIIT PRESET ADDITION: 20/40
-        preset2040.addEventListener('click', function() {
-            if (!isRunning) {
-                applyPreset('2040');
-            }
-        });
-        
-        // HIIT PRESET ADDITION: 60/60
-        preset6060.addEventListener('click', function() {
-            if (!isRunning) {
-                applyPreset('6060');
-            }
-        });
-        
-        // HIIT PRESET ADDITION: 45/45
-        preset4545.addEventListener('click', function() {
-            if (!isRunning) {
-                applyPreset('4545');
-            }
-        });
-        
-        // HIIT PRESET ADDITION: Sprint SIT
-        presetSprintSIT.addEventListener('click', function() {
-            if (!isRunning) {
-                applyPreset('sprintsit');
-            }
-        });
-        
-        presetCustom.addEventListener('click', function() {
-            if (!isRunning) {
-                applyPreset('custom');
+                applyPreset(this.value);
             }
         });
         
@@ -2537,6 +2429,9 @@
                 const cooldownSeconds = parseInt(this.getAttribute('data-cooldown'));
                 const sets = parseInt(this.getAttribute('data-sets'));
                 
+                // Get preset name from button, or default to 'custom'
+                const presetName = this.getAttribute('data-preset') || 'custom';
+                
                 // Update all inputs
                 workTimeInput.value = formatTime(workSeconds);
                 restTimeInput.value = formatTime(restSeconds);
@@ -2552,6 +2447,11 @@
                 warmupTime = warmupSeconds;
                 cooldownTime = cooldownSeconds;
                 totalSets = sets;
+                
+                // Update preset selection
+                selectedPreset = presetName;
+                presetSelect.value = presetName;
+                updateCurrentPresetDisplay(presetName);
                 
                 // Update set rest visibility
                 updateSetRestVisibility();
@@ -2710,6 +2610,9 @@
         currentPhase = warmupTime > 0 ? 'warmup' : 'work';
         currentTime = warmupTime > 0 ? warmupTime : workTime;
         currentSet = 1;
+        // HIIT ADDITION: Initialize preset select and display
+        presetSelect.value = selectedPreset;
+        updateCurrentPresetDisplay(selectedPreset);
         updateSetRestVisibility();
         updateTotalTime();
         updateDisplay();

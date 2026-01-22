@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <title>Interval Timer - Timerist | HIIT Interval Timer, Work Rest Timer, Fitness Interval Tool</title>
     <meta name="description" content="Interval timer for HIIT, circuit training, or cardio sessions with work/rest intervals. Set work time, rest time, and rounds—perfect for structured workouts.">
     <link rel="stylesheet" href="styles/timerist-design-system.css">
@@ -136,9 +139,10 @@
         .timer-display-large {
             font-size: 4rem; /* Smaller for mobile */
             font-weight: 700; /* font-bold */
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* font-mono */
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; /* font-sans */
             font-variant-numeric: tabular-nums;
             line-height: 1;
+            letter-spacing: -0.02em; /* tracking-tight */
             color: rgb(var(--primary));
             transition: color 0.3s ease;
             margin-bottom: 1rem; /* mb-4 */
@@ -838,7 +842,7 @@
         }
     </style>
 </head>
-<body>
+<body class="font-sans">
     <div class="container">
         <div class="header-top">
             <div style="display: flex; align-items: center; gap: 0.75rem;">
@@ -974,7 +978,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.11</p>
+                <p><strong>Version:</strong> v0.12</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>

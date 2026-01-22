@@ -1,0 +1,204 @@
+# AMRAP Timer - Prompt Template for Cursor
+
+## Overview
+Create an AMRAP (As Many Rounds As Possible) timer based on `countdown.html`. AMRAP is a countdown timer with manual round tracking—users complete as many rounds as possible within a time cap.
+
+## Base Template
+**Use `countdown.html` as the starting template** - it has the countdown logic and time input setup we need.
+
+## Key Differences from Countdown Timer
+1. **Round Counter**: Display and track rounds completed (starts at 0)
+2. **Round Increment Button**: Large, easy-to-tap button to increment rounds
+3. **Round Display**: Show "Rounds: X" prominently below or near the timer
+4. **No Completion Message**: When timer reaches 0, just stop and play sound (no custom message)
+
+## Required Features
+
+### 1. Timer Display
+- Large countdown timer (MM:SS format)
+- Shows time remaining from time cap
+- Color coding: normal → warning (last 30%) → danger (last 10%)
+- Round counter display: "Rounds: 0" (or similar format)
+
+### 2. Round Tracking
+- Round counter starts at 0
+- Large, prominent "+1 Round" button (or similar)
+- Button should be easily tappable during workout
+- Round counter increments when button is pressed
+- Round counter visible at all times (not just when running)
+
+### 3. Time Cap Setup
+- Use drawer for time setup (like countdown.html)
+- Minutes input (0-99)
+- Seconds input (0-59)
+- Default: 20:00 (20 minutes)
+- Time adjustment buttons (+/-) for minutes and seconds
+
+### 4. Control Buttons
+- **Start**: Begin countdown
+- **Pause**: Pause countdown (rounds still visible)
+- **Resume**: Resume from paused time
+- **Reset**: Reset timer to time cap, reset rounds to 0
+- **Clear**: Clear time to 00:00, reset rounds to 0, show "Set Up" button
+
+### 5. Round Increment Button
+- Large, prominent button (secondary color)
+- Text: "+1 Round" or "Complete Round" or just "+"
+- Should work even when timer is paused
+- Should be disabled when timer hasn't started (optional - or allow pre-round tracking)
+- Visual feedback when tapped
+
+### 6. Timer Logic
+```javascript
+// State variables needed:
+let currentTime = 0;        // Current time remaining (in seconds)
+let totalSeconds = 0;       // Total time cap (in seconds)
+let roundsCompleted = 0;    // Number of rounds completed
+let interval = null;
+let isRunning = false;
+let isPaused = false;
+
+// When timer reaches 0:
+// - Stop timer
+// - Play sound
+// - Keep rounds visible
+// - Show "Complete" or similar (optional)
+```
+
+### 7. Round Increment Function
+```javascript
+function incrementRound() {
+    roundsCompleted++;
+    updateRoundDisplay();
+    // Optional: Play subtle sound or haptic feedback
+}
+
+// Round button should:
+// - Work when timer is running
+// - Work when timer is paused
+// - NOT increment if timer hasn't started (or allow it - your choice)
+```
+
+### 8. Display Updates
+- Timer display: formatTime(currentTime)
+- Round display: "Rounds: {roundsCompleted}" or "Round {roundsCompleted}"
+- Update round display whenever roundsCompleted changes
+
+### 9. Reset Behavior
+- Reset timer: Set currentTime back to totalSeconds, keep rounds
+- Clear timer: Set time to 00:00, reset rounds to 0, show "Set Up" button
+
+### 10. UI Layout Suggestions
+```
+[Header with logo, timerist.com | AMRAP, theme toggle, hamburger]
+
+[Timer Display Card]
+  [Large Countdown: 20:00]
+  [Round Counter: Rounds: 0]
+
+[Control Buttons]
+  [Start] [Pause] [Reset] [Clear]
+
+[Round Increment Button - Large, Prominent]
+  [+1 Round] or [+]
+
+[Optional: Quick Time Presets]
+  [5 min] [10 min] [15 min] [20 min] [30 min]
+```
+
+### 11. Drawer Content
+- Time Cap Setup:
+  - Minutes input with +/- buttons
+  - Seconds input with +/- buttons
+- About This Timer:
+  - Description of AMRAP workouts
+  - Keywords: AMRAP timer, as many rounds as possible, workout timer, CrossFit timer
+- General Info:
+  - Version number
+  - Release date
+
+## Implementation Notes
+
+### Copy from countdown.html:
+- ✅ Header structure
+- ✅ Drawer structure and styling
+- ✅ Time input logic (parseTime, formatTime, validateTimeInput)
+- ✅ Timer countdown logic
+- ✅ Button visibility logic
+- ✅ Theme toggle integration
+- ✅ Dark mode support
+
+### Add/Modify:
+- ➕ Round counter state variable
+- ➕ Round counter display element
+- ➕ Round increment button
+- ➕ Round increment function
+- ➕ Update round display function
+- ➕ Modify reset/clear to handle rounds
+- ➕ Remove completion message logic (or keep simple "Complete")
+- ➕ Update "About This Timer" text
+
+### Round Button Styling:
+- Large size (min-height: 60px or more)
+- Secondary color (green) to distinguish from primary controls
+- Prominent placement (maybe separate card or large button)
+- Good touch target (44px minimum, but make it bigger)
+
+### Example Round Display:
+```html
+<div class="round-info">
+    <span style="font-size: 1.25rem; font-weight: 600; color: rgb(var(--muted-foreground));">
+        Rounds: <span id="roundDisplay" style="color: rgb(var(--primary));">0</span>
+    </span>
+</div>
+```
+
+## Testing Checklist
+- [ ] Timer counts down correctly
+- [ ] Round counter increments when button pressed
+- [ ] Round counter persists when paused
+- [ ] Reset resets timer but keeps rounds (or resets rounds - clarify behavior)
+- [ ] Clear resets everything
+- [ ] Time cap can be set in drawer
+- [ ] Sound plays when timer reaches 0
+- [ ] Color coding works (warning/danger)
+- [ ] Works in dark mode
+- [ ] Responsive on mobile
+
+## Key Differences from Other Timers
+
+### vs. Interval Timer:
+- ❌ No work/rest phases
+- ❌ No automatic round switching
+- ✅ Manual round tracking
+- ✅ Single countdown
+
+### vs. EMOM Timer:
+- ❌ No fixed 60-second intervals
+- ❌ No automatic round resets
+- ✅ Configurable time cap
+- ✅ Manual round tracking
+
+### vs. Countdown Timer:
+- ✅ Same countdown logic
+- ➕ Round tracking
+- ➕ Round increment button
+- ❌ No completion message customization
+
+## Example User Flow
+1. User opens AMRAP timer
+2. User sets time cap (e.g., 20:00) in drawer
+3. User clicks "Start"
+4. Timer counts down from 20:00
+5. User completes round 1, taps "+1 Round" → Rounds: 1
+6. User continues working, completes round 2, taps "+1 Round" → Rounds: 2
+7. Timer continues counting down
+8. When timer reaches 0:00, sound plays, timer stops
+9. Final rounds count is displayed (e.g., "Rounds: 5")
+
+## Notes for Implementation
+- Round button should be easily accessible during workout
+- Consider making round button work even when timer is paused (for tracking)
+- Round counter should be visible and prominent
+- Consider adding haptic feedback on round increment (if on mobile)
+- Keep the styling consistent with other timers (use same design system)
