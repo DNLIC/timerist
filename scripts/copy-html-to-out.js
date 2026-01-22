@@ -6,6 +6,7 @@ const htmlFiles = [
   'index.html',
   'quick-countdown.html',
   'quick-interval.html',
+  'quick-hiit.html',
   'tabata.html',
   'interval.html',
   'countdown.html',
@@ -13,8 +14,8 @@ const htmlFiles = [
   'stopwatch-splits.html',
   'emom.html',
   'amrap.html',
+  'amrap-splits.html',
   'hiit.html',
-  'pomodoro.html',
   'pyramid.html',
   'custom.html'
 ];

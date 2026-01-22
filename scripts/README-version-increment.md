@@ -32,7 +32,6 @@ The following timer files are automatically versioned when THEY are committed:
 - hiit.html
 - emom.html
 - amrap.html
-- pomodoro.html
 - pyramid.html
 - custom.html
 

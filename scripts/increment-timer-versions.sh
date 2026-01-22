@@ -16,7 +16,6 @@ TIMER_FILES=(
     "hiit.html"
     "emom.html"
     "amrap.html"
-    "pomodoro.html"
     "pyramid.html"
     "custom.html"
 )
