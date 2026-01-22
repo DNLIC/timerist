@@ -3,20 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pyramid - Timerist</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class'
-        };
-    </script>
+    <title>Pyramid Timer - Timerist | Pyramid Workout Timer, Ascending Descending Interval Timer</title>
+    <meta name="description" content="Pyramid timer for progressive workouts with ascending and descending work intervals. Automatically builds a pyramid sequence from start to peak and back down.">
     <link rel="stylesheet" href="styles/timerist-design-system.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Full viewport height and vertical centering */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        :root {
+            --background: 245 247 250;
+            --foreground: 51 51 51;
+            --card: 255 255 255;
+            --card-foreground: 51 51 51;
+            --primary: 74 144 226;
+            --primary-foreground: 255 255 255;
+            --secondary: 80 200 120;
+            --secondary-foreground: 255 255 255;
+            --muted: 102 102 102;
+            --muted-foreground: 153 153 153;
+            --accent: 225 232 237;
+            --accent-foreground: 51 51 51;
+            --destructive: 231 76 60;
+            --destructive-foreground: 255 255 255;
+            --border: 225 232 237;
+            --input: 225 232 237;
+            --ring: 74 144 226;
+            --radius: 0.5rem;
+        }
+        
+        [data-theme="style1"] {
+            --background: 0 0 0;
+            --foreground: 255 255 255;
+            --card: 26 26 26;
+            --card-foreground: 255 255 255;
+            --primary: 255 0 0;
+            --primary-foreground: 255 255 255;
+            --secondary: 0 255 0;
+            --secondary-foreground: 0 0 0;
+            --muted: 204 204 204;
+            --muted-foreground: 153 153 153;
+            --accent: 51 51 51;
+            --accent-foreground: 255 255 255;
+            --destructive: 255 0 0;
+            --destructive-foreground: 255 255 255;
+            --border: 51 51 51;
+            --input: 51 51 51;
+            --ring: 255 0 0;
+        }
+        
         body {
+            background: rgb(var(--background));
+            color: rgb(var(--foreground));
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             min-height: 100vh;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             margin: 0;
             padding: 0;
@@ -33,7 +82,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             width: 100%;
             max-width: 1200px;
             padding: 1rem;
@@ -42,50 +91,299 @@
             position: relative;
         }
         
-        /* Header with logo on left and menu on right */
-        .header-top {
-            position: absolute;
-            top: clamp(1rem, 3vw, 2rem);
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 clamp(1rem, 3vw, 2rem);
-            z-index: 10;
-            width: 100%;
-            max-width: 1200px;
+        .timer-container {
+            max-width: 1000px;
             margin: 0 auto;
+            overflow-x: hidden;
+            margin-top: clamp(5rem, 8vw, 6rem);
+            width: 100%;
         }
         
-        .header-actions {
+        /* iPad vertical (portrait) - position timer below header */
+        @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+            .timer-container {
+                margin-top: clamp(4rem, 6vw, 5rem);
+            }
+        }
+        
+        /* iPad horizontal (landscape) - position timer below header */
+        @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+            .timer-container {
+                margin-top: clamp(4.5rem, 7vw, 5.5rem);
+            }
+        }
+        
+        /* Desktop - position timer below header */
+        @media (min-width: 1025px) {
+            .timer-container {
+                margin-top: clamp(4rem, 6vw, 5rem);
+            }
+        }
+        
+        .bg-card { background-color: rgb(var(--card)); }
+        .text-foreground { color: rgb(var(--foreground)); }
+        .text-muted-foreground { color: rgb(var(--muted-foreground)); }
+        .bg-primary { background-color: rgb(var(--primary)); }
+        .text-primary-foreground { color: rgb(var(--primary-foreground)); }
+        .bg-secondary { background-color: rgb(var(--secondary)); }
+        .text-secondary-foreground { color: rgb(var(--secondary-foreground)); }
+        .bg-destructive { background-color: rgb(var(--destructive)); }
+        .text-destructive-foreground { color: rgb(var(--destructive-foreground)); }
+        .border-border { border-color: rgb(var(--border)); }
+        .hover\:bg-primary\/90:hover { background-color: rgba(var(--primary), 0.9); }
+        .hover\:bg-secondary\/90:hover { background-color: rgba(var(--secondary), 0.9); }
+        
+        .timer-display-large {
+            font-size: 4rem; /* Smaller for mobile */
+            font-weight: 700; /* font-bold */
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* font-mono */
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
+            color: rgb(var(--primary));
+            transition: color 0.3s ease;
+            margin-bottom: 1rem; /* mb-4 */
+            word-break: keep-all;
+            overflow-wrap: normal;
+        }
+        
+        @media (min-width: 390px) {
+            .timer-display-large {
+                font-size: 5rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .timer-display-large {
+                font-size: 8rem; /* md:text-9xl */
+            }
+        }
+        
+        .timer-display-large.warning {
+            color: #f59e0b;
+        }
+        
+        .timer-display-large.danger {
+            color: rgb(var(--destructive));
+        }
+        
+        .timer-display-block {
+            padding: 1.5rem;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        
+        @media (min-width: 640px) {
+            .timer-display-block {
+                padding: 2rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .timer-display-block {
+                padding: 2rem;
+            }
+        }
+        
+        .phase-label {
+            font-size: 1.25rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+            color: rgb(var(--primary));
+            transition: color 0.3s ease;
+        }
+        
+        @media (min-width: 768px) {
+            .phase-label {
+                font-size: 1.5rem;
+            }
+        }
+        
+        .phase-label.rest {
+            color: rgb(var(--secondary));
+        }
+        
+        .round-info {
+            font-size: 0.875rem;
+            color: rgb(var(--muted-foreground));
+            margin-top: 0.75rem;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            line-height: 1.4;
+            max-width: 100%;
+        }
+        
+        @media (min-width: 768px) {
+            .round-info {
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .round-info {
+                font-size: 0.75rem;
+            }
+        }
+        
+        .control-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            white-space: nowrap;
+            flex-shrink: 1;
+        }
+        
+        @media (max-width: 390px) {
+            .control-btn {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.75rem;
+            }
+        }
+        
+        .control-buttons-container {
             display: flex;
-            align-items: center;
             gap: 0.5rem;
-            flex-shrink: 0;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: nowrap;
         }
         
-        .header-top .mode-toggle-btn {
-            position: relative;
-            top: auto;
-            right: auto;
-            width: 44px;
-            height: 44px;
-            flex-shrink: 0;
+        @media (min-width: 390px) {
+            .control-buttons-container {
+                gap: 0.75rem;
+            }
         }
         
-        #timerist-logo {
-            display: block;
-            width: 40px;
-            height: 40px;
+        @media (min-width: 640px) {
+            .control-buttons-container {
+                gap: 1rem;
+            }
         }
         
-        .header-top a {
-            transition: opacity 0.2s ease;
+        .control-btn.btn-primary {
+            background-color: rgb(var(--primary));
+            color: rgb(var(--primary-foreground));
         }
         
-        .header-top a:hover {
-            opacity: 0.7;
+        .control-btn.btn-primary:hover:not(:disabled) {
+            background-color: rgba(var(--primary), 0.9);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Set Up button hover - dark gray like quick countdown timer */
+        #setupBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode Set Up button hover - lighter gray */
+        [data-theme="style1"] #setupBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        /* Paused state - dark gray background with white text (daylight mode) */
+        /* Higher specificity to override hover/active states on mobile */
+        .control-btn.btn-primary.paused,
+        .control-btn.btn-primary.paused:hover,
+        .control-btn.btn-primary.paused:active,
+        .control-btn.btn-primary.paused:focus {
+            background-color: rgb(100, 100, 100) !important;
+            color: rgb(255, 255, 255) !important;
+        }
+        
+        /* Dark mode paused state - lighter gray */
+        [data-theme="style1"] .control-btn.btn-primary.paused,
+        [data-theme="style1"] .control-btn.btn-primary.paused:hover,
+        [data-theme="style1"] .control-btn.btn-primary.paused:active,
+        [data-theme="style1"] .control-btn.btn-primary.paused:focus {
+            background-color: rgb(150, 150, 150) !important;
+            color: rgb(0, 0, 0) !important;
+        }
+        
+        .control-btn.btn-secondary {
+            background-color: rgb(var(--secondary));
+            color: rgb(var(--secondary-foreground));
+        }
+        
+        .control-btn.btn-secondary:hover:not(:disabled) {
+            background-color: rgba(var(--secondary), 0.9);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Clear button hover - dark gray like quick countdown timer */
+        #clearBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode Clear button hover - lighter gray */
+        [data-theme="style1"] #clearBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        /* Start button hover - dark gray like Set Up button */
+        #startBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode Start button hover - lighter gray */
+        [data-theme="style1"] #startBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        /* Pause button hover - dark gray (when not paused) */
+        #pauseBtn:hover:not(:disabled):not(.paused) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode Pause button hover - lighter gray (when not paused) */
+        [data-theme="style1"] #pauseBtn:hover:not(:disabled):not(.paused) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        .control-btn.btn-destructive {
+            background-color: rgb(var(--destructive));
+            color: rgb(var(--destructive-foreground));
+        }
+        
+        .control-btn.btn-destructive:hover:not(:disabled) {
+            background-color: rgba(var(--destructive), 0.9);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Reset button hover - dark gray like Set Up button */
+        #resetBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode Reset button hover - lighter gray */
+        [data-theme="style1"] #resetBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        .control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
         
         .hamburger-menu {
@@ -96,11 +394,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: hsl(var(--foreground));
+            color: rgb(var(--foreground));
             font-size: 1.5rem;
             transition: opacity 0.2s;
             width: 44px;
             height: 44px;
+            border-radius: var(--radius);
             flex-shrink: 0;
         }
         
@@ -115,8 +414,8 @@
             width: 100%;
             max-width: 400px;
             height: 100vh;
-            background: hsl(var(--card));
-            border-left: 1px solid hsl(var(--border));
+            background: rgb(var(--card));
+            border-left: 1px solid rgb(var(--border));
             box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
             transition: right 0.3s ease;
             z-index: 1002;
@@ -137,7 +436,7 @@
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.3s, visibility 0.3s;
-            z-index: 999;
+            z-index: 1001;
         }
         
         .drawer-overlay.open {
@@ -147,7 +446,7 @@
         
         .drawer-header {
             padding: 1.5rem;
-            border-bottom: 1px solid hsl(var(--border));
+            border-bottom: 1px solid rgb(var(--border));
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -157,57 +456,287 @@
             padding: 1.5rem;
         }
         
+        .drawer-section {
+            margin-bottom: 2rem;
+        }
+        
+        .drawer-section h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: rgb(var(--foreground));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .drawer-section p {
+            color: rgb(var(--muted-foreground));
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+        }
+        
         .drawer-close {
             background: transparent;
             border: none;
             cursor: pointer;
             font-size: 1.5rem;
-            color: hsl(var(--foreground));
+            color: rgb(var(--foreground));
             padding: 0.25rem;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius);
         }
         
-        /* Ensure logo is visible in light and dark mode */
-        #timerist-logo {
-            color: #0a0a0a; /* Dark color for light mode */
+        .drawer-close:hover {
+            opacity: 0.7;
         }
         
-        #timerist-logo circle,
-        #timerist-logo line {
-            stroke: #0a0a0a; /* Explicit dark color */
-            stroke-width: 2.5;
+        .custom-time-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid rgb(var(--input));
+            border-radius: var(--radius);
+            background-color: rgb(var(--background));
+            color: rgb(var(--foreground));
+            font-size: 1.125rem;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            min-height: 48px;
         }
         
-        #timerist-logo .logo-text {
-            fill: #0a0a0a; /* Explicit dark color */
+        .custom-time-input:focus {
+            outline: none;
+            border-color: rgb(var(--ring));
+            box-shadow: 0 0 0 2px rgba(var(--ring), 0.2);
         }
         
-        /* Dark mode styles */
-        .dark #timerist-logo {
-            color: #fafafa; /* Light color for dark mode */
+        .custom-time-input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
         
-        .dark #timerist-logo circle,
-        .dark #timerist-logo line {
-            stroke: #fafafa; /* Explicit light color for dark mode */
+        .input-group {
+            margin-bottom: 1.5rem;
         }
         
-        .dark #timerist-logo .logo-text {
-            fill: #fafafa; /* Explicit light color for dark mode */
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: rgb(var(--muted-foreground));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
         
-        /* Additional dark mode selectors for explicit colors - html element gets the dark class */
-        html.dark #timerist-logo .logo-circle,
-        html.dark #timerist-logo .logo-line {
-            stroke: #fafafa !important;
+        .rounds-input-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
         }
         
-        html.dark #timerist-logo .logo-text {
-            fill: #fafafa !important;
+        .rounds-adjust-btn {
+            width: 44px;
+            height: 44px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            border: 2px solid rgb(var(--border));
+            border-radius: var(--radius);
+            background-color: rgb(var(--card));
+            color: rgb(var(--foreground));
+            cursor: pointer;
+            transition: opacity 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
         }
         
-        /* Adjust timer container spacing when header is present */
-        .timer-container {
-            margin-top: clamp(4rem, 8vw, 6rem);
+        .rounds-adjust-btn:hover:not(:disabled) {
+            opacity: 0.7;
+        }
+        
+        .rounds-adjust-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .rounds-input-group input {
+            flex: 0 1 auto;
+            width: 80px;
+            max-width: 100px;
+            text-align: center;
+            font-size: 1.125rem;
+            font-weight: 600;
+            background-color: rgb(var(--background));
+            border: 2px solid rgb(var(--input));
+            border-radius: var(--radius);
+            padding: 0.75rem;
+            color: rgb(var(--foreground));
+            min-height: 48px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .rounds-input-group input:focus {
+            outline: none;
+            border-color: rgb(var(--ring));
+            box-shadow: 0 0 0 2px rgba(var(--ring), 0.2);
+        }
+        
+        .rounds-input-group input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .time-input-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        
+        .time-adjust-btn {
+            width: 44px;
+            height: 44px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            border: 2px solid rgb(var(--border));
+            border-radius: var(--radius);
+            background-color: rgb(var(--card));
+            color: rgb(var(--foreground));
+            cursor: pointer;
+            transition: opacity 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        
+        .time-adjust-btn:hover:not(:disabled) {
+            opacity: 0.7;
+        }
+        
+        .time-adjust-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .time-input-group input {
+            flex: 1;
+        }
+        
+        @media (max-width: 390px) {
+            .time-adjust-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 0.75rem;
+            }
+            
+            .time-input-group {
+                gap: 0.5rem;
+            }
+            
+            .rounds-input-group {
+                gap: 0.5rem;
+            }
+            
+            .rounds-input-group input {
+                width: 60px;
+                max-width: 80px;
+                padding: 0.5rem;
+            }
+            
+            .rounds-adjust-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+        }
+        
+        .timer-running .custom-time-input:not(:disabled),
+        .timer-running .rounds-adjust-btn:not(:disabled),
+        .timer-running .time-adjust-btn:not(:disabled) {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
+        .header-top {
+            position: absolute;
+            top: clamp(1rem, 3vw, 2rem);
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 clamp(1rem, 3vw, 2rem);
+            z-index: 10;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 0.5rem;
+            min-width: 0;
+        }
+        
+        .header-top > div:first-child {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 0;
+            flex-shrink: 1;
+            overflow: hidden;
+        }
+        
+        /* iPhone 13 mini and similar small screens - make header more compact */
+        @media (max-width: 390px) {
+            .header-top {
+                padding: 0 0.75rem;
+            }
+            
+            .header-top > div:first-child {
+                gap: 0.5rem;
+            }
+            
+            /* Hide separator and "timerist.com" text on very small screens */
+            .header-top .separator,
+            .header-top > div:first-child > a:nth-of-type(2) {
+                display: none;
+            }
+            
+            /* Make "Pyramid" text smaller */
+            .header-top > div:first-child > span:last-of-type {
+                font-size: 0.875rem !important;
+            }
+            
+            /* Ensure logo doesn't shrink too much */
+            #timerist-logo {
+                width: 36px !important;
+                height: 36px !important;
+                flex-shrink: 0;
+            }
+        }
+        
+        /* Slightly larger screens (iPhone 13, 14, etc.) - show more but keep compact */
+        @media (min-width: 391px) and (max-width: 428px) {
+            .header-top {
+                padding: 0 1rem;
+            }
+            
+            /* Hide separator but keep timerist.com text */
+            .header-top .separator {
+                display: none;
+            }
+            
+            /* Make text smaller */
+            .header-top > div:first-child > span {
+                font-size: 0.875rem !important;
+            }
         }
         
         @media (min-width: 640px) {
@@ -222,245 +751,101 @@
             }
         }
         
-        .timer-container {
-            max-width: 600px;
-            margin: 0 auto;
-            width: 100%;
-            overflow-x: hidden;
-        }
-        
-        @media (min-width: 768px) {
-            .timer-container {
-                max-width: 90%;
-            }
-        }
-        
-        .timer-display {
-            margin-bottom: clamp(1.5rem, 5vw, 4rem);
-            margin-top: clamp(0.5rem, 2vw, 1.5rem);
-        }
-        
-        .timer-label {
-            font-size: clamp(0.75rem, 2vw, 1.25rem);
-            margin-bottom: clamp(0.5rem, 2vw, 1.5rem);
-        }
-        
-        @media (min-width: 768px) {
-            .timer-label {
-                font-size: clamp(0.875rem, 2.5vw, 1.5rem);
-            }
-        }
-        
-        .timer-time {
-            font-size: clamp(4rem, 20vw, 14rem);
-            font-weight: 800;
-            line-height: 1;
-            margin: clamp(0.5rem, 2vw, 2rem) 0;
-            word-break: keep-all;
-            overflow-wrap: normal;
-            max-width: 100%;
-            overflow: hidden;
-            text-overflow: clip;
-            white-space: nowrap;
-        }
-        
-        @media (min-width: 768px) {
-            .timer-time {
-                font-size: clamp(8rem, 25vw, 16rem);
-            }
-        }
-        
-        @media (min-width: 1024px) {
-            .timer-time {
-                font-size: clamp(9rem, 26vw, 20rem);
-            }
-        }
-        
-        .timer-controls {
+        .header-actions {
             display: flex;
-            gap: clamp(0.75rem, 4vw, 2rem);
-            justify-content: center;
-            margin-top: clamp(2rem, 6vw, 5rem);
-            flex-wrap: wrap;
-        }
-        
-        .timer-controls .btn {
-            min-width: clamp(100px, 20vw, 180px);
-            padding: clamp(0.75rem, 3vw, 1.25rem) clamp(1.25rem, 5vw, 2rem);
-            font-size: clamp(1rem, 4vw, 1.25rem);
-            font-weight: 600;
-            transition: all var(--transition-fast, 0.2s ease);
-        }
-        
-        .timer-controls .btn:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px hsl(var(--ring) / 0.4);
-        }
-        
-        .timer-controls .btn:focus-visible {
-            outline: 2px solid hsl(var(--ring));
-            outline-offset: 2px;
-        }
-        
-        @media (min-width: 768px) {
-            .timer-controls {
-                gap: clamp(1rem, 5vw, 2.5rem);
-            }
-            
-            .timer-display {
-                margin-bottom: clamp(3rem, 8vw, 6rem);
-                margin-top: clamp(1rem, 4vw, 3rem);
-            }
-            
-            .timer-label {
-                margin-bottom: clamp(1rem, 3vw, 2.5rem);
-            }
-            
-            .timer-time {
-                margin: clamp(1rem, 3vw, 3rem) 0;
-            }
-        }
-        
-        .timer-settings {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-top: clamp(2rem, 5vw, 4rem);
-            width: 100%;
-            max-width: 100%;
-        }
-        
-        @media (min-width: 768px) {
-            .timer-settings {
-                grid-template-columns: repeat(2, minmax(200px, 1fr));
-                gap: 2.5rem;
-                max-width: 700px;
-                margin: clamp(2.5rem, 6vw, 5rem) auto 0;
-            }
-        }
-        
-        .setting-group input {
-            width: 100%;
-            padding: 0.625rem;
-            border: 2px solid hsl(var(--input));
-            border-radius: var(--radius);
-            background-color: hsl(var(--background));
-            color: hsl(var(--foreground));
-            font-size: 1rem;
-            font-weight: 600;
-            text-align: center;
-            min-height: 44px;
-        }
-        
-        @media (min-width: 768px) {
-            .setting-group input {
-                padding: 1.25rem;
-                font-size: 1.5rem;
-                min-height: 64px;
-            }
-        }
-        
-        @media (max-width: 390px) {
-            .timer-settings {
-                grid-template-columns: 1fr;
-                gap: 0.75rem;
-            }
-            
-            .timer-controls {
-                gap: 0.5rem;
-            }
-            
-            .timer-controls .btn {
-                min-width: 80px;
-                padding: 0.625rem 1rem;
-                font-size: 0.875rem;
-            }
-            
-            .timer-time {
-                font-size: clamp(3rem, 18vw, 12rem);
-            }
-            
-            .container {
-                padding: 0.75rem;
-            }
-        }
-        
-        .setting-group {
-            display: flex;
-            flex-direction: column;
+            align-items: center;
             gap: 0.5rem;
+            flex-shrink: 0;
+            min-width: fit-content;
         }
         
-        @media (min-width: 768px) {
-            .setting-group {
-                gap: 0.75rem;
+        /* Ensure both buttons are always visible on small screens */
+        @media (max-width: 428px) {
+            .header-actions {
+                gap: 0.375rem;
+            }
+            
+            .header-actions .mode-toggle-btn,
+            .header-actions .hamburger-menu {
+                width: 40px;
+                height: 40px;
+                padding: 0.375rem;
+                font-size: 1.25rem;
             }
         }
         
-        .setting-group label {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: hsl(var(--muted-foreground));
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+        .header-top .mode-toggle-btn {
+            position: relative;
+            top: auto;
+            right: auto;
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgb(var(--foreground));
+            font-size: 1.5rem;
+            transition: opacity 0.2s;
+            border-radius: var(--radius);
+            min-width: 44px;
         }
         
-        @media (min-width: 768px) {
-            .setting-group label {
-                font-size: 1rem;
-            }
+        .header-top .mode-toggle-btn:hover,
+        .header-top .mode-toggle-btn:active {
+            opacity: 0.7;
+            background-color: rgba(var(--accent), 0.5);
         }
         
-        .setting-group input:focus {
-            outline: none;
-            border-color: hsl(var(--ring));
-            box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
-        }
-        
-        .setting-group input:focus-visible {
-            outline: 2px solid hsl(var(--ring));
+        .header-top .mode-toggle-btn:focus {
+            outline: 2px solid rgb(var(--ring));
             outline-offset: 2px;
         }
         
-        /* Ensure dark mode colors work correctly */
-        .timer-time {
-            color: hsl(var(--foreground));
-        }
-        
-        .timer-label {
-            color: hsl(var(--muted-foreground));
-        }
-        
-        /* Prevent horizontal overflow on all elements */
-        .timer-display {
-            overflow-x: hidden;
-            max-width: 100%;
-        }
-        
-        .timer-settings {
-            overflow-x: hidden;
-        }
-        
-        /* Version number */
-        .version-number {
-            position: fixed;
-            bottom: 0.5rem;
-            right: 0.5rem;
-            font-size: 0.625rem;
-            color: hsl(var(--muted-foreground));
-            opacity: 0.6;
-            font-family: monospace;
-            z-index: 1000;
-            pointer-events: none;
+        .header-top .mode-toggle-btn {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
             user-select: none;
+            -webkit-user-select: none;
         }
         
-        @media (min-width: 768px) {
-            .version-number {
-                font-size: 0.75rem;
-                bottom: 1rem;
-                right: 1rem;
-            }
+        #timerist-logo {
+            display: block;
+            width: 40px;
+            height: 40px;
+            color: #0a0a0a;
+        }
+        
+        .header-top a {
+            transition: opacity 0.2s ease;
+        }
+        
+        .header-top a:hover {
+            opacity: 0.7;
+        }
+        
+        #timerist-logo circle,
+        #timerist-logo line {
+            stroke: #0a0a0a;
+            stroke-width: 2.5;
+        }
+        
+        [data-theme="style1"] #timerist-logo {
+            color: #fafafa;
+        }
+        
+        [data-theme="style1"] #timerist-logo circle,
+        [data-theme="style1"] #timerist-logo line {
+            stroke: #fafafa;
+        }
+        
+        html[data-theme="style1"] #timerist-logo .logo-circle,
+        html[data-theme="style1"] #timerist-logo .logo-line {
+            stroke: #fafafa !important;
         }
     </style>
 </head>
@@ -481,72 +866,993 @@
                         <line x1="20" y1="20" x2="30" y2="20" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
                     </svg>
                 </a>
-                <a href="index.html" style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: hsl(var(--foreground)); text-decoration: none; cursor: pointer;">timerist.com</a>
-                <span class="separator" style="color: hsl(var(--muted-foreground));">|</span>
-                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: hsl(var(--foreground));">Pyramid</span>
+                <a href="index.html" style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground)); text-decoration: none; cursor: pointer;">timerist.com</a>
+                <span class="separator" style="color: rgb(var(--muted-foreground));">|</span>
+                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">Pyramid</span>
             </div>
             
             <div class="header-actions">
-                <button class="mode-toggle-btn mode-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                <button class="mode-toggle-btn mode-toggle" id="themeToggleBtn" aria-label="Toggle dark mode">
                     <span id="theme-icon">🌙</span>
                 </button>
-                <button class="hamburger-menu" onclick="toggleDrawer()" aria-label="Open settings menu">
+                <button class="hamburger-menu" onclick="toggleDrawer()" aria-label="Open Timer Setup menu">
                     ☰
                 </button>
             </div>
         </div>
         
-        <div class="timer-container">
-            <div class="timer-display">
-                <div class="timer-label">Ready</div>
-                <div class="timer-time" id="display">00:30</div>
+        <div class="timer-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <!-- Timer Display -->
+            <div class="timer-display-block bg-card border border-border rounded-lg shadow-lg text-center">
+                <div class="phase-label" id="phaseLabel">Work</div>
+                <div class="timer-display-large" id="display">00:00</div>
+                <div class="round-info">
+                    <span id="pyramidInfo">Level 1 of 9</span>
+                </div>
             </div>
             
-            <div class="timer-controls">
-                <button class="btn btn-primary" id="startBtn">Start</button>
-                <button class="btn btn-secondary" id="pauseBtn" disabled>Pause</button>
-                <button class="btn btn-destructive" id="resetBtn">Reset</button>
-            </div>
-            
-            <div class="timer-settings">
-                <div class="setting-group">
-                    <label for="startSeconds">Start (sec)</label>
-                    <input type="number" id="startSeconds" min="10" max="300" value="30" />
-                </div>
-                <div class="setting-group">
-                    <label for="increment">Increment (sec)</label>
-                    <input type="number" id="increment" min="5" max="60" value="10" />
-                </div>
-                <div class="setting-group">
-                    <label for="peakSeconds">Peak (sec)</label>
-                    <input type="number" id="peakSeconds" min="30" max="600" value="60" />
+            <!-- Control Buttons -->
+            <div class="p-6 bg-card border border-border rounded-lg shadow-lg">
+                <div class="control-buttons-container">
+                    <button class="control-btn btn-primary" id="startBtn" aria-label="Start timer">Start</button>
+                    <button class="control-btn btn-primary" id="pauseBtn" style="display: none;" aria-label="Pause timer">Pause</button>
+                    <button class="control-btn btn-destructive" id="resetBtn" style="display: none;" aria-label="Reset timer">Reset</button>
+                    <button class="control-btn btn-secondary" id="clearBtn" aria-label="Clear timer">Clear</button>
+                    <button class="control-btn btn-primary" id="setupBtn" aria-label="Set up timer">Set Up Timer</button>
                 </div>
             </div>
         </div>
     </div>
     
+    <!-- Drawer Overlay -->
     <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+    
+    <!-- Settings Drawer -->
     <div class="settings-drawer" id="settingsDrawer">
         <div class="drawer-header">
-            <h2 style="font-size: 1.25rem; font-weight: 600; color: hsl(var(--foreground));">Settings</h2>
-            <button class="drawer-close" onclick="closeDrawer()">×</button>
+            <h2 style="font-size: 1rem; font-weight: 600; color: rgb(var(--foreground)); text-transform: uppercase; letter-spacing: 0.05em;">Timer Setup</h2>
+            <button class="drawer-close" onclick="closeDrawer()" aria-label="Close drawer">×</button>
         </div>
         <div class="drawer-content">
-            <div style="margin-bottom: 1.5rem;">
-                <label style="display: block; margin-bottom: 0.5rem; color: hsl(var(--foreground)); font-weight: 600;">Audio Feedback</label>
-                <button class="btn btn-outline" id="audioToggle" onclick="toggleAudio()">On</button>
+            <!-- Setup Content -->
+            <div class="drawer-section">
+                <h3>Pyramid Configuration</h3>
+                
+                <!-- Starting Work Time (seconds) -->
+                <div class="input-group">
+                    <label for="startTimeInput">Starting Work Time (seconds)</label>
+                    <div class="rounds-input-group" style="gap: 0.5rem; flex-wrap: wrap;">
+                        <button class="rounds-adjust-btn" id="startTimeDecrease5Btn" type="button" aria-label="Decrease starting time by 5">−5</button>
+                        <button class="rounds-adjust-btn" id="startTimeDecrease1Btn" type="button" aria-label="Decrease starting time by 1">−1</button>
+                        <input 
+                            type="text" 
+                            id="startTimeInput" 
+                            class="custom-time-input" 
+                            value="10"
+                            pattern="[0-9]+"
+                            placeholder="10"
+                            aria-label="Starting work time in seconds"
+                            style="width: 100px; flex: 0 0 auto;"
+                        >
+                        <button class="rounds-adjust-btn" id="startTimeIncrease1Btn" type="button" aria-label="Increase starting time by 1">+1</button>
+                        <button class="rounds-adjust-btn" id="startTimeIncrease5Btn" type="button" aria-label="Increase starting time by 5">+5</button>
+                    </div>
+                </div>
+                
+                <!-- Increment Step (seconds) -->
+                <div class="input-group">
+                    <label for="incrementInput">Increment Step (seconds)</label>
+                    <div class="rounds-input-group" style="gap: 0.5rem; flex-wrap: wrap;">
+                        <button class="rounds-adjust-btn" id="incrementDecrease5Btn" type="button" aria-label="Decrease increment by 5">−5</button>
+                        <button class="rounds-adjust-btn" id="incrementDecrease1Btn" type="button" aria-label="Decrease increment by 1">−1</button>
+                        <input 
+                            type="text" 
+                            id="incrementInput" 
+                            class="custom-time-input" 
+                            value="10"
+                            pattern="[0-9]+"
+                            placeholder="10"
+                            aria-label="Increment step in seconds"
+                            style="width: 100px; flex: 0 0 auto;"
+                        >
+                        <button class="rounds-adjust-btn" id="incrementIncrease1Btn" type="button" aria-label="Increase increment by 1">+1</button>
+                        <button class="rounds-adjust-btn" id="incrementIncrease5Btn" type="button" aria-label="Increase increment by 5">+5</button>
+                    </div>
+                </div>
+                
+                <!-- Peak Work Time (seconds) -->
+                <div class="input-group">
+                    <label for="peakTimeInput">Peak Work Time (seconds)</label>
+                    <div class="rounds-input-group" style="gap: 0.5rem; flex-wrap: wrap;">
+                        <button class="rounds-adjust-btn" id="peakTimeDecrease5Btn" type="button" aria-label="Decrease peak time by 5">−5</button>
+                        <button class="rounds-adjust-btn" id="peakTimeDecrease1Btn" type="button" aria-label="Decrease peak time by 1">−1</button>
+                        <input 
+                            type="text" 
+                            id="peakTimeInput" 
+                            class="custom-time-input" 
+                            value="50"
+                            pattern="[0-9]+"
+                            placeholder="50"
+                            aria-label="Peak work time in seconds"
+                            style="width: 100px; flex: 0 0 auto;"
+                        >
+                        <button class="rounds-adjust-btn" id="peakTimeIncrease1Btn" type="button" aria-label="Increase peak time by 1">+1</button>
+                        <button class="rounds-adjust-btn" id="peakTimeIncrease5Btn" type="button" aria-label="Increase peak time by 5">+5</button>
+                    </div>
+                </div>
+                
+                <!-- Rest Time -->
+                <div class="input-group">
+                    <label for="restTimeInput">Rest Time (MM:SS)</label>
+                    <div class="time-input-group">
+                        <button class="time-adjust-btn" id="restDecreaseBtn" type="button" aria-label="Decrease rest time by 10 seconds">−10</button>
+                        <input 
+                            type="text" 
+                            id="restTimeInput" 
+                            class="custom-time-input" 
+                            value="00:15"
+                            pattern="[0-9]{2}:[0-9]{2}"
+                            placeholder="MM:SS"
+                            aria-label="Rest time"
+                        >
+                        <button class="time-adjust-btn" id="restIncreaseBtn" type="button" aria-label="Increase rest time by 10 seconds">+10</button>
+                    </div>
+                </div>
+                
+                <!-- Number of Pyramids -->
+                <div class="input-group">
+                    <label for="pyramidsInput">Number of Pyramids</label>
+                    <div class="rounds-input-group">
+                        <button class="rounds-adjust-btn" id="pyramidsDecreaseBtn" type="button" aria-label="Decrease pyramids">−</button>
+                        <input 
+                            type="text" 
+                            id="pyramidsInput" 
+                            value="1"
+                            aria-label="Number of pyramids"
+                        >
+                        <button class="rounds-adjust-btn" id="pyramidsIncreaseBtn" type="button" aria-label="Increase pyramids">+</button>
+                    </div>
+                </div>
+                
+                <!-- Optional: Warm-up -->
+                <div class="input-group">
+                    <label for="warmupInput">Warm-up Time (MM:SS) - Optional</label>
+                    <div class="time-input-group">
+                        <button class="time-adjust-btn" id="warmupDecreaseBtn" type="button" aria-label="Decrease warm-up by 10 seconds">−10</button>
+                        <input 
+                            type="text" 
+                            id="warmupInput" 
+                            class="custom-time-input" 
+                            value="00:30"
+                            pattern="[0-9]{2}:[0-9]{2}"
+                            placeholder="MM:SS"
+                            aria-label="Warm-up time (optional)"
+                        >
+                        <button class="time-adjust-btn" id="warmupIncreaseBtn" type="button" aria-label="Increase warm-up by 10 seconds">+10</button>
+                    </div>
+                </div>
+                
+                <!-- Optional: Cool-down -->
+                <div class="input-group">
+                    <label for="cooldownInput">Cool-down Time (MM:SS) - Optional</label>
+                    <div class="time-input-group">
+                        <button class="time-adjust-btn" id="cooldownDecreaseBtn" type="button" aria-label="Decrease cool-down by 10 seconds">−10</button>
+                        <input 
+                            type="text" 
+                            id="cooldownInput" 
+                            class="custom-time-input" 
+                            value="01:00"
+                            pattern="[0-9]{2}:[0-9]{2}"
+                            placeholder="MM:SS"
+                            aria-label="Cool-down time (optional)"
+                        >
+                        <button class="time-adjust-btn" id="cooldownIncreaseBtn" type="button" aria-label="Increase cool-down by 10 seconds">+10</button>
+                    </div>
+                </div>
+                
+                <!-- Estimated Total Time -->
+                <div class="input-group">
+                    <p style="color: rgb(var(--muted-foreground)); font-size: 0.875rem; margin-top: 0.5rem;">
+                        <strong>Estimated Total Time:</strong> <span id="estimatedTime">00:00</span>
+                    </p>
+                </div>
+                
+                <!-- Default Settings Button -->
+                <div class="input-group" style="margin-top: 2rem;">
+                    <button 
+                        class="control-btn btn-secondary" 
+                        id="defaultSettingsBtn" 
+                        style="width: 100%; padding: 0.75rem;"
+                        aria-label="Reset to default settings"
+                    >
+                        Default Settings
+                    </button>
+                </div>
             </div>
-            <div>
-                <a href="index.html" style="display: block; padding: 0.75rem; color: hsl(var(--primary)); text-decoration: none;">← Back to Timers</a>
+            
+            <!-- About This Timer -->
+            <div class="drawer-section">
+                <h3>About This Timer</h3>
+                <p>
+                    Pyramid timer creates an ascending-then-descending sequence of work intervals. 
+                    Work periods increase from your starting time up to the peak, then decrease back down. 
+                    Perfect for progressive intensity workouts.
+                </p>
+                <p style="margin-top: 0.75rem;">
+                    <strong>Keywords:</strong> pyramid timer, pyramid workout, ascending descending timer, progressive interval timer, fitness pyramid.
+                </p>
+            </div>
+            
+            <!-- General Info -->
+            <div class="drawer-section">
+                <h3>General Info</h3>
+                <p><strong>Version:</strong> v0.11</p>
+                <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
     </div>
     
-    <div class="version-number">v1.1</div>
-    
-    <script src="scripts/dark-mode-toggle.js"></script>
-    <script src="scripts/countdown.js"></script>
     <script>
+        // Pyramid Timer Logic
+        let currentTime = 0;
+        let interval = null;
+        let isRunning = false;
+        let isPaused = false;
+        let isWorkPhase = true;
+        let pyramidSequence = []; // Array of {type: 'work'|'rest'|'warmup'|'cooldown', duration: seconds, workTime: seconds (for work phases)}
+        let currentSequenceIndex = 0;
+        let startTime = 10; // Starting work time in seconds
+        let increment = 10; // Increment step in seconds
+        let peakTime = 50; // Peak work time in seconds
+        let restTime = 15; // Rest time in seconds
+        let numPyramids = 1; // Number of full pyramids
+        let warmupTime = 30; // Warm-up time in seconds
+        let cooldownTime = 60; // Cool-down time in seconds
+        
+        const display = document.getElementById('display');
+        const phaseLabel = document.getElementById('phaseLabel');
+        const pyramidInfo = document.getElementById('pyramidInfo');
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const setupBtn = document.getElementById('setupBtn');
+        const defaultSettingsBtn = document.getElementById('defaultSettingsBtn');
+        
+        // Pyramid-specific inputs
+        const startTimeInput = document.getElementById('startTimeInput');
+        const incrementInput = document.getElementById('incrementInput');
+        const peakTimeInput = document.getElementById('peakTimeInput');
+        const restTimeInput = document.getElementById('restTimeInput');
+        const pyramidsInput = document.getElementById('pyramidsInput');
+        const warmupInput = document.getElementById('warmupInput');
+        const cooldownInput = document.getElementById('cooldownInput');
+        
+        // Adjustment buttons - Starting Work Time
+        const startTimeDecrease5Btn = document.getElementById('startTimeDecrease5Btn');
+        const startTimeDecrease1Btn = document.getElementById('startTimeDecrease1Btn');
+        const startTimeIncrease1Btn = document.getElementById('startTimeIncrease1Btn');
+        const startTimeIncrease5Btn = document.getElementById('startTimeIncrease5Btn');
+        
+        // Adjustment buttons - Increment Step
+        const incrementDecrease5Btn = document.getElementById('incrementDecrease5Btn');
+        const incrementDecrease1Btn = document.getElementById('incrementDecrease1Btn');
+        const incrementIncrease1Btn = document.getElementById('incrementIncrease1Btn');
+        const incrementIncrease5Btn = document.getElementById('incrementIncrease5Btn');
+        
+        // Adjustment buttons - Peak Work Time
+        const peakTimeDecrease5Btn = document.getElementById('peakTimeDecrease5Btn');
+        const peakTimeDecrease1Btn = document.getElementById('peakTimeDecrease1Btn');
+        const peakTimeIncrease1Btn = document.getElementById('peakTimeIncrease1Btn');
+        const peakTimeIncrease5Btn = document.getElementById('peakTimeIncrease5Btn');
+        const restDecreaseBtn = document.getElementById('restDecreaseBtn');
+        const restIncreaseBtn = document.getElementById('restIncreaseBtn');
+        const pyramidsDecreaseBtn = document.getElementById('pyramidsDecreaseBtn');
+        const pyramidsIncreaseBtn = document.getElementById('pyramidsIncreaseBtn');
+        const warmupDecreaseBtn = document.getElementById('warmupDecreaseBtn');
+        const warmupIncreaseBtn = document.getElementById('warmupIncreaseBtn');
+        const cooldownDecreaseBtn = document.getElementById('cooldownDecreaseBtn');
+        const cooldownIncreaseBtn = document.getElementById('cooldownIncreaseBtn');
+        
+        // Parse MM:SS format to seconds
+        function parseTime(timeString) {
+            const parts = timeString.split(':');
+            if (parts.length !== 2) return 0;
+            const minutes = parseInt(parts[0]) || 0;
+            const seconds = parseInt(parts[1]) || 0;
+            return (minutes * 60) + seconds;
+        }
+        
+        // Format seconds to MM:SS
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+        
+        // Validate and format time input
+        function validateTimeInput(input) {
+            let value = input.value.replace(/[^0-9:]/g, ''); // Remove non-numeric except colon
+            
+            // Auto-format as user types
+            if (value.length === 1 && /[0-9]/.test(value)) {
+                value = '00:0' + value;
+            } else if (value.length === 2 && /[0-9]{2}/.test(value)) {
+                value = '00:' + value;
+            } else if (value.length === 3 && /[0-9]:[0-9]/.test(value)) {
+                value = '0' + value;
+            } else if (value.length === 4 && /[0-9]{2}[0-9]{2}/.test(value)) {
+                value = value.substring(0, 2) + ':' + value.substring(2);
+            }
+            
+            // Ensure MM:SS format
+            if (value.match(/^[0-9]{1,2}:[0-9]{1,2}$/)) {
+                const parts = value.split(':');
+                const mins = parts[0].padStart(2, '0');
+                const secs = parts[1].padStart(2, '0');
+                value = mins + ':' + secs;
+            }
+            
+            input.value = value;
+            return value;
+        }
+        
+        // Generate pyramid sequence
+        function generatePyramidSequence() {
+            const sequence = [];
+            
+            // Validate that peak is reachable from start with increments
+            const stepsToPeak = Math.floor((peakTime - startTime) / increment);
+            if (stepsToPeak < 0 || (startTime + stepsToPeak * increment) !== peakTime) {
+                // Invalid configuration - peak not reachable
+                return [];
+            }
+            
+            // Build ascending and descending work times
+            const ascendingWorkTimes = [];
+            const descendingWorkTimes = [];
+            
+            // Ascending: start -> peak
+            for (let time = startTime; time <= peakTime; time += increment) {
+                ascendingWorkTimes.push(time);
+            }
+            
+            // Descending: peak -> start (exclude peak to avoid duplicate)
+            for (let time = peakTime - increment; time >= startTime; time -= increment) {
+                descendingWorkTimes.push(time);
+            }
+            
+            // Repeat for number of pyramids
+            for (let pyramid = 0; pyramid < numPyramids; pyramid++) {
+                // Warm-up (only for first pyramid)
+                if (pyramid === 0 && warmupTime > 0) {
+                    sequence.push({ type: 'warmup', duration: warmupTime });
+                }
+                
+                // Ascending phase
+                for (let i = 0; i < ascendingWorkTimes.length; i++) {
+                    sequence.push({ type: 'work', duration: ascendingWorkTimes[i], workTime: ascendingWorkTimes[i] });
+                    // Add rest after each work except possibly the last
+                    if (i < ascendingWorkTimes.length - 1 || descendingWorkTimes.length > 0) {
+                        sequence.push({ type: 'rest', duration: restTime });
+                    }
+                }
+                
+                // Descending phase
+                for (let i = 0; i < descendingWorkTimes.length; i++) {
+                    sequence.push({ type: 'work', duration: descendingWorkTimes[i], workTime: descendingWorkTimes[i] });
+                    // Add rest after each work except the last
+                    if (i < descendingWorkTimes.length - 1) {
+                        sequence.push({ type: 'rest', duration: restTime });
+                    }
+                }
+            }
+            
+            // Cool-down (only after last pyramid)
+            if (cooldownTime > 0) {
+                sequence.push({ type: 'cooldown', duration: cooldownTime });
+            }
+            
+            return sequence;
+        }
+        
+        // Calculate estimated total time
+        function calculateEstimatedTime() {
+            const seq = generatePyramidSequence();
+            let total = 0;
+            seq.forEach(phase => {
+                total += phase.duration;
+            });
+            return total;
+        }
+        
+        // Update estimated time display
+        function updateEstimatedTime() {
+            const totalSeconds = calculateEstimatedTime();
+            document.getElementById('estimatedTime').textContent = formatTime(totalSeconds);
+        }
+        
+        // Get pyramid pattern summary (work times only)
+        function getPyramidPatternSummary() {
+            if (pyramidSequence.length === 0) {
+                return '';
+            }
+            
+            // Extract work times from sequence
+            const workTimes = [];
+            pyramidSequence.forEach(phase => {
+                if (phase.type === 'work' && phase.workTime) {
+                    workTimes.push(phase.workTime);
+                }
+            });
+            
+            if (workTimes.length === 0) {
+                return '';
+            }
+            
+            // Format as "10s → 20s → 30s → ..."
+            return workTimes.map(time => `${time}s`).join(' → ');
+        }
+        
+        // Get current step position in sequence
+        function getCurrentStepPosition() {
+            if (pyramidSequence.length === 0 || currentSequenceIndex >= pyramidSequence.length) {
+                return '';
+            }
+            
+            // Count total steps (all phases including warmup, work, rest, cooldown)
+            const totalSteps = pyramidSequence.length;
+            const currentStep = currentSequenceIndex + 1;
+            
+            return `Step ${currentStep} of ${totalSteps}`;
+        }
+        
+        // Get pyramid phase description
+        function getPyramidPhaseDescription() {
+            if (pyramidSequence.length === 0 || currentSequenceIndex >= pyramidSequence.length) {
+                return 'Ready';
+            }
+            
+            const currentPhase = pyramidSequence[currentSequenceIndex];
+            const totalWorkPhases = pyramidSequence.filter(p => p.type === 'work').length;
+            let currentWorkIndex = 0;
+            
+            // Count work phases up to current index
+            for (let i = 0; i <= currentSequenceIndex; i++) {
+                if (pyramidSequence[i].type === 'work') {
+                    currentWorkIndex++;
+                }
+            }
+            
+            if (currentPhase.type === 'warmup') {
+                return `Warm-up • ${getCurrentStepPosition()}`;
+            } else if (currentPhase.type === 'cooldown') {
+                return `Cool-down • ${getCurrentStepPosition()}`;
+            } else if (currentPhase.type === 'rest') {
+                return `Rest • ${getCurrentStepPosition()}`;
+            } else if (currentPhase.type === 'work') {
+                // Determine if ascending, peak, or descending
+                const workTimes = [];
+                let foundCurrent = false;
+                let currentWorkPos = 0;
+                
+                for (let i = 0; i < pyramidSequence.length; i++) {
+                    if (pyramidSequence[i].type === 'work') {
+                        workTimes.push(pyramidSequence[i].workTime);
+                        if (i === currentSequenceIndex) {
+                            foundCurrent = true;
+                            currentWorkPos = workTimes.length - 1;
+                        }
+                    }
+                }
+                
+                // Find peak position
+                const peakPos = workTimes.indexOf(Math.max(...workTimes));
+                
+                let phaseDesc = '';
+                if (currentWorkPos < peakPos) {
+                    phaseDesc = `Ascending – Work ${currentWorkIndex}/${totalWorkPhases}`;
+                } else if (currentWorkPos === peakPos) {
+                    phaseDesc = `Peak – Work ${currentWorkIndex}/${totalWorkPhases}`;
+                } else {
+                    phaseDesc = `Descending – Work ${currentWorkIndex}/${totalWorkPhases}`;
+                }
+                
+                return `${phaseDesc} • ${getCurrentStepPosition()}`;
+            }
+            
+            return getCurrentStepPosition();
+        }
+        
+        // Disable inputs when timer is running
+        function disableInputs() {
+            startTimeInput.disabled = true;
+            incrementInput.disabled = true;
+            peakTimeInput.disabled = true;
+            restTimeInput.disabled = true;
+            pyramidsInput.disabled = true;
+            warmupInput.disabled = true;
+            cooldownInput.disabled = true;
+            // Disable all adjustment buttons
+            [startTimeDecrease5Btn, startTimeDecrease1Btn, startTimeIncrease1Btn, startTimeIncrease5Btn,
+             incrementDecrease5Btn, incrementDecrease1Btn, incrementIncrease1Btn, incrementIncrease5Btn,
+             peakTimeDecrease5Btn, peakTimeDecrease1Btn, peakTimeIncrease1Btn, peakTimeIncrease5Btn,
+             restDecreaseBtn, restIncreaseBtn, pyramidsDecreaseBtn, pyramidsIncreaseBtn,
+             warmupDecreaseBtn, warmupIncreaseBtn, cooldownDecreaseBtn, cooldownIncreaseBtn].forEach(btn => {
+                if (btn) btn.disabled = true;
+            });
+        }
+        
+        // Enable inputs when timer is stopped
+        function enableInputs() {
+            startTimeInput.disabled = false;
+            incrementInput.disabled = false;
+            peakTimeInput.disabled = false;
+            restTimeInput.disabled = false;
+            pyramidsInput.disabled = false;
+            warmupInput.disabled = false;
+            cooldownInput.disabled = false;
+            // Enable all adjustment buttons
+            [startTimeDecrease5Btn, startTimeDecrease1Btn, startTimeIncrease1Btn, startTimeIncrease5Btn,
+             incrementDecrease5Btn, incrementDecrease1Btn, incrementIncrease1Btn, incrementIncrease5Btn,
+             peakTimeDecrease5Btn, peakTimeDecrease1Btn, peakTimeIncrease1Btn, peakTimeIncrease5Btn,
+             restDecreaseBtn, restIncreaseBtn, pyramidsDecreaseBtn, pyramidsIncreaseBtn,
+             warmupDecreaseBtn, warmupIncreaseBtn, cooldownDecreaseBtn, cooldownIncreaseBtn].forEach(btn => {
+                if (btn) btn.disabled = false;
+            });
+        }
+        
+        // Check if timer has valid data to proceed
+        function hasValidTimerData() {
+            const seq = generatePyramidSequence();
+            return seq.length > 0 && startTime > 0 && increment > 0 && peakTime >= startTime && restTime > 0;
+        }
+        
+        // Update display with color coding
+        function updateDisplay() {
+            display.textContent = formatTime(currentTime);
+            
+            // Update phase label and info
+            // Only show phase description when timer is running or paused
+            if (isRunning || isPaused) {
+                if (pyramidSequence.length > 0 && currentSequenceIndex < pyramidSequence.length) {
+                    const currentPhase = pyramidSequence[currentSequenceIndex];
+                    
+                    if (currentPhase.type === 'warmup') {
+                        phaseLabel.textContent = 'Warm-up';
+                        phaseLabel.classList.remove('rest');
+                        phaseLabel.style.color = 'rgb(var(--primary))';
+                    } else if (currentPhase.type === 'cooldown') {
+                        phaseLabel.textContent = 'Cool-down';
+                        phaseLabel.classList.remove('rest');
+                        phaseLabel.style.color = 'rgb(var(--primary))';
+                    } else if (currentPhase.type === 'rest') {
+                        phaseLabel.textContent = 'Rest';
+                        phaseLabel.classList.add('rest');
+                        phaseLabel.style.color = 'rgb(var(--secondary))';
+                    } else {
+                        phaseLabel.textContent = 'Work';
+                        phaseLabel.classList.remove('rest');
+                        phaseLabel.style.color = 'rgb(var(--primary))';
+                    }
+                    
+                    pyramidInfo.textContent = getPyramidPhaseDescription();
+                } else {
+                    // Timer finished
+                    phaseLabel.textContent = 'Pyramid Complete!';
+                    phaseLabel.classList.remove('rest');
+                    phaseLabel.style.color = 'rgb(var(--primary))';
+                    pyramidInfo.textContent = 'Workout finished';
+                }
+            } else {
+                // Timer is ready (not running) - show pattern summary
+                phaseLabel.textContent = 'Ready';
+                phaseLabel.classList.remove('rest');
+                phaseLabel.style.color = 'rgb(var(--primary))';
+                
+                // Show pyramid pattern summary when ready
+                const patternSummary = getPyramidPatternSummary();
+                if (patternSummary) {
+                    pyramidInfo.textContent = patternSummary;
+                } else {
+                    pyramidInfo.textContent = 'Configure pyramid settings';
+                }
+            }
+            
+            // Color coding: normal -> warning (last 30%) -> danger (last 10%)
+            display.classList.remove('warning', 'danger');
+            if (pyramidSequence.length > 0 && currentSequenceIndex < pyramidSequence.length) {
+                const phaseDuration = pyramidSequence[currentSequenceIndex].duration;
+                if (phaseDuration > 0) {
+                    const percentRemaining = currentTime / phaseDuration;
+                    if (percentRemaining <= 0.1) {
+                        display.classList.add('danger');
+                    } else if (percentRemaining <= 0.3) {
+                        display.classList.add('warning');
+                    }
+                }
+            }
+            
+            // Add running class for styling
+            if (isRunning) {
+                document.body.classList.add('timer-running');
+                disableInputs();
+            } else {
+                document.body.classList.remove('timer-running');
+                enableInputs();
+            }
+            
+            // Update button visibility
+            if (isRunning && !isPaused) {
+                startBtn.style.display = 'none';
+                pauseBtn.style.display = 'inline-block';
+                pauseBtn.classList.remove('paused');
+                resetBtn.style.display = 'inline-block';
+                clearBtn.style.display = 'none';
+                setupBtn.style.display = 'none';
+            } else if (isPaused) {
+                startBtn.style.display = 'inline-block';
+                startBtn.textContent = 'Resume';
+                pauseBtn.style.display = 'none';
+                resetBtn.style.display = 'inline-block';
+                clearBtn.style.display = 'inline-block';
+                setupBtn.style.display = 'none';
+            } else {
+                // Timer is not running - show Start, Clear, and Set Up Timer buttons
+                startBtn.style.display = 'inline-block';
+                startBtn.textContent = 'Start';
+                pauseBtn.style.display = 'none';
+                resetBtn.style.display = 'none';
+                clearBtn.style.display = 'inline-block';
+                setupBtn.style.display = 'inline-block';
+            }
+        }
+        
+        // Start timer
+        function startTimer() {
+            // Generate sequence if not already done or if settings changed
+            if (pyramidSequence.length === 0 || currentSequenceIndex >= pyramidSequence.length) {
+                pyramidSequence = generatePyramidSequence();
+                currentSequenceIndex = 0;
+                
+                if (pyramidSequence.length === 0) {
+                    alert('Invalid pyramid configuration. Please check your settings.');
+                    return;
+                }
+            }
+            
+            if (currentSequenceIndex >= pyramidSequence.length) {
+                return;
+            }
+            
+            const currentPhase = pyramidSequence[currentSequenceIndex];
+            currentTime = currentPhase.duration;
+            isWorkPhase = currentPhase.type === 'work' || currentPhase.type === 'warmup' || currentPhase.type === 'cooldown';
+            
+            if (currentTime <= 0) return;
+            
+            isRunning = true;
+            isPaused = false;
+            
+            interval = setInterval(() => {
+                currentTime--;
+                updateDisplay();
+                
+                if (currentTime <= 0) {
+                    playSound();
+                    
+                    // Move to next phase
+                    currentSequenceIndex++;
+                    
+                    if (currentSequenceIndex >= pyramidSequence.length) {
+                        // Pyramid complete!
+                        stopTimer();
+                        playSound(); // Play completion sound
+                        phaseLabel.textContent = 'Pyramid Complete!';
+                        pyramidInfo.textContent = 'Workout finished';
+                        return;
+                    }
+                    
+                    // Set up next phase
+                    const nextPhase = pyramidSequence[currentSequenceIndex];
+                    currentTime = nextPhase.duration;
+                    isWorkPhase = nextPhase.type === 'work' || nextPhase.type === 'warmup' || nextPhase.type === 'cooldown';
+                    
+                    updateDisplay();
+                }
+            }, 1000);
+            
+            updateDisplay();
+        }
+        
+        // Pause timer
+        function pauseTimer() {
+            isRunning = false;
+            isPaused = true;
+            clearInterval(interval);
+            interval = null;
+            updateDisplay();
+        }
+        
+        // Resume timer
+        function resumeTimer() {
+            if (isPaused) {
+                startTimer();
+            }
+        }
+        
+        // Stop timer (called when countdown reaches 0)
+        function stopTimer() {
+            isRunning = false;
+            isPaused = false;
+            clearInterval(interval);
+            interval = null;
+            updateDisplay();
+        }
+        
+        // Reset timer
+        function resetTimer() {
+            // Stop the timer
+            clearInterval(interval);
+            interval = null;
+            isRunning = false;
+            isPaused = false;
+            
+            // Regenerate sequence from current settings
+            pyramidSequence = generatePyramidSequence();
+            currentSequenceIndex = 0;
+            
+            if (pyramidSequence.length > 0) {
+                const firstPhase = pyramidSequence[0];
+                currentTime = firstPhase.duration;
+                isWorkPhase = firstPhase.type === 'work' || firstPhase.type === 'warmup' || firstPhase.type === 'cooldown';
+            } else {
+                currentTime = 0;
+                isWorkPhase = true;
+            }
+            
+            // Update display immediately (this will enable inputs and check validity)
+            updateDisplay();
+        }
+        
+        // Reset to default settings
+        function resetToDefaultSettings() {
+            // Stop the timer first
+            clearInterval(interval);
+            interval = null;
+            isRunning = false;
+            isPaused = false;
+            
+            // Reset to default values
+            startTimeInput.value = '10';
+            incrementInput.value = '10';
+            peakTimeInput.value = '50';
+            restTimeInput.value = '00:15';
+            pyramidsInput.value = '1';
+            warmupInput.value = '00:30';
+            cooldownInput.value = '01:00';
+            
+            startTime = 10;
+            increment = 10;
+            peakTime = 50;
+            restTime = 15;
+            numPyramids = 1;
+            warmupTime = 30;
+            cooldownTime = 60;
+            
+            // Generate sequence with default settings
+            pyramidSequence = generatePyramidSequence();
+            currentSequenceIndex = 0;
+            
+            if (pyramidSequence.length > 0) {
+                const firstPhase = pyramidSequence[0];
+                currentTime = firstPhase.duration;
+                isWorkPhase = firstPhase.type === 'work' || firstPhase.type === 'warmup' || firstPhase.type === 'cooldown';
+            } else {
+                currentTime = 0;
+                isWorkPhase = true;
+            }
+            
+            updateEstimatedTime();
+            // Update display (this will enable inputs and show Start, Clear, Set Up buttons)
+            updateDisplay();
+        }
+        
+        // Clear timer (sets to defaults)
+        function clearTimer() {
+            resetToDefaultSettings();
+        }
+        
+        // Play sound when timer completes
+        function playSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (e) {
+                console.log('Audio not available');
+            }
+        }
+        
+        // Adjust numeric input (for seconds-based inputs)
+        function adjustNumericInput(input, increment, min = 0, max = 9999) {
+            if (isRunning) return;
+            let value = parseInt(input.value) || 0;
+            value = Math.max(min, Math.min(max, value + increment));
+            input.value = value;
+            
+            // Update corresponding variable
+            if (input === startTimeInput) {
+                startTime = value;
+            } else if (input === incrementInput) {
+                increment = value;
+            } else if (input === peakTimeInput) {
+                peakTime = value;
+            } else if (input === pyramidsInput) {
+                numPyramids = value;
+            }
+            
+            updateEstimatedTime();
+            if (!isRunning) {
+                resetTimer();
+                updateDisplay();
+            }
+        }
+        
+        // Adjust time input (for MM:SS inputs)
+        function adjustTime(input, increment) {
+            if (isRunning) return;
+            
+            const currentSeconds = parseTime(input.value);
+            const newSeconds = Math.max(0, currentSeconds + (increment ? 10 : -10));
+            input.value = formatTime(newSeconds);
+            
+            // Update the corresponding time variable
+            if (input === restTimeInput) {
+                restTime = newSeconds;
+            } else if (input === warmupInput) {
+                warmupTime = newSeconds;
+            } else if (input === cooldownInput) {
+                cooldownTime = newSeconds;
+            }
+            
+            updateEstimatedTime();
+            // Reset timer to reflect new time
+            if (!isRunning) {
+                resetTimer();
+                updateDisplay(); // Update button visibility based on validity
+            }
+        }
+        
+        // Event Listeners
+        startBtn.addEventListener('click', function() {
+            if (isRunning && !isPaused) {
+                pauseTimer();
+            } else if (isPaused) {
+                resumeTimer();
+            } else {
+                startTimer();
+            }
+        });
+        
+        pauseBtn.addEventListener('click', pauseTimer);
+        resetBtn.addEventListener('click', resetTimer);
+        clearBtn.addEventListener('click', clearTimer);
+        setupBtn.addEventListener('click', function() {
+            toggleDrawer();
+        });
+        defaultSettingsBtn.addEventListener('click', function() {
+            resetToDefaultSettings();
+        });
+        
+        // Numeric input adjustment buttons - Starting Work Time
+        startTimeDecrease5Btn.addEventListener('click', () => adjustNumericInput(startTimeInput, -5, 1));
+        startTimeDecrease1Btn.addEventListener('click', () => adjustNumericInput(startTimeInput, -1, 1));
+        startTimeIncrease1Btn.addEventListener('click', () => adjustNumericInput(startTimeInput, 1, 1));
+        startTimeIncrease5Btn.addEventListener('click', () => adjustNumericInput(startTimeInput, 5, 1));
+        
+        // Numeric input adjustment buttons - Increment Step
+        incrementDecrease5Btn.addEventListener('click', () => adjustNumericInput(incrementInput, -5, 1));
+        incrementDecrease1Btn.addEventListener('click', () => adjustNumericInput(incrementInput, -1, 1));
+        incrementIncrease1Btn.addEventListener('click', () => adjustNumericInput(incrementInput, 1, 1));
+        incrementIncrease5Btn.addEventListener('click', () => adjustNumericInput(incrementInput, 5, 1));
+        
+        // Numeric input adjustment buttons - Peak Work Time
+        peakTimeDecrease5Btn.addEventListener('click', () => adjustNumericInput(peakTimeInput, -5, 1));
+        peakTimeDecrease1Btn.addEventListener('click', () => adjustNumericInput(peakTimeInput, -1, 1));
+        peakTimeIncrease1Btn.addEventListener('click', () => adjustNumericInput(peakTimeInput, 1, 1));
+        peakTimeIncrease5Btn.addEventListener('click', () => adjustNumericInput(peakTimeInput, 5, 1));
+        pyramidsDecreaseBtn.addEventListener('click', () => adjustNumericInput(pyramidsInput, -1, 1, 10));
+        pyramidsIncreaseBtn.addEventListener('click', () => adjustNumericInput(pyramidsInput, 1, 1, 10));
+        
+        // Time input adjustment buttons
+        restDecreaseBtn.addEventListener('click', () => adjustTime(restTimeInput, false));
+        restIncreaseBtn.addEventListener('click', () => adjustTime(restTimeInput, true));
+        warmupDecreaseBtn.addEventListener('click', () => adjustTime(warmupInput, false));
+        warmupIncreaseBtn.addEventListener('click', () => adjustTime(warmupInput, true));
+        cooldownDecreaseBtn.addEventListener('click', () => adjustTime(cooldownInput, false));
+        cooldownIncreaseBtn.addEventListener('click', () => adjustTime(cooldownInput, true));
+        
+        // Input validation and updates
+        startTimeInput.addEventListener('input', function() {
+            if (!isRunning) {
+                startTime = parseInt(this.value) || 10;
+                updateEstimatedTime();
+                resetTimer();
+                updateDisplay();
+            }
+        });
+        
+        incrementInput.addEventListener('input', function() {
+            if (!isRunning) {
+                increment = parseInt(this.value) || 10;
+                updateEstimatedTime();
+                resetTimer();
+                updateDisplay();
+            }
+        });
+        
+        peakTimeInput.addEventListener('input', function() {
+            if (!isRunning) {
+                peakTime = parseInt(this.value) || 50;
+                updateEstimatedTime();
+                resetTimer();
+                updateDisplay();
+            }
+        });
+        
+        restTimeInput.addEventListener('input', function() {
+            validateTimeInput(this);
+            if (!isRunning) {
+                restTime = parseTime(this.value);
+                updateEstimatedTime();
+                resetTimer();
+                updateDisplay();
+            }
+        });
+        
+        pyramidsInput.addEventListener('input', function() {
+            if (!isRunning) {
+                numPyramids = parseInt(this.value) || 1;
+                updateEstimatedTime();
+                resetTimer();
+                updateDisplay();
+            }
+        });
+        
+        warmupInput.addEventListener('input', function() {
+            validateTimeInput(this);
+            if (!isRunning) {
+                warmupTime = parseTime(this.value);
+                updateEstimatedTime();
+                resetTimer();
+                updateDisplay();
+            }
+        });
+        
+        cooldownInput.addEventListener('input', function() {
+            validateTimeInput(this);
+            if (!isRunning) {
+                cooldownTime = parseTime(this.value);
+                updateEstimatedTime();
+                resetTimer();
+                updateDisplay();
+            }
+        });
+        
+        // Drawer Functions
         function toggleDrawer() {
             const drawer = document.getElementById('settingsDrawer');
             const overlay = document.getElementById('drawerOverlay');
@@ -561,54 +1867,106 @@
             overlay.classList.remove('open');
         }
         
-        function toggleAudio() {
-            const btn = document.getElementById('audioToggle');
-            const current = btn.textContent;
-            btn.textContent = current === 'On' ? 'Off' : 'On';
+        // Initialize - load default settings and generate sequence
+        startTime = parseInt(startTimeInput.value) || 10;
+        increment = parseInt(incrementInput.value) || 10;
+        peakTime = parseInt(peakTimeInput.value) || 50;
+        restTime = parseTime(restTimeInput.value) || 15;
+        numPyramids = parseInt(pyramidsInput.value) || 1;
+        warmupTime = parseTime(warmupInput.value) || 30;
+        cooldownTime = parseTime(cooldownInput.value) || 60;
+        
+        // Generate sequence with default settings on load
+        pyramidSequence = generatePyramidSequence();
+        currentSequenceIndex = 0;
+        
+        if (pyramidSequence.length > 0) {
+            const firstPhase = pyramidSequence[0];
+            currentTime = firstPhase.duration;
+            isWorkPhase = firstPhase.type === 'work' || firstPhase.type === 'warmup' || firstPhase.type === 'cooldown';
+        } else {
+            currentTime = 0;
         }
         
-        function updateThemeIcon() {
-            const icon = document.getElementById('theme-icon');
-            const isDark = document.documentElement.classList.contains('dark');
-            icon.textContent = isDark ? '☀️' : '🌙';
-        }
+        updateEstimatedTime();
+        updateDisplay();
         
+        // Set release date
+        document.getElementById('releaseDate').textContent = new Date().toISOString().split('T')[0];
+    </script>
+    <script src="scripts/dark-mode-toggle.js"></script>
+    <script>
+        // Ensure theme toggle button works on mobile (iOS/Android)
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggleBtn = document.getElementById('themeToggleBtn');
+            if (themeToggleBtn) {
+                // Add both click and touchstart for maximum compatibility
+                themeToggleBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (window.toggleTheme) {
+                        window.toggleTheme();
+                    }
+                });
+                
+                // Also add touchstart for better mobile support
+                themeToggleBtn.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (window.toggleTheme) {
+                        window.toggleTheme();
+                    }
+                }, { passive: false });
+            }
+        });
+        
+        // Logo color update for dark mode
         function updateLogoColors() {
             const logo = document.getElementById('timerist-logo');
             if (!logo) return;
-
-            const isDark = document.documentElement.classList.contains('dark');
+            
+            const isDark = document.documentElement.getAttribute('data-theme') === 'style1';
             const lightColor = '#0a0a0a';
             const darkColor = '#fafafa';
             const color = isDark ? darkColor : lightColor;
-
+            
             const circles = logo.querySelectorAll('.logo-circle');
             const lines = logo.querySelectorAll('.logo-line');
-
+            
             circles.forEach(el => el.setAttribute('stroke', color));
             lines.forEach(el => el.setAttribute('stroke', color));
         }
         
-        updateThemeIcon();
-        const observer = new MutationObserver(() => {
-            updateThemeIcon();
+        // Theme icon update
+        function updateThemeIcon() {
+            const icon = document.getElementById('theme-icon');
+            if (!icon) return;
+            const isDark = document.documentElement.getAttribute('data-theme') === 'style1';
+            icon.textContent = isDark ? '☀️' : '🌙';
+        }
+        
+        // Watch for theme changes
+        const themeObserver = new MutationObserver(() => {
             updateLogoColors();
+            updateThemeIcon();
         });
-        observer.observe(document.documentElement, {
+        themeObserver.observe(document.documentElement, {
             attributes: true,
-            attributeFilter: ['class']
+            attributeFilter: ['data-theme', 'class']
         });
         
-        updateLogoColors();
-        
+        // Override toggleTheme to update logo, icon
         const originalToggle = window.toggleTheme;
         window.toggleTheme = function() {
             originalToggle();
             setTimeout(() => {
-                updateThemeIcon();
                 updateLogoColors();
+                updateThemeIcon();
             }, 10);
         };
+        
+        updateLogoColors();
+        updateThemeIcon();
     </script>
 </body>
 </html>
