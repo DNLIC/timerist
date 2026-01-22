@@ -952,23 +952,6 @@
             border-radius: var(--radius);
         }
         
-        .customize-toggle {
-            margin-top: 1rem;
-            padding: 0.75rem;
-            background-color: rgb(var(--accent));
-            border: 1px solid rgb(var(--border));
-            border-radius: var(--radius);
-            cursor: pointer;
-            text-align: center;
-            font-size: 0.875rem;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        
-        .customize-toggle:hover {
-            background-color: rgba(var(--accent), 0.8);
-        }
-        
         .custom-mode .tabata-values {
             display: none;
         }
@@ -1056,9 +1039,7 @@
                     <button class="control-btn btn-destructive" id="resetBtn" style="display: none;" aria-label="Reset timer">Reset</button>
                     <button class="control-btn btn-secondary" id="clearBtn" aria-label="Clear timer">Clear</button>
                     <button class="control-btn btn-primary" id="setupBtn" style="display: none;" aria-label="Set up timer">Set Up</button>
-                </div>
-                <div class="customize-toggle" id="customizeToggle" onclick="toggleCustomMode()">
-                    Customize Tabata Settings
+                    <button class="control-btn btn-primary" id="customizeToggle" onclick="toggleDrawer()" aria-label="Open settings">Set Up</button>
                 </div>
             </div>
         </div>
@@ -1082,7 +1063,7 @@
                 <div class="input-group">
                     <label for="workTimeInput">Work Time (MM:SS)</label>
                     <div class="time-input-group">
-                        <button class="time-adjust-btn" id="workDecreaseBtn" type="button" aria-label="Decrease work time by 10 seconds">−10</button>
+                        <button class="time-adjust-btn" id="workDecreaseBtn" type="button" aria-label="Decrease work time by 5 seconds">−5</button>
                         <input 
                             type="text" 
                             id="workTimeInput" 
@@ -1092,7 +1073,7 @@
                             placeholder="MM:SS"
                             aria-label="Work time"
                         >
-                        <button class="time-adjust-btn" id="workIncreaseBtn" type="button" aria-label="Increase work time by 10 seconds">+10</button>
+                        <button class="time-adjust-btn" id="workIncreaseBtn" type="button" aria-label="Increase work time by 5 seconds">+5</button>
                     </div>
                 </div>
                 
@@ -1100,7 +1081,7 @@
                 <div class="input-group">
                     <label for="restTimeInput">Rest Time (MM:SS)</label>
                     <div class="time-input-group">
-                        <button class="time-adjust-btn" id="restDecreaseBtn" type="button" aria-label="Decrease rest time by 10 seconds">−10</button>
+                        <button class="time-adjust-btn" id="restDecreaseBtn" type="button" aria-label="Decrease rest time by 5 seconds">−5</button>
                         <input 
                             type="text" 
                             id="restTimeInput" 
@@ -1110,7 +1091,7 @@
                             placeholder="MM:SS"
                             aria-label="Rest time"
                         >
-                        <button class="time-adjust-btn" id="restIncreaseBtn" type="button" aria-label="Increase rest time by 10 seconds">+10</button>
+                        <button class="time-adjust-btn" id="restIncreaseBtn" type="button" aria-label="Increase rest time by 5 seconds">+5</button>
                     </div>
                 </div>
                 
@@ -1127,6 +1108,13 @@
                         >
                         <button class="rounds-adjust-btn" id="roundsIncreaseBtn" type="button" aria-label="Increase rounds">+</button>
                     </div>
+                </div>
+                
+                <!-- Default Settings Button -->
+                <div class="input-group" style="margin-top: 2rem;">
+                    <button class="control-btn btn-secondary" id="defaultSettingsBtn" onclick="resetToDefaultSettings()" aria-label="Reset to default Tabata settings" style="width: 100%;">
+                        Default Settings
+                    </button>
                 </div>
             </div>
             
@@ -1152,7 +1140,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.12</p>
+                <p><strong>Version:</strong> v0.13</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -1238,12 +1226,18 @@
             return value;
         }
         
-        // Adjust time by ±10 seconds
+        // Adjust time by ±5 seconds
         function adjustTime(input, increment) {
-            if (isRunning || !isCustomMode) return;
+            if (isRunning) return;
+            
+            const drawer = document.getElementById('settingsDrawer');
+            const isDrawerOpen = drawer && drawer.classList.contains('open');
+            
+            // Allow adjustment if in custom mode OR drawer is open
+            if (!isCustomMode && !isDrawerOpen) return;
             
             const currentSeconds = parseTime(input.value);
-            const newSeconds = Math.max(0, currentSeconds + (increment ? 10 : -10));
+            const newSeconds = Math.max(0, currentSeconds + (increment ? 5 : -5));
             input.value = formatTime(newSeconds);
             
             // Update the corresponding time variable
@@ -1251,6 +1245,12 @@
                 workTime = newSeconds;
             } else if (input === restTimeInput) {
                 restTime = newSeconds;
+            }
+            
+            // If values differ from Tabata defaults, switch to custom mode
+            if (workTime !== 20 || restTime !== 10 || totalRounds !== 8) {
+                isCustomMode = true;
+                document.body.classList.add('custom-mode');
             }
             
             // Reset timer to reflect new time
@@ -1273,9 +1273,13 @@
             restIncreaseBtn.disabled = true;
         }
         
-        // Enable inputs when timer is stopped and in custom mode
+        // Enable inputs when timer is stopped and in custom mode OR when drawer is open
         function enableInputs() {
-            if (isCustomMode) {
+            const drawer = document.getElementById('settingsDrawer');
+            const isDrawerOpen = drawer && drawer.classList.contains('open');
+            
+            // Enable if in custom mode OR drawer is open (and timer not running)
+            if (isCustomMode || (isDrawerOpen && !isRunning)) {
                 workTimeInput.disabled = false;
                 restTimeInput.disabled = false;
                 roundsInput.disabled = false;
@@ -1294,7 +1298,6 @@
             document.body.classList.toggle('custom-mode', isCustomMode);
             
             if (isCustomMode) {
-                customizeToggle.textContent = 'Use Classic Tabata (20s/10s × 8)';
                 // Show inputs
                 workTimeInput.disabled = false;
                 restTimeInput.disabled = false;
@@ -1306,7 +1309,6 @@
                 restDecreaseBtn.disabled = false;
                 restIncreaseBtn.disabled = false;
             } else {
-                customizeToggle.textContent = 'Customize Tabata Settings';
                 // Reset to classic Tabata
                 workTime = 20;
                 restTime = 10;
@@ -1392,12 +1394,8 @@
                 disableInputs();
             } else {
                 document.body.classList.remove('timer-running');
-                if (!isCustomMode) {
-                    // Lock inputs in classic Tabata mode
-                    disableInputs();
-                } else {
-                    enableInputs();
-                }
+                // Enable inputs if in custom mode OR drawer is open
+                enableInputs();
             }
             
             // Check if timer has valid data
@@ -1677,11 +1675,25 @@
         
         // Rounds adjustment buttons
         roundsDecreaseBtn.addEventListener('click', function() {
-            if (isRunning || !isCustomMode) return;
+            if (isRunning) return;
+            
+            const drawer = document.getElementById('settingsDrawer');
+            const isDrawerOpen = drawer && drawer.classList.contains('open');
+            
+            // Allow adjustment if in custom mode OR drawer is open
+            if (!isCustomMode && !isDrawerOpen) return;
+            
             let rounds = parseInt(roundsInput.value) || 0;
             rounds = Math.max(1, rounds - 1);
             roundsInput.value = rounds;
             totalRounds = rounds;
+            
+            // If values differ from Tabata defaults, switch to custom mode
+            if (workTime !== 20 || restTime !== 10 || totalRounds !== 8) {
+                isCustomMode = true;
+                document.body.classList.add('custom-mode');
+            }
+            
             if (!isRunning) {
                 resetTimer();
                 updateDisplay(); // Update button visibility based on validity
@@ -1689,11 +1701,25 @@
         });
         
         roundsIncreaseBtn.addEventListener('click', function() {
-            if (isRunning || !isCustomMode) return;
+            if (isRunning) return;
+            
+            const drawer = document.getElementById('settingsDrawer');
+            const isDrawerOpen = drawer && drawer.classList.contains('open');
+            
+            // Allow adjustment if in custom mode OR drawer is open
+            if (!isCustomMode && !isDrawerOpen) return;
+            
             let rounds = parseInt(roundsInput.value) || 0;
             rounds = Math.min(99, rounds + 1);
             roundsInput.value = rounds;
             totalRounds = rounds;
+            
+            // If values differ from Tabata defaults, switch to custom mode
+            if (workTime !== 20 || restTime !== 10 || totalRounds !== 8) {
+                isCustomMode = true;
+                document.body.classList.add('custom-mode');
+            }
+            
             if (!isRunning) {
                 resetTimer();
                 updateDisplay(); // Update button visibility based on validity
@@ -1702,46 +1728,157 @@
         
         // Input validation and updates
         workTimeInput.addEventListener('input', function() {
-            if (!isCustomMode) return;
+            const drawer = document.getElementById('settingsDrawer');
+            const isDrawerOpen = drawer && drawer.classList.contains('open');
+            
+            // Allow input if in custom mode OR drawer is open
+            if (!isCustomMode && !isDrawerOpen) return;
+            
             validateTimeInput(this);
             if (!isRunning) {
                 workTime = parseTime(this.value);
+                
+                // If values differ from Tabata defaults, switch to custom mode
+                if (workTime !== 20 || restTime !== 10 || totalRounds !== 8) {
+                    isCustomMode = true;
+                    document.body.classList.add('custom-mode');
+                }
+                
                 resetTimer();
                 updateDisplay(); // Update button visibility based on validity
             }
         });
         
         restTimeInput.addEventListener('input', function() {
-            if (!isCustomMode) return;
+            const drawer = document.getElementById('settingsDrawer');
+            const isDrawerOpen = drawer && drawer.classList.contains('open');
+            
+            // Allow input if in custom mode OR drawer is open
+            if (!isCustomMode && !isDrawerOpen) return;
+            
             validateTimeInput(this);
             if (!isRunning) {
                 restTime = parseTime(this.value);
+                
+                // If values differ from Tabata defaults, switch to custom mode
+                if (workTime !== 20 || restTime !== 10 || totalRounds !== 8) {
+                    isCustomMode = true;
+                    document.body.classList.add('custom-mode');
+                }
+                
                 resetTimer();
                 updateDisplay(); // Update button visibility based on validity
             }
         });
         
         roundsInput.addEventListener('input', function() {
-            if (!isCustomMode || isRunning) return;
+            if (isRunning) return;
+            
+            const drawer = document.getElementById('settingsDrawer');
+            const isDrawerOpen = drawer && drawer.classList.contains('open');
+            
+            // Allow input if in custom mode OR drawer is open
+            if (!isCustomMode && !isDrawerOpen) return;
+            
             totalRounds = parseInt(this.value) || 0;
+            
+            // If values differ from Tabata defaults, switch to custom mode
+            if (workTime !== 20 || restTime !== 10 || totalRounds !== 8) {
+                isCustomMode = true;
+                document.body.classList.add('custom-mode');
+            }
+            
             resetTimer();
             updateDisplay(); // Update button visibility based on validity
         });
         
-        // Drawer Functions
-        function toggleDrawer() {
+        // Drawer Functions (make globally accessible)
+        window.toggleDrawer = function() {
             const drawer = document.getElementById('settingsDrawer');
             const overlay = document.getElementById('drawerOverlay');
+            const isOpening = !drawer.classList.contains('open');
+            
             drawer.classList.toggle('open');
             overlay.classList.toggle('open');
-        }
+            
+            // Enable inputs when drawer opens (if timer not running)
+            if (isOpening && !isRunning) {
+                enableInputs();
+            } else if (!isOpening) {
+                // When drawer closes, check if values differ from Tabata defaults
+                const currentWork = parseTime(workTimeInput.value);
+                const currentRest = parseTime(restTimeInput.value);
+                const currentRounds = parseInt(roundsInput.value) || 0;
+                
+                if (currentWork !== 20 || currentRest !== 10 || currentRounds !== 8) {
+                    // Values differ from Tabata defaults, switch to custom mode
+                    isCustomMode = true;
+                    document.body.classList.add('custom-mode');
+                    workTime = currentWork;
+                    restTime = currentRest;
+                    totalRounds = currentRounds;
+                    resetTimer();
+                } else {
+                    // Values match Tabata defaults, ensure we're in classic mode
+                    if (!isCustomMode) {
+                        disableInputs();
+                    }
+                }
+            }
+        };
         
-        function closeDrawer() {
+        window.closeDrawer = function() {
             const drawer = document.getElementById('settingsDrawer');
             const overlay = document.getElementById('drawerOverlay');
             drawer.classList.remove('open');
             overlay.classList.remove('open');
-        }
+        };
+        
+        // Reset to default Tabata settings (make globally accessible)
+        window.resetToDefaultSettings = function() {
+            // Stop timer if running
+            if (isRunning) {
+                clearInterval(interval);
+                interval = null;
+                isRunning = false;
+                isPaused = false;
+            }
+            
+            // Reset to classic Tabata values
+            workTime = 20;
+            restTime = 10;
+            totalRounds = 8;
+            
+            // Update input fields
+            workTimeInput.value = '00:20';
+            restTimeInput.value = '00:10';
+            roundsInput.value = '8';
+            
+            // Exit custom mode
+            isCustomMode = false;
+            document.body.classList.remove('custom-mode');
+            
+            // Reset timer state
+            currentTime = workTime;
+            currentRound = 1;
+            isWorkPhase = true;
+            
+            // Update displays
+            updateDisplay();
+            updateTabataValueDisplays();
+            
+            // Check if drawer is open - if so, enable inputs so user can continue editing
+            const drawer = document.getElementById('settingsDrawer');
+            const isDrawerOpen = drawer && drawer.classList.contains('open');
+            
+            if (isDrawerOpen && !isRunning) {
+                // Drawer is open, enable inputs so user can make changes
+                enableInputs();
+            } else {
+                // Drawer is closed, disable inputs (classic Tabata mode)
+                disableInputs();
+            }
+        };
         
         // Initialize Tabata timer
         // Set Tabata defaults in inputs
