@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Countdown - Timerist | HIIT Timer, Quick Rest Timer, Workout Countdown</title>
+    <meta name="description" content="Quick Countdown timer for short rests, holds, or bursts in HIIT, CrossFit, or circuit training. Tap a preset to start instantly—no setup required.">
+    <link rel="stylesheet" href="styles/timerist-design-system.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        :root {
+            --background: 245 247 250;
+            --foreground: 51 51 51;
+            --card: 255 255 255;
+            --card-foreground: 51 51 51;
+            --primary: 74 144 226;
+            --primary-foreground: 255 255 255;
+            --secondary: 80 200 120;
+            --secondary-foreground: 255 255 255;
+            --muted: 102 102 102;
+            --muted-foreground: 153 153 153;
+            --accent: 225 232 237;
+            --accent-foreground: 51 51 51;
+            --destructive: 231 76 60;
+            --destructive-foreground: 255 255 255;
+            --border: 225 232 237;
+            --input: 225 232 237;
+            --ring: 74 144 226;
+            --radius: 0.5rem;
+        }
+        
+        [data-theme="style1"] {
+            --background: 0 0 0;
+            --foreground: 255 255 255;
+            --card: 26 26 26;
+            --card-foreground: 255 255 255;
+            --primary: 255 0 0;
+            --primary-foreground: 255 255 255;
+            --secondary: 0 255 0;
+            --secondary-foreground: 0 0 0;
+            --muted: 204 204 204;
+            --muted-foreground: 153 153 153;
+            --accent: 51 51 51;
+            --accent-foreground: 255 255 255;
+            --destructive: 255 0 0;
+            --destructive-foreground: 255 255 255;
+            --border: 51 51 51;
+            --input: 51 51 51;
+            --ring: 255 0 0;
+        }
+        
+        body {
+            background: rgb(var(--background));
+            color: rgb(var(--foreground));
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        .container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            max-width: 1200px;
+            padding: 1rem;
+            margin: 0 auto;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .timer-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            overflow-x: hidden;
+            margin-top: clamp(5rem, 8vw, 6rem);
+            width: 100%;
+        }
+        
+        /* iPad vertical (portrait) - position timer below header */
+        @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+            .timer-container {
+                margin-top: clamp(4rem, 6vw, 5rem);
+            }
+        }
+        
+        /* iPad horizontal (landscape) - position timer below header */
+        @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+            .timer-container {
+                margin-top: clamp(4.5rem, 7vw, 5.5rem);
+            }
+        }
+        
+        /* Desktop - position timer below header */
+        @media (min-width: 1025px) {
+            .timer-container {
+                margin-top: clamp(4rem, 6vw, 5rem);
+            }
+        }
+        
+        .bg-card { background-color: rgb(var(--card)); }
+        .text-foreground { color: rgb(var(--foreground)); }
+        .text-muted-foreground { color: rgb(var(--muted-foreground)); }
+        .bg-primary { background-color: rgb(var(--primary)); }
+        .text-primary-foreground { color: rgb(var(--primary-foreground)); }
+        .bg-secondary { background-color: rgb(var(--secondary)); }
+        .text-secondary-foreground { color: rgb(var(--secondary-foreground)); }
+        .bg-destructive { background-color: rgb(var(--destructive)); }
+        .text-destructive-foreground { color: rgb(var(--destructive-foreground)); }
+        .border-border { border-color: rgb(var(--border)); }
+        .hover\:bg-primary\/90:hover { background-color: rgba(var(--primary), 0.9); }
+        .hover\:bg-secondary\/90:hover { background-color: rgba(var(--secondary), 0.9); }
+        
+        .timer-display-large {
+            font-size: 4rem; /* Smaller for mobile */
+            font-weight: 700; /* font-bold */
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* font-mono */
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
+            color: rgb(var(--primary));
+            transition: color 0.3s ease;
+            margin-bottom: 1rem; /* mb-4 */
+            word-break: keep-all;
+            overflow-wrap: normal;
+        }
+        
+        @media (min-width: 390px) {
+            .timer-display-large {
+                font-size: 5rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .timer-display-large {
+                font-size: 8rem; /* md:text-9xl */
+            }
+        }
+        
+        .timer-display-large.warning {
+            color: #f59e0b;
+        }
+        
+        .timer-display-large.danger {
+            color: rgb(var(--destructive));
+        }
+        
+        .timer-display-block {
+            padding: 1.5rem;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        
+        @media (min-width: 640px) {
+            .timer-display-block {
+                padding: 2rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .timer-display-block {
+                padding: 2rem;
+            }
+        }
+        
+        .quick-select-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 1.125rem;
+            font-weight: 500;
+            line-height: 1.2;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            background-color: rgb(var(--primary));
+            color: rgb(var(--primary-foreground));
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            min-width: 0;
+            width: 100%;
+        }
+        
+        @media (min-width: 640px) {
+            .quick-select-btn {
+                min-width: 100px;
+                font-size: 1.25rem;
+                height: 2.5rem;
+            }
+        }
+        
+        .quick-select-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+        
+        @media (min-width: 480px) {
+            .quick-select-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        @media (min-width: 640px) {
+            .quick-select-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+        
+        @media (orientation: landscape) and (max-height: 500px) {
+            .quick-select-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+        
+        .quick-select-btn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode hover state - use lighter gray */
+        [data-theme="style1"] .quick-select-btn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        .quick-select-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .quick-select-btn.selected {
+            font-weight: 700;
+        }
+        
+        .adjust-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            letter-spacing: 0.025em;
+            text-transform: uppercase;
+            transition: opacity 0.2s;
+            cursor: pointer;
+            border: none;
+            background-color: rgb(var(--secondary));
+            color: rgb(var(--secondary-foreground));
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .adjust-btn:hover:not(:disabled) {
+            opacity: 0.9;
+        }
+        
+        .adjust-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .control-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            white-space: nowrap;
+            flex-shrink: 1;
+        }
+        
+        @media (max-width: 390px) {
+            .control-btn {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.75rem;
+            }
+        }
+        
+        .control-buttons-container {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+        
+        @media (min-width: 390px) {
+            .control-buttons-container {
+                gap: 0.75rem;
+            }
+        }
+        
+        @media (min-width: 640px) {
+            .control-buttons-container {
+                gap: 1rem;
+            }
+        }
+        
+        .control-btn.btn-primary {
+            background-color: rgb(var(--primary));
+            color: rgb(var(--primary-foreground));
+        }
+        
+        .control-btn.btn-primary:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode primary button hover - lighter gray */
+        [data-theme="style1"] .control-btn.btn-primary:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        /* Paused state - dark gray background with white text (daylight mode) */
+        /* Higher specificity to override hover/active states on mobile */
+        .control-btn.btn-primary.paused,
+        .control-btn.btn-primary.paused:hover,
+        .control-btn.btn-primary.paused:active,
+        .control-btn.btn-primary.paused:focus {
+            background-color: rgb(100, 100, 100) !important;
+            color: rgb(255, 255, 255) !important;
+        }
+        
+        /* Dark mode paused state - lighter gray */
+        [data-theme="style1"] .control-btn.btn-primary.paused,
+        [data-theme="style1"] .control-btn.btn-primary.paused:hover,
+        [data-theme="style1"] .control-btn.btn-primary.paused:active,
+        [data-theme="style1"] .control-btn.btn-primary.paused:focus {
+            background-color: rgb(150, 150, 150) !important;
+            color: rgb(0, 0, 0) !important;
+        }
+        
+        .control-btn.btn-secondary {
+            background-color: rgb(var(--secondary));
+            color: rgb(var(--secondary-foreground));
+        }
+        
+        .control-btn.btn-secondary:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode secondary button hover - lighter gray */
+        [data-theme="style1"] .control-btn.btn-secondary:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        .control-btn.btn-destructive {
+            background-color: rgb(var(--destructive));
+            color: rgb(var(--destructive-foreground));
+        }
+        
+        .control-btn.btn-destructive:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode destructive button hover - lighter gray */
+        [data-theme="style1"] .control-btn.btn-destructive:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        .control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .hamburger-menu {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgb(var(--foreground));
+            font-size: 1.5rem;
+            transition: opacity 0.2s;
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius);
+            flex-shrink: 0;
+        }
+        
+        .hamburger-menu:hover {
+            opacity: 0.7;
+        }
+        
+        .settings-drawer {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            background: rgb(var(--card));
+            border-left: 1px solid rgb(var(--border));
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            z-index: 1002;
+            overflow-y: auto;
+        }
+        
+        .settings-drawer.open {
+            right: 0;
+        }
+        
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 1001;
+        }
+        
+        .drawer-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .drawer-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgb(var(--border));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .drawer-content {
+            padding: 1.5rem;
+        }
+        
+        .drawer-section {
+            margin-bottom: 2rem;
+        }
+        
+        .drawer-section h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: rgb(var(--foreground));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .drawer-section p {
+            color: rgb(var(--muted-foreground));
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        .drawer-close {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: rgb(var(--foreground));
+            padding: 0.25rem;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius);
+        }
+        
+        .drawer-close:hover {
+            opacity: 0.7;
+        }
+        
+        .custom-time-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid rgb(var(--input));
+            border-radius: var(--radius);
+            background-color: rgb(var(--background));
+            color: rgb(var(--foreground));
+            font-size: 1.125rem;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            min-height: 48px;
+        }
+        
+        .custom-time-input:focus {
+            outline: none;
+            border-color: rgb(var(--ring));
+            box-shadow: 0 0 0 2px rgba(var(--ring), 0.2);
+        }
+        
+        .timer-running .quick-select-btn:not(.reset-btn):not(.selected) {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
+        .timer-running .adjust-btn {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
+        .header-top {
+            position: absolute;
+            top: clamp(1rem, 3vw, 2rem);
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 clamp(1rem, 3vw, 2rem);
+            z-index: 10;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 0.5rem;
+            min-width: 0;
+        }
+        
+        .header-top > div:first-child {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 0;
+            flex-shrink: 1;
+            overflow: hidden;
+        }
+        
+        /* iPhone 13 mini and similar small screens - make header more compact */
+        @media (max-width: 390px) {
+            .header-top {
+                padding: 0 0.75rem;
+            }
+            
+            .header-top > div:first-child {
+                gap: 0.5rem;
+            }
+            
+            /* Hide separator and "timerist.com" text on very small screens */
+            .header-top .separator,
+            .header-top > div:first-child > a:nth-of-type(2) {
+                display: none;
+            }
+            
+            /* Make "Quick Countdown" text smaller */
+            .header-top > div:first-child > span:last-of-type {
+                font-size: 0.875rem !important;
+            }
+            
+            /* Ensure logo doesn't shrink too much */
+            #timerist-logo {
+                width: 36px !important;
+                height: 36px !important;
+                flex-shrink: 0;
+            }
+        }
+        
+        /* Slightly larger screens (iPhone 13, 14, etc.) - show more but keep compact */
+        @media (min-width: 391px) and (max-width: 428px) {
+            .header-top {
+                padding: 0 1rem;
+            }
+            
+            /* Hide separator but keep timerist.com text */
+            .header-top .separator {
+                display: none;
+            }
+            
+            /* Make text smaller */
+            .header-top > div:first-child > span {
+                font-size: 0.875rem !important;
+            }
+        }
+        
+        @media (min-width: 640px) {
+            .container {
+                padding: 2rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                padding: 2rem 3rem;
+            }
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+            min-width: fit-content;
+        }
+        
+        /* Ensure both buttons are always visible on small screens */
+        @media (max-width: 428px) {
+            .header-actions {
+                gap: 0.375rem;
+            }
+            
+            .header-actions .mode-toggle-btn,
+            .header-actions .hamburger-menu {
+                width: 40px;
+                height: 40px;
+                padding: 0.375rem;
+                font-size: 1.25rem;
+            }
+        }
+        
+        .header-top .mode-toggle-btn {
+            position: relative;
+            top: auto;
+            right: auto;
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgb(var(--foreground));
+            font-size: 1.5rem;
+            transition: opacity 0.2s;
+            border-radius: var(--radius);
+            min-width: 44px;
+        }
+        
+        .header-top .mode-toggle-btn:hover,
+        .header-top .mode-toggle-btn:active {
+            opacity: 0.7;
+            background-color: rgba(var(--accent), 0.5);
+        }
+        
+        .header-top .mode-toggle-btn:focus {
+            outline: 2px solid rgb(var(--ring));
+            outline-offset: 2px;
+        }
+        
+        .header-top .mode-toggle-btn {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        
+        #timerist-logo {
+            display: block;
+            width: 40px;
+            height: 40px;
+            color: #0a0a0a;
+        }
+        
+        .header-top a {
+            transition: opacity 0.2s ease;
+        }
+        
+        .header-top a:hover {
+            opacity: 0.7;
+        }
+        
+        #timerist-logo circle,
+        #timerist-logo line {
+            stroke: #0a0a0a;
+            stroke-width: 2.5;
+        }
+        
+        [data-theme="style1"] #timerist-logo {
+            color: #fafafa;
+        }
+        
+        [data-theme="style1"] #timerist-logo circle,
+        [data-theme="style1"] #timerist-logo line {
+            stroke: #fafafa;
+        }
+        
+        html[data-theme="style1"] #timerist-logo .logo-circle,
+        html[data-theme="style1"] #timerist-logo .logo-line {
+            stroke: #fafafa !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-top">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <a href="index.html" style="display: flex; align-items: center; text-decoration: none; cursor: pointer;">
+                    <svg
+                        width="40"
+                        height="40"
+                        viewBox="0 0 40 40"
+                        xmlns="http://www.w3.org/2000/svg"
+                        id="timerist-logo"
+                    >
+                        <circle cx="20" cy="20" r="15" fill="none" stroke="#0a0a0a" stroke-width="2.5" class="logo-circle"/>
+                        <line x1="20" y1="20" x2="20" y2="8" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
+                        <line x1="20" y1="20" x2="30" y2="20" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
+                    </svg>
+                </a>
+                <a href="index.html" style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground)); text-decoration: none; cursor: pointer;">timerist.com</a>
+                <span class="separator" style="color: rgb(var(--muted-foreground));">|</span>
+                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">Quick Countdown</span>
+            </div>
+            
+            <div class="header-actions">
+                <button class="mode-toggle-btn mode-toggle" id="themeToggleBtn" aria-label="Toggle dark mode">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="hamburger-menu" onclick="toggleDrawer()" aria-label="Open Timer Setup menu">
+                    ☰
+                </button>
+            </div>
+        </div>
+        
+        <div class="timer-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <!-- Timer Display -->
+            <div class="timer-display-block bg-card border border-border rounded-lg shadow-lg text-center">
+                <div class="timer-display-large" id="display">00:00</div>
+            </div>
+            
+            <!-- Control Buttons and Adjust Time -->
+            <div class="p-6 bg-card border border-border rounded-lg shadow-lg">
+                <div class="control-buttons-container">
+                    <button class="control-btn btn-primary" id="resumeBtn" style="display: none;" aria-label="Resume timer">Resume</button>
+                    <button class="control-btn btn-destructive" id="resetBtn" style="display: none;" aria-label="Reset timer">Reset</button>
+                    <button class="control-btn btn-secondary" id="clearBtn" aria-label="Clear timer">Clear</button>
+                </div>
+            </div>
+            
+            <!-- Quick-Select Button Grid -->
+            <div class="p-6 bg-card border border-border rounded-lg shadow-lg">
+                <label class="text-sm font-semibold uppercase tracking-wide mb-4 block" style="color: rgb(var(--muted-foreground)); text-align: center;">
+                    Tap to start instantly
+                </label>
+                <div class="quick-select-grid">
+                    <button class="quick-select-btn" data-seconds="15">00:15</button>
+                    <button class="quick-select-btn" data-seconds="30">00:30</button>
+                    <button class="quick-select-btn" data-seconds="45">00:45</button>
+                    <button class="quick-select-btn" data-seconds="60">01:00</button>
+                    <button class="quick-select-btn" data-seconds="75">01:15</button>
+                    <button class="quick-select-btn" data-seconds="90">01:30</button>
+                    <button class="quick-select-btn" data-seconds="105">01:45</button>
+                    <button class="quick-select-btn" data-seconds="120">02:00</button>
+                    <button class="quick-select-btn" data-seconds="135">02:15</button>
+                    <button class="quick-select-btn" data-seconds="150">02:30</button>
+                    <button class="quick-select-btn" data-seconds="165">02:45</button>
+                    <button class="quick-select-btn" data-seconds="180">03:00</button>
+                    <button class="quick-select-btn" data-seconds="195">03:15</button>
+                    <button class="quick-select-btn" data-seconds="210">03:30</button>
+                    <button class="quick-select-btn" data-seconds="225">03:45</button>
+                    <button class="quick-select-btn" data-seconds="240">04:00</button>
+                    <button class="quick-select-btn" data-seconds="255">04:15</button>
+                    <button class="quick-select-btn" data-seconds="270">04:30</button>
+                    <button class="quick-select-btn" data-seconds="285">04:45</button>
+                    <button class="quick-select-btn" data-seconds="300">05:00</button>
+                    <button class="quick-select-btn" data-seconds="360">06:00</button>
+                    <button class="quick-select-btn" data-seconds="420">07:00</button>
+                    <button class="quick-select-btn" data-seconds="480">08:00</button>
+                    <button class="quick-select-btn" data-seconds="540">09:00</button>
+                    <button class="quick-select-btn" data-seconds="600">10:00</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Drawer Overlay -->
+    <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+    
+    <!-- Settings Drawer -->
+    <div class="settings-drawer" id="settingsDrawer">
+        <div class="drawer-header">
+            <h2 style="font-size: 1rem; font-weight: 600; color: rgb(var(--foreground)); text-transform: uppercase; letter-spacing: 0.05em;">Timer Setup</h2>
+            <button class="drawer-close" onclick="closeDrawer()" aria-label="Close drawer">×</button>
+        </div>
+        <div class="drawer-content">
+            <!-- Setup Content -->
+            <div class="drawer-section">
+                <h3>Setup Content</h3>
+                <label for="doneMessageInput" style="display: block; margin-bottom: 0.5rem; font-size: 0.75rem; font-weight: 600; color: rgb(var(--muted-foreground)); text-transform: uppercase; letter-spacing: 0.05em;">
+                    Completion Message (14 characters max)
+                </label>
+                <input 
+                    type="text" 
+                    id="doneMessageInput" 
+                    class="custom-time-input" 
+                    maxlength="14"
+                    value="Done"
+                    placeholder="Done"
+                    aria-label="Custom completion message"
+                >
+                <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.5rem;">
+                    Customize the message shown when the timer completes.
+                </p>
+            </div>
+            
+            <!-- About This Timer -->
+            <div class="drawer-section">
+                <h3>About This Timer</h3>
+                <p>
+                    Quick Countdown is perfect for short rests, holds, or bursts in HIIT, CrossFit, or circuit training. 
+                    Tap a preset to start instantly—no setup required.
+                </p>
+                <p style="margin-top: 0.75rem;">
+                    <strong>Keywords:</strong> HIIT timer, quick rest timer, workout countdown, fitness interval tool, CrossFit timer, circuit training timer.
+                </p>
+            </div>
+            
+            <!-- General Info -->
+            <div class="drawer-section">
+                <h3>General Info</h3>
+                <p><strong>Version:</strong> v0.13</p>
+                <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Quick Countdown Timer Logic
+        let currentTime = 0;
+        let totalSeconds = 0;
+        let interval = null;
+        let isRunning = false;
+        let isPaused = false;
+        
+        const display = document.getElementById('display');
+        const resumeBtn = document.getElementById('resumeBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const quickSelectButtons = document.querySelectorAll('.quick-select-btn[data-seconds]');
+        const doneMessageInput = document.getElementById('doneMessageInput');
+        
+        // Get done message from localStorage or use default
+        function getDoneMessage() {
+            const saved = localStorage.getItem('quickCountdown-doneMessage');
+            return saved || 'Done';
+        }
+        
+        // Save done message to localStorage
+        function saveDoneMessage(message) {
+            if (message && message.trim()) {
+                localStorage.setItem('quickCountdown-doneMessage', message.trim());
+            } else {
+                localStorage.setItem('quickCountdown-doneMessage', 'Done');
+            }
+        }
+        
+        // Calculate font size to fit text in timer display
+        function calculateFontSize(text) {
+            // Get the base font size from CSS (clamp values)
+            const computedStyle = window.getComputedStyle(display);
+            const baseSize = parseFloat(computedStyle.fontSize) || 64;
+            const maxWidth = display.offsetWidth || window.innerWidth * 0.9;
+            const charCount = text.length;
+            
+            // For monospace font, each character is roughly 0.6-0.65 of font size in width
+            // Use a more conservative estimate
+            const charWidthRatio = 0.65;
+            const paddingFactor = 0.85; // Leave 15% padding on sides
+            
+            const estimatedWidth = charCount * baseSize * charWidthRatio;
+            const maxAllowedWidth = maxWidth * paddingFactor;
+            
+            if (estimatedWidth > maxAllowedWidth) {
+                // Scale down proportionally
+                const scaleFactor = maxAllowedWidth / estimatedWidth;
+                const newSize = baseSize * scaleFactor;
+                // Don't go below 40% of original size to maintain readability
+                return Math.max(newSize, baseSize * 0.4);
+            }
+            
+            return baseSize;
+        }
+        
+        // Format time as MM:SS
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+        
+        // Update display with color coding
+        function updateDisplay() {
+            display.textContent = formatTime(currentTime);
+            
+            // Color coding: normal -> warning (last 30%) -> danger (last 10%)
+            display.classList.remove('warning', 'danger');
+            if (totalSeconds > 0) {
+                const percentRemaining = currentTime / totalSeconds;
+                if (percentRemaining <= 0.1) {
+                    display.classList.add('danger');
+                } else if (percentRemaining <= 0.3) {
+                    display.classList.add('warning');
+                }
+            }
+            
+            // Add running class for styling
+            if (isRunning) {
+                document.body.classList.add('timer-running');
+            } else {
+                document.body.classList.remove('timer-running');
+            }
+            
+            // Update button visibility
+            if (isRunning || isPaused) {
+                resumeBtn.style.display = 'inline-block';
+                resumeBtn.textContent = isPaused ? 'Resume' : 'Pause';
+                // Add/remove paused class for styling
+                if (isPaused) {
+                    resumeBtn.classList.add('paused');
+                } else {
+                    resumeBtn.classList.remove('paused');
+                }
+                resetBtn.style.display = 'inline-block';
+            } else {
+                resumeBtn.style.display = 'none';
+                resumeBtn.classList.remove('paused');
+                resetBtn.style.display = currentTime > 0 ? 'inline-block' : 'none';
+            }
+        }
+        
+        // Start timer
+        function startTimer() {
+            if (currentTime <= 0) return;
+            
+            isRunning = true;
+            isPaused = false;
+            
+            interval = setInterval(() => {
+                currentTime--;
+                updateDisplay();
+                
+                if (currentTime <= 0) {
+                    stopTimer();
+                    playSound();
+                    showDoneMessage();
+                }
+            }, 1000);
+            
+            updateDisplay();
+        }
+        
+        // Pause timer
+        function pauseTimer() {
+            isRunning = false;
+            isPaused = true;
+            clearInterval(interval);
+            interval = null;
+            updateDisplay();
+        }
+        
+        // Resume timer
+        function resumeTimer() {
+            if (isPaused) {
+                startTimer();
+            }
+        }
+        
+        // Toggle play/pause
+        function togglePlayPause() {
+            if (isRunning && !isPaused) {
+                pauseTimer();
+            } else if (isPaused) {
+                resumeTimer();
+            } else {
+                startTimer();
+            }
+        }
+        
+        // Stop timer (called when countdown reaches 0)
+        function stopTimer() {
+            isRunning = false;
+            isPaused = false;
+            clearInterval(interval);
+            interval = null;
+            updateDisplay();
+        }
+        
+        // Reset timer
+        function resetTimer() {
+            isRunning = false;
+            isPaused = false;
+            clearInterval(interval);
+            interval = null;
+            currentTime = totalSeconds;
+            updateDisplay();
+            
+            // Maintain selected button state based on current totalSeconds
+            quickSelectButtons.forEach(btn => {
+                if (parseInt(btn.getAttribute('data-seconds')) === totalSeconds) {
+                    btn.classList.add('selected');
+                } else {
+                    btn.classList.remove('selected');
+                }
+            });
+        }
+        
+        // Clear timer (sets to 00:00)
+        function clearTimer() {
+            isRunning = false;
+            isPaused = false;
+            clearInterval(interval);
+            interval = null;
+            currentTime = 0;
+            totalSeconds = 0;
+            updateDisplay();
+            
+            // Clear selected button state
+            quickSelectButtons.forEach(btn => {
+                btn.classList.remove('selected');
+            });
+        }
+        
+        // Set time from quick-select button (AUTO-STARTS)
+        function setTimeAndStart(seconds) {
+            totalSeconds = seconds;
+            currentTime = seconds;
+            isRunning = false;
+            isPaused = false;
+            clearInterval(interval);
+            interval = null;
+            updateDisplay();
+            
+            // Update selected button state
+            quickSelectButtons.forEach(btn => {
+                if (parseInt(btn.getAttribute('data-seconds')) === seconds) {
+                    btn.classList.add('selected');
+                } else {
+                    btn.classList.remove('selected');
+                }
+            });
+            
+            // Auto-start the timer
+            startTimer();
+        }
+        
+        // Adjust time by ±5 seconds (DOES NOT START)
+        function adjustTime(increment) {
+            if (isRunning) return; // Don't allow adjusting while running
+            
+            const adjustment = increment ? 5 : -5;
+            const newTime = Math.max(0, currentTime + adjustment);
+            
+            currentTime = newTime;
+            totalSeconds = newTime;
+            updateDisplay();
+        }
+        
+        // Play sound when timer completes
+        function playSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (e) {
+                console.log('Audio not available');
+            }
+        }
+        
+        // Show completion message with auto-resizing font
+        function showDoneMessage() {
+            const message = getDoneMessage();
+            const originalText = display.textContent;
+            const originalFontSize = display.style.fontSize;
+            
+            // Set the message
+            display.textContent = message;
+            display.classList.add('danger');
+            
+            // Calculate and apply font size
+            const fontSize = calculateFontSize(message);
+            display.style.fontSize = `${fontSize}px`;
+            
+            setTimeout(() => {
+                // Restore original display
+                display.style.fontSize = originalFontSize || '';
+                updateDisplay();
+            }, 2000);
+        }
+        
+        // Event Listeners
+        resumeBtn.addEventListener('click', togglePlayPause);
+        resetBtn.addEventListener('click', resetTimer);
+        clearBtn.addEventListener('click', clearTimer);
+        
+        // Quick-select button listeners (auto-start)
+        quickSelectButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const seconds = parseInt(this.getAttribute('data-seconds'));
+                setTimeAndStart(seconds);
+            });
+        });
+        
+        // Custom time input (optional, from drawer)
+        // Done message input handler
+        if (doneMessageInput) {
+            // Load saved message on page load
+            doneMessageInput.value = getDoneMessage();
+            
+            // Save message when changed
+            doneMessageInput.addEventListener('input', function() {
+                let value = this.value.trim();
+                // Limit to 14 characters
+                if (value.length > 14) {
+                    value = value.substring(0, 14);
+                    this.value = value;
+                }
+                saveDoneMessage(value || 'Done');
+            });
+            
+            doneMessageInput.addEventListener('change', function() {
+                let value = this.value.trim();
+                if (!value) {
+                    value = 'Done';
+                    this.value = value;
+                }
+                saveDoneMessage(value);
+            });
+        }
+        
+        // Drawer Functions
+        function toggleDrawer() {
+            const drawer = document.getElementById('settingsDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+            drawer.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+        
+        function closeDrawer() {
+            const drawer = document.getElementById('settingsDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+            drawer.classList.remove('open');
+            overlay.classList.remove('open');
+        }
+        
+        // Initialize
+        updateDisplay();
+        
+        // Set release date
+        document.getElementById('releaseDate').textContent = new Date().toISOString().split('T')[0];
+    </script>
+    <script src="scripts/dark-mode-toggle.js"></script>
+    <script>
+        // Ensure theme toggle button works on mobile (iOS/Android)
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggleBtn = document.getElementById('themeToggleBtn');
+            if (themeToggleBtn) {
+                // Add both click and touchstart for maximum compatibility
+                themeToggleBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (window.toggleTheme) {
+                        window.toggleTheme();
+                    }
+                });
+                
+                // Also add touchstart for better mobile support
+                themeToggleBtn.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (window.toggleTheme) {
+                        window.toggleTheme();
+                    }
+                }, { passive: false });
+            }
+        });
+        
+        // Logo color update for dark mode
+        function updateLogoColors() {
+            const logo = document.getElementById('timerist-logo');
+            if (!logo) return;
+            
+            const isDark = document.documentElement.getAttribute('data-theme') === 'style1';
+            const lightColor = '#0a0a0a';
+            const darkColor = '#fafafa';
+            const color = isDark ? darkColor : lightColor;
+            
+            const circles = logo.querySelectorAll('.logo-circle');
+            const lines = logo.querySelectorAll('.logo-line');
+            
+            circles.forEach(el => el.setAttribute('stroke', color));
+            lines.forEach(el => el.setAttribute('stroke', color));
+        }
+        
+        // Theme icon update
+        function updateThemeIcon() {
+            const icon = document.getElementById('theme-icon');
+            if (!icon) return;
+            const isDark = document.documentElement.getAttribute('data-theme') === 'style1';
+            icon.textContent = isDark ? '☀️' : '🌙';
+        }
+        
+        // Clear custom colors when theme changes (cleanup any leftover custom styles)
+        function clearCustomBackground() {
+            // Clear any leftover custom style elements from previous color picker feature
+            const styleIds = ['custom-bg-style', 'custom-timer-style', 'custom-button-style'];
+            styleIds.forEach(id => {
+                const style = document.getElementById(id);
+                if (style) style.remove();
+            });
+            // Clear localStorage for any leftover custom colors
+            localStorage.removeItem('quickCountdown-bgColor');
+            localStorage.removeItem('quickCountdown-timerColor');
+            localStorage.removeItem('quickCountdown-buttonColor');
+            localStorage.removeItem('quickCountdown-progressColor');
+        }
+        
+        // Watch for theme changes
+        const themeObserver = new MutationObserver(() => {
+            updateLogoColors();
+            updateThemeIcon();
+            clearCustomBackground();
+        });
+        themeObserver.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-theme', 'class']
+        });
+        
+        // Override toggleTheme to update logo, icon, and clear custom colors
+        const originalToggle = window.toggleTheme;
+        window.toggleTheme = function() {
+            originalToggle();
+            setTimeout(() => {
+                updateLogoColors();
+                updateThemeIcon();
+                clearCustomBackground();
+            }, 10);
+        };
+        
+        updateLogoColors();
+        updateThemeIcon();
+    </script>
+</body>
+</html>
