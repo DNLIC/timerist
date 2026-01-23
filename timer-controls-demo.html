@@ -702,6 +702,258 @@
             );
         };
         
+        // Sound Functions (from custom.html)
+        // Note: These use Web Audio API which is web-only.
+        // For React Native, you'll need to use expo-av or react-native-sound with pre-recorded audio files.
+        
+        let audioContextRef = null;
+        
+        const initAudioContext = async () => {
+            if (audioContextRef && audioContextRef.state !== "closed") {
+                if (audioContextRef.state === "suspended") {
+                    await audioContextRef.resume();
+                }
+                return audioContextRef;
+            }
+            
+            try {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                audioContextRef = new AudioContextClass();
+                if (audioContextRef.state === "suspended") {
+                    await audioContextRef.resume();
+                }
+                return audioContextRef;
+            } catch (e) {
+                console.warn("Audio not available:", e);
+                return null;
+            }
+        };
+        
+        // Play a short beep for countdown (3, 2, 1 seconds)
+        const playCountdownBeep = async () => {
+            try {
+                const audioContext = await initAudioContext();
+                if (!audioContext) return;
+                
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                // Short beep (0.15 seconds)
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.15);
+            } catch (e) {
+                console.warn("Audio playback failed:", e);
+            }
+        };
+        
+        // Play a distinct longer beep for transition at 0 seconds
+        const playTransitionBeep = async () => {
+            try {
+                const audioContext = await initAudioContext();
+                if (!audioContext) return;
+                
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                // Distinct transition sound: slightly lower frequency, longer duration
+                oscillator.frequency.value = 600;
+                oscillator.type = 'sine';
+                
+                // Longer beep (0.6 seconds) for distinct transition sound
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.6);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.6);
+            } catch (e) {
+                console.warn("Audio playback failed:", e);
+            }
+        };
+        
+        // Play three beeps to signal work is about to start (after prep)
+        const playThreeBeeps = async () => {
+            try {
+                const audioContext = await initAudioContext();
+                if (!audioContext) return;
+                
+                // Play three beeps in quick succession
+                for (let i = 0; i < 3; i++) {
+                    setTimeout(() => {
+                        const oscillator = audioContext.createOscillator();
+                        const gainNode = audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        oscillator.frequency.value = 800;
+                        oscillator.type = 'sine';
+                        
+                        // Short beep (0.1 seconds each)
+                        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                        
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.1);
+                    }, i * 150); // 150ms between beeps
+                }
+            } catch (e) {
+                console.warn("Audio playback failed:", e);
+            }
+        };
+        
+        // Play a chime/bell sound (higher frequency, bell-like)
+        const playChime = async () => {
+            try {
+                const audioContext = await initAudioContext();
+                if (!audioContext) return;
+                
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                // Bell-like sound: higher frequency, triangle wave
+                oscillator.frequency.value = 1000;
+                oscillator.type = 'triangle';
+                
+                // Chime with fade
+                gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.8);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.8);
+            } catch (e) {
+                console.warn("Audio playback failed:", e);
+            }
+        };
+        
+        // Play a musical chord (multiple frequencies)
+        const playChord = async () => {
+            try {
+                const audioContext = await initAudioContext();
+                if (!audioContext) return;
+                
+                // Play a major chord (C-E-G)
+                const frequencies = [523.25, 659.25, 783.99]; // C5, E5, G5
+                
+                frequencies.forEach((freq, index) => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = freq;
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime + index * 0.05);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.6);
+                    
+                    oscillator.start(audioContext.currentTime + index * 0.05);
+                    oscillator.stop(audioContext.currentTime + 0.6);
+                });
+            } catch (e) {
+                console.warn("Audio playback failed:", e);
+            }
+        };
+        
+        // Play a frequency sweep (whoosh sound)
+        const playSweep = async () => {
+            try {
+                const audioContext = await initAudioContext();
+                if (!audioContext) return;
+                
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                // Sweep from low to high frequency
+                oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.5);
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (e) {
+                console.warn("Audio playback failed:", e);
+            }
+        };
+        
+        // Play a double beep
+        const playDoubleBeep = async () => {
+            try {
+                const audioContext = await initAudioContext();
+                if (!audioContext) return;
+                
+                const playSingle = (delay = 0) => {
+                    setTimeout(() => {
+                        const oscillator = audioContext.createOscillator();
+                        const gainNode = audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        oscillator.frequency.value = 800;
+                        oscillator.type = 'sine';
+                        
+                        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                        
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.2);
+                    }, delay);
+                };
+                
+                playSingle(0);
+                playSingle(250);
+            } catch (e) {
+                console.warn("Audio playback failed:", e);
+            }
+        };
+        
+        // Play a low tone (for completion/end)
+        const playLowTone = async () => {
+            try {
+                const audioContext = await initAudioContext();
+                if (!audioContext) return;
+                
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 400;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.8);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.8);
+            } catch (e) {
+                console.warn("Audio playback failed:", e);
+            }
+        };
+        
         // Main App
         const App = () => {
             const [isRunning, setIsRunning] = useState(false);
@@ -912,6 +1164,150 @@
                             >
                                 Toggle Dark Mode
                             </button>
+                        </div>
+                        
+                        {/* Sound Test Section */}
+                        <div className="space-y-4 mt-12 p-6 bg-card border border-border rounded-lg shadow-lg">
+                            <div className="space-y-2">
+                                <h2 className="text-2xl font-semibold" style={{color: `rgb(var(--foreground))`}}>
+                                    Sound Test Panel
+                                </h2>
+                                <p className="text-sm" style={{color: `rgb(var(--muted-foreground))`}}>
+                                    Test all available audio cues. Click any button to hear the sound.
+                                </p>
+                            </div>
+                            
+                            {/* Mobile Compatibility Warning */}
+                            <div className="p-4 rounded-md border-2" style={{
+                                background: "rgba(255, 193, 7, 0.1)",
+                                borderColor: "rgba(255, 193, 7, 0.5)"
+                            }}>
+                                <h3 className="font-semibold mb-2" style={{color: `rgb(var(--foreground))`}}>
+                                    ⚠️ React Native / Mobile Compatibility
+                                </h3>
+                                <p className="text-sm" style={{color: `rgb(var(--muted-foreground))`}}>
+                                    <strong>Current Implementation:</strong> Uses Web Audio API (AudioContext, Oscillator) - <strong>Web-only</strong>
+                                </p>
+                                <p className="text-sm mt-2" style={{color: `rgb(var(--muted-foreground))`}}>
+                                    <strong>For React Native (iOS/Android):</strong> You'll need to:
+                                </p>
+                                <ul className="text-sm mt-2 ml-4 list-disc" style={{color: `rgb(var(--muted-foreground))`}}>
+                                    <li>Pre-generate audio files (.mp3/.wav) for each sound type</li>
+                                    <li>Use <code className="bg-accent px-1 rounded">expo-av</code> or <code className="bg-accent px-1 rounded">react-native-sound</code> to play files</li>
+                                    <li>Or use a React Native tone generator library (if available)</li>
+                                    <li><strong>All sounds below will need audio file equivalents for mobile</strong></li>
+                                </ul>
+                            </div>
+                            
+                            {/* Sound Buttons Grid */}
+                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mt-6">
+                                <Button
+                                    onClick={playCountdownBeep}
+                                    variant="default"
+                                    className="flex flex-col items-center justify-center py-4"
+                                >
+                                    <span className="text-2xl mb-1">🔔</span>
+                                    <span className="text-xs">Countdown Beep</span>
+                                    <span className="text-xs opacity-75">(3, 2, 1)</span>
+                                </Button>
+                                
+                                <Button
+                                    onClick={playTransitionBeep}
+                                    variant="default"
+                                    className="flex flex-col items-center justify-center py-4"
+                                >
+                                    <span className="text-2xl mb-1">🔊</span>
+                                    <span className="text-xs">Transition Beep</span>
+                                    <span className="text-xs opacity-75">(at 0)</span>
+                                </Button>
+                                
+                                <Button
+                                    onClick={playThreeBeeps}
+                                    variant="default"
+                                    className="flex flex-col items-center justify-center py-4"
+                                >
+                                    <span className="text-2xl mb-1">🔔🔔🔔</span>
+                                    <span className="text-xs">Three Beeps</span>
+                                    <span className="text-xs opacity-75">(prep→work)</span>
+                                </Button>
+                                
+                                <Button
+                                    onClick={playChime}
+                                    variant="secondary"
+                                    className="flex flex-col items-center justify-center py-4"
+                                >
+                                    <span className="text-2xl mb-1">🔔</span>
+                                    <span className="text-xs">Chime</span>
+                                    <span className="text-xs opacity-75">(bell-like)</span>
+                                </Button>
+                                
+                                <Button
+                                    onClick={playChord}
+                                    variant="secondary"
+                                    className="flex flex-col items-center justify-center py-4"
+                                >
+                                    <span className="text-2xl mb-1">🎵</span>
+                                    <span className="text-xs">Musical Chord</span>
+                                    <span className="text-xs opacity-75">(C-E-G)</span>
+                                </Button>
+                                
+                                <Button
+                                    onClick={playSweep}
+                                    variant="secondary"
+                                    className="flex flex-col items-center justify-center py-4"
+                                >
+                                    <span className="text-2xl mb-1">🌊</span>
+                                    <span className="text-xs">Sweep</span>
+                                    <span className="text-xs opacity-75">(whoosh)</span>
+                                </Button>
+                                
+                                <Button
+                                    onClick={playDoubleBeep}
+                                    variant="outline"
+                                    className="flex flex-col items-center justify-center py-4"
+                                >
+                                    <span className="text-2xl mb-1">🔔🔔</span>
+                                    <span className="text-xs">Double Beep</span>
+                                    <span className="text-xs opacity-75">(2x beep)</span>
+                                </Button>
+                                
+                                <Button
+                                    onClick={playLowTone}
+                                    variant="outline"
+                                    className="flex flex-col items-center justify-center py-4"
+                                >
+                                    <span className="text-2xl mb-1">🔉</span>
+                                    <span className="text-xs">Low Tone</span>
+                                    <span className="text-xs opacity-75">(completion)</span>
+                                </Button>
+                            </div>
+                            
+                            {/* Sound Descriptions */}
+                            <div className="mt-6 pt-6 border-t" style={{borderColor: `rgb(var(--border))`}}>
+                                <h3 className="font-semibold mb-3" style={{color: `rgb(var(--foreground))`}}>
+                                    Available Sounds
+                                </h3>
+                                <div className="grid md:grid-cols-2 gap-4 text-sm" style={{color: `rgb(var(--muted-foreground))`}}>
+                                    <div>
+                                        <h4 className="font-semibold mb-2" style={{color: `rgb(var(--foreground))`}}>Timer Cues</h4>
+                                        <ul className="space-y-1 ml-4 list-disc">
+                                            <li><strong>Countdown Beep:</strong> Short beep (800Hz, 0.15s) - plays at 3, 2, 1 seconds</li>
+                                            <li><strong>Transition Beep:</strong> Longer beep (600Hz, 0.6s) - plays at 0 seconds</li>
+                                            <li><strong>Three Beeps:</strong> Three quick beeps (800Hz, 0.1s each, 150ms apart) - signals work start</li>
+                                            <li><strong>Double Beep:</strong> Two beeps (800Hz, 0.2s each, 250ms apart)</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 className="font-semibold mb-2" style={{color: `rgb(var(--foreground))`}}>Alternative Sounds</h4>
+                                        <ul className="space-y-1 ml-4 list-disc">
+                                            <li><strong>Chime:</strong> Bell-like sound (1000Hz triangle, 0.8s)</li>
+                                            <li><strong>Musical Chord:</strong> Major chord C-E-G (523Hz, 659Hz, 784Hz, 0.6s)</li>
+                                            <li><strong>Sweep:</strong> Frequency sweep 200Hz→1200Hz (0.5s whoosh)</li>
+                                            <li><strong>Low Tone:</strong> Deep completion sound (400Hz, 0.8s)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,180 @@
+{
+  "title": "Audio Cues Test Workout",
+  "roundGroups": [
+    {
+      "id": "rg1",
+      "name": "Test 1: Prep + Work + Rest (Audio ON)",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "Prep Phase",
+          "mode": "time",
+          "duration": 5,
+          "prepTime": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "repsTarget": 0,
+          "timeCapSeconds": 0,
+          "audioEnabled": true
+        },
+        {
+          "name": "Work Phase",
+          "mode": "time",
+          "duration": 10,
+          "prepTime": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "repsTarget": 0,
+          "timeCapSeconds": 0,
+          "audioEnabled": true
+        },
+        {
+          "name": "Rest Phase",
+          "mode": "time",
+          "duration": 5,
+          "prepTime": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "repsTarget": 0,
+          "timeCapSeconds": 0,
+          "audioEnabled": true
+        }
+      ]
+    },
+    {
+      "id": "rg2",
+      "name": "Test 2: Audio OFF (Should Be Silent)",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "Silent Prep",
+          "mode": "time",
+          "duration": 5,
+          "prepTime": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "repsTarget": 0,
+          "timeCapSeconds": 0,
+          "audioEnabled": false
+        },
+        {
+          "name": "Silent Work",
+          "mode": "time",
+          "duration": 8,
+          "prepTime": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "repsTarget": 0,
+          "timeCapSeconds": 0,
+          "audioEnabled": false
+        }
+      ]
+    },
+    {
+      "id": "rg3",
+      "name": "Test 3: Rep-Based with Time Cap",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "Rep Work with 15s Cap",
+          "mode": "rep",
+          "duration": 0,
+          "prepTime": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "repsTarget": 10,
+          "timeCapSeconds": 15,
+          "audioEnabled": true
+        },
+        {
+          "name": "Rest After Reps",
+          "mode": "time",
+          "duration": 5,
+          "prepTime": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "repsTarget": 0,
+          "timeCapSeconds": 0,
+          "audioEnabled": true
+        }
+      ]
+    },
+    {
+      "id": "rg4",
+      "name": "Test 4: EMOM Activity",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "EMOM Minute",
+          "mode": "emom",
+          "duration": 60,
+          "prepTime": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "repsTarget": 0,
+          "timeCapSeconds": 0,
+          "audioEnabled": true
+        }
+      ]
+    },
+    {
+      "id": "rg5",
+      "name": "Test 5: Short Countdowns (3 seconds)",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "Exactly 3 Seconds",
+          "mode": "time",
+          "duration": 3,
+          "prepTime": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "repsTarget": 0,
+          "timeCapSeconds": 0,
+          "audioEnabled": true
+        }
+      ]
+    },
+    {
+      "id": "rg6",
+      "name": "Test 6: Mixed Audio Settings",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "Audio ON Prep",
+          "mode": "time",
+          "duration": 4,
+          "prepTime": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "repsTarget": 0,
+          "timeCapSeconds": 0,
+          "audioEnabled": true
+        },
+        {
+          "name": "Audio OFF Work",
+          "mode": "time",
+          "duration": 6,
+          "prepTime": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "repsTarget": 0,
+          "timeCapSeconds": 0,
+          "audioEnabled": false
+        },
+        {
+          "name": "Audio ON Rest",
+          "mode": "time",
+          "duration": 4,
+          "prepTime": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "repsTarget": 0,
+          "timeCapSeconds": 0,
+          "audioEnabled": true
+        }
+      ]
+    }
+  ],
+  "exportedAt": "2026-01-23T16:10:34.000Z"
+}

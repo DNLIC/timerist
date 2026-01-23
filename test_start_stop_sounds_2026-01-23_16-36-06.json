@@ -1,0 +1,151 @@
+{
+  "title": "Start/Stop Sounds Test",
+  "roundGroups": [
+    {
+      "id": "rg1",
+      "name": "Test 1: Prep → Work (3 Chimes at Start)",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "Prep for Work",
+          "mode": "time",
+          "duration": 5,
+          "prepTime": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "repsTarget": 0,
+          "timeCapSeconds": 0,
+          "audioEnabled": true
+        },
+        {
+          "name": "Work Session",
+          "mode": "time",
+          "duration": 8,
+          "prepTime": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "repsTarget": 0,
+          "timeCapSeconds": 0,
+          "audioEnabled": true
+        }
+      ]
+    },
+    {
+      "id": "rg2",
+      "name": "Test 2: Rest → Work (3 Chimes at Start)",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "Rest Period",
+          "mode": "time",
+          "duration": 5,
+          "prepTime": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "repsTarget": 0,
+          "timeCapSeconds": 0,
+          "audioEnabled": true
+        },
+        {
+          "name": "Work Session",
+          "mode": "time",
+          "duration": 8,
+          "prepTime": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "repsTarget": 0,
+          "timeCapSeconds": 0,
+          "audioEnabled": true
+        }
+      ]
+    },
+    {
+      "id": "rg3",
+      "name": "Test 3: Multiple Rounds (Full Cycle)",
+      "rounds": 2,
+      "activities": [
+        {
+          "name": "Prep",
+          "mode": "time",
+          "duration": 4,
+          "prepTime": 0,
+          "restBetweenRounds": 5,
+          "restAfterPhase": 0,
+          "repsTarget": 0,
+          "timeCapSeconds": 0,
+          "audioEnabled": true
+        },
+        {
+          "name": "Work",
+          "mode": "time",
+          "duration": 6,
+          "prepTime": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "repsTarget": 0,
+          "timeCapSeconds": 0,
+          "audioEnabled": true
+        }
+      ]
+    },
+    {
+      "id": "rg4",
+      "name": "Test 4: Rep-Based Work with Time Cap",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "Prep",
+          "mode": "time",
+          "duration": 3,
+          "prepTime": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "repsTarget": 0,
+          "timeCapSeconds": 0,
+          "audioEnabled": true
+        },
+        {
+          "name": "Rep Work",
+          "mode": "rep",
+          "duration": 0,
+          "prepTime": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "repsTarget": 10,
+          "timeCapSeconds": 12,
+          "audioEnabled": true
+        }
+      ]
+    },
+    {
+      "id": "rg5",
+      "name": "Test 5: Audio OFF (Should Be Silent)",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "Silent Prep",
+          "mode": "time",
+          "duration": 3,
+          "prepTime": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "repsTarget": 0,
+          "timeCapSeconds": 0,
+          "audioEnabled": false
+        },
+        {
+          "name": "Silent Work",
+          "mode": "time",
+          "duration": 5,
+          "prepTime": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "repsTarget": 0,
+          "timeCapSeconds": 0,
+          "audioEnabled": false
+        }
+      ]
+    }
+  ],
+  "exportedAt": "2026-01-23T16:36:06.000Z"
+}
