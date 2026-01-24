@@ -499,6 +499,20 @@
             cursor: not-allowed;
         }
         
+        /* Workout title and description styling */
+        #workoutTitleInput {
+            font-family: inherit;
+            text-align: left;
+            font-weight: 500;
+        }
+        
+        #workoutDescriptionInput {
+            font-family: inherit;
+            text-align: left;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+        
         .input-group {
             margin-bottom: 1.5rem;
         }
@@ -573,6 +587,18 @@
             cursor: not-allowed;
         }
         
+        /* Main page rounds input focus styles */
+        #roundsInputMain:focus {
+            outline: none;
+            border-color: rgb(var(--ring));
+            box-shadow: 0 0 0 2px rgba(var(--ring), 0.2);
+        }
+        
+        #roundsInputMain:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
         .time-input-group {
             display: flex;
             align-items: center;
@@ -639,7 +665,10 @@
         
         .timer-running .custom-time-input:not(:disabled),
         .timer-running .rounds-adjust-btn:not(:disabled),
-        .timer-running .time-adjust-btn:not(:disabled) {
+        .timer-running .time-adjust-btn:not(:disabled),
+        .timer-running #roundsInputMain:not(:disabled),
+        .timer-running #roundsDecreaseBtnMain:not(:disabled),
+        .timer-running #roundsIncreaseBtnMain:not(:disabled) {
             opacity: 0.5;
             cursor: not-allowed;
             pointer-events: none;
@@ -826,90 +855,6 @@
             stroke: #fafafa !important;
         }
         
-        /* Rounds Slider Styles */
-        .rounds-slider-container {
-            margin-bottom: 1.5rem;
-        }
-        
-        .rounds-slider-label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: rgb(var(--muted-foreground));
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.75rem;
-            text-align: center;
-        }
-        
-        .rounds-slider-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .rounds-slider-value {
-            min-width: 3rem;
-            text-align: center;
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: rgb(var(--foreground));
-            font-family: 'Courier New', monospace;
-        }
-        
-        .rounds-slider {
-            flex: 1;
-            height: 8px;
-            border-radius: 4px;
-            background: rgb(var(--input));
-            outline: none;
-            -webkit-appearance: none;
-            appearance: none;
-        }
-        
-        .rounds-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: rgb(var(--primary));
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .rounds-slider::-webkit-slider-thumb:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 0 4px rgba(var(--primary), 0.2);
-        }
-        
-        .rounds-slider::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: rgb(var(--primary));
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s;
-        }
-        
-        .rounds-slider::-moz-range-thumb:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 0 4px rgba(var(--primary), 0.2);
-        }
-        
-        .rounds-slider:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .rounds-slider:disabled::-webkit-slider-thumb {
-            cursor: not-allowed;
-        }
-        
-        .rounds-slider:disabled::-moz-range-thumb {
-            cursor: not-allowed;
-        }
     </style>
 </head>
 <body class="font-sans">
@@ -947,11 +892,20 @@
         <div class="timer-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
             <!-- Timer Display -->
             <div class="timer-display-block bg-card border border-border rounded-lg shadow-lg text-center">
+                <!-- Workout Title -->
+                <div id="workoutTitleDisplay" style="display: none; text-align: center; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid rgb(var(--border));">
+                    <h2 id="workoutTitleText" style="font-size: 1.25rem; font-weight: 600; color: rgb(var(--foreground)); margin: 0; word-wrap: break-word;"></h2>
+                </div>
+                
                 <!-- EMOM: Phase label hidden via CSS -->
                 <div class="phase-label" id="phaseLabel" style="display: none;">Work</div>
                 <div class="timer-display-large" id="display">01:00</div>
                 <div class="round-info">
-                    Round <span id="round">1</span> of <span id="totalRounds">10</span>
+                    Round <span id="round">1</span> of <span id="totalRounds">5</span>
+                </div>
+                <!-- Workout Notes -->
+                <div id="workoutDescriptionDisplay" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgb(var(--border));">
+                    <p id="workoutDescriptionText" style="font-size: 0.875rem; color: rgb(var(--muted-foreground)); line-height: 1.6; margin: 0; text-align: left; white-space: pre-wrap; word-wrap: break-word;"></p>
                 </div>
             </div>
             
@@ -966,23 +920,20 @@
                 </div>
             </div>
             
-            <!-- Rounds Slider -->
+            <!-- Rounds Adjustment -->
             <div class="p-6 bg-card border border-border rounded-lg shadow-lg">
-                <!-- Rounds Slider -->
-                <div class="rounds-slider-container">
-                    <label class="rounds-slider-label" for="roundsSlider">Total Rounds</label>
-                    <div class="rounds-slider-wrapper">
-                        <span class="rounds-slider-value" id="roundsSliderValue">10</span>
+                <div class="input-group" style="margin-bottom: 0;">
+                    <label for="roundsInputMain" style="display: block; font-size: 0.875rem; font-weight: 600; color: rgb(var(--muted-foreground)); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; text-align: center;">Total Rounds</label>
+                    <div class="rounds-input-group" style="justify-content: center;">
+                        <button class="rounds-adjust-btn" id="roundsDecreaseBtnMain" type="button" aria-label="Decrease rounds by 1">−1</button>
                         <input 
-                            type="range" 
-                            id="roundsSlider" 
-                            min="1" 
-                            max="20" 
-                            value="10" 
-                            class="rounds-slider"
-                            aria-label="Select number of rounds"
+                            type="text" 
+                            id="roundsInputMain" 
+                            value="5"
+                            aria-label="Number of rounds"
+                            style="flex: 0 1 auto; width: 80px; max-width: 100px; text-align: center; font-size: 1.125rem; font-weight: 600; background-color: rgb(var(--background)); border: 2px solid rgb(var(--input)); border-radius: var(--radius); padding: 0.75rem; color: rgb(var(--foreground)); min-height: 48px; font-family: 'Courier New', monospace;"
                         >
-                        <span class="rounds-slider-value">20</span>
+                        <button class="rounds-adjust-btn" id="roundsIncreaseBtnMain" type="button" aria-label="Increase rounds by 1">+1</button>
                     </div>
                 </div>
             </div>
@@ -1002,6 +953,40 @@
             <!-- Setup Content -->
             <div class="drawer-section">
                 <h3>Setup Content</h3>
+                
+                <!-- Workout Title -->
+                <div class="input-group">
+                    <label for="workoutTitleInput">Workout Title</label>
+                    <input 
+                        type="text" 
+                        id="workoutTitleInput" 
+                        class="custom-time-input"
+                        placeholder="Enter workout title"
+                        aria-label="Workout title"
+                        maxlength="40"
+                        style="font-family: inherit;"
+                    >
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="workoutTitleCharCount">0</span>/40
+                    </p>
+                </div>
+                
+                <!-- Workout Notes -->
+                <div class="input-group">
+                    <label for="workoutDescriptionInput">Workout Notes</label>
+                    <textarea 
+                        id="workoutDescriptionInput" 
+                        class="custom-time-input"
+                        placeholder="Enter workout notes..."
+                        aria-label="Workout notes"
+                        rows="4"
+                        maxlength="200"
+                        style="resize: vertical; min-height: 80px; font-family: inherit; line-height: 1.5;"
+                    ></textarea>
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="workoutDescriptionCharCount">0</span>/200
+                    </p>
+                </div>
                 
                 <!-- EMOM: Work Time is fixed at 60 seconds, hidden/disabled -->
                 <div class="input-group" style="display: none;">
@@ -1049,7 +1034,7 @@
                         <input 
                             type="text" 
                             id="roundsInput" 
-                            value="10"
+                            value="5"
                             aria-label="Number of rounds"
                         >
                         <button class="rounds-adjust-btn" id="roundsIncreaseBtn" type="button" aria-label="Increase rounds">+</button>
@@ -1072,7 +1057,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.13</p>
+                <p><strong>Version:</strong> v0.14</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -1087,7 +1072,7 @@
         let currentRound = 1;
         let workTime = 60; // EMOM: Fixed at 60 seconds
         let restTime = 0; // EMOM: No rest phase
-        let totalRounds = 10;
+        let totalRounds = 5;
         
         const display = document.getElementById('display');
         const phaseLabel = document.getElementById('phaseLabel');
@@ -1107,8 +1092,17 @@
         const workIncreaseBtn = document.getElementById('workIncreaseBtn');
         const restDecreaseBtn = document.getElementById('restDecreaseBtn');
         const restIncreaseBtn = document.getElementById('restIncreaseBtn');
-        const roundsSlider = document.getElementById('roundsSlider');
-        const roundsSliderValue = document.getElementById('roundsSliderValue');
+        const roundsInputMain = document.getElementById('roundsInputMain');
+        const roundsDecreaseBtnMain = document.getElementById('roundsDecreaseBtnMain');
+        const roundsIncreaseBtnMain = document.getElementById('roundsIncreaseBtnMain');
+        const workoutTitleInput = document.getElementById('workoutTitleInput');
+        const workoutDescriptionInput = document.getElementById('workoutDescriptionInput');
+        const workoutTitleDisplay = document.getElementById('workoutTitleDisplay');
+        const workoutTitleText = document.getElementById('workoutTitleText');
+        const workoutDescriptionDisplay = document.getElementById('workoutDescriptionDisplay');
+        const workoutDescriptionText = document.getElementById('workoutDescriptionText');
+        const workoutTitleCharCount = document.getElementById('workoutTitleCharCount');
+        const workoutDescriptionCharCount = document.getElementById('workoutDescriptionCharCount');
         
         // Parse MM:SS format to seconds
         function parseTime(timeString) {
@@ -1164,7 +1158,9 @@
             roundsInput.disabled = true;
             roundsDecreaseBtn.disabled = true;
             roundsIncreaseBtn.disabled = true;
-            if (roundsSlider) roundsSlider.disabled = true;
+            if (roundsInputMain) roundsInputMain.disabled = true;
+            if (roundsDecreaseBtnMain) roundsDecreaseBtnMain.disabled = true;
+            if (roundsIncreaseBtnMain) roundsIncreaseBtnMain.disabled = true;
         }
         
         // Enable inputs when timer is stopped
@@ -1172,7 +1168,9 @@
             roundsInput.disabled = false;
             roundsDecreaseBtn.disabled = false;
             roundsIncreaseBtn.disabled = false;
-            if (roundsSlider) roundsSlider.disabled = false;
+            if (roundsInputMain) roundsInputMain.disabled = false;
+            if (roundsDecreaseBtnMain) roundsDecreaseBtnMain.disabled = false;
+            if (roundsIncreaseBtnMain) roundsIncreaseBtnMain.disabled = false;
         }
         
         // Check if timer has valid data to proceed
@@ -1214,28 +1212,30 @@
             
             // Update button visibility
             if (isRunning && !isPaused) {
+                // Timer is running - hide Set Up button
                 startBtn.style.display = 'none';
                 pauseBtn.style.display = 'inline-block';
                 pauseBtn.classList.remove('paused');
                 resetBtn.style.display = 'inline-block';
                 setupBtn.style.display = 'none';
             } else if (isPaused) {
+                // Timer is paused - show Set Up button
                 startBtn.style.display = 'inline-block';
                 startBtn.textContent = 'Resume';
                 pauseBtn.style.display = 'none';
                 resetBtn.style.display = 'inline-block';
-                setupBtn.style.display = 'none';
+                setupBtn.style.display = 'inline-block';
             } else {
-                // Timer is not running
+                // Timer is not running (beginning or stopped)
                 if (isValid) {
-                    // Has valid data - show normal buttons
+                    // Has valid data - show Start, Reset, and Set Up buttons
                     startBtn.style.display = 'inline-block';
                     startBtn.textContent = 'Start';
                     pauseBtn.style.display = 'none';
                     resetBtn.style.display = 'inline-block';
-                    setupBtn.style.display = 'none';
+                    setupBtn.style.display = 'inline-block';
                 } else {
-                    // No valid data - show Set Up button
+                    // No valid data - show only Set Up button
                     startBtn.style.display = 'none';
                     pauseBtn.style.display = 'none';
                     resetBtn.style.display = 'none';
@@ -1334,8 +1334,12 @@
             isRunning = false;
             isPaused = false;
             
-            // EMOM: Get current values from inputs
-            totalRounds = parseInt(roundsInput.value) || 10;
+            // EMOM: Get current values from inputs (prefer main input, fallback to drawer input)
+            const roundsValue = roundsInputMain ? parseInt(roundsInputMain.value) : parseInt(roundsInput.value);
+            totalRounds = isNaN(roundsValue) ? 5 : roundsValue;
+            // Sync both inputs
+            if (roundsInputMain) roundsInputMain.value = totalRounds;
+            roundsInput.value = totalRounds;
             workTime = 60; // EMOM: Fixed at 60 seconds
             restTime = 0; // EMOM: No rest phase
             
@@ -1347,7 +1351,7 @@
             updateDisplay();
         }
         
-        // Clear timer (sets to 00:00)
+        // Clear timer (sets rounds to 0)
         function clearTimer() {
             // Stop the timer first
             clearInterval(interval);
@@ -1355,19 +1359,14 @@
             isRunning = false;
             isPaused = false;
             
-            // EMOM: Reset to defaults
-            roundsInput.value = '10';
-            
-            // Reset rounds slider to 10
-            if (roundsSlider && roundsSliderValue) {
-                roundsSlider.value = 10;
-                roundsSliderValue.textContent = '10';
-            }
+            // EMOM: Set rounds to 0
+            roundsInput.value = '0';
+            if (roundsInputMain) roundsInputMain.value = '0';
             
             // Reset timer state
             workTime = 60; // EMOM: Fixed at 60 seconds
             restTime = 0; // EMOM: No rest phase
-            totalRounds = 10;
+            totalRounds = 0;
             currentTime = 60; // EMOM: Start at 60 seconds
             currentRound = 1;
             
@@ -1436,8 +1435,8 @@
         // Rounds adjustment buttons
         roundsDecreaseBtn.addEventListener('click', function() {
             if (isRunning) return;
-            let rounds = parseInt(roundsInput.value) || 10;
-            rounds = Math.max(1, rounds - 1);
+            let rounds = parseInt(roundsInput.value) || 0;
+            rounds = Math.max(0, rounds - 1);
             roundsInput.value = rounds;
             totalRounds = rounds;
             if (!isRunning) {
@@ -1448,7 +1447,7 @@
         
         roundsIncreaseBtn.addEventListener('click', function() {
             if (isRunning) return;
-            let rounds = parseInt(roundsInput.value) || 10;
+            let rounds = parseInt(roundsInput.value) || 0;
             rounds = Math.min(99, rounds + 1);
             roundsInput.value = rounds;
             totalRounds = rounds;
@@ -1471,34 +1470,102 @@
         
         roundsInput.addEventListener('input', function() {
             if (!isRunning) {
-                totalRounds = parseInt(this.value) || 10;
+                const value = parseInt(this.value) || 0;
+                totalRounds = value;
+                // Sync main input
+                if (roundsInputMain) roundsInputMain.value = value;
                 resetTimer();
                 updateDisplay(); // Update button visibility based on validity
             }
         });
         
-        // Rounds Slider
-        if (roundsSlider && roundsSliderValue) {
-            // Update slider value display
-            roundsSlider.addEventListener('input', function() {
-                const value = parseInt(this.value);
-                roundsSliderValue.textContent = value;
-                
-                // Update rounds input and totalRounds
+        // Main page rounds adjustment buttons
+        if (roundsDecreaseBtnMain && roundsIncreaseBtnMain && roundsInputMain) {
+            roundsDecreaseBtnMain.addEventListener('click', function() {
+                if (isRunning) return;
+                let rounds = parseInt(roundsInputMain.value) || 0;
+                rounds = Math.max(0, rounds - 1);
+                roundsInputMain.value = rounds;
+                // Sync drawer input
+                roundsInput.value = rounds;
+                totalRounds = rounds;
                 if (!isRunning) {
-                    roundsInput.value = value;
-                    totalRounds = value;
                     resetTimer();
-                    updateDisplay();
+                    updateDisplay(); // Update button visibility based on validity
                 }
             });
             
-            // Sync slider with rounds input when changed via other means
-            roundsInput.addEventListener('input', function() {
-                const value = parseInt(this.value) || 10;
-                const clampedValue = Math.max(1, Math.min(20, value));
-                roundsSlider.value = clampedValue;
-                roundsSliderValue.textContent = clampedValue;
+            roundsIncreaseBtnMain.addEventListener('click', function() {
+                if (isRunning) return;
+                let rounds = parseInt(roundsInputMain.value) || 0;
+                rounds = Math.min(99, rounds + 1);
+                roundsInputMain.value = rounds;
+                // Sync drawer input
+                roundsInput.value = rounds;
+                totalRounds = rounds;
+                if (!isRunning) {
+                    resetTimer();
+                    updateDisplay(); // Update button visibility based on validity
+                }
+            });
+            
+            // Sync main input with drawer input
+            roundsInputMain.addEventListener('input', function() {
+                if (!isRunning) {
+                    const value = parseInt(this.value) || 0;
+                    totalRounds = value;
+                    // Sync drawer input
+                    roundsInput.value = value;
+                    resetTimer();
+                    updateDisplay(); // Update button visibility based on validity
+                }
+            });
+        }
+        
+        // Update workout title and description display
+        function updateWorkoutDisplay() {
+            const title = workoutTitleInput.value.trim();
+            const description = workoutDescriptionInput.value.trim();
+            
+            // Update title display
+            if (title) {
+                workoutTitleText.textContent = title;
+                workoutTitleDisplay.style.display = 'block';
+            } else {
+                workoutTitleDisplay.style.display = 'none';
+            }
+            
+            // Update description display
+            if (description) {
+                workoutDescriptionText.textContent = description;
+                workoutDescriptionDisplay.style.display = 'block';
+            } else {
+                workoutDescriptionDisplay.style.display = 'none';
+            }
+        }
+        
+        // Update character counts
+        function updateCharCounts() {
+            if (workoutTitleCharCount) {
+                workoutTitleCharCount.textContent = workoutTitleInput.value.length;
+            }
+            if (workoutDescriptionCharCount) {
+                workoutDescriptionCharCount.textContent = workoutDescriptionInput.value.length;
+            }
+        }
+        
+        // Workout title and description event listeners
+        if (workoutTitleInput) {
+            workoutTitleInput.addEventListener('input', function() {
+                updateCharCounts();
+                updateWorkoutDisplay();
+            });
+        }
+        
+        if (workoutDescriptionInput) {
+            workoutDescriptionInput.addEventListener('input', function() {
+                updateCharCounts();
+                updateWorkoutDisplay();
             });
         }
         
@@ -1520,22 +1587,30 @@
         // Initialize
         workTime = 60; // EMOM: Fixed at 60 seconds
         restTime = 0; // EMOM: No rest phase
-        totalRounds = parseInt(roundsInput.value) || 10;
+        totalRounds = parseInt(roundsInput.value) || 5;
         currentTime = 60; // EMOM: Start at 60 seconds
         currentRound = 1;
         
-        // Initialize rounds slider
-        if (roundsSlider && roundsSliderValue) {
-            const initialRounds = Math.max(1, Math.min(20, totalRounds || 10));
-            roundsSlider.value = initialRounds;
-            roundsSliderValue.textContent = initialRounds;
-            if (totalRounds === 0) {
-                roundsInput.value = initialRounds;
-                totalRounds = initialRounds;
+        // Initialize main rounds input
+        if (roundsInputMain) {
+            const inputValue = parseInt(roundsInputMain.value);
+            if (isNaN(inputValue) || inputValue === 0) {
+                // If input is empty or 0, set to default of 5
+                roundsInputMain.value = 5;
+                roundsInput.value = 5;
+                totalRounds = 5;
+            } else {
+                // Use the value from the input
+                totalRounds = inputValue;
+                roundsInput.value = inputValue;
             }
         }
         
         updateDisplay();
+        
+        // Initialize workout display and character counts
+        updateCharCounts();
+        updateWorkoutDisplay();
         
         // Set release date
         document.getElementById('releaseDate').textContent = new Date().toISOString().split('T')[0];
