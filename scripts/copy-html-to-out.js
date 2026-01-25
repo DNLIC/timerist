@@ -11,6 +11,7 @@ const htmlFiles = [
   'interval.html',
   'main.html',
   'countdown.html',
+  'clock.html',
   'stopwatch.html',
   'stopwatch-splits.html',
   'emom.html',
