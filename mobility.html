@@ -642,8 +642,6 @@
         
         .workout-steps-container {
             margin-top: 1.5rem;
-            max-height: 400px;
-            overflow-y: auto;
             border: 1px solid rgb(var(--border));
             border-radius: var(--radius);
             background-color: rgb(var(--card));
@@ -894,10 +892,6 @@
                     <span id="roundInfo"></span>
                 </div>
                 
-                <!-- Workout Description -->
-                <div id="workoutDescriptionDisplay" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgb(var(--border));">
-                    <p id="workoutDescriptionText" style="font-size: 0.875rem; color: rgb(var(--muted-foreground)); line-height: 1.6; margin: 0; text-align: left; white-space: pre-wrap; word-wrap: break-word;"></p>
-                </div>
             </div>
             
             <!-- Control Buttons -->
@@ -952,7 +946,7 @@
                 <h3>Workout Title</h3>
                 <div class="input-group">
                     <label for="workoutTitleInput">Workout Name</label>
-                    <input type="text" id="workoutTitleInput" placeholder="Enter workout name">
+                    <input type="text" id="workoutTitleInput" placeholder="Enter workout name" maxlength="40">
                 </div>
             </div>
             
@@ -2004,46 +1998,71 @@
                         step.style.justifyContent = 'space-between';
                         step.style.alignItems = 'flex-start';
                         
-                        let details = [];
-                        if (act.mode === 'time' && act.duration > 0) details.push(`Duration: ${formatTime(act.duration)}`);
-                        if (act.mode === 'rep' && act.repsTarget > 0) details.push(`Reps: ${act.repsTarget}`);
-                        if (act.mode === 'emom' && act.duration > 0) details.push(`EMOM: ${formatTime(act.duration)}`);
-                        if (act.mode === 'amrap' && act.duration > 0) details.push(`AMRAP: ${formatTime(act.duration)}`);
-                        if (act.restBetweenRounds > 0) details.push(`Rest: ${formatTime(act.restBetweenRounds)}`);
-                        if (act.prepTime > 0) details.push(`Prep: ${formatTime(act.prepTime)}`);
-                        
                         // Check for timestamp and rep-based segment times
                         const timestampEntry = getTimestampForStep(rgIndex, actIndex, round);
                         const segmentEntry = getRepBasedSegmentForStep(rgIndex, actIndex, round);
                         
-                        // Build timestamp HTML for rep-based exercises
-                        let timestampHtml = '';
+                        // Get start timestamp for display
+                        let startTimestamp = null;
                         if (act.mode === 'rep' && segmentEntry && segmentEntry.startTime) {
-                            // For rep-based exercises, show start and stop times
-                            const startTimeStr = formatTimeOfDayForDate(segmentEntry.startTime);
-                            const stopTimeStr = segmentEntry.stopTime 
-                                ? formatTimeOfDayForDate(segmentEntry.stopTime)
-                                : '';
-                            
-                            timestampHtml = `<div style="display: flex; flex-direction: column; align-items: flex-end; margin-left: 1rem; white-space: nowrap;">
-                                <span style="color: rgb(var(--muted-foreground)); font-size: 0.75rem;">started ${startTimeStr}</span>
-                                ${stopTimeStr ? `<span style="color: rgb(var(--muted-foreground)); font-size: 0.75rem; margin-top: 0.25rem;">stopped ${stopTimeStr}</span>` : ''}
-                            </div>`;
+                            startTimestamp = segmentEntry.startTime;
                         } else if (timestampEntry) {
-                            // For non-rep exercises, show the original timestamp format
-                            timestampHtml = `<span style="color: rgb(var(--muted-foreground)); font-size: 0.75rem; white-space: nowrap; margin-left: 1rem;">started ${formatTimestamp(timestampEntry.timestamp)}</span>`;
+                            startTimestamp = timestampEntry.timestamp;
                         }
                         
-                        // Build notes text
-                        const notesText = act.notes && act.notes.trim() ? ` | Notes: ${act.notes}` : '';
+                        // Build duration and start time display
+                        let durationText = '';
+                        if (act.mode === 'time' && act.duration > 0) {
+                            durationText = `Duration: ${formatTime(act.duration)}`;
+                        } else if (act.mode === 'rep' && act.repsTarget > 0) {
+                            durationText = `Reps: ${act.repsTarget}`;
+                        } else if (act.mode === 'emom' && act.duration > 0) {
+                            durationText = `EMOM: ${formatTime(act.duration)}`;
+                        } else if (act.mode === 'amrap' && act.duration > 0) {
+                            durationText = `AMRAP: ${formatTime(act.duration)}`;
+                        }
+                        
+                        // Build details array for other info (rest, prep, etc.)
+                        let otherDetails = [];
+                        if (act.restBetweenRounds > 0) otherDetails.push(`Rest: ${formatTime(act.restBetweenRounds)}`);
+                        if (act.prepTime > 0) otherDetails.push(`Prep: ${formatTime(act.prepTime)}`);
+                        
+                        // Build the details line with Duration/Reps and Start time
+                        let detailsLine = [];
+                        if (durationText) {
+                            if (startTimestamp) {
+                                const startTimeStr = act.mode === 'rep' && segmentEntry 
+                                    ? formatTimeOfDayForDate(startTimestamp)
+                                    : formatTimestamp(startTimestamp);
+                                detailsLine.push(`${durationText} | Start: ${startTimeStr}`);
+                            } else {
+                                detailsLine.push(durationText);
+                            }
+                        } else if (startTimestamp) {
+                            const startTimeStr = act.mode === 'rep' && segmentEntry 
+                                ? formatTimeOfDayForDate(startTimestamp)
+                                : formatTimestamp(startTimestamp);
+                            detailsLine.push(`Start: ${startTimeStr}`);
+                        }
+                        if (otherDetails.length > 0) {
+                            detailsLine.push(...otherDetails);
+                        }
+                        
+                        // Build notes text (will be displayed in regular text, not bold)
+                        // Truncate notes to 200 characters
+                        let notesDisplay = act.notes && act.notes.trim() ? act.notes.trim() : '';
+                        if (notesDisplay.length > 200) {
+                            notesDisplay = notesDisplay.substring(0, 200) + '...';
+                        }
+                        const notesText = notesDisplay ? ` | Notes: ${notesDisplay}` : '';
                         
                         // Use sequential number instead of round number
+                        // Split header and notes so notes are not bold
                         step.innerHTML = `
                             <div style="flex: 1; min-width: 0;">
-                                <div class="workout-step-header">${sequentialNumber} - ${act.name || 'Unnamed'}${notesText}</div>
-                                <div class="workout-step-details">${details.join(' | ')}</div>
+                                <div class="workout-step-header">${sequentialNumber} - ${act.name || 'Unnamed'}</div>
+                                <div class="workout-step-details">${detailsLine.join(' | ')}${notesText}</div>
                             </div>
-                            ${timestampHtml}
                         `;
                         workoutStepsList.appendChild(step);
                         
@@ -3765,21 +3784,17 @@
             const title = workoutTitleInput.value.trim();
             const description = workoutDescriptionInput ? workoutDescriptionInput.value.trim() : '';
             
-            // Update title display in timer block
+            // Update title display in timer block (truncate to 40 characters)
             if (title && workoutTitleText && workoutTitleDisplayBlock) {
-                workoutTitleText.textContent = title;
+                const truncatedTitle = title.length > 40 ? title.substring(0, 40) + '...' : title;
+                workoutTitleText.textContent = truncatedTitle;
                 workoutTitleDisplayBlock.style.display = 'block';
             } else if (workoutTitleDisplayBlock) {
                 workoutTitleDisplayBlock.style.display = 'none';
             }
             
-            // Update description display
-            if (description && workoutDescriptionText && workoutDescriptionDisplay) {
-                workoutDescriptionText.textContent = description;
-                workoutDescriptionDisplay.style.display = 'block';
-            } else if (workoutDescriptionDisplay) {
-                workoutDescriptionDisplay.style.display = 'none';
-            }
+            // Description is only shown in slide panel, not on main timer page
+            // Notes are already limited to 200 characters via maxlength attribute
         }
         
         // Update character counts
