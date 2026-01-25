@@ -6,8 +6,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <title>Custom Timer - Timerist | Custom Workout Timer, Multi-Activity Timer</title>
-    <meta name="description" content="Custom workout timer for complex multi-activity workouts. Create time-based, rep-based, EMOM, and AMRAP activities with round groups, rest periods, and more.">
+    <title>Mobility Timer - Timerist | Mobility Workout Timer, Multi-Activity Timer</title>
+    <meta name="description" content="Mobility workout timer for complex multi-activity workouts. Create time-based, rep-based, EMOM, and AMRAP activities with round groups, rest periods, and more.">
     <link rel="stylesheet" href="styles/timerist-design-system.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -867,7 +867,7 @@
                 </a>
                 <a href="index.html" style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground)); text-decoration: none; cursor: pointer;">timerist.com</a>
                 <span class="separator" style="color: rgb(var(--muted-foreground));">|</span>
-                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">Custom</span>
+                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">Mobility</span>
             </div>
             
             <div class="header-actions">
@@ -941,7 +941,7 @@
                         class="workout-select"
                         aria-label="Select mobility workout"
                     >
-                        <option value="custom" selected>Custom</option>
+                        <option value="custom" selected>Mobility</option>
                         <option value="daily-wake-up">Daily Mobility Wake-Up (Wake & Shake)</option>
                     </select>
                 </div>
@@ -2230,23 +2230,9 @@
                                 return;
                             }
                             
-                            // Check if we're at an activity boundary
-                            if (isActivityBoundary(currentWorkoutState.currentPhaseIndex, nextPhaseIndex)) {
-                                // Stop at activity boundary - enter armed state
-                                clearInterval(timerInterval);
-                                timerInterval = null;
-                                isRunning = false;
-                                isArmed = true;
-                                currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
-                                updateTimeOfDayInterval();
-                                updateDisplay();
-                                updateButtonStates();
-                                return;
-                            }
-                            
-                            // Auto-advance within activity (prep → work → rest)
+                            // Auto-advance to next phase (including across activity boundaries for mobility timer)
+                            const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
                             currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
-                            const nextPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
                             currentTime = nextPhase.duration;
                             // Initialize time cap for next phase if applicable
                             if (nextPhase.type === 'work' && nextPhase.activity && nextPhase.activity.mode === 'rep' && nextPhase.timeCapSeconds && nextPhase.timeCapSeconds > 0) {
@@ -2309,21 +2295,7 @@
                                     return;
                                 }
                                 
-                                // Check if we're at an activity boundary
-                                if (isActivityBoundary(currentWorkoutState.currentPhaseIndex, nextPhaseIndex)) {
-                                    // Stop at activity boundary - enter armed state
-                                    clearInterval(timerInterval);
-                                    timerInterval = null;
-                                    isRunning = false;
-                                    isArmed = true;
-                                    currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
-                                    updateTimeOfDayInterval();
-                                    updateDisplay();
-                                    updateButtonStates();
-                                    return;
-                                }
-                                
-                                // Auto-advance within activity (prep → work → rest)
+                                // Auto-advance to next phase (including across activity boundaries for mobility timer)
                                 const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
                                 
                                 // If prep or rest phase just ended and next phase is work, play three chimes (but not if coming from prep)
@@ -2399,21 +2371,7 @@
                                 return;
                             }
                             
-                            // Check if we're at an activity boundary
-                            if (isActivityBoundary(currentWorkoutState.currentPhaseIndex, nextPhaseIndex)) {
-                                // Stop at activity boundary - enter armed state
-                                clearInterval(timerInterval);
-                                timerInterval = null;
-                                isRunning = false;
-                                isArmed = true;
-                                currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
-                                updateTimeOfDayInterval();
-                                updateDisplay();
-                                updateButtonStates();
-                                return;
-                            }
-                            
-                            // Auto-advance within activity (prep → work → rest)
+                            // Auto-advance to next phase (including across activity boundaries for mobility timer)
                             const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
                             
                             // If prep or rest phase just ended and next phase is work, play three chimes
@@ -2547,23 +2505,9 @@
                             return;
                         }
                         
-                        // Check if we're at an activity boundary
-                        if (isActivityBoundary(currentWorkoutState.currentPhaseIndex, nextPhaseIndex)) {
-                            // Stop at activity boundary - enter armed state
-                            clearInterval(timerInterval);
-                            timerInterval = null;
-                            isRunning = false;
-                            isArmed = true;
-                            currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
-                            updateTimeOfDayInterval();
-                            updateDisplay();
-                            updateButtonStates();
-                            return;
-                        }
-                        
-                        // Auto-advance within activity (prep → work → rest)
+                        // Auto-advance to next phase (including across activity boundaries for mobility timer)
+                        const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
                         currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
-                        const nextPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
                         currentTime = nextPhase.duration;
                         // Initialize time cap for next phase if applicable
                         if (nextPhase.type === 'work' && nextPhase.activity && nextPhase.activity.mode === 'rep' && nextPhase.timeCapSeconds && nextPhase.timeCapSeconds > 0) {
@@ -2626,21 +2570,7 @@
                                 return;
                             }
                             
-                            // Check if we're at an activity boundary
-                            if (isActivityBoundary(currentWorkoutState.currentPhaseIndex, nextPhaseIndex)) {
-                                // Stop at activity boundary - enter armed state
-                                clearInterval(timerInterval);
-                                timerInterval = null;
-                                isRunning = false;
-                                isArmed = true;
-                                currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
-                                updateTimeOfDayInterval();
-                                updateDisplay();
-                                updateButtonStates();
-                                return;
-                            }
-                            
-                            // Auto-advance within activity (prep → work → rest)
+                            // Auto-advance to next phase (including across activity boundaries for mobility timer)
                             const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
                             
                             // If prep or rest phase just ended and next phase is work, play three chimes
@@ -2708,22 +2638,9 @@
                             return;
                         }
                         
-                        // Check if we're at an activity boundary
-                        if (isActivityBoundary(currentWorkoutState.currentPhaseIndex, nextPhaseIndex)) {
-                            // Stop at activity boundary - enter armed state
-                            clearInterval(timerInterval);
-                            timerInterval = null;
-                            isRunning = false;
-                            isArmed = true;
-                            currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
-                            updateTimeOfDayInterval();
-                            updateDisplay();
-                            updateButtonStates();
-                            return;
-                        }
-                        
-                        // Auto-advance within activity (prep → work → rest)
+                        // Auto-advance to next phase (including across activity boundaries for mobility timer)
                         const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
+                        currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
                         
                         // If prep phase just ended and next phase is work, play three beeps
                         if (completedPhase.type === 'prep' && nextPhase && nextPhase.type === 'work') {
@@ -2835,23 +2752,9 @@
                                 return;
                             }
                             
-                            // Check if we're at an activity boundary
-                            if (isActivityBoundary(currentWorkoutState.currentPhaseIndex, nextPhaseIndex)) {
-                                // Stop at activity boundary - enter armed state
-                                clearInterval(timerInterval);
-                                timerInterval = null;
-                                isRunning = false;
-                                isArmed = true;
-                                currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
-                                updateTimeOfDayInterval();
-                                updateDisplay();
-                                updateButtonStates();
-                                return;
-                            }
-                            
-                            // Auto-advance within activity (prep → work → rest)
+                            // Auto-advance to next phase (including across activity boundaries for mobility timer)
+                            const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
                             currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
-                            const nextPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
                             currentTime = nextPhase.duration;
                             // Initialize time cap for next phase if applicable
                             if (nextPhase.type === 'work' && nextPhase.activity && nextPhase.activity.mode === 'rep' && nextPhase.timeCapSeconds && nextPhase.timeCapSeconds > 0) {
@@ -2914,21 +2817,7 @@
                                     return;
                                 }
                                 
-                                // Check if we're at an activity boundary
-                                if (isActivityBoundary(currentWorkoutState.currentPhaseIndex, nextPhaseIndex)) {
-                                    // Stop at activity boundary - enter armed state
-                                    clearInterval(timerInterval);
-                                    timerInterval = null;
-                                    isRunning = false;
-                                    isArmed = true;
-                                    currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
-                                    updateTimeOfDayInterval();
-                                    updateDisplay();
-                                    updateButtonStates();
-                                    return;
-                                }
-                                
-                                // Auto-advance within activity (prep → work → rest)
+                                // Auto-advance to next phase (including across activity boundaries for mobility timer)
                                 const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
                                 
                                 // If prep or rest phase just ended and next phase is work, play three chimes (but not if coming from prep)
@@ -3004,21 +2893,7 @@
                                 return;
                             }
                             
-                            // Check if we're at an activity boundary
-                            if (isActivityBoundary(currentWorkoutState.currentPhaseIndex, nextPhaseIndex)) {
-                                // Stop at activity boundary - enter armed state
-                                clearInterval(timerInterval);
-                                timerInterval = null;
-                                isRunning = false;
-                                isArmed = true;
-                                currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
-                                updateTimeOfDayInterval();
-                                updateDisplay();
-                                updateButtonStates();
-                                return;
-                            }
-                            
-                            // Auto-advance within activity (prep → work → rest)
+                            // Auto-advance to next phase (including across activity boundaries for mobility timer)
                             const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
                             
                             // If prep or rest phase just ended and next phase is work, play three chimes
@@ -3120,21 +2995,9 @@
                 return;
             }
             
-            // Check if we're at an activity boundary
-            if (isActivityBoundary(currentWorkoutState.currentPhaseIndex, nextPhaseIndex)) {
-                // Stop at activity boundary - enter armed state
-                isRunning = false;
-                isArmed = true;
-                currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
-                updateDisplay();
-                updateButtonStates();
-                return;
-            }
-            
-            // Next phase is within the same activity (likely a rest phase)
-            // Auto-start it
+            // Auto-advance to next phase (including across activity boundaries for mobility timer)
+            const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
             currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
-            const nextPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
             currentTime = nextPhase.duration;
             // Initialize time cap for next phase if applicable
             if (nextPhase.type === 'work' && nextPhase.activity && nextPhase.activity.mode === 'rep' && nextPhase.timeCapSeconds && nextPhase.timeCapSeconds > 0) {
@@ -3199,23 +3062,9 @@
                             return;
                         }
                         
-                        // Check if we're at an activity boundary
-                        if (isActivityBoundary(currentWorkoutState.currentPhaseIndex, nextPhaseIndex)) {
-                            // Stop at activity boundary - enter armed state
-                            clearInterval(timerInterval);
-                            timerInterval = null;
-                            isRunning = false;
-                            isArmed = true;
-                            currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
-                            updateTimeOfDayInterval();
-                            updateDisplay();
-                            updateButtonStates();
-                            return;
-                        }
-                        
-                        // Auto-advance within activity (prep → work → rest)
+                        // Auto-advance to next phase (including across activity boundaries for mobility timer)
+                        const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
                         currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
-                        const nextPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
                         currentTime = nextPhase.duration;
                         // Initialize time cap for next phase if applicable
                         if (nextPhase.type === 'work' && nextPhase.activity && nextPhase.activity.mode === 'rep' && nextPhase.timeCapSeconds && nextPhase.timeCapSeconds > 0) {
@@ -3267,30 +3116,16 @@
                             return;
                         }
                         
-                        // Check if we're at an activity boundary
-                        if (isActivityBoundary(currentWorkoutState.currentPhaseIndex, nextPhaseIndex)) {
-                            // Stop at activity boundary - enter armed state
-                            clearInterval(timerInterval);
-                            timerInterval = null;
-                            isRunning = false;
-                            isArmed = true;
-                            currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
-                            updateTimeOfDayInterval();
-                            updateDisplay();
-                            updateButtonStates();
-                            return;
-                        }
-                        
-                        // Auto-advance within activity (prep → work → rest)
+                        // Auto-advance to next phase (including across activity boundaries for mobility timer)
                         const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
+                        currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
+                        currentTime = nextPhase.duration;
                         
                         // If prep or rest phase just ended and next phase is work, play three chimes
                         if ((phase.type === 'prep' || phase.type === 'rest' || phase.type === 'restAfter') && nextPhase && nextPhase.type === 'work') {
                             playThreeChimes(phase);
                         }
                         
-                        currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
-                        currentTime = nextPhase.duration;
                         // Initialize time cap for next phase if applicable
                         if (nextPhase.type === 'work' && nextPhase.activity && nextPhase.activity.mode === 'rep' && nextPhase.timeCapSeconds && nextPhase.timeCapSeconds > 0) {
                             timeCapCountdown = nextPhase.timeCapSeconds;
