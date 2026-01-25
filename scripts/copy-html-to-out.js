@@ -14,11 +14,13 @@ const htmlFiles = [
   'stopwatch.html',
   'stopwatch-splits.html',
   'emom.html',
+  'emom-splits.html',
   'amrap.html',
   'amrap-splits.html',
   'hiit.html',
   'pyramid.html',
-  'custom.html'
+  'custom.html',
+  'mobility.html'
 ];
 
 // JSON files to copy from public directory
