@@ -1,0 +1,46 @@
+{
+  "title": "2 Round Timer-Based Workout",
+  "roundGroups": [
+    {
+      "id": "rg1_2round_timer",
+      "name": "2 Round Timer-Based Group",
+      "rounds": 2,
+      "activities": [
+        {
+          "name": "Plank Hold",
+          "mode": "time",
+          "duration": 45,
+          "repsTarget": 0,
+          "restBetweenRounds": 30,
+          "restAfterPhase": 0,
+          "prepTime": 5,
+          "notes": "Round 1-2: 45 second plank hold",
+          "audioEnabled": true
+        },
+        {
+          "name": "High Knees",
+          "mode": "time",
+          "duration": 30,
+          "repsTarget": 0,
+          "restBetweenRounds": 15,
+          "restAfterPhase": 0,
+          "prepTime": 3,
+          "notes": "Round 1-2: 30 second high knees",
+          "audioEnabled": true
+        },
+        {
+          "name": "Wall Sit",
+          "mode": "time",
+          "duration": 40,
+          "repsTarget": 0,
+          "restBetweenRounds": 20,
+          "restAfterPhase": 45,
+          "prepTime": 3,
+          "notes": "Round 1-2: 40 second wall sit",
+          "audioEnabled": true
+        }
+      ]
+    }
+  ],
+  "exportedAt": "2026-01-25T00:00:00.000Z"
+}

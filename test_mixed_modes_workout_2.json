@@ -1,0 +1,57 @@
+{
+  "title": "Mixed Modes Workout 2 - Rep/AMRAP/EMOM/Timer",
+  "roundGroups": [
+    {
+      "id": "rg1_mixed_2",
+      "name": "Mixed Modes Round Group",
+      "rounds": 2,
+      "activities": [
+        {
+          "name": "Squats Rep Based",
+          "mode": "rep",
+          "duration": 45,
+          "repsTarget": 15,
+          "restBetweenRounds": 20,
+          "restAfterPhase": 0,
+          "prepTime": 5,
+          "notes": "Rep-based - 15 reps with 45 second time cap",
+          "audioEnabled": true
+        },
+        {
+          "name": "Mountain Climbers AMRAP",
+          "mode": "amrap",
+          "duration": 30,
+          "repsTarget": 0,
+          "restBetweenRounds": 10,
+          "restAfterPhase": 15,
+          "prepTime": 3,
+          "notes": "AMRAP - 30 seconds max reps",
+          "audioEnabled": true
+        },
+        {
+          "name": "Pull-ups EMOM",
+          "mode": "emom",
+          "duration": 120,
+          "repsTarget": 0,
+          "restBetweenRounds": 15,
+          "restAfterPhase": 0,
+          "prepTime": 5,
+          "notes": "EMOM - 2 minute intervals",
+          "audioEnabled": true
+        },
+        {
+          "name": "Wall Sit Timer",
+          "mode": "time",
+          "duration": 40,
+          "repsTarget": 0,
+          "restBetweenRounds": 20,
+          "restAfterPhase": 0,
+          "prepTime": 3,
+          "notes": "Timer-based - 40 seconds",
+          "audioEnabled": true
+        }
+      ]
+    }
+  ],
+  "exportedAt": "2026-01-25T00:00:00.000Z"
+}

@@ -1,0 +1,46 @@
+{
+  "title": "4 Round Rep-Based Workout",
+  "roundGroups": [
+    {
+      "id": "rg1_4round_rep",
+      "name": "4 Round Rep-Based Group",
+      "rounds": 4,
+      "activities": [
+        {
+          "name": "Push-ups",
+          "mode": "rep",
+          "duration": 60,
+          "repsTarget": 10,
+          "restBetweenRounds": 30,
+          "restAfterPhase": 0,
+          "prepTime": 5,
+          "notes": "Round 1-4: 10 push-ups with 60 second time cap",
+          "audioEnabled": true
+        },
+        {
+          "name": "Squats",
+          "mode": "rep",
+          "duration": 45,
+          "repsTarget": 15,
+          "restBetweenRounds": 20,
+          "restAfterPhase": 0,
+          "prepTime": 3,
+          "notes": "Round 1-4: 15 squats with 45 second time cap",
+          "audioEnabled": true
+        },
+        {
+          "name": "Burpees",
+          "mode": "rep",
+          "duration": 90,
+          "repsTarget": 8,
+          "restBetweenRounds": 40,
+          "restAfterPhase": 60,
+          "prepTime": 5,
+          "notes": "Round 1-4: 8 burpees with 90 second time cap",
+          "audioEnabled": true
+        }
+      ]
+    }
+  ],
+  "exportedAt": "2026-01-25T00:00:00.000Z"
+}

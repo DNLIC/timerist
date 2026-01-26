@@ -1,0 +1,57 @@
+{
+  "title": "Mixed Modes Workout 1 - EMOM/Rep/Timer/AMRAP",
+  "roundGroups": [
+    {
+      "id": "rg1_mixed_1",
+      "name": "Mixed Modes Round Group",
+      "rounds": 2,
+      "activities": [
+        {
+          "name": "Burpees EMOM",
+          "mode": "emom",
+          "duration": 60,
+          "repsTarget": 0,
+          "restBetweenRounds": 10,
+          "restAfterPhase": 0,
+          "prepTime": 5,
+          "notes": "EMOM - 1 minute intervals",
+          "audioEnabled": true
+        },
+        {
+          "name": "Push-ups Rep Based",
+          "mode": "rep",
+          "duration": 30,
+          "repsTarget": 12,
+          "restBetweenRounds": 15,
+          "restAfterPhase": 0,
+          "prepTime": 3,
+          "notes": "Rep-based - 12 reps with 30 second time cap",
+          "audioEnabled": true
+        },
+        {
+          "name": "Plank Hold Timer",
+          "mode": "time",
+          "duration": 30,
+          "repsTarget": 0,
+          "restBetweenRounds": 10,
+          "restAfterPhase": 0,
+          "prepTime": 3,
+          "notes": "Timer-based - 30 seconds",
+          "audioEnabled": true
+        },
+        {
+          "name": "Jumping Jacks AMRAP",
+          "mode": "amrap",
+          "duration": 45,
+          "repsTarget": 0,
+          "restBetweenRounds": 15,
+          "restAfterPhase": 20,
+          "prepTime": 3,
+          "notes": "AMRAP - 45 seconds max reps",
+          "audioEnabled": true
+        }
+      ]
+    }
+  ],
+  "exportedAt": "2026-01-25T00:00:00.000Z"
+}
