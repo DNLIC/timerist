@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <title>Mobility Timer - Timerist | Mobility Workout Timer, Multi-Activity Timer</title>
-    <meta name="description" content="Mobility workout timer for complex multi-activity workouts. Create time-based, rep-based, EMOM, and AMRAP activities with round groups, rest periods, and more.">
+    <meta name="description" content="Mobility workout timer for complex multi-activity workouts. Create time-based and rep-based activities with round groups, rest periods, and more.">
     <link rel="stylesheet" href="styles/timerist-design-system.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -937,6 +937,7 @@
                     >
                         <option value="custom" selected>Custom</option>
                         <option value="daily-wake-up">Daily Mobility Wake-Up (Wake & Shake)</option>
+                        <option value="daily-foot-roll-relief">Daily Foot Roll Relief</option>
                     </select>
                 </div>
             </div>
@@ -947,6 +948,12 @@
                 <div class="input-group">
                     <label for="workoutTitleInput">Workout Name</label>
                     <input type="text" id="workoutTitleInput" placeholder="Enter workout name" maxlength="40">
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem;">
+                        <span style="color: rgb(var(--destructive));">Maximum 40 characters.</span>
+                    </p>
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="workoutTitleCharCount">0</span>/40
+                    </p>
                 </div>
             </div>
             
@@ -990,11 +997,11 @@
             <div class="drawer-section">
                 <h3>About This Timer</h3>
                 <p>
-                    Create custom workouts with multiple activities, round groups, and various modes (time-based, rep-based, EMOM, AMRAP). 
+                    Create custom workouts with multiple activities, round groups, and various modes (time-based, rep-based). 
                     Perfect for complex training sessions with multiple exercises, rest periods, and rounds.
                 </p>
                 <p style="margin-top: 0.75rem;">
-                    <strong>Keywords:</strong> custom workout timer, multi-activity timer, workout builder, fitness timer, interval timer, rep counter, EMOM timer, AMRAP timer.
+                    <strong>Keywords:</strong> custom workout timer, multi-activity timer, workout builder, fitness timer, interval timer, rep counter.
                 </p>
             </div>
             
@@ -1021,7 +1028,6 @@
         let currentActivityIndex = 0;
         let currentRound = 1;
         let currentTime = 0;
-        let timeCapCountdown = 0; // Countdown timer for time cap on rep-based rounds
         let workoutStartTime = null;
         let startTimestamps = []; // Array to track when Start button was pressed
         let timeOfDayInterval = null; // Interval to update time of day display for rep-based rounds
@@ -1052,6 +1058,7 @@
         const workoutTitleInput = document.getElementById('workoutTitleInput');
         const workoutTitleText = document.getElementById('workoutTitleText');
         const workoutTitleDisplayBlock = document.getElementById('workoutTitleDisplayBlock');
+        const workoutTitleCharCount = document.getElementById('workoutTitleCharCount');
         const workoutDescriptionInput = document.getElementById('workoutDescriptionInput');
         const workoutDescriptionDisplay = document.getElementById('workoutDescriptionDisplay');
         const workoutDescriptionText = document.getElementById('workoutDescriptionText');
@@ -1071,16 +1078,14 @@
                         id: 'mku5m9cpc80pbnqzbq6',
                         name: '7 Minute Mobility Flow',
                         rounds: 1,
+                        restBetweenRounds: 0,
                         activities: [
                             {
                                 name: 'Light Hops with Arm Shake',
                                 mode: 'time',
                                 duration: 60,
                                 repsTarget: 0,
-                                timeCapSeconds: 0,
-                                restBetweenRounds: 0,
-                                restAfterPhase: 0,
-                                prepTime: 0,
+                                restBetweenActivities: 0,
                                 notes: 'hop lightly in place while shaking arms loose to wake up the upper body',
                                 audioEnabled: true
                             },
@@ -1089,10 +1094,7 @@
                                 mode: 'time',
                                 duration: 60,
                                 repsTarget: 0,
-                                timeCapSeconds: 0,
-                                restBetweenRounds: 0,
-                                restAfterPhase: 0,
-                                prepTime: 0,
+                                restBetweenActivities: 0,
                                 notes: 'gentle squat with arms swinging from sides up overhead for full-body reach',
                                 audioEnabled: true
                             },
@@ -1101,10 +1103,7 @@
                                 mode: 'time',
                                 duration: 60,
                                 repsTarget: 0,
-                                timeCapSeconds: 0,
-                                restBetweenRounds: 0,
-                                restAfterPhase: 0,
-                                prepTime: 0,
+                                restBetweenActivities: 0,
                                 notes: 'stand tall, raise one arm overhead at a time, alternating sides',
                                 audioEnabled: true
                             },
@@ -1113,10 +1112,7 @@
                                 mode: 'time',
                                 duration: 60,
                                 repsTarget: 0,
-                                timeCapSeconds: 0,
-                                restBetweenRounds: 0,
-                                restAfterPhase: 0,
-                                prepTime: 0,
+                                restBetweenActivities: 0,
                                 notes: 'rotate torso side to side with controlled momentum, arms following',
                                 audioEnabled: true
                             },
@@ -1125,10 +1121,7 @@
                                 mode: 'time',
                                 duration: 60,
                                 repsTarget: 0,
-                                timeCapSeconds: 0,
-                                restBetweenRounds: 0,
-                                restAfterPhase: 0,
-                                prepTime: 0,
+                                restBetweenActivities: 0,
                                 notes: 'let arms hang completely relaxed, swing them naturally across the body',
                                 audioEnabled: true
                             },
@@ -1137,10 +1130,7 @@
                                 mode: 'time',
                                 duration: 60,
                                 repsTarget: 0,
-                                timeCapSeconds: 0,
-                                restBetweenRounds: 0,
-                                restAfterPhase: 0,
-                                prepTime: 0,
+                                restBetweenActivities: 0,
                                 notes: 'torso and arms swing side to side like a golf swing, hips rotating',
                                 audioEnabled: true
                             },
@@ -1149,11 +1139,40 @@
                                 mode: 'time',
                                 duration: 60,
                                 repsTarget: 0,
-                                timeCapSeconds: 0,
-                                restBetweenRounds: 0,
-                                restAfterPhase: 0,
-                                prepTime: 0,
+                                restBetweenActivities: 0,
                                 notes: 'march in place, lifting alternating knees to meet raised hands at waist height',
+                                audioEnabled: true
+                            }
+                        ]
+                    }
+                ]
+            },
+            'daily-foot-roll-relief': {
+                title: 'Daily Foot Roll Relief',
+                description: 'A 12-minute routine to relieve plantar fasciitis: roll each foot over 6 progressively sized spheres (60s each) to loosen fascia, ease heel/arch pain, boost circulation and reduce stiffness.',
+                roundGroups: [
+                    {
+                        id: 'mkuaxf9tl9kh5ccv5j',
+                        name: 'Sphere Foot Therapy',
+                        rounds: 6,
+                        restBetweenRounds: 0,
+                        activities: [
+                            {
+                                name: 'Right Foot ',
+                                mode: 'time',
+                                duration: 60,
+                                repsTarget: 0,
+                                restBetweenActivities: 0,
+                                notes: 'Roll foot heel-to-toes over sphere with moderate pressure. Pause on tight spots, small circles. Increase weight as tolerated.',
+                                audioEnabled: true
+                            },
+                            {
+                                name: 'Left Foot',
+                                mode: 'time',
+                                duration: 60,
+                                repsTarget: 0,
+                                restBetweenActivities: 0,
+                                notes: 'Roll foot heel-to-toes over sphere with moderate pressure. Pause on tight spots, small circles. Increase weight as tolerated.',
                                 audioEnabled: true
                             }
                         ]
@@ -1186,9 +1205,10 @@
                 return;
             }
             
-            // Stop timer if running
-            if (isRunning) {
+            // Stop timer if running or paused
+            if (isRunning || isPaused) {
                 stopTimer();
+                resetTimer(); // Ensure all state is reset
             }
             
             // Load workout data
@@ -1270,7 +1290,7 @@
             if (!currentWorkoutState) return;
             
             // Find the work phase for the current activity
-            // When Start is pressed, we might be at prep phase, so find the work phase
+            // When Start is pressed, find the work phase
             let workPhase = null;
             const currentPhaseIndex = currentWorkoutState.currentPhaseIndex;
             
@@ -1495,9 +1515,7 @@
                 for (let act of rg.activities) {
                     if (!act.name || act.name.trim() === '') return false;
                     if (act.mode === 'time' && (!act.duration || act.duration <= 0)) return false;
-                    if (act.mode === 'rep' && (!act.repsTarget || act.repsTarget <= 0) && (!act.duration || act.duration <= 0) && (!act.timeCapSeconds || act.timeCapSeconds <= 0)) return false;
-                    if (act.mode === 'emom' && (!act.duration || act.duration <= 0)) return false;
-                    if (act.mode === 'amrap' && (!act.duration || act.duration <= 0)) return false;
+                    if (act.mode === 'rep' && (!act.repsTarget || act.repsTarget <= 0) && (!act.duration || act.duration <= 0)) return false;
                 }
             }
             return true;
@@ -1516,18 +1534,6 @@
                     for (let actIndex = 0; actIndex < rg.activities.length; actIndex++) {
                         const act = rg.activities[actIndex];
                         
-                        // Prep phase
-                        if (act.prepTime > 0) {
-                            state.phases.push({
-                                type: 'prep',
-                                roundGroupIndex: rgIndex,
-                                activityIndex: actIndex,
-                                round: round,
-                                duration: act.prepTime,
-                                activity: act
-                            });
-                        }
-                        
                         // Work phase
                         state.phases.push({
                             type: 'work',
@@ -1535,42 +1541,69 @@
                             activityIndex: actIndex,
                             round: round,
                             duration: act.duration || 0,
-                            timeCapSeconds: act.timeCapSeconds || 0,
                             activity: act
                         });
                         
-                        // Rest between rounds (not after last round of last activity in group)
-                        if (round < rg.rounds || actIndex < rg.activities.length - 1) {
-                            if (act.restBetweenRounds > 0) {
+                        // Rest between activities (after each activity, except after the last activity of the last round)
+                        // Add rest if: not the last activity of the last round
+                        const isLastActivityOfLastRound = (round === rg.rounds && actIndex === rg.activities.length - 1);
+                        if (!isLastActivityOfLastRound && act.restBetweenActivities > 0) {
+                            state.phases.push({
+                                type: 'rest',
+                                roundGroupIndex: rgIndex,
+                                activityIndex: actIndex,
+                                round: round,
+                                duration: act.restBetweenActivities,
+                                activity: act
+                            });
+                        }
+                        
+                        // Rest between rounds (after completing all activities in a round, before starting next round)
+                        // Add rest if: this is the last activity of this round, and there are more rounds
+                        if (round < rg.rounds && actIndex === rg.activities.length - 1) {
+                            if (rg.restBetweenRounds > 0) {
                                 state.phases.push({
                                     type: 'rest',
                                     roundGroupIndex: rgIndex,
                                     activityIndex: actIndex,
                                     round: round,
-                                    duration: act.restBetweenRounds,
+                                    duration: rg.restBetweenRounds,
                                     activity: act
                                 });
                             }
                         }
                         
-                        // Rest after phase (after last round of last activity in group)
-                        if (round === rg.rounds && actIndex === rg.activities.length - 1) {
-                            if (act.restAfterPhase > 0) {
-                                state.phases.push({
-                                    type: 'restAfter',
-                                    roundGroupIndex: rgIndex,
-                                    activityIndex: actIndex,
-                                    round: round,
-                                    duration: act.restAfterPhase,
-                                    activity: act
-                                });
-                            }
-                        }
                     }
                 }
             }
             
             return state;
+        }
+        
+        // Helper function to calculate current activity number and total activities
+        function getActivityCounts(phase) {
+            if (!phase || !roundGroups || roundGroups.length === 0) {
+                return { currentActivity: 1, totalActivities: 1 };
+            }
+            
+            // Calculate total activities across all round groups
+            let totalActivities = 0;
+            for (let rg of roundGroups) {
+                totalActivities += rg.activities ? rg.activities.length : 0;
+            }
+            
+            // Calculate current activity number
+            let currentActivity = 0; // Start at 0, will add 1 at end
+            // Sum all activities in previous round groups
+            for (let rgIndex = 0; rgIndex < phase.roundGroupIndex; rgIndex++) {
+                if (roundGroups[rgIndex] && roundGroups[rgIndex].activities) {
+                    currentActivity += roundGroups[rgIndex].activities.length;
+                }
+            }
+            // Add the current activity index (0-based) and convert to 1-based
+            currentActivity += phase.activityIndex + 1;
+            
+            return { currentActivity, totalActivities };
         }
         
         // Start/stop time of day update interval for rep-based work phases
@@ -1634,7 +1667,6 @@
             if (!currentWorkoutState || currentWorkoutState.phases.length === 0) {
                 display.textContent = '00:00';
                 phaseLabel.textContent = 'Ready';
-                statusText.textContent = 'Ready';
                 roundInfo.textContent = '';
                 return;
             }
@@ -1649,7 +1681,8 @@
                     display.textContent = '00:00';
                     phaseLabel.textContent = `Ready for next round: ${nextAct.name}`;
                     if (rg) {
-                        roundInfo.textContent = `${rg.name || 'Group'} ${nextPhase.round} of ${rg.rounds} - ${nextAct.name}`;
+                        const activityCounts = getActivityCounts(nextPhase);
+                        roundInfo.textContent = `${rg.name || 'Group'} ${nextPhase.round} of ${rg.rounds} Activity ${activityCounts.currentActivity} of ${activityCounts.totalActivities} - ${nextAct.name}`;
                     }
                     return;
                 }
@@ -1676,36 +1709,13 @@
             let phaseText = '';
             
             // Determine what to show
-            if (phase.type === 'prep') {
-                phaseText = 'Prep';
-                displayText = formatTime(currentTime);
-            } else if (phase.type === 'work') {
-                // Check if rep-based with time cap
+            if (phase.type === 'work') {
+                // Check if rep-based with no duration
                 const hasNoDuration = (act.duration === 0 || act.duration === null || act.duration === undefined) || 
                                       (phase.duration === 0 || phase.duration === null || phase.duration === undefined);
-                const hasTimeCap = phase.timeCapSeconds && phase.timeCapSeconds > 0;
                 
-                if (act.mode === 'rep' && hasTimeCap) {
-                    // Rep-based with time cap - show cap countdown as main clock, elapsed as secondary
-                    phaseText = act.name;
-                    displayText = formatTime(timeCapCountdown);
-                    
-                    // Calculate elapsed time from segment start
-                    const segment = getCurrentRepBasedSegment();
-                    let elapsedSeconds = 0;
-                    if (segment && segment.startTime) {
-                        const now = new Date();
-                        elapsedSeconds = Math.floor((now - segment.startTime) / 1000);
-                    }
-                    
-                    // Update roundInfo to show elapsed time
-                    const rg = roundGroups[phase.roundGroupIndex];
-                    if (rg) {
-                        const audioStatus = (act.audioEnabled !== false) ? 'On' : 'Off';
-                        roundInfo.textContent = `${rg.name || 'Group'} ${phase.round} of ${rg.rounds} - ${act.name} | Elapsed: ${formatTime(elapsedSeconds)} | Audio: ${audioStatus}`;
-                    }
-                } else if (act.mode === 'rep' && hasNoDuration) {
-                    // Rep-based with no time cap - show time of day clock
+                if (act.mode === 'rep' && hasNoDuration) {
+                    // Rep-based with no duration - show time of day clock
                     phaseText = act.name;
                     displayText = formatTimeOfDay();
                     
@@ -1713,24 +1723,10 @@
                     const rg = roundGroups[phase.roundGroupIndex];
                     if (rg) {
                         const audioStatus = (act.audioEnabled !== false) ? 'On' : 'Off';
-                        roundInfo.textContent = `${rg.name || 'Group'} ${phase.round} of ${rg.rounds} - ${act.name} | Audio: ${audioStatus}`;
+                        const activityCounts = getActivityCounts(phase);
+                        roundInfo.textContent = `${rg.name || 'Group'} ${phase.round} of ${rg.rounds} Activity ${activityCounts.currentActivity} of ${activityCounts.totalActivities} - ${act.name} | Audio: ${audioStatus}`;
                     }
-                } else if (act.mode === 'emom') {
-                    // EMOM: Show "Minute X of N" plus seconds remaining in current minute
-                    phaseText = act.name;
-                    if (emomTotalMinutes > 0) {
-                        displayText = `Minute ${emomCurrentMinute} of ${emomTotalMinutes} - ${formatTime(emomSecondsInMinute)}`;
-                    } else {
-                        displayText = formatTime(currentTime);
-                    }
-                    
-                    // Round info
-                    const rg = roundGroups[phase.roundGroupIndex];
-                    if (rg) {
-                        const audioStatus = (act.audioEnabled !== false) ? 'On' : 'Off';
-                        roundInfo.textContent = `${rg.name || 'Group'} ${phase.round} of ${rg.rounds} - ${act.name} | Audio: ${audioStatus}`;
-                    }
-                } else if (act.mode === 'time' || act.mode === 'amrap') {
+                } else if (act.mode === 'time' || act.mode === 'amrap' || act.mode === 'emom') {
                     phaseText = act.name;
                     displayText = formatTime(currentTime);
                     
@@ -1738,7 +1734,8 @@
                     const rg = roundGroups[phase.roundGroupIndex];
                     if (rg) {
                         const audioStatus = (act.audioEnabled !== false) ? 'On' : 'Off';
-                        roundInfo.textContent = `${rg.name || 'Group'} ${phase.round} of ${rg.rounds} - ${act.name} | Audio: ${audioStatus}`;
+                        const activityCounts = getActivityCounts(phase);
+                        roundInfo.textContent = `${rg.name || 'Group'} ${phase.round} of ${rg.rounds} Activity ${activityCounts.currentActivity} of ${activityCounts.totalActivities} - ${act.name} | Audio: ${audioStatus}`;
                     }
                 } else {
                     phaseText = act.name;
@@ -1748,10 +1745,11 @@
                     const rg = roundGroups[phase.roundGroupIndex];
                     if (rg) {
                         const audioStatus = (act.audioEnabled !== false) ? 'On' : 'Off';
-                        roundInfo.textContent = `${rg.name || 'Group'} ${phase.round} of ${rg.rounds} - ${act.name} | Audio: ${audioStatus}`;
+                        const activityCounts = getActivityCounts(phase);
+                        roundInfo.textContent = `${rg.name || 'Group'} ${phase.round} of ${rg.rounds} Activity ${activityCounts.currentActivity} of ${activityCounts.totalActivities} - ${act.name} | Audio: ${audioStatus}`;
                     }
                 }
-            } else if (phase.type === 'rest' || phase.type === 'restAfter') {
+            } else if (phase.type === 'rest') {
                 phaseText = 'Rest';
                 displayText = formatTime(currentTime);
                 
@@ -1759,31 +1757,17 @@
                 const rg = roundGroups[phase.roundGroupIndex];
                 if (rg) {
                     const audioStatus = (act.audioEnabled !== false) ? 'On' : 'Off';
-                    roundInfo.textContent = `${rg.name || 'Group'} ${phase.round} of ${rg.rounds} - ${act.name} | Audio: ${audioStatus}`;
+                    const activityCounts = getActivityCounts(phase);
+                    roundInfo.textContent = `${rg.name || 'Group'} ${phase.round} of ${rg.rounds} Activity ${activityCounts.currentActivity} of ${activityCounts.totalActivities} - ${act.name} | Audio: ${audioStatus}`;
                 }
             }
             
             phaseLabel.textContent = phaseText;
             display.textContent = displayText;
             
-            // Only set roundInfo if not already set above (for rep-based with time cap)
-            if (phase.type === 'work' && act.mode === 'rep' && phase.timeCapSeconds && phase.timeCapSeconds > 0) {
-                // Already set above, skip
-            } else if (phase.type === 'work' || phase.type === 'rest' || phase.type === 'restAfter') {
-                // Round info already set above for these cases
-            }
-            
             // Color coding for countdown timers
             display.classList.remove('warning', 'danger');
-            if (phase.type === 'work' && act.mode === 'rep' && phase.timeCapSeconds && phase.timeCapSeconds > 0) {
-                // Color coding for time cap countdown
-                const percentRemaining = timeCapCountdown / phase.timeCapSeconds;
-                if (percentRemaining <= 0.1) {
-                    display.classList.add('danger');
-                } else if (percentRemaining <= 0.3) {
-                    display.classList.add('warning');
-                }
-            } else if (phase.duration > 0 && (phase.type === 'work' || phase.type === 'rest' || phase.type === 'restAfter' || phase.type === 'prep')) {
+            if (phase.duration > 0 && (phase.type === 'work' || phase.type === 'rest')) {
                 const percentRemaining = currentTime / phase.duration;
                 if (percentRemaining <= 0.1) {
                     display.classList.add('danger');
@@ -1812,6 +1796,10 @@
                         <label>Rounds (times to repeat this group)</label>
                         <input type="number" value="${rg.rounds || 1}" min="1" data-rg-index="${rgIndex}" data-field="rounds" style="width: 100%;">
                     </div>
+                    <div class="input-group" style="margin-bottom: 1rem;">
+                        <label>Rest Between Rounds (MM:SS or seconds)</label>
+                        <input type="text" value="${rg.restBetweenRounds ? (rg.restBetweenRounds >= 60 ? formatTime(rg.restBetweenRounds) : rg.restBetweenRounds) : ''}" placeholder="00:00" data-rg-index="${rgIndex}" data-field="restBetweenRounds" style="width: 100%;">
+                    </div>
                     <div class="activities-container" data-rg-index="${rgIndex}"></div>
                     <button class="btn-add" onclick="addActivity(${rgIndex})" style="width: 100%; margin-top: 0.5rem;">+ Add Activity</button>
                 `;
@@ -1838,6 +1826,16 @@
                         updateButtonStates();
                     });
                 }
+                
+                // Round group restBetweenRounds input handler
+                const restBetweenRoundsInput = rgCard.querySelector('input[data-field="restBetweenRounds"]');
+                if (restBetweenRoundsInput) {
+                    restBetweenRoundsInput.addEventListener('input', function() {
+                        const value = this.value;
+                        rg.restBetweenRounds = parseTime(value);
+                        updateWorkoutSteps();
+                    });
+                }
             });
             
             updateWorkoutSteps();
@@ -1860,8 +1858,6 @@
                     <select data-rg-index="${rgIndex}" data-act-index="${actIndex}" data-field="mode">
                         <option value="time" ${act.mode === 'time' ? 'selected' : ''}>Time-based</option>
                         <option value="rep" ${act.mode === 'rep' ? 'selected' : ''}>Rep-based</option>
-                        <option value="emom" ${act.mode === 'emom' ? 'selected' : ''}>EMOM</option>
-                        <option value="amrap" ${act.mode === 'amrap' ? 'selected' : ''}>AMRAP</option>
                     </select>
                 </div>
                 <div class="input-group">
@@ -1873,20 +1869,10 @@
                     <input type="number" value="${act.repsTarget || ''}" placeholder="0" data-rg-index="${rgIndex}" data-act-index="${actIndex}" data-field="repsTarget">
                 </div>
                 <div class="input-group">
-                    <label>Time Cap (MM:SS or seconds) - Optional hard end time for rep-based rounds</label>
-                    <input type="text" value="${act.timeCapSeconds ? (act.timeCapSeconds >= 60 ? formatTime(act.timeCapSeconds) : act.timeCapSeconds) : ''}" placeholder="00:00" data-rg-index="${rgIndex}" data-act-index="${actIndex}" data-field="timeCapSeconds">
+                    <label>Rest Between Activities (MM:SS or seconds)</label>
+                    <input type="text" value="${act.restBetweenActivities ? (act.restBetweenActivities >= 60 ? formatTime(act.restBetweenActivities) : act.restBetweenActivities) : ''}" placeholder="00:00" data-rg-index="${rgIndex}" data-act-index="${actIndex}" data-field="restBetweenActivities">
                 </div>
                 <div class="input-group">
-                    <label>Rest Between Rounds (MM:SS or seconds)</label>
-                    <input type="text" value="${act.restBetweenRounds ? (act.restBetweenRounds >= 60 ? formatTime(act.restBetweenRounds) : act.restBetweenRounds) : ''}" placeholder="00:00" data-rg-index="${rgIndex}" data-act-index="${actIndex}" data-field="restBetweenRounds">
-                </div>
-                <div class="input-group">
-                    <label>Rest After Phase (MM:SS or seconds)</label>
-                    <input type="text" value="${act.restAfterPhase ? (act.restAfterPhase >= 60 ? formatTime(act.restAfterPhase) : act.restAfterPhase) : ''}" placeholder="00:00" data-rg-index="${rgIndex}" data-act-index="${actIndex}" data-field="restAfterPhase">
-                </div>
-                <div class="input-group">
-                    <label>Prep Time (MM:SS or seconds)</label>
-                    <input type="text" value="${act.prepTime ? (act.prepTime >= 60 ? formatTime(act.prepTime) : act.prepTime) : ''}" placeholder="00:05" data-rg-index="${rgIndex}" data-act-index="${actIndex}" data-field="prepTime">
                 </div>
                 <div class="input-group" style="display: flex; align-items: center; gap: 0.5rem;">
                     <label style="margin-bottom: 0; flex: 1;">Audio cues</label>
@@ -1911,7 +1897,7 @@
                         roundGroups[rgIdx].activities[actIdx][field] = this.checked;
                     } else {
                         const value = this.value;
-                        if (field === 'duration' || field === 'restBetweenRounds' || field === 'restAfterPhase' || field === 'prepTime' || field === 'timeCapSeconds') {
+                        if (field === 'duration' || field === 'restBetweenActivities' || field === 'restBetweenRounds') {
                             roundGroups[rgIdx].activities[actIdx][field] = parseTime(value);
                         } else if (field === 'repsTarget') {
                             roundGroups[rgIdx].activities[actIdx][field] = parseInt(value) || 0;
@@ -1933,6 +1919,7 @@
                 id: generateId(),
                 name: '',
                 rounds: 1,
+                restBetweenRounds: 0,
                 activities: []
             });
             renderActivities();
@@ -1952,10 +1939,7 @@
                 mode: 'time',
                 duration: 0,
                 repsTarget: 0,
-                timeCapSeconds: 0,
-                restBetweenRounds: 0,
-                restAfterPhase: 0,
-                prepTime: 5,
+                restBetweenActivities: 0,
                 notes: '',
                 audioEnabled: true
             });
@@ -2016,16 +2000,13 @@
                             durationText = `Duration: ${formatTime(act.duration)}`;
                         } else if (act.mode === 'rep' && act.repsTarget > 0) {
                             durationText = `Reps: ${act.repsTarget}`;
-                        } else if (act.mode === 'emom' && act.duration > 0) {
-                            durationText = `EMOM: ${formatTime(act.duration)}`;
-                        } else if (act.mode === 'amrap' && act.duration > 0) {
-                            durationText = `AMRAP: ${formatTime(act.duration)}`;
+                        } else if ((act.mode === 'time' || act.mode === 'amrap' || act.mode === 'emom') && act.duration > 0) {
+                            durationText = formatTime(act.duration);
                         }
                         
-                        // Build details array for other info (rest, prep, etc.)
+                        // Build details array for other info (rest, etc.)
                         let otherDetails = [];
-                        if (act.restBetweenRounds > 0) otherDetails.push(`Rest: ${formatTime(act.restBetweenRounds)}`);
-                        if (act.prepTime > 0) otherDetails.push(`Prep: ${formatTime(act.prepTime)}`);
+                        if (act.restBetweenActivities > 0) otherDetails.push(`Rest: ${formatTime(act.restBetweenActivities)}`);
                         
                         // Build the details line with Duration/Reps and Start time
                         let detailsLine = [];
@@ -2076,7 +2057,7 @@
         function updateButtonStates() {
             const isValid = hasValidTimerData();
             
-            // Disable workout select when timer is running
+            // Enable workout select when paused or stopped (allow workout changes)
             if (workoutSelect) {
                 workoutSelect.disabled = isRunning && !isPaused;
             }
@@ -2099,12 +2080,13 @@
                 setupBtn.style.display = 'none';
                 repeatWorkoutBtn.style.display = 'none';
             } else if (isPaused) {
+                // When paused, allow access to setup to change workouts
                 startBtn.style.display = 'inline-block';
                 startBtn.textContent = 'Resume';
                 pauseBtn.style.display = 'none';
                 resetBtn.style.display = 'inline-block';
                 clearBtn.style.display = 'inline-block';
-                setupBtn.style.display = 'none';
+                setupBtn.style.display = 'inline-block';
                 repeatWorkoutBtn.style.display = 'none';
             } else if (isArmed) {
                 // Armed state - ready for next round
@@ -2122,7 +2104,7 @@
                 repeatWorkoutBtn.style.display = 'inline-block';
                 resetBtn.style.display = 'inline-block';
                 clearBtn.style.display = 'inline-block';
-                setupBtn.style.display = 'none';
+                setupBtn.style.display = 'inline-block';
             } else {
                 if (isValid) {
                     startBtn.style.display = 'inline-block';
@@ -2164,12 +2146,6 @@
                 const phase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
                 if (phase) {
                     currentTime = phase.duration;
-                    // Initialize time cap countdown for rep-based rounds with time cap
-                    if (phase.type === 'work' && phase.activity && phase.activity.mode === 'rep' && phase.timeCapSeconds && phase.timeCapSeconds > 0) {
-                        timeCapCountdown = phase.timeCapSeconds;
-                    } else {
-                        timeCapCountdown = 0;
-                    }
                     // Initialize EMOM tracking if entering EMOM phase
                     if (phase.type === 'work' && phase.activity && phase.activity.mode === 'emom' && phase.duration > 0) {
                         emomTotalMinutes = Math.floor(phase.duration / 60);
@@ -2192,15 +2168,14 @@
                 updateDisplay();
                 updateButtonStates();
                 
-                timerInterval = setInterval(() => {
+                // Define timer function
+                const timerTick = () => {
                     const phase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
                     const act = phase && phase.activity;
                     const hasNoDuration = act && ((act.duration === 0 || act.duration === null || act.duration === undefined) || 
                                           (phase.duration === 0 || phase.duration === null || phase.duration === undefined));
                     const isRepBasedWorkWithNoDuration = phase && phase.type === 'work' && 
                         act && act.mode === 'rep' && hasNoDuration;
-                    const isRepBasedWorkWithTimeCap = phase && phase.type === 'work' && 
-                        act && act.mode === 'rep' && phase.timeCapSeconds && phase.timeCapSeconds > 0;
                     
                     // Reset EMOM tracking if we're not in an EMOM work phase
                     const isEmomWorkPhase = phase && phase.type === 'work' && act && act.mode === 'emom';
@@ -2208,64 +2183,6 @@
                         emomTotalMinutes = 0;
                         emomCurrentMinute = 1;
                         emomSecondsInMinute = 60;
-                    }
-                    
-                    // Handle rep-based work with time cap
-                    if (isRepBasedWorkWithTimeCap) {
-                        // Play countdown beeps at 3, 2, 1 seconds
-                        if (timeCapCountdown > 0 && timeCapCountdown <= 3) {
-                            playCountdownBeep(phase, timeCapCountdown);
-                        }
-                        
-                        if (timeCapCountdown > 0) {
-                            timeCapCountdown--;
-                        }
-                        
-                        // Auto-end when time cap hits 0
-                        if (timeCapCountdown <= 0) {
-                            // Play three low tones if work phase is ending
-                            if (phase && phase.type === 'work') {
-                                playThreeLowTones(phase);
-                            } else {
-                                playTransitionBeep(phase);
-                            }
-                            
-                            // Record stop time for this rep-based segment
-                            recordRepBasedSegmentStop();
-                            
-                            // Clear rep-based work tracking when leaving phase
-                            updateTimeOfDayInterval();
-                            
-                            // Move to next phase
-                            const nextPhaseIndex = currentWorkoutState.currentPhaseIndex + 1;
-                            if (nextPhaseIndex >= currentWorkoutState.phases.length) {
-                                // Workout complete
-                                if (phase && phase.type === 'work') {
-                                    playThreeLowTones(phase);
-                                } else {
-                                    playTransitionBeep(phase);
-                                }
-                                handleWorkoutComplete();
-                                return;
-                            }
-                            
-                            // Auto-advance to next phase (including across activity boundaries for mobility timer)
-                            const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
-                            currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
-                            currentTime = nextPhase.duration;
-                            // Initialize time cap for next phase if applicable
-                            if (nextPhase.type === 'work' && nextPhase.activity && nextPhase.activity.mode === 'rep' && nextPhase.timeCapSeconds && nextPhase.timeCapSeconds > 0) {
-                                timeCapCountdown = nextPhase.timeCapSeconds;
-                            } else {
-                                timeCapCountdown = 0;
-                            }
-                            checkAndRecordRepBasedStart(); // Record start time if entering rep-based work phase
-                            updateTimeOfDayInterval();
-                            updateButtonStates();
-                        }
-                        
-                        updateDisplay();
-                        return;
                     }
                     
                     // For rep-based work with no duration, time of day is updated by separate interval
@@ -2317,19 +2234,13 @@
                                 // Auto-advance to next phase (including across activity boundaries for mobility timer)
                                 const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
                                 
-                                // If prep or rest phase just ended and next phase is work, play three chimes (but not if coming from prep)
-                                if ((completedPhase.type === 'rest' || completedPhase.type === 'restAfter') && nextPhase && nextPhase.type === 'work') {
+                                // If rest phase just ended and next phase is work, play three chimes
+                                if (completedPhase.type === 'rest' && nextPhase && nextPhase.type === 'work') {
                                     playThreeChimes(completedPhase);
                                 }
                                 
                                 currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
                                 currentTime = nextPhase.duration;
-                                // Initialize time cap for next phase if applicable
-                                if (nextPhase.type === 'work' && nextPhase.activity && nextPhase.activity.mode === 'rep' && nextPhase.timeCapSeconds && nextPhase.timeCapSeconds > 0) {
-                                    timeCapCountdown = nextPhase.timeCapSeconds;
-                                } else {
-                                    timeCapCountdown = 0;
-                                }
                                 // Initialize EMOM tracking for next phase if applicable
                                 if (nextPhase.type === 'work' && nextPhase.activity && nextPhase.activity.mode === 'emom' && nextPhase.duration > 0) {
                                     emomTotalMinutes = Math.floor(nextPhase.duration / 60);
@@ -2351,11 +2262,10 @@
                         return;
                     }
                     
-                    // Skip duration-based completion check for rep-based work with time cap
-                    // (time cap countdown is handled separately above)
-                    if (!isRepBasedWorkWithTimeCap) {
-                        // Play countdown beeps at 3, 2, 1 seconds - ONLY if not in prep phase
-                        if (currentTime > 0 && currentTime <= 3 && phase && phase.type !== 'prep') {
+                    // Handle duration-based completion check
+                    {
+                        // Play countdown beeps at 3, 2, 1 seconds
+                        if (currentTime > 0 && currentTime <= 3) {
                             const currentPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
                             playCountdownBeep(currentPhase, currentTime);
                         }
@@ -2364,7 +2274,7 @@
                             currentTime--;
                         }
                         
-                        // Check if phase is complete (only for non-time-cap rep-based phases)
+                        // Check if phase is complete
                         if (currentTime <= 0) {
                             // Play three low tones if work phase is ending, otherwise transition beep
                             const completedPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
@@ -2393,19 +2303,13 @@
                             // Auto-advance to next phase (including across activity boundaries for mobility timer)
                             const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
                             
-                            // If prep or rest phase just ended and next phase is work, play three chimes
-                            if ((completedPhase.type === 'prep' || completedPhase.type === 'rest' || completedPhase.type === 'restAfter') && nextPhase && nextPhase.type === 'work') {
+                            // If rest phase just ended and next phase is work, play three chimes
+                            if (completedPhase.type === 'rest' && nextPhase && nextPhase.type === 'work') {
                                 playThreeChimes(completedPhase);
                             }
                             
                             currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
                             currentTime = nextPhase.duration;
-                            // Initialize time cap for next phase if applicable
-                            if (nextPhase.type === 'work' && nextPhase.activity && nextPhase.activity.mode === 'rep' && nextPhase.timeCapSeconds && nextPhase.timeCapSeconds > 0) {
-                                timeCapCountdown = nextPhase.timeCapSeconds;
-                            } else {
-                                timeCapCountdown = 0;
-                            }
                             // Initialize EMOM tracking for next phase if applicable
                             if (nextPhase.type === 'work' && nextPhase.activity && nextPhase.activity.mode === 'emom' && nextPhase.duration > 0) {
                                 emomTotalMinutes = Math.floor(nextPhase.duration / 60);
@@ -2420,11 +2324,26 @@
                             checkAndRecordRepBasedStart(); // Record start time if entering rep-based work phase
                             updateTimeOfDayInterval();
                             updateButtonStates();
+                            
+                            // IMPORTANT: After transitioning, check if the new phase is rep-based with no duration
+                            // If so, return early to avoid immediately triggering another transition
+                            const nextAct = nextPhase && nextPhase.activity;
+                            const nextHasNoDuration = nextAct && ((nextAct.duration === 0 || nextAct.duration === null || nextAct.duration === undefined) || 
+                                                  (nextPhase.duration === 0 || nextPhase.duration === null || nextPhase.duration === undefined));
+                            const nextIsRepBasedWorkWithNoDuration = nextPhase && nextPhase.type === 'work' && 
+                                nextAct && nextAct.mode === 'rep' && nextHasNoDuration;
+                            if (nextIsRepBasedWorkWithNoDuration) {
+                                updateDisplay();
+                                return; // Time of day updates via timeOfDayInterval, don't continue countdown
+                            }
                         }
                     }
                     
                     updateDisplay();
-                }, 1000);
+                };
+                
+                // Start interval - it will wait 1 second before first execution, which is correct
+                timerInterval = setInterval(timerTick, 1000);
                 return;
             }
             
@@ -2443,12 +2362,6 @@
             currentWorkoutState.currentPhaseIndex = 0;
             const phase = currentWorkoutState.phases[0];
             currentTime = phase.duration;
-            // Initialize time cap countdown for rep-based rounds with time cap
-            if (phase.type === 'work' && phase.activity && phase.activity.mode === 'rep' && phase.timeCapSeconds && phase.timeCapSeconds > 0) {
-                timeCapCountdown = phase.timeCapSeconds;
-            } else {
-                timeCapCountdown = 0;
-            }
             // Initialize EMOM tracking if starting with EMOM phase
             if (phase.type === 'work' && phase.activity && phase.activity.mode === 'emom' && phase.duration > 0) {
                 emomTotalMinutes = Math.floor(phase.duration / 60);
@@ -2475,73 +2388,14 @@
             updateDisplay();
             updateButtonStates();
             
-            timerInterval = setInterval(() => {
+            // Define timer function
+            const timerTick = () => {
                 const phase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
                 const act = phase && phase.activity;
                 const hasNoDuration = act && ((act.duration === 0 || act.duration === null || act.duration === undefined) || 
                                       (phase.duration === 0 || phase.duration === null || phase.duration === undefined));
                 const isRepBasedWorkWithNoDuration = phase && phase.type === 'work' && 
                     act && act.mode === 'rep' && hasNoDuration;
-                const isRepBasedWorkWithTimeCap = phase && phase.type === 'work' && 
-                    act && act.mode === 'rep' && phase.timeCapSeconds && phase.timeCapSeconds > 0;
-                
-                // Handle rep-based work with time cap
-                if (isRepBasedWorkWithTimeCap) {
-                    // Play countdown beeps at 3, 2, 1 seconds
-                    if (timeCapCountdown > 0 && timeCapCountdown <= 3) {
-                        playCountdownBeep(phase);
-                    }
-                    
-                    if (timeCapCountdown > 0) {
-                        timeCapCountdown--;
-                    }
-                    
-                    // Auto-end when time cap hits 0
-                    if (timeCapCountdown <= 0) {
-                        // Play three low tones if work phase is ending
-                        if (phase && phase.type === 'work') {
-                            playThreeLowTones(phase);
-                        } else {
-                            playTransitionBeep(phase);
-                        }
-                        
-                        // Record stop time for this rep-based segment
-                        recordRepBasedSegmentStop();
-                        
-                        // Clear rep-based work tracking when leaving phase
-                        updateTimeOfDayInterval();
-                        
-                        // Move to next phase
-                        const nextPhaseIndex = currentWorkoutState.currentPhaseIndex + 1;
-                        if (nextPhaseIndex >= currentWorkoutState.phases.length) {
-                            // Workout complete
-                            if (phase && phase.type === 'work') {
-                                playThreeLowTones(phase);
-                            } else {
-                                playTransitionBeep(phase);
-                            }
-                            stopTimer();
-                            return;
-                        }
-                        
-                        // Auto-advance to next phase (including across activity boundaries for mobility timer)
-                        const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
-                        currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
-                        currentTime = nextPhase.duration;
-                        // Initialize time cap for next phase if applicable
-                        if (nextPhase.type === 'work' && nextPhase.activity && nextPhase.activity.mode === 'rep' && nextPhase.timeCapSeconds && nextPhase.timeCapSeconds > 0) {
-                            timeCapCountdown = nextPhase.timeCapSeconds;
-                        } else {
-                            timeCapCountdown = 0;
-                        }
-                        checkAndRecordRepBasedStart(); // Record start time if entering rep-based work phase
-                        updateTimeOfDayInterval();
-                        updateButtonStates();
-                    }
-                    
-                    updateDisplay();
-                    return;
-                }
                 
                 // For rep-based work with no duration, time of day is updated by separate interval
                 if (isRepBasedWorkWithNoDuration) {
@@ -2592,19 +2446,13 @@
                             // Auto-advance to next phase (including across activity boundaries for mobility timer)
                             const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
                             
-                            // If prep or rest phase just ended and next phase is work, play three chimes
-                            if ((completedPhase.type === 'prep' || completedPhase.type === 'rest' || completedPhase.type === 'restAfter') && nextPhase && nextPhase.type === 'work') {
+                            // If rest phase just ended and next phase is work, play three chimes
+                            if (completedPhase.type === 'rest' && nextPhase && nextPhase.type === 'work') {
                                 playThreeChimes(completedPhase);
                             }
                             
                             currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
                             currentTime = nextPhase.duration;
-                            // Initialize time cap for next phase if applicable
-                            if (nextPhase.type === 'work' && nextPhase.activity && nextPhase.activity.mode === 'rep' && nextPhase.timeCapSeconds && nextPhase.timeCapSeconds > 0) {
-                                timeCapCountdown = nextPhase.timeCapSeconds;
-                            } else {
-                                timeCapCountdown = 0;
-                            }
                             // Initialize EMOM tracking for next phase if applicable
                             if (nextPhase.type === 'work' && nextPhase.activity && nextPhase.activity.mode === 'emom' && nextPhase.duration > 0) {
                                 emomTotalMinutes = Math.floor(nextPhase.duration / 60);
@@ -2626,9 +2474,8 @@
                     return;
                 }
                 
-                // Skip duration-based completion check for rep-based work with time cap
-                // (time cap countdown is handled separately above)
-                if (!isRepBasedWorkWithTimeCap) {
+                // Handle duration-based completion check
+                {
                     // Play countdown beeps at 3, 2, 1 seconds
                     if (currentTime > 0 && currentTime <= 3) {
                         const currentPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
@@ -2661,19 +2508,8 @@
                         const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
                         currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
                         
-                        // If prep phase just ended and next phase is work, play three beeps
-                        if (completedPhase.type === 'prep' && nextPhase && nextPhase.type === 'work') {
-                            playThreeBeeps(completedPhase);
-                        }
                         
-                        currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
                         currentTime = nextPhase.duration;
-                        // Initialize time cap for next phase if applicable
-                        if (nextPhase.type === 'work' && nextPhase.activity && nextPhase.activity.mode === 'rep' && nextPhase.timeCapSeconds && nextPhase.timeCapSeconds > 0) {
-                            timeCapCountdown = nextPhase.timeCapSeconds;
-                        } else {
-                            timeCapCountdown = 0;
-                        }
                         // Initialize EMOM tracking for next phase if applicable
                         if (nextPhase.type === 'work' && nextPhase.activity && nextPhase.activity.mode === 'emom' && nextPhase.duration > 0) {
                             emomTotalMinutes = Math.floor(nextPhase.duration / 60);
@@ -2688,11 +2524,27 @@
                         checkAndRecordRepBasedStart(); // Record start time if entering rep-based work phase
                         updateTimeOfDayInterval();
                         updateButtonStates(); // Update button states when transitioning phases
+                        
+                        // IMPORTANT: After transitioning, check if the new phase is rep-based with no duration
+                        // If so, return early to avoid immediately triggering another transition
+                        const nextAct = nextPhase && nextPhase.activity;
+                        const nextHasNoDuration = nextAct && ((nextAct.duration === 0 || nextAct.duration === null || nextAct.duration === undefined) || 
+                                              (nextPhase.duration === 0 || nextPhase.duration === null || nextPhase.duration === undefined));
+                        const nextIsRepBasedWorkWithNoDuration = nextPhase && nextPhase.type === 'work' && 
+                            nextAct && nextAct.mode === 'rep' && nextHasNoDuration;
+                        if (nextIsRepBasedWorkWithNoDuration) {
+                            updateDisplay();
+                            return; // Time of day updates via timeOfDayInterval, don't continue countdown
+                        }
                     }
                 }
                 
                 updateDisplay();
-            }, 1000);
+            };
+            
+            // Start interval - it will wait 1 second before first execution, which is correct
+            // The display already shows the initial time (10 seconds), so we wait 1 second before decrementing
+            timerInterval = setInterval(timerTick, 1000);
         }
         
         function pauseTimer() {
@@ -2714,15 +2566,15 @@
                 isRunning = true;
                 isPaused = false;
                 updateTimeOfDayInterval();
-                timerInterval = setInterval(() => {
+                
+                // Define timer function
+                const timerTick = () => {
                     const phase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
                     const act = phase && phase.activity;
                     const hasNoDuration = act && ((act.duration === 0 || act.duration === null || act.duration === undefined) || 
                                           (phase.duration === 0 || phase.duration === null || phase.duration === undefined));
                     const isRepBasedWorkWithNoDuration = phase && phase.type === 'work' && 
                         act && act.mode === 'rep' && hasNoDuration;
-                    const isRepBasedWorkWithTimeCap = phase && phase.type === 'work' && 
-                        act && act.mode === 'rep' && phase.timeCapSeconds && phase.timeCapSeconds > 0;
                     
                     // Reset EMOM tracking if we're not in an EMOM work phase
                     const isEmomWorkPhase = phase && phase.type === 'work' && act && act.mode === 'emom';
@@ -2730,64 +2582,6 @@
                         emomTotalMinutes = 0;
                         emomCurrentMinute = 1;
                         emomSecondsInMinute = 60;
-                    }
-                    
-                    // Handle rep-based work with time cap
-                    if (isRepBasedWorkWithTimeCap) {
-                        // Play countdown beeps at 3, 2, 1 seconds
-                        if (timeCapCountdown > 0 && timeCapCountdown <= 3) {
-                            playCountdownBeep(phase, timeCapCountdown);
-                        }
-                        
-                        if (timeCapCountdown > 0) {
-                            timeCapCountdown--;
-                        }
-                        
-                        // Auto-end when time cap hits 0
-                        if (timeCapCountdown <= 0) {
-                            // Play three low tones if work phase is ending
-                            if (phase && phase.type === 'work') {
-                                playThreeLowTones(phase);
-                            } else {
-                                playTransitionBeep(phase);
-                            }
-                            
-                            // Record stop time for this rep-based segment
-                            recordRepBasedSegmentStop();
-                            
-                            // Clear rep-based work tracking when leaving phase
-                            updateTimeOfDayInterval();
-                            
-                            // Move to next phase
-                            const nextPhaseIndex = currentWorkoutState.currentPhaseIndex + 1;
-                            if (nextPhaseIndex >= currentWorkoutState.phases.length) {
-                                // Workout complete
-                                if (phase && phase.type === 'work') {
-                                    playThreeLowTones(phase);
-                                } else {
-                                    playTransitionBeep(phase);
-                                }
-                                handleWorkoutComplete();
-                                return;
-                            }
-                            
-                            // Auto-advance to next phase (including across activity boundaries for mobility timer)
-                            const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
-                            currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
-                            currentTime = nextPhase.duration;
-                            // Initialize time cap for next phase if applicable
-                            if (nextPhase.type === 'work' && nextPhase.activity && nextPhase.activity.mode === 'rep' && nextPhase.timeCapSeconds && nextPhase.timeCapSeconds > 0) {
-                                timeCapCountdown = nextPhase.timeCapSeconds;
-                            } else {
-                                timeCapCountdown = 0;
-                            }
-                            checkAndRecordRepBasedStart(); // Record start time if entering rep-based work phase
-                            updateTimeOfDayInterval();
-                            updateButtonStates();
-                        }
-                        
-                        updateDisplay();
-                        return;
                     }
                     
                     // For rep-based work with no duration, time of day is updated by separate interval
@@ -2839,19 +2633,13 @@
                                 // Auto-advance to next phase (including across activity boundaries for mobility timer)
                                 const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
                                 
-                                // If prep or rest phase just ended and next phase is work, play three chimes (but not if coming from prep)
-                                if ((completedPhase.type === 'rest' || completedPhase.type === 'restAfter') && nextPhase && nextPhase.type === 'work') {
+                                // If rest phase just ended and next phase is work, play three chimes
+                                if (completedPhase.type === 'rest' && nextPhase && nextPhase.type === 'work') {
                                     playThreeChimes(completedPhase);
                                 }
                                 
                                 currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
                                 currentTime = nextPhase.duration;
-                                // Initialize time cap for next phase if applicable
-                                if (nextPhase.type === 'work' && nextPhase.activity && nextPhase.activity.mode === 'rep' && nextPhase.timeCapSeconds && nextPhase.timeCapSeconds > 0) {
-                                    timeCapCountdown = nextPhase.timeCapSeconds;
-                                } else {
-                                    timeCapCountdown = 0;
-                                }
                                 // Initialize EMOM tracking for next phase if applicable
                                 if (nextPhase.type === 'work' && nextPhase.activity && nextPhase.activity.mode === 'emom' && nextPhase.duration > 0) {
                                     emomTotalMinutes = Math.floor(nextPhase.duration / 60);
@@ -2873,11 +2661,10 @@
                         return;
                     }
                     
-                    // Skip duration-based completion check for rep-based work with time cap
-                    // (time cap countdown is handled separately above)
-                    if (!isRepBasedWorkWithTimeCap) {
-                        // Play countdown beeps at 3, 2, 1 seconds - ONLY if not in prep phase
-                        if (currentTime > 0 && currentTime <= 3 && phase && phase.type !== 'prep') {
+                    // Handle duration-based completion check
+                    {
+                        // Play countdown beeps at 3, 2, 1 seconds
+                        if (currentTime > 0 && currentTime <= 3) {
                             const currentPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
                             playCountdownBeep(currentPhase, currentTime);
                         }
@@ -2886,7 +2673,7 @@
                             currentTime--;
                         }
                         
-                        // Check if phase is complete (only for non-time-cap rep-based phases)
+                        // Check if phase is complete
                         if (currentTime <= 0) {
                             // Play three low tones if work phase is ending, otherwise transition beep
                             const completedPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
@@ -2915,19 +2702,13 @@
                             // Auto-advance to next phase (including across activity boundaries for mobility timer)
                             const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
                             
-                            // If prep or rest phase just ended and next phase is work, play three chimes
-                            if ((completedPhase.type === 'prep' || completedPhase.type === 'rest' || completedPhase.type === 'restAfter') && nextPhase && nextPhase.type === 'work') {
+                            // If rest phase just ended and next phase is work, play three chimes
+                            if (completedPhase.type === 'rest' && nextPhase && nextPhase.type === 'work') {
                                 playThreeChimes(completedPhase);
                             }
                             
                             currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
                             currentTime = nextPhase.duration;
-                            // Initialize time cap for next phase if applicable
-                            if (nextPhase.type === 'work' && nextPhase.activity && nextPhase.activity.mode === 'rep' && nextPhase.timeCapSeconds && nextPhase.timeCapSeconds > 0) {
-                                timeCapCountdown = nextPhase.timeCapSeconds;
-                            } else {
-                                timeCapCountdown = 0;
-                            }
                             // Initialize EMOM tracking for next phase if applicable
                             if (nextPhase.type === 'work' && nextPhase.activity && nextPhase.activity.mode === 'emom' && nextPhase.duration > 0) {
                                 emomTotalMinutes = Math.floor(nextPhase.duration / 60);
@@ -2942,11 +2723,26 @@
                             checkAndRecordRepBasedStart(); // Record start time if entering rep-based work phase
                             updateTimeOfDayInterval();
                             updateButtonStates();
+                            
+                            // IMPORTANT: After transitioning, check if the new phase is rep-based with no duration
+                            // If so, return early to avoid immediately triggering another transition
+                            const nextAct = nextPhase && nextPhase.activity;
+                            const nextHasNoDuration = nextAct && ((nextAct.duration === 0 || nextAct.duration === null || nextAct.duration === undefined) || 
+                                                  (nextPhase.duration === 0 || nextPhase.duration === null || nextPhase.duration === undefined));
+                            const nextIsRepBasedWorkWithNoDuration = nextPhase && nextPhase.type === 'work' && 
+                                nextAct && nextAct.mode === 'rep' && nextHasNoDuration;
+                            if (nextIsRepBasedWorkWithNoDuration) {
+                                updateDisplay();
+                                return; // Time of day updates via timeOfDayInterval, don't continue countdown
+                            }
                         }
                     }
                     
                     updateDisplay();
-                }, 1000);
+                };
+                
+                // Start interval - it will wait 1 second before first execution, which is correct
+                timerInterval = setInterval(timerTick, 1000);
                 updateButtonStates();
             }
         }
@@ -3018,12 +2814,6 @@
             const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
             currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
             currentTime = nextPhase.duration;
-            // Initialize time cap for next phase if applicable
-            if (nextPhase.type === 'work' && nextPhase.activity && nextPhase.activity.mode === 'rep' && nextPhase.timeCapSeconds && nextPhase.timeCapSeconds > 0) {
-                timeCapCountdown = nextPhase.timeCapSeconds;
-            } else {
-                timeCapCountdown = 0;
-            }
             
             // Update time of day interval when leaving phase
             updateTimeOfDayInterval();
@@ -3039,75 +2829,14 @@
                                       (phase.duration === 0 || phase.duration === null || phase.duration === undefined));
                 const isRepBasedWorkWithNoDuration = phase && phase.type === 'work' && 
                     act && act.mode === 'rep' && hasNoDuration;
-                const isRepBasedWorkWithTimeCap = phase && phase.type === 'work' && 
-                    act && act.mode === 'rep' && phase.timeCapSeconds && phase.timeCapSeconds > 0;
-                
-                // Handle rep-based work with time cap
-                if (isRepBasedWorkWithTimeCap) {
-                    // Play countdown beeps at 3, 2, 1 seconds
-                    if (timeCapCountdown > 0 && timeCapCountdown <= 3) {
-                        playCountdownBeep(phase);
-                    }
-                    
-                    if (timeCapCountdown > 0) {
-                        timeCapCountdown--;
-                    }
-                    
-                    // Auto-end when time cap hits 0
-                    if (timeCapCountdown <= 0) {
-                        // Play three low tones if work phase is ending
-                        if (phase && phase.type === 'work') {
-                            playThreeLowTones(phase);
-                        } else {
-                            playTransitionBeep(phase);
-                        }
-                        
-                        // Record stop time for this rep-based segment
-                        recordRepBasedSegmentStop();
-                        
-                        // Clear rep-based work tracking when leaving phase
-                        updateTimeOfDayInterval();
-                        
-                        // Move to next phase
-                        const nextPhaseIndex = currentWorkoutState.currentPhaseIndex + 1;
-                        if (nextPhaseIndex >= currentWorkoutState.phases.length) {
-                            // Workout complete
-                            if (phase && phase.type === 'work') {
-                                playThreeLowTones(phase);
-                            } else {
-                                playTransitionBeep(phase);
-                            }
-                            stopTimer();
-                            return;
-                        }
-                        
-                        // Auto-advance to next phase (including across activity boundaries for mobility timer)
-                        const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
-                        currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
-                        currentTime = nextPhase.duration;
-                        // Initialize time cap for next phase if applicable
-                        if (nextPhase.type === 'work' && nextPhase.activity && nextPhase.activity.mode === 'rep' && nextPhase.timeCapSeconds && nextPhase.timeCapSeconds > 0) {
-                            timeCapCountdown = nextPhase.timeCapSeconds;
-                        } else {
-                            timeCapCountdown = 0;
-                        }
-                        checkAndRecordRepBasedStart(); // Record start time if entering rep-based work phase
-                        updateTimeOfDayInterval();
-                        updateButtonStates();
-                    }
-                    
-                    updateDisplay();
-                    return;
-                }
                 
                 // For rep-based work with no duration, time of day is updated by separate interval
                 if (isRepBasedWorkWithNoDuration) {
                     return; // Time of day updates via timeOfDayInterval
                 }
                 
-                // Skip duration-based completion check for rep-based work with time cap
-                // (time cap countdown is handled separately above)
-                if (!isRepBasedWorkWithTimeCap) {
+                // Handle duration-based completion check
+                {
                     // Play countdown beeps at 3, 2, 1 seconds
                     if (currentTime > 0 && currentTime <= 3) {
                         const currentPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
@@ -3140,20 +2869,26 @@
                         currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
                         currentTime = nextPhase.duration;
                         
-                        // If prep or rest phase just ended and next phase is work, play three chimes
-                        if ((phase.type === 'prep' || phase.type === 'rest' || phase.type === 'restAfter') && nextPhase && nextPhase.type === 'work') {
+                        // If rest phase just ended and next phase is work, play three chimes
+                        if (phase.type === 'rest' && nextPhase && nextPhase.type === 'work') {
                             playThreeChimes(phase);
                         }
                         
-                        // Initialize time cap for next phase if applicable
-                        if (nextPhase.type === 'work' && nextPhase.activity && nextPhase.activity.mode === 'rep' && nextPhase.timeCapSeconds && nextPhase.timeCapSeconds > 0) {
-                            timeCapCountdown = nextPhase.timeCapSeconds;
-                        } else {
-                            timeCapCountdown = 0;
-                        }
                         checkAndRecordRepBasedStart(); // Record start time if entering rep-based work phase
                         updateTimeOfDayInterval();
                         updateButtonStates(); // Update button states when transitioning phases
+                        
+                        // IMPORTANT: After transitioning, check if the new phase is rep-based with no duration
+                        // If so, return early to avoid immediately triggering another transition
+                        const nextAct = nextPhase && nextPhase.activity;
+                        const nextHasNoDuration = nextAct && ((nextAct.duration === 0 || nextAct.duration === null || nextAct.duration === undefined) || 
+                                              (nextPhase.duration === 0 || nextPhase.duration === null || nextPhase.duration === undefined));
+                        const nextIsRepBasedWorkWithNoDuration = nextPhase && nextPhase.type === 'work' && 
+                            nextAct && nextAct.mode === 'rep' && nextHasNoDuration;
+                        if (nextIsRepBasedWorkWithNoDuration) {
+                            updateDisplay();
+                            return; // Time of day updates via timeOfDayInterval, don't continue countdown
+                        }
                     }
                 }
                 
@@ -3174,13 +2909,18 @@
             isWorkoutComplete = false;
             currentWorkoutState = null;
             currentTime = 0;
-            timeCapCountdown = 0;
             workoutStartTime = null;
             startTimestamps = [];
             repBasedSegmentTimes = [];
             updateWorkoutSteps(); // Refresh workout steps to remove timestamps
             updateDisplay();
             updateButtonStates();
+            
+            // Reset dropdown to 'custom' if a workout was selected to avoid confusion
+            // This ensures the dropdown matches the timer state (no workout running)
+            if (workoutSelect && workoutSelect.value !== 'custom') {
+                workoutSelect.value = 'custom';
+            }
         }
         
         function repeatWorkout() {
@@ -3195,7 +2935,6 @@
             isPaused = false;
             isArmed = false;
             currentTime = 0;
-            timeCapCountdown = 0;
             workoutStartTime = null;
             
             // Clear timestamps and segment times for fresh start
@@ -3213,12 +2952,6 @@
             currentWorkoutState.currentPhaseIndex = 0;
             const phase = currentWorkoutState.phases[0];
             currentTime = phase.duration;
-            // Initialize time cap countdown for rep-based rounds with time cap
-            if (phase.type === 'work' && phase.activity && phase.activity.mode === 'rep' && phase.timeCapSeconds && phase.timeCapSeconds > 0) {
-                timeCapCountdown = phase.timeCapSeconds;
-            } else {
-                timeCapCountdown = 0;
-            }
             
             // Update displays
             updateWorkoutSteps();
@@ -3231,16 +2964,11 @@
         
         function clearTimer() {
             resetTimer();
-            roundGroups = [];
-            workoutTitleInput.value = '';
-            if (workoutDescriptionInput) {
-                workoutDescriptionInput.value = '';
+            // Reset dropdown to 'custom' and clear all settings
+            if (workoutSelect) {
+                workoutSelect.value = 'custom';
             }
-            updateCharCounts();
-            updateWorkoutDisplay();
-            renderActivities();
-            updateWorkoutSteps();
-            updateButtonStates();
+            loadMobilityWorkout('custom');
         }
         
         function playSound(phase = null) {
@@ -3283,12 +3011,7 @@
         
         // Play a short beep for countdown (3, 2, 1 seconds)
         function playCountdownBeep(phase = null, countdownValue = null) {
-            // CRITICAL: Never beep during prep phase
             if (!currentWorkoutState) return;
-            const currentPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
-            if (currentPhase && currentPhase.type === 'prep') {
-                return; // No sounds during prep
-            }
             
             // Check if audio is enabled for this phase's activity
             let checkPhase = phase;
@@ -3340,15 +3063,8 @@
             }
         }
         
-        // Play three chime bells to signal work is about to start (after prep or rest)
+        // Play three chime bells to signal work is about to start (after rest)
         function playThreeChimes(phase = null) {
-            // CRITICAL: Never beep during prep phase
-            if (currentWorkoutState) {
-                const currentPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
-                if (currentPhase && currentPhase.type === 'prep') {
-                    return; // No sounds during prep
-                }
-            }
             
             // Check if audio is enabled for this phase's activity
             let checkPhase = phase;
@@ -3468,13 +3184,6 @@
         
         // Play a distinct longer beep for transition at 0 seconds
         function playTransitionBeep(phase = null) {
-            // CRITICAL: Never beep during prep phase
-            if (currentWorkoutState) {
-                const currentPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
-                if (currentPhase && currentPhase.type === 'prep') {
-                    return; // No sounds during prep
-                }
-            }
             
             // Check if audio is enabled for this phase's activity
             let checkPhase = phase;
@@ -3607,7 +3316,7 @@
         
         // Play a distinct double beep for EMOM minute start
         function playMinuteStartBeep(phase = null) {
-            // CRITICAL: Only beep if we're actually in a work phase (not prep/rest)
+            // CRITICAL: Only beep if we're actually in a work phase (not rest)
             if (!isRunning || isPaused) {
                 return;
             }
@@ -3799,6 +3508,9 @@
         
         // Update character counts
         function updateCharCounts() {
+            if (workoutTitleCharCount && workoutTitleInput) {
+                workoutTitleCharCount.textContent = workoutTitleInput.value.length;
+            }
             if (workoutDescriptionCharCount && workoutDescriptionInput) {
                 workoutDescriptionCharCount.textContent = workoutDescriptionInput.value.length;
             }
@@ -3806,6 +3518,7 @@
         
         // Workout title update
         workoutTitleInput.addEventListener('input', function() {
+            updateCharCounts();
             updateWorkoutDisplay();
         });
         
@@ -3819,7 +3532,8 @@
         
         // Mobility workout select dropdown event listener
         workoutSelect.addEventListener('change', function() {
-            if (!isRunning) {
+            // Allow workout changes when not running, or when paused
+            if (!isRunning || isPaused) {
                 loadMobilityWorkout(this.value);
             }
         });

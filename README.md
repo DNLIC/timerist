@@ -148,6 +148,14 @@ Each timer page has default values in the HTML inputs. Modify these in the respe
 
 Free to use for personal and commercial projects.
 
+## Development Guidelines
+
+See [DEVELOPMENT_GUIDELINES.md](./DEVELOPMENT_GUIDELINES.md) for:
+- Critical UI/UX patterns (drawer functions, execution order)
+- Common issues and solutions
+- Testing checklists
+- Best practices for preventing recurring bugs
+
 ## Support
 
 For issues or feature requests, please create an issue in the project repository.
