@@ -331,6 +331,17 @@
             color: rgb(0, 0, 0);
         }
         
+        #repeatWorkoutBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        [data-theme="style1"] #repeatWorkoutBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
         #startBtn:hover:not(:disabled) {
             background-color: rgb(100, 100, 100);
             color: rgb(255, 255, 255);
@@ -2227,6 +2238,7 @@
                                     } else {
                                         playTransitionBeep(completedPhase);
                                     }
+                                    updateDisplay(); // Show 00:00 before completing
                                     handleWorkoutComplete();
                                     return;
                                 }
@@ -2296,6 +2308,7 @@
                                 } else {
                                     playTransitionBeep(completedPhase);
                                 }
+                                updateDisplay(); // Show 00:00 before completing
                                 handleWorkoutComplete();
                                 return;
                             }
@@ -2439,7 +2452,8 @@
                                 } else {
                                     playTransitionBeep(completedPhase);
                                 }
-                                stopTimer();
+                                updateDisplay(); // Show 00:00 before completing
+                                handleWorkoutComplete();
                                 return;
                             }
                             
@@ -2500,7 +2514,8 @@
                         if (nextPhaseIndex >= currentWorkoutState.phases.length) {
                             // Workout complete - play transition sound for the last phase
                             playTransitionBeep(completedPhase);
-                            stopTimer();
+                            updateDisplay(); // Show 00:00 before completing
+                            handleWorkoutComplete();
                             return;
                         }
                         
@@ -2626,6 +2641,7 @@
                                     } else {
                                         playTransitionBeep(completedPhase);
                                     }
+                                    updateDisplay(); // Show 00:00 before completing
                                     handleWorkoutComplete();
                                     return;
                                 }
@@ -2695,6 +2711,7 @@
                                 } else {
                                     playTransitionBeep(completedPhase);
                                 }
+                                updateDisplay(); // Show 00:00 before completing
                                 handleWorkoutComplete();
                                 return;
                             }
@@ -2806,6 +2823,7 @@
             const nextPhaseIndex = currentWorkoutState.currentPhaseIndex + 1;
             if (nextPhaseIndex >= currentWorkoutState.phases.length) {
                 // Workout complete
+                updateDisplay(); // Show 00:00 before completing
                 handleWorkoutComplete();
                 return;
             }
@@ -2860,7 +2878,8 @@
                         const nextPhaseIndex = currentWorkoutState.currentPhaseIndex + 1;
                         if (nextPhaseIndex >= currentWorkoutState.phases.length) {
                             // Workout complete
-                            stopTimer();
+                            updateDisplay(); // Show 00:00 before completing
+                            handleWorkoutComplete();
                             return;
                         }
                         

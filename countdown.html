@@ -872,7 +872,7 @@
                     <label for="minutesInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Minutes</label>
                     <div class="time-input-group">
                         <button class="time-adjust-btn" id="minutesDecreaseBtn" type="button" aria-label="Decrease minutes by 1">−</button>
-                        <input type="number" id="minutesInputDrawer" class="custom-time-input" min="0" max="99" inputmode="numeric" value="5" aria-label="Minutes (drawer)">
+                        <input type="number" id="minutesInputDrawer" class="custom-time-input" min="0" max="99" inputmode="numeric" value="0" aria-label="Minutes (drawer)">
                         <button class="time-adjust-btn" id="minutesIncreaseBtn" type="button" aria-label="Increase minutes by 1">+</button>
                     </div>
                 </div>
@@ -912,7 +912,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.13</p>
+                <p><strong>Version:</strong> v0.14</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -1314,9 +1314,11 @@
         const savedDone = getDoneMessage();
         doneMessageInput.value = savedDone;
 
-        // Initialize timer
-        totalSeconds = readDurationFromInputs();
-        currentTime = totalSeconds;
+        // Initialize timer - start with 00:00 and show setup button
+        totalSeconds = 0;
+        currentTime = 0;
+        minutesInput.value = '0';
+        secondsInput.value = '0';
         updateDisplay();
 
         // Release date

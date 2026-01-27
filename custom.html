@@ -1227,7 +1227,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.14</p>
+                <p><strong>Version:</strong> v0.15</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -2056,16 +2056,11 @@
             // Check if workout is complete FIRST (before checking currentWorkoutState)
             // This ensures completion message shows even if state is cleared
             if (isWorkoutComplete) {
-                // Get completion message from input or localStorage
-                const completionMessage = getDoneMessage();
+                // Show completion message (don't rely on updateDisplay for this - use showDoneMessage directly)
+                // But keep this check to prevent overwriting if updateDisplay is called after completion
+                showDoneMessage();
                 
-                // Display completion message on the main timer display (like emom.html)
-                if (display) {
-                    display.textContent = completionMessage;
-                    display.classList.add('danger'); // Add danger class for styling (red text)
-                }
-                
-                // Also set phaseLabel if it exists
+                // Clear phaseLabel and roundInfo
                 if (phaseLabel) {
                     phaseLabel.textContent = '';
                 }
@@ -2283,7 +2278,13 @@
             }
             
             // Color coding for countdown timers
-            display.classList.remove('warning', 'danger', 'prepare');
+            // Don't remove danger class if workout is complete (completion message should stay red)
+            if (!isWorkoutComplete) {
+                display.classList.remove('warning', 'danger', 'prepare');
+            } else {
+                // Only remove warning and prepare, keep danger for completion message
+                display.classList.remove('warning', 'prepare');
+            }
             if (phase.type === 'prep') {
                 // Prep phase: always show orange/prepare color
                 display.classList.add('prepare');
@@ -4328,33 +4329,13 @@
         }
         
         function handleWorkoutComplete() {
-            // Get workout title BEFORE marking as complete (in case state is cleared)
-            const workoutTitleInput = document.getElementById('workoutTitleInput');
-            const workoutTitleText = document.getElementById('workoutTitleText');
-            let workoutTitle = 'Workout';
-            
-            // Prefer input field value (full title) over displayed text (may be truncated)
-            if (workoutTitleInput && workoutTitleInput.value && workoutTitleInput.value.trim()) {
-                workoutTitle = workoutTitleInput.value.trim();
-            } else if (workoutTitleText && workoutTitleText.textContent && workoutTitleText.textContent.trim()) {
-                // Remove "..." suffix if present (from truncation)
-                let titleText = workoutTitleText.textContent.trim();
-                if (titleText.endsWith('...')) {
-                    titleText = titleText.slice(0, -3);
-                }
-                workoutTitle = titleText;
-            }
-            
-            // Store the title for completion message
-            completedWorkoutTitle = workoutTitle;
-            
             // Mark workout as complete FIRST
             isWorkoutComplete = true;
             isRunning = false;
             isPaused = false;
             isArmed = false;
             
-            // Stop all timers
+            // Stop all timers IMMEDIATELY to prevent any further updates
             clearInterval(timerInterval);
             timerInterval = null;
             if (timeOfDayInterval) {
@@ -4362,17 +4343,28 @@
                 timeOfDayInterval = null;
             }
             
-            // Update display and buttons - this should show completion message
-            updateDisplay();
+            // Show completion message directly (like countdown.html, amrap.html)
+            // This must be called AFTER stopping timers to prevent overwriting
+            showDoneMessage();
+            
+            // Clear phaseLabel and roundInfo
+            if (phaseLabel) {
+                phaseLabel.textContent = '';
+            }
+            if (roundInfo) {
+                roundInfo.textContent = '';
+            }
+            
+            // Update button states
             updateButtonStates();
             
             // Force update display again after a short delay to ensure message persists
             // This handles any race conditions where updateDisplay might be called from elsewhere
             setTimeout(function() {
-                if (isWorkoutComplete) {
-                    updateDisplay();
+                if (isWorkoutComplete && display) {
+                    showDoneMessage();
                 }
-            }, 100);
+            }, 50);
         }
         
         function stopTimer() {
@@ -5424,6 +5416,17 @@
         function setDoneMessage(value) {
             const v = (value || '').trim();
             localStorage.setItem('custom-doneMessage', v ? v : 'Complete');
+        }
+        
+        // Show completion message directly on display (like countdown.html, amrap.html)
+        function showDoneMessage() {
+            const message = getDoneMessage();
+            if (display) {
+                display.textContent = message;
+                display.classList.add('danger');
+                // Remove warning and prepare classes if present
+                display.classList.remove('warning', 'prepare');
+            }
         }
         
         // Workout title update

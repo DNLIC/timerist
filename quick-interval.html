@@ -1079,6 +1079,23 @@
                         <button class="rounds-adjust-btn" id="roundsIncreaseBtn" type="button" aria-label="Increase rounds">+</button>
                     </div>
                 </div>
+                
+                <!-- Completion Message -->
+                <div class="input-group">
+                    <label for="doneMessageInput">COMPLETION MESSAGE (14 CHARACTERS MAX)</label>
+                    <input 
+                        type="text" 
+                        id="doneMessageInput" 
+                        class="custom-time-input"
+                        maxlength="14"
+                        value="completed"
+                        placeholder="completed"
+                        aria-label="Completion message"
+                    >
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="doneMessageCharCount">0</span>/14
+                    </p>
+                </div>
             </div>
             
             <!-- About This Timer -->
@@ -1096,7 +1113,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.13</p>
+                <p><strong>Version:</strong> v0.14</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -1135,6 +1152,8 @@
         const roundsInputMain = document.getElementById('roundsInputMain');
         const roundsDecreaseBtnMain = document.getElementById('roundsDecreaseBtnMain');
         const roundsIncreaseBtnMain = document.getElementById('roundsIncreaseBtnMain');
+        const doneMessageInput = document.getElementById('doneMessageInput');
+        const doneMessageCharCount = document.getElementById('doneMessageCharCount');
         
         // Parse MM:SS format to seconds
         function parseTime(timeString) {
@@ -1324,6 +1343,11 @@
             
             if (currentTime <= 0) return;
             
+            // Clear completion message when starting
+            if (display) {
+                display.classList.remove('danger');
+            }
+            
             isRunning = true;
             isPaused = false;
             
@@ -1344,6 +1368,7 @@
                             // Finished all rounds - stop timer
                             stopTimer();
                             playSound();
+                            showDoneMessage();
                             return;
                         }
                         
@@ -1420,6 +1445,11 @@
             currentRound = 1;
             isWorkPhase = true;
             
+            // Clear completion message display
+            if (display) {
+                display.classList.remove('danger');
+            }
+            
             // Update display immediately (this will enable inputs and check validity)
             updateDisplay();
         }
@@ -1454,6 +1484,11 @@
             currentRound = 1;
             isWorkPhase = true;
             
+            // Clear completion message display
+            if (display) {
+                display.classList.remove('danger');
+            }
+            
             // Update display (this will enable inputs and show Set Up button)
             updateDisplay();
         }
@@ -1478,6 +1513,28 @@
                 oscillator.stop(audioContext.currentTime + 0.5);
             } catch (e) {
                 console.log('Audio not available');
+            }
+        }
+        
+        // Get completion message from localStorage or use default
+        function getDoneMessage() {
+            const saved = localStorage.getItem('quick-interval-doneMessage');
+            return saved || 'completed';
+        }
+        
+        // Save completion message to localStorage
+        function saveDoneMessage(message) {
+            const v = (message || '').trim();
+            localStorage.setItem('quick-interval-doneMessage', v ? v : 'completed');
+        }
+        
+        // Show completion message on display
+        function showDoneMessage() {
+            const message = getDoneMessage();
+            if (display) {
+                display.textContent = message;
+                display.classList.add('danger');
+                display.classList.remove('warning');
             }
         }
         
@@ -1676,6 +1733,42 @@
             const overlay = document.getElementById('drawerOverlay');
             drawer.classList.remove('open');
             overlay.classList.remove('open');
+        }
+        
+        // Completion message event listeners
+        if (doneMessageInput) {
+            // Initialize completion message from localStorage
+            const savedMessage = getDoneMessage();
+            doneMessageInput.value = savedMessage;
+            if (doneMessageCharCount) {
+                doneMessageCharCount.textContent = savedMessage.length;
+            }
+            
+            // Update character count and save on input
+            doneMessageInput.addEventListener('input', function() {
+                let value = this.value.trim();
+                if (value.length > 14) {
+                    value = value.substring(0, 14);
+                    this.value = value;
+                }
+                if (doneMessageCharCount) {
+                    doneMessageCharCount.textContent = value.length;
+                }
+                saveDoneMessage(value || 'completed');
+            });
+            
+            // Ensure default value on change if empty
+            doneMessageInput.addEventListener('change', function() {
+                let value = this.value.trim();
+                if (!value) {
+                    value = 'completed';
+                    this.value = value;
+                }
+                if (doneMessageCharCount) {
+                    doneMessageCharCount.textContent = value.length;
+                }
+                saveDoneMessage(value);
+            });
         }
         
         // Initialize

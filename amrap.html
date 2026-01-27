@@ -864,9 +864,19 @@
         <div class="timer-container" style="display: flex; flex-direction: column; gap: 1rem;">
             <!-- Timer Display -->
             <div class="timer-display-block bg-card border border-border rounded-lg shadow-lg text-center">
+                <!-- Workout Title -->
+                <div id="workoutTitleDisplay" style="display: none; text-align: center; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid rgb(var(--border));">
+                    <h2 id="workoutTitleText" style="font-size: 1.25rem; font-weight: 600; color: rgb(var(--foreground)); margin: 0; word-wrap: break-word;"></h2>
+                </div>
+                
                 <div class="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-2" id="statusLabel">Ready</div>
                 <div class="timer-display-large" id="display">00:00</div>
                 <div id="rounds" class="rounds-display" aria-live="polite" style="font-size: 2rem; font-weight: 600; color: rgb(var(--foreground)); margin-top: 1rem;">Rounds: 0</div>
+                
+                <!-- Workout Notes -->
+                <div id="workoutDescriptionDisplay" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgb(var(--border));">
+                    <p id="workoutDescriptionText" style="font-size: 0.875rem; color: rgb(var(--muted-foreground)); line-height: 1.6; margin: 0; text-align: left; white-space: pre-wrap; word-wrap: break-word;"></p>
+                </div>
             </div>
             
             <!-- Controls -->
@@ -893,6 +903,40 @@
             <div class="drawer-section">
                 <h3>Setup Content</h3>
                 
+                <!-- Workout Title -->
+                <div class="space-y-2" style="margin-bottom: 1.5rem;">
+                    <label for="workoutTitleInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Workout Title</label>
+                    <input 
+                        type="text" 
+                        id="workoutTitleInput" 
+                        class="custom-time-input"
+                        placeholder="Enter workout title"
+                        aria-label="Workout title"
+                        maxlength="40"
+                        style="font-family: inherit; text-align: left; font-weight: 500;"
+                    >
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="workoutTitleCharCount">0</span>/40
+                    </p>
+                </div>
+                
+                <!-- Workout Notes -->
+                <div class="space-y-2" style="margin-bottom: 1.5rem;">
+                    <label for="workoutDescriptionInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Workout Notes</label>
+                    <textarea 
+                        id="workoutDescriptionInput" 
+                        class="custom-time-input"
+                        placeholder="Enter workout notes..."
+                        aria-label="Workout notes"
+                        rows="4"
+                        maxlength="200"
+                        style="resize: vertical; min-height: 80px; font-family: inherit; line-height: 1.5; text-align: left; font-weight: 400;"
+                    ></textarea>
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="workoutDescriptionCharCount">0</span>/200
+                    </p>
+                </div>
+                
                 <!-- Minutes -->
                 <div class="space-y-2">
                     <label for="minutesInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Minutes</label>
@@ -913,10 +957,43 @@
                     </div>
                 </div>
                 
+                <!-- Number of Rounds -->
+                <div class="space-y-2">
+                    <label for="roundsInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Number of Rounds</label>
+                    <div class="time-input-group">
+                        <button class="time-adjust-btn" id="roundsDecreaseBtn" type="button" aria-label="Decrease rounds by 1">−</button>
+                        <input type="number" id="roundsInputDrawer" class="custom-time-input" min="0" max="999" inputmode="numeric" value="0" aria-label="Number of rounds (drawer)">
+                        <button class="time-adjust-btn" id="roundsIncreaseBtn" type="button" aria-label="Increase rounds by 1">+</button>
+                    </div>
+                </div>
+                
+                <!-- Rest Minutes Between Rounds (only show if rounds > 1) -->
+                <div class="space-y-2" id="restMinutesContainer" style="display: none;">
+                    <label for="restMinutesInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Rest Minutes</label>
+                    <div class="time-input-group">
+                        <button class="time-adjust-btn" id="restMinutesDecreaseBtn" type="button" aria-label="Decrease rest minutes by 1">−</button>
+                        <input type="number" id="restMinutesInputDrawer" class="custom-time-input" min="0" max="99" inputmode="numeric" value="0" aria-label="Rest minutes (drawer)">
+                        <button class="time-adjust-btn" id="restMinutesIncreaseBtn" type="button" aria-label="Increase rest minutes by 1">+</button>
+                    </div>
+                </div>
+                
+                <!-- Rest Seconds Between Rounds (only show if rounds > 1) -->
+                <div class="space-y-2" id="restSecondsContainer" style="display: none;">
+                    <label for="restSecondsInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Rest Seconds</label>
+                    <div class="time-input-group">
+                        <button class="time-adjust-btn" id="restSecondsDecreaseBtn" type="button" aria-label="Decrease rest seconds by 1">−</button>
+                        <input type="number" id="restSecondsInputDrawer" class="custom-time-input" min="0" max="59" inputmode="numeric" value="0" aria-label="Rest seconds (drawer)">
+                        <button class="time-adjust-btn" id="restSecondsIncreaseBtn" type="button" aria-label="Increase rest seconds by 1">+</button>
+                    </div>
+                </div>
+                
                 <!-- Completion Message -->
                 <div class="space-y-2">
-                    <label for="doneMessageInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Completion Message (14 characters max)</label>
-                    <input type="text" id="doneMessageInputDrawer" class="custom-time-input" maxlength="14" value="Done" placeholder="Done" aria-label="Completion message (drawer)">
+                    <label for="doneMessageInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">COMPLETION MESSAGE (14 CHARACTERS MAX)</label>
+                    <input type="text" id="doneMessageInputDrawer" class="custom-time-input" maxlength="14" value="Completed" placeholder="Completed" aria-label="Completion message (drawer)">
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="doneMessageCharCount">0</span>/14
+                    </p>
                 </div>
                 <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.75rem;">
                     Set minutes/seconds for your countdown and customize the message shown when it completes.
@@ -937,7 +1014,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.14</p>
+                <p><strong>Version:</strong> v0.15</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -947,10 +1024,14 @@
         // Countdown Timer Logic (shell-integrated)
         let currentTime = 0;
         let totalSeconds = 0;
+        let restTimeSeconds = 0;
+        let currentRestTime = 0;
         let interval = null;
         let isRunning = false;
         let isPaused = false;
-        let rounds = 0;
+        let rounds = 0; // Completed rounds
+        let currentRound = 1; // Current round number (1-based)
+        let isRestPeriod = false; // Whether we're in rest period
 
         const display = document.getElementById('display');
         const statusLabel = document.getElementById('statusLabel');
@@ -963,11 +1044,31 @@
 
         const minutesInput = document.getElementById('minutesInputDrawer');
         const secondsInput = document.getElementById('secondsInputDrawer');
+        const roundsInput = document.getElementById('roundsInputDrawer');
         const doneMessageInput = document.getElementById('doneMessageInputDrawer');
+        const doneMessageCharCount = document.getElementById('doneMessageCharCount');
         const minutesDecreaseBtn = document.getElementById('minutesDecreaseBtn');
         const minutesIncreaseBtn = document.getElementById('minutesIncreaseBtn');
         const secondsDecreaseBtn = document.getElementById('secondsDecreaseBtn');
         const secondsIncreaseBtn = document.getElementById('secondsIncreaseBtn');
+        const roundsDecreaseBtn = document.getElementById('roundsDecreaseBtn');
+        const roundsIncreaseBtn = document.getElementById('roundsIncreaseBtn');
+        const restMinutesContainer = document.getElementById('restMinutesContainer');
+        const restSecondsContainer = document.getElementById('restSecondsContainer');
+        const restMinutesInput = document.getElementById('restMinutesInputDrawer');
+        const restSecondsInput = document.getElementById('restSecondsInputDrawer');
+        const restMinutesDecreaseBtn = document.getElementById('restMinutesDecreaseBtn');
+        const restMinutesIncreaseBtn = document.getElementById('restMinutesIncreaseBtn');
+        const restSecondsDecreaseBtn = document.getElementById('restSecondsDecreaseBtn');
+        const restSecondsIncreaseBtn = document.getElementById('restSecondsIncreaseBtn');
+        const workoutTitleInput = document.getElementById('workoutTitleInput');
+        const workoutDescriptionInput = document.getElementById('workoutDescriptionInput');
+        const workoutTitleDisplay = document.getElementById('workoutTitleDisplay');
+        const workoutTitleText = document.getElementById('workoutTitleText');
+        const workoutDescriptionDisplay = document.getElementById('workoutDescriptionDisplay');
+        const workoutDescriptionText = document.getElementById('workoutDescriptionText');
+        const workoutTitleCharCount = document.getElementById('workoutTitleCharCount');
+        const workoutDescriptionCharCount = document.getElementById('workoutDescriptionCharCount');
 
         function clampInt(value, min, max) {
             const n = Number.parseInt(String(value), 10);
@@ -979,6 +1080,92 @@
             const mins = Math.floor(seconds / 60);
             const secs = seconds % 60;
             return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+        
+        function getTargetRounds() {
+            return clampInt(roundsInput.value, 0, 999);
+        }
+        
+        function readRestTimeFromInputs() {
+            const mins = clampInt(restMinutesInput.value, 0, 99);
+            const secs = clampInt(restSecondsInput.value, 0, 59);
+            restMinutesInput.value = String(mins);
+            restSecondsInput.value = String(secs);
+            return (mins * 60) + secs;
+        }
+        
+        function updateRestTimeContainerVisibility() {
+            const targetRounds = getTargetRounds();
+            const restMinutesEl = document.getElementById('restMinutesContainer');
+            const restSecondsEl = document.getElementById('restSecondsContainer');
+            
+            // Show rest time inputs only if more than 1 round is selected
+            if (targetRounds > 1) {
+                if (restMinutesEl) {
+                    restMinutesEl.style.display = 'block';
+                    restMinutesEl.style.visibility = 'visible';
+                }
+                if (restSecondsEl) {
+                    restSecondsEl.style.display = 'block';
+                    restSecondsEl.style.visibility = 'visible';
+                }
+            } else {
+                // Hide rest time inputs if 1 or fewer rounds
+                if (restMinutesEl) {
+                    restMinutesEl.style.display = 'none';
+                    restMinutesEl.style.visibility = 'hidden';
+                }
+                if (restSecondsEl) {
+                    restSecondsEl.style.display = 'none';
+                    restSecondsEl.style.visibility = 'hidden';
+                }
+            }
+        }
+        
+        function updateRoundsDisplay() {
+            const target = getTargetRounds();
+            if (target > 1) {
+                // Show current round and completed rounds
+                roundsDisplay.textContent = `Round ${currentRound} of ${target} | Completed: ${rounds}`;
+            } else if (target === 1) {
+                // Single round - just show completed
+                roundsDisplay.textContent = `Rounds: ${rounds}`;
+            } else {
+                // No target set
+                roundsDisplay.textContent = `Rounds: ${rounds}`;
+            }
+        }
+        
+        // Update workout title and description display
+        function updateWorkoutDisplay() {
+            const title = workoutTitleInput.value.trim();
+            const description = workoutDescriptionInput.value.trim();
+            
+            // Update title display
+            if (title) {
+                workoutTitleText.textContent = title;
+                workoutTitleDisplay.style.display = 'block';
+            } else {
+                workoutTitleDisplay.style.display = 'none';
+            }
+            
+            // Update description display
+            if (description) {
+                workoutDescriptionText.textContent = description;
+                workoutDescriptionDisplay.style.display = 'block';
+            } else {
+                workoutDescriptionDisplay.style.display = 'none';
+            }
+        }
+        
+        // Update character counts
+        function updateCharCounts() {
+            if (workoutTitleCharCount) {
+                workoutTitleCharCount.textContent = workoutTitleInput.value.length;
+            }
+            if (workoutDescriptionCharCount) {
+                workoutDescriptionCharCount.textContent = workoutDescriptionInput.value.length;
+            }
         }
 
         function calculateFontSize(text) {
@@ -1004,12 +1191,17 @@
 
         function getDoneMessage() {
             const saved = localStorage.getItem('countdown-doneMessage');
-            return saved || 'Done';
+            return saved || 'Completed';
         }
 
         function saveDoneMessage(message) {
             const v = (message || '').trim();
-            localStorage.setItem('countdown-doneMessage', v ? v : 'Done');
+            localStorage.setItem('countdown-doneMessage', v ? v : 'Completed');
+        }
+        
+        function updateDoneMessageCharCount() {
+            const count = doneMessageInput.value.length;
+            doneMessageCharCount.textContent = count;
         }
 
         function readDurationFromInputs() {
@@ -1023,10 +1215,19 @@
         function setInputsDisabled(disabled) {
             minutesInput.disabled = disabled;
             secondsInput.disabled = disabled;
+            roundsInput.disabled = disabled;
+            if (restMinutesInput) restMinutesInput.disabled = disabled;
+            if (restSecondsInput) restSecondsInput.disabled = disabled;
             minutesDecreaseBtn.disabled = disabled;
             minutesIncreaseBtn.disabled = disabled;
             secondsDecreaseBtn.disabled = disabled;
             secondsIncreaseBtn.disabled = disabled;
+            roundsDecreaseBtn.disabled = disabled;
+            roundsIncreaseBtn.disabled = disabled;
+            if (restMinutesDecreaseBtn) restMinutesDecreaseBtn.disabled = disabled;
+            if (restMinutesIncreaseBtn) restMinutesIncreaseBtn.disabled = disabled;
+            if (restSecondsDecreaseBtn) restSecondsDecreaseBtn.disabled = disabled;
+            if (restSecondsIncreaseBtn) restSecondsIncreaseBtn.disabled = disabled;
         }
         
         function adjustMinutes(increment) {
@@ -1044,17 +1245,53 @@
             secondsInput.value = String(newValue);
             onTimeChange();
         }
+        
+        function adjustRounds(increment) {
+            if (isRunning || isPaused) return;
+            const current = clampInt(roundsInput.value, 0, 999);
+            const newValue = increment ? Math.min(999, current + 1) : Math.max(0, current - 1);
+            roundsInput.value = String(newValue);
+            updateRestTimeContainerVisibility();
+            updateRoundsDisplay();
+        }
+        
+        function adjustRestMinutes(increment) {
+            if (isRunning || isPaused) return;
+            const current = clampInt(restMinutesInput.value, 0, 99);
+            const newValue = increment ? Math.min(99, current + 1) : Math.max(0, current - 1);
+            restMinutesInput.value = String(newValue);
+        }
+        
+        function adjustRestSeconds(increment) {
+            if (isRunning || isPaused) return;
+            const current = clampInt(restSecondsInput.value, 0, 59);
+            const newValue = increment ? Math.min(59, current + 1) : Math.max(0, current - 1);
+            restSecondsInput.value = String(newValue);
+        }
 
         function updateDisplay() {
-            display.textContent = formatTime(currentTime);
-
-            display.classList.remove('warning', 'danger');
-            if (totalSeconds > 0) {
-                const percentRemaining = currentTime / totalSeconds;
-                if (percentRemaining <= 0.1) {
-                    display.classList.add('danger');
-                } else if (percentRemaining <= 0.3) {
-                    display.classList.add('warning');
+            // Show rest time or work time based on current phase
+            if (isRestPeriod) {
+                display.textContent = formatTime(currentRestTime);
+                display.classList.remove('warning', 'danger');
+                if (restTimeSeconds > 0) {
+                    const percentRemaining = currentRestTime / restTimeSeconds;
+                    if (percentRemaining <= 0.1) {
+                        display.classList.add('danger');
+                    } else if (percentRemaining <= 0.3) {
+                        display.classList.add('warning');
+                    }
+                }
+            } else {
+                display.textContent = formatTime(currentTime);
+                display.classList.remove('warning', 'danger');
+                if (totalSeconds > 0) {
+                    const percentRemaining = currentTime / totalSeconds;
+                    if (percentRemaining <= 0.1) {
+                        display.classList.add('danger');
+                    } else if (percentRemaining <= 0.3) {
+                        display.classList.add('warning');
+                    }
                 }
             }
 
@@ -1062,7 +1299,11 @@
             if (isRunning) {
                 document.body.classList.add('timer-running');
                 setInputsDisabled(true);
-                statusLabel.textContent = 'Running';
+                if (isRestPeriod) {
+                    statusLabel.textContent = 'Rest';
+                } else {
+                    statusLabel.textContent = 'Running';
+                }
                 startPauseBtn.textContent = 'Pause';
                 startPauseBtn.classList.remove('paused');
                 startPauseBtn.setAttribute('aria-label', 'Pause timer');
@@ -1073,7 +1314,11 @@
             } else if (isPaused) {
                 document.body.classList.remove('timer-running');
                 setInputsDisabled(true);
-                statusLabel.textContent = 'Paused';
+                if (isRestPeriod) {
+                    statusLabel.textContent = 'Rest (Paused)';
+                } else {
+                    statusLabel.textContent = 'Paused';
+                }
                 startPauseBtn.textContent = 'Resume';
                 startPauseBtn.classList.add('paused');
                 startPauseBtn.setAttribute('aria-label', 'Resume timer');
@@ -1158,29 +1403,77 @@
                 currentTime = totalSeconds;
             }
 
-            if (currentTime <= 0) return;
+            if (currentTime <= 0 && !isRestPeriod) return;
 
             isRunning = true;
             isPaused = false;
             clearInterval(interval);
             interval = null;
 
-            // Reset rounds on fresh start
-            if (!isPaused) {
+            // Reset rounds on fresh start (not when resuming)
+            if (!isPaused && !isRestPeriod) {
                 rounds = 0;
-                roundsDisplay.textContent = 'Rounds: 0';
+                currentRound = 1;
+                isRestPeriod = false;
+                updateRoundsDisplay();
             }
-            completeRoundBtn.disabled = false;
+            
+            // If we're in rest period, don't enable complete round button
+            if (!isRestPeriod) {
+                completeRoundBtn.disabled = false;
+            } else {
+                completeRoundBtn.disabled = true;
+            }
 
             interval = setInterval(() => {
-                currentTime--;
-                if (currentTime <= 0) {
-                    currentTime = 0;
-                    stopTimer();
-                    playSound();
-                    showDoneMessage();
-                    completeRoundBtn.disabled = true;
-                    return;
+                if (isRestPeriod) {
+                    // Rest period countdown
+                    currentRestTime--;
+                    if (currentRestTime <= 0) {
+                        currentRestTime = 0;
+                        // Rest period over, start next round
+                        isRestPeriod = false;
+                        currentRound++;
+                        currentTime = totalSeconds;
+                        playSound();
+                        updateRoundsDisplay();
+                        updateDisplay();
+                        return;
+                    }
+                } else {
+                    // Work period countdown
+                    currentTime--;
+                    if (currentTime <= 0) {
+                        currentTime = 0;
+                        rounds++;
+                        updateRoundsDisplay();
+                        playSound();
+                        
+                        const targetRounds = getTargetRounds();
+                        restTimeSeconds = readRestTimeFromInputs();
+                        
+                        // Check if there are more rounds to do
+                        if (targetRounds > 0 && currentRound < targetRounds) {
+                            if (restTimeSeconds > 0) {
+                                // Start rest period before next round
+                                isRestPeriod = true;
+                                currentRestTime = restTimeSeconds;
+                                statusLabel.textContent = 'Rest';
+                                completeRoundBtn.disabled = true;
+                            } else {
+                                // No rest time, immediately start next round
+                                currentRound++;
+                                currentTime = totalSeconds;
+                                playSound();
+                            }
+                        } else {
+                            // All rounds complete
+                            stopTimer();
+                            showDoneMessage();
+                            completeRoundBtn.disabled = true;
+                            return;
+                        }
+                    }
                 }
                 updateDisplay();
             }, 1000);
@@ -1220,10 +1513,13 @@
             interval = null;
             isRunning = false;
             isPaused = false;
+            isRestPeriod = false;
             totalSeconds = readDurationFromInputs();
             currentTime = totalSeconds;
+            currentRestTime = 0;
             rounds = 0;
-            roundsDisplay.textContent = 'Rounds: 0';
+            currentRound = 1;
+            updateRoundsDisplay();
             completeRoundBtn.disabled = true;
             updateDisplay();
         }
@@ -1233,6 +1529,7 @@
             interval = null;
             isRunning = false;
             isPaused = false;
+            isRestPeriod = false;
             
             // Clear inputs
             minutesInput.value = '0';
@@ -1241,8 +1538,10 @@
             // Reset timer state
             totalSeconds = 0;
             currentTime = 0;
+            currentRestTime = 0;
             rounds = 0;
-            roundsDisplay.textContent = 'Rounds: 0';
+            currentRound = 1;
+            updateRoundsDisplay();
             completeRoundBtn.disabled = true;
             
             updateDisplay();
@@ -1253,6 +1552,10 @@
             const overlay = document.getElementById('drawerOverlay');
             drawer.classList.toggle('open');
             overlay.classList.toggle('open');
+            // Update rest time visibility when drawer opens
+            if (drawer.classList.contains('open')) {
+                updateRestTimeContainerVisibility();
+            }
         }
         
         function closeDrawer() {
@@ -1297,7 +1600,7 @@
         completeRoundBtn.addEventListener('click', () => {
             if (interval && isRunning && !isPaused) {
                 rounds++;
-                roundsDisplay.textContent = 'Rounds: ' + rounds;
+                updateRoundsDisplay();
             }
         });
 
@@ -1315,6 +1618,43 @@
         minutesIncreaseBtn.addEventListener('click', () => adjustMinutes(true));
         secondsDecreaseBtn.addEventListener('click', () => adjustSeconds(false));
         secondsIncreaseBtn.addEventListener('click', () => adjustSeconds(true));
+        roundsDecreaseBtn.addEventListener('click', () => adjustRounds(false));
+        roundsIncreaseBtn.addEventListener('click', () => adjustRounds(true));
+
+        roundsInput.addEventListener('input', function() {
+            const value = clampInt(this.value, 0, 999);
+            this.value = String(value);
+            updateRestTimeContainerVisibility();
+            updateRoundsDisplay();
+        });
+        
+        // Rest time adjustment buttons
+        if (restMinutesDecreaseBtn) {
+            restMinutesDecreaseBtn.addEventListener('click', () => adjustRestMinutes(false));
+        }
+        if (restMinutesIncreaseBtn) {
+            restMinutesIncreaseBtn.addEventListener('click', () => adjustRestMinutes(true));
+        }
+        if (restSecondsDecreaseBtn) {
+            restSecondsDecreaseBtn.addEventListener('click', () => adjustRestSeconds(false));
+        }
+        if (restSecondsIncreaseBtn) {
+            restSecondsIncreaseBtn.addEventListener('click', () => adjustRestSeconds(true));
+        }
+        
+        // Rest time input validation
+        if (restMinutesInput) {
+            restMinutesInput.addEventListener('input', function() {
+                const value = clampInt(this.value, 0, 99);
+                this.value = String(value);
+            });
+        }
+        if (restSecondsInput) {
+            restSecondsInput.addEventListener('input', function() {
+                const value = clampInt(this.value, 0, 59);
+                this.value = String(value);
+            });
+        }
 
         doneMessageInput.addEventListener('input', function() {
             let value = this.value.trim();
@@ -1322,17 +1662,34 @@
                 value = value.substring(0, 14);
                 this.value = value;
             }
-            saveDoneMessage(value || 'Done');
+            updateDoneMessageCharCount();
+            saveDoneMessage(value || 'Completed');
         });
         
         doneMessageInput.addEventListener('change', function() {
             let value = this.value.trim();
             if (!value) {
-                value = 'Done';
+                value = 'Completed';
                 this.value = value;
             }
+            updateDoneMessageCharCount();
             saveDoneMessage(value);
         });
+
+        // Workout title and description event listeners
+        if (workoutTitleInput) {
+            workoutTitleInput.addEventListener('input', function() {
+                updateCharCounts();
+                updateWorkoutDisplay();
+            });
+        }
+        
+        if (workoutDescriptionInput) {
+            workoutDescriptionInput.addEventListener('input', function() {
+                updateCharCounts();
+                updateWorkoutDisplay();
+            });
+        }
 
         // Initialize theme + UI
         applyTheme(getInitialTheme());
@@ -1362,14 +1719,43 @@
         // Load saved done message
         const savedDone = getDoneMessage();
         doneMessageInput.value = savedDone;
+        updateDoneMessageCharCount();
+
+        // Initialize workout display and character counts
+        updateCharCounts();
+        updateWorkoutDisplay();
+
+        // Initialize rest time container visibility
+        updateRestTimeContainerVisibility();
 
         // Initialize timer
         totalSeconds = readDurationFromInputs();
         currentTime = totalSeconds;
+        updateRoundsDisplay();
         updateDisplay();
 
         // Release date
         document.getElementById('releaseDate').textContent = new Date().toISOString().split('T')[0];
+        
+        // Ensure rest time visibility is updated after everything loads
+        window.addEventListener('load', function() {
+            updateRestTimeContainerVisibility();
+        });
+        
+        // Also update when drawer is opened (in case rounds changed)
+        const drawer = document.getElementById('settingsDrawer');
+        if (drawer) {
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                        if (drawer.classList.contains('open')) {
+                            updateRestTimeContainerVisibility();
+                        }
+                    }
+                });
+            });
+            observer.observe(drawer, { attributes: true, attributeFilter: ['class'] });
+        }
     </script>
 </body>
 </html>
