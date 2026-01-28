@@ -205,6 +205,18 @@
             }
         }
         
+        .status-message {
+            font-size: 0.875rem;
+            color: rgb(var(--muted-foreground));
+            margin-top: 0.5rem;
+        }
+        
+        @media (min-width: 768px) {
+            .status-message {
+                font-size: 1rem;
+            }
+        }
+        
         .control-btn {
             padding: 0.5rem 1rem;
             border-radius: 0.5rem;
@@ -1175,6 +1187,7 @@
         const phaseLabel = document.getElementById('phaseLabel');
         const roundDisplay = document.getElementById('round');
         const totalRoundsDisplay = document.getElementById('totalRounds');
+        const statusMessage = document.getElementById('statusMessage');
         const startBtn = document.getElementById('startBtn');
         const pauseBtn = document.getElementById('pauseBtn');
         const resetBtn = document.getElementById('resetBtn');
@@ -1313,6 +1326,15 @@
             phaseLabel.textContent = 'Work';
             roundDisplay.textContent = currentRound;
             totalRoundsDisplay.textContent = totalRounds;
+            
+            // Update status message with target reps per minute
+            if (statusMessage) {
+                if (targetReps > 0) {
+                    statusMessage.textContent = `${targetReps} Per Min.`;
+                } else {
+                    statusMessage.textContent = '';
+                }
+            }
             
             // Color coding: normal -> warning (last 30%) -> danger (last 10%)
             display.classList.remove('warning', 'danger');
@@ -1871,6 +1893,7 @@
                 reps = Math.max(0, reps - 5);
                 repsInput.value = reps;
                 targetReps = reps;
+                updateDisplay();
             });
         }
         
@@ -1881,6 +1904,7 @@
                 reps = Math.max(0, reps - 1);
                 repsInput.value = reps;
                 targetReps = reps;
+                updateDisplay();
             });
         }
         
@@ -1891,6 +1915,7 @@
                 reps = reps + 1;
                 repsInput.value = reps;
                 targetReps = reps;
+                updateDisplay();
             });
         }
         
@@ -1901,6 +1926,7 @@
                 reps = reps + 5;
                 repsInput.value = reps;
                 targetReps = reps;
+                updateDisplay();
             });
         }
         
@@ -1911,6 +1937,7 @@
                     const value = parseInt(this.value) || 0;
                     targetReps = Math.max(0, value);
                     this.value = targetReps;
+                    updateDisplay();
                 }
             });
         }
