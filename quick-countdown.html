@@ -237,6 +237,46 @@
             }
         }
         
+        /* iPhone Horizontal - Tighten Up Vertical Space */
+        @media (orientation: landscape) and (max-height: 500px) {
+            /* Increase space between header and timer box to prevent overlap */
+            .timer-container {
+                margin-top: clamp(4.5rem, 8vw, 5.5rem) !important;
+                gap: 0.5rem !important;
+            }
+            
+            /* Reduce top and bottom padding on timer display block */
+            .timer-display-block {
+                padding-top: 0.75rem !important;
+                padding-bottom: 0.75rem !important;
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+            
+            .timer-display-large {
+                margin-bottom: 0.5rem !important;
+            }
+            
+            /* Reduce padding on control buttons and quick-select containers */
+            .p-6 {
+                padding-top: 0.75rem !important;
+                padding-bottom: 0.75rem !important;
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+            
+            /* Reduce spacing between timer display elements */
+            #workoutTitleDisplay {
+                padding-bottom: 0.5rem !important;
+                margin-bottom: 0.5rem !important;
+            }
+            
+            #workoutDescriptionDisplay {
+                margin-top: 0.5rem !important;
+                padding-top: 0.5rem !important;
+            }
+        }
+        
         .quick-select-btn:hover:not(:disabled) {
             background-color: rgb(100, 100, 100);
             color: rgb(255, 255, 255);
@@ -527,6 +567,43 @@
             box-shadow: 0 0 0 2px rgba(var(--ring), 0.2);
         }
         
+        /* Textarea specific styling */
+        textarea.custom-time-input {
+            font-family: inherit;
+            text-align: left;
+            font-weight: 400;
+            line-height: 1.5;
+            resize: vertical;
+        }
+        
+        /* Workout title and description styling */
+        #workoutTitleInput {
+            font-family: inherit;
+            text-align: left;
+            font-weight: 500;
+        }
+        
+        #workoutDescriptionInput {
+            font-family: inherit;
+            text-align: left;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+        
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: rgb(var(--muted-foreground));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
         .timer-running .quick-select-btn:not(.reset-btn):not(.selected) {
             opacity: 0.5;
             cursor: not-allowed;
@@ -756,7 +833,17 @@
         <div class="timer-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
             <!-- Timer Display -->
             <div class="timer-display-block bg-card border border-border rounded-lg shadow-lg text-center">
+                <!-- Workout Title -->
+                <div id="workoutTitleDisplay" style="display: none; text-align: center; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid rgb(var(--border));">
+                    <h2 id="workoutTitleText" style="font-size: 1.25rem; font-weight: 600; color: rgb(var(--foreground)); margin: 0; word-wrap: break-word;"></h2>
+                </div>
+                
                 <div class="timer-display-large" id="display">00:00</div>
+                
+                <!-- Workout Notes -->
+                <div id="workoutDescriptionDisplay" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgb(var(--border));">
+                    <p id="workoutDescriptionText" style="font-size: 0.875rem; color: rgb(var(--muted-foreground)); line-height: 1.6; margin: 0; text-align: left; white-space: pre-wrap; word-wrap: break-word;"></p>
+                </div>
             </div>
             
             <!-- Control Buttons and Adjust Time -->
@@ -817,21 +904,57 @@
             <!-- Setup Content -->
             <div class="drawer-section">
                 <h3>Setup Content</h3>
-                <label for="doneMessageInput" style="display: block; margin-bottom: 0.5rem; font-size: 0.75rem; font-weight: 600; color: rgb(var(--muted-foreground)); text-transform: uppercase; letter-spacing: 0.05em;">
-                    Completion Message (14 characters max)
-                </label>
-                <input 
-                    type="text" 
-                    id="doneMessageInput" 
-                    class="custom-time-input" 
-                    maxlength="14"
-                    value="Done"
-                    placeholder="Done"
-                    aria-label="Custom completion message"
-                >
-                <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.5rem;">
-                    Customize the message shown when the timer completes.
-                </p>
+                
+                <!-- Workout Title -->
+                <div class="input-group">
+                    <label for="workoutTitleInput">Workout Title</label>
+                    <input 
+                        type="text" 
+                        id="workoutTitleInput" 
+                        class="custom-time-input"
+                        placeholder="Enter workout title"
+                        aria-label="Workout title"
+                        maxlength="40"
+                        style="font-family: inherit;"
+                    >
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="workoutTitleCharCount">0</span>/40
+                    </p>
+                </div>
+                
+                <!-- Workout Notes -->
+                <div class="input-group">
+                    <label for="workoutDescriptionInput">Workout Notes</label>
+                    <textarea 
+                        id="workoutDescriptionInput" 
+                        class="custom-time-input"
+                        placeholder="Enter workout notes..."
+                        aria-label="Workout notes"
+                        rows="4"
+                        maxlength="200"
+                        style="resize: vertical; min-height: 80px; font-family: inherit; line-height: 1.5;"
+                    ></textarea>
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="workoutDescriptionCharCount">0</span>/200
+                    </p>
+                </div>
+                
+                <!-- Completion Message -->
+                <div class="input-group">
+                    <label for="doneMessageInput">COMPLETION MESSAGE (14 CHARACTERS MAX)</label>
+                    <input 
+                        type="text" 
+                        id="doneMessageInput" 
+                        class="custom-time-input" 
+                        maxlength="14"
+                        value="Done"
+                        placeholder="Done"
+                        aria-label="Custom completion message"
+                    >
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="doneMessageCharCount">0</span>/14
+                    </p>
+                </div>
             </div>
             
             <!-- About This Timer -->
@@ -849,7 +972,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.13</p>
+                <p><strong>Version:</strong> v0.14</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -862,6 +985,7 @@
         let interval = null;
         let isRunning = false;
         let isPaused = false;
+        let showingCompletionMessage = false;
         
         const display = document.getElementById('display');
         const resumeBtn = document.getElementById('resumeBtn');
@@ -869,6 +993,15 @@
         const clearBtn = document.getElementById('clearBtn');
         const quickSelectButtons = document.querySelectorAll('.quick-select-btn[data-seconds]');
         const doneMessageInput = document.getElementById('doneMessageInput');
+        const workoutTitleInput = document.getElementById('workoutTitleInput');
+        const workoutDescriptionInput = document.getElementById('workoutDescriptionInput');
+        const workoutTitleDisplay = document.getElementById('workoutTitleDisplay');
+        const workoutTitleText = document.getElementById('workoutTitleText');
+        const workoutDescriptionDisplay = document.getElementById('workoutDescriptionDisplay');
+        const workoutDescriptionText = document.getElementById('workoutDescriptionText');
+        const workoutTitleCharCount = document.getElementById('workoutTitleCharCount');
+        const workoutDescriptionCharCount = document.getElementById('workoutDescriptionCharCount');
+        const doneMessageCharCount = document.getElementById('doneMessageCharCount');
         
         // Get done message from localStorage or use default
         function getDoneMessage() {
@@ -921,6 +1054,11 @@
         
         // Update display with color coding
         function updateDisplay() {
+            // Don't update display if showing completion message
+            if (showingCompletionMessage) {
+                return;
+            }
+            
             display.textContent = formatTime(currentTime);
             
             // Color coding: normal -> warning (last 30%) -> danger (last 10%)
@@ -955,7 +1093,7 @@
             } else {
                 resumeBtn.style.display = 'none';
                 resumeBtn.classList.remove('paused');
-                resetBtn.style.display = currentTime > 0 ? 'inline-block' : 'none';
+                resetBtn.style.display = currentTime > 0 || showingCompletionMessage ? 'inline-block' : 'none';
             }
         }
         
@@ -1013,7 +1151,7 @@
             isPaused = false;
             clearInterval(interval);
             interval = null;
-            updateDisplay();
+            // Don't call updateDisplay() here - showDoneMessage() will handle the display
         }
         
         // Reset timer
@@ -1022,7 +1160,10 @@
             isPaused = false;
             clearInterval(interval);
             interval = null;
+            showingCompletionMessage = false;
             currentTime = totalSeconds;
+            // Restore normal font size
+            display.style.fontSize = '';
             updateDisplay();
             
             // Maintain selected button state based on current totalSeconds
@@ -1041,8 +1182,11 @@
             isPaused = false;
             clearInterval(interval);
             interval = null;
+            showingCompletionMessage = false;
             currentTime = 0;
             totalSeconds = 0;
+            // Restore normal font size
+            display.style.fontSize = '';
             updateDisplay();
             
             // Clear selected button state
@@ -1057,8 +1201,11 @@
             currentTime = seconds;
             isRunning = false;
             isPaused = false;
+            showingCompletionMessage = false;
             clearInterval(interval);
             interval = null;
+            // Restore normal font size
+            display.style.fontSize = '';
             updateDisplay();
             
             // Update selected button state
@@ -1112,8 +1259,9 @@
         // Show completion message with auto-resizing font
         function showDoneMessage() {
             const message = getDoneMessage();
-            const originalText = display.textContent;
-            const originalFontSize = display.style.fontSize;
+            
+            // Set flag to prevent updateDisplay from overriding
+            showingCompletionMessage = true;
             
             // Set the message
             display.textContent = message;
@@ -1123,11 +1271,10 @@
             const fontSize = calculateFontSize(message);
             display.style.fontSize = `${fontSize}px`;
             
-            setTimeout(() => {
-                // Restore original display
-                display.style.fontSize = originalFontSize || '';
-                updateDisplay();
-            }, 2000);
+            // Update button visibility to show reset button
+            resumeBtn.style.display = 'none';
+            resumeBtn.classList.remove('paused');
+            resetBtn.style.display = 'inline-block';
         }
         
         // Event Listeners
@@ -1142,6 +1289,94 @@
                 setTimeAndStart(seconds);
             });
         });
+        
+        // Update workout title and description display
+        function updateWorkoutDisplay() {
+            const title = workoutTitleInput ? workoutTitleInput.value.trim() : '';
+            const description = workoutDescriptionInput ? workoutDescriptionInput.value.trim() : '';
+            
+            // Update title display
+            if (title && workoutTitleText && workoutTitleDisplay) {
+                workoutTitleText.textContent = title;
+                workoutTitleDisplay.style.display = 'block';
+            } else if (workoutTitleDisplay) {
+                workoutTitleDisplay.style.display = 'none';
+            }
+            
+            // Update description display
+            if (description && workoutDescriptionText && workoutDescriptionDisplay) {
+                workoutDescriptionText.textContent = description;
+                workoutDescriptionDisplay.style.display = 'block';
+            } else if (workoutDescriptionDisplay) {
+                workoutDescriptionDisplay.style.display = 'none';
+            }
+        }
+        
+        // Update character counts
+        function updateCharCounts() {
+            if (workoutTitleCharCount && workoutTitleInput) {
+                workoutTitleCharCount.textContent = workoutTitleInput.value.length;
+            }
+            if (workoutDescriptionCharCount && workoutDescriptionInput) {
+                workoutDescriptionCharCount.textContent = workoutDescriptionInput.value.length;
+            }
+            if (doneMessageCharCount && doneMessageInput) {
+                doneMessageCharCount.textContent = doneMessageInput.value.length;
+            }
+        }
+        
+        // Get workout title from localStorage or use empty
+        function getWorkoutTitle() {
+            const saved = localStorage.getItem('quickCountdown-workoutTitle');
+            return saved || '';
+        }
+        
+        // Save workout title to localStorage
+        function saveWorkoutTitle(title) {
+            if (title && title.trim()) {
+                localStorage.setItem('quickCountdown-workoutTitle', title.trim());
+            } else {
+                localStorage.removeItem('quickCountdown-workoutTitle');
+            }
+        }
+        
+        // Get workout notes from localStorage or use empty
+        function getWorkoutNotes() {
+            const saved = localStorage.getItem('quickCountdown-workoutNotes');
+            return saved || '';
+        }
+        
+        // Save workout notes to localStorage
+        function saveWorkoutNotes(notes) {
+            if (notes && notes.trim()) {
+                localStorage.setItem('quickCountdown-workoutNotes', notes.trim());
+            } else {
+                localStorage.removeItem('quickCountdown-workoutNotes');
+            }
+        }
+        
+        // Workout title and description event listeners
+        if (workoutTitleInput) {
+            // Load saved title on page load
+            workoutTitleInput.value = getWorkoutTitle();
+            
+            workoutTitleInput.addEventListener('input', function() {
+                updateCharCounts();
+                updateWorkoutDisplay();
+                saveWorkoutTitle(this.value);
+            });
+        }
+        
+        if (workoutDescriptionInput) {
+            // Load saved notes on page load
+            workoutDescriptionInput.value = getWorkoutNotes();
+            
+            workoutDescriptionInput.addEventListener('input', function() {
+                updateCharCounts();
+                updateWorkoutDisplay();
+                saveWorkoutNotes(this.value);
+            });
+        }
         
         // Custom time input (optional, from drawer)
         // Done message input handler
@@ -1158,6 +1393,7 @@
                     this.value = value;
                 }
                 saveDoneMessage(value || 'Done');
+                updateCharCounts();
             });
             
             doneMessageInput.addEventListener('change', function() {
@@ -1167,6 +1403,7 @@
                     this.value = value;
                 }
                 saveDoneMessage(value);
+                updateCharCounts();
             });
         }
         
@@ -1187,6 +1424,10 @@
         
         // Initialize
         updateDisplay();
+        
+        // Initialize workout display and character counts
+        updateCharCounts();
+        updateWorkoutDisplay();
         
         // Set release date
         document.getElementById('releaseDate').textContent = new Date().toISOString().split('T')[0];
