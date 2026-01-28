@@ -1,0 +1,57 @@
+{
+  "title": "Manual Start Test Workout",
+  "roundGroups": [
+    {
+      "id": "rg1_test",
+      "name": "Test Round Group",
+      "rounds": 2,
+      "activities": [
+        {
+          "name": "Pushups",
+          "mode": "time",
+          "duration": 15,
+          "repsTarget": 0,
+          "restBetweenRounds": 5,
+          "restAfterPhase": 0,
+          "prepTime": 3,
+          "notes": "Time-based activity - 15 seconds",
+          "audioEnabled": true
+        },
+        {
+          "name": "Squats",
+          "mode": "rep",
+          "duration": 20,
+          "repsTarget": 10,
+          "restBetweenRounds": 5,
+          "restAfterPhase": 0,
+          "prepTime": 3,
+          "notes": "Rep-based activity - 20 second cap",
+          "audioEnabled": true
+        },
+        {
+          "name": "Burpees EMOM",
+          "mode": "emom",
+          "duration": 60,
+          "repsTarget": 0,
+          "restBetweenRounds": 5,
+          "restAfterPhase": 0,
+          "prepTime": 3,
+          "notes": "EMOM - 1 minute as requested",
+          "audioEnabled": true
+        },
+        {
+          "name": "Jumping Jacks AMRAP",
+          "mode": "amrap",
+          "duration": 20,
+          "repsTarget": 0,
+          "restBetweenRounds": 5,
+          "restAfterPhase": 10,
+          "prepTime": 3,
+          "notes": "AMRAP - 20 seconds",
+          "audioEnabled": true
+        }
+      ]
+    }
+  ],
+  "exportedAt": "2026-01-23T00:00:00.000Z"
+}

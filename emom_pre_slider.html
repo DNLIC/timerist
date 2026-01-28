@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quick Interval Timer - Timerist | Quick HIIT Interval Timer, Preset Work Rest Timer</title>
-    <meta name="description" content="Quick interval timer with preset intervals for HIIT, circuit training, or cardio sessions. Tap a preset to start instantly—no setup required.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <title>EMOM Timer - Timerist | Every Minute On the Minute Workout Timer</title>
+    <meta name="description" content="EMOM (Every Minute On the Minute) timer for structured workouts. Each round is exactly 60 seconds—complete your work, then start again on the next minute.">
     <link rel="stylesheet" href="styles/timerist-design-system.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -136,9 +139,10 @@
         .timer-display-large {
             font-size: 4rem; /* Smaller for mobile */
             font-weight: 700; /* font-bold */
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* font-mono */
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; /* font-sans */
             font-variant-numeric: tabular-nums;
             line-height: 1;
+            letter-spacing: -0.02em; /* tracking-tight */
             color: rgb(var(--primary));
             transition: color 0.3s ease;
             margin-bottom: 1rem; /* mb-4 */
@@ -184,24 +188,9 @@
             }
         }
         
+        /* EMOM: Hide phase label */
         .phase-label {
-            font-size: 1.25rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.5rem;
-            color: rgb(var(--primary));
-            transition: color 0.3s ease;
-        }
-        
-        @media (min-width: 768px) {
-            .phase-label {
-                font-size: 1.5rem;
-            }
-        }
-        
-        .phase-label.rest {
-            color: rgb(var(--secondary));
+            display: none;
         }
         
         .round-info {
@@ -698,7 +687,7 @@
                 display: none;
             }
             
-            /* Make "Quick Interval" text smaller */
+            /* Make "EMOM Timer" text smaller */
             .header-top > div:first-child > span:last-of-type {
                 font-size: 0.875rem !important;
             }
@@ -921,90 +910,9 @@
         .rounds-slider:disabled::-moz-range-thumb {
             cursor: not-allowed;
         }
-        
-        /* Preset Interval Buttons */
-        .quick-select-btn {
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-size: 1.125rem;
-            font-weight: 500;
-            line-height: 1.2;
-            height: 2.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            cursor: pointer;
-            border: none;
-            background-color: rgb(var(--primary));
-            color: rgb(var(--primary-foreground));
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            min-width: 0;
-            width: 100%;
-        }
-        
-        @media (min-width: 640px) {
-            .quick-select-btn {
-                min-width: 100px;
-                font-size: 1.25rem;
-                height: 2.5rem;
-            }
-        }
-        
-        .quick-select-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.5rem;
-        }
-        
-        @media (min-width: 480px) {
-            .quick-select-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-        
-        @media (min-width: 640px) {
-            .quick-select-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-        }
-        
-        @media (orientation: landscape) and (max-height: 500px) {
-            .quick-select-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-        }
-        
-        .quick-select-btn:hover:not(:disabled) {
-            background-color: rgb(100, 100, 100);
-            color: rgb(255, 255, 255);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        
-        /* Dark mode hover state - use lighter gray */
-        [data-theme="style1"] .quick-select-btn:hover:not(:disabled) {
-            background-color: rgb(150, 150, 150);
-            color: rgb(0, 0, 0);
-        }
-        
-        .quick-select-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .quick-select-btn.selected {
-            font-weight: 700;
-        }
-        
-        .timer-running .quick-select-btn:not(.reset-btn):not(.selected) {
-            opacity: 0.5;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
     </style>
 </head>
-<body>
+<body class="font-sans">
     <div class="container">
         <div class="header-top">
             <div style="display: flex; align-items: center; gap: 0.75rem;">
@@ -1023,7 +931,7 @@
                 </a>
                 <a href="index.html" style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground)); text-decoration: none; cursor: pointer;">timerist.com</a>
                 <span class="separator" style="color: rgb(var(--muted-foreground));">|</span>
-                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">Quick Interval</span>
+                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">EMOM Timer</span>
             </div>
             
             <div class="header-actions">
@@ -1039,10 +947,11 @@
         <div class="timer-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
             <!-- Timer Display -->
             <div class="timer-display-block bg-card border border-border rounded-lg shadow-lg text-center">
-                <div class="phase-label" id="phaseLabel">Work</div>
-                <div class="timer-display-large" id="display">00:00</div>
+                <!-- EMOM: Phase label hidden via CSS -->
+                <div class="phase-label" id="phaseLabel" style="display: none;">Work</div>
+                <div class="timer-display-large" id="display">01:00</div>
                 <div class="round-info">
-                    Round <span id="round">1</span> of <span id="totalRounds">0</span>
+                    Round <span id="round">1</span> of <span id="totalRounds">10</span>
                 </div>
             </div>
             
@@ -1057,43 +966,24 @@
                 </div>
             </div>
             
-            <!-- Rounds Slider and Preset Intervals -->
+            <!-- Rounds Slider -->
             <div class="p-6 bg-card border border-border rounded-lg shadow-lg">
                 <!-- Rounds Slider -->
                 <div class="rounds-slider-container">
-                    <label class="rounds-slider-label" for="roundsSlider">Rounds</label>
+                    <label class="rounds-slider-label" for="roundsSlider">Total Rounds</label>
                     <div class="rounds-slider-wrapper">
-                        <span class="rounds-slider-value" id="roundsSliderValue">1</span>
+                        <span class="rounds-slider-value" id="roundsSliderValue">10</span>
                         <input 
                             type="range" 
                             id="roundsSlider" 
                             min="1" 
-                            max="12" 
-                            value="1" 
+                            max="20" 
+                            value="10" 
                             class="rounds-slider"
                             aria-label="Select number of rounds"
                         >
-                        <span class="rounds-slider-value">12</span>
+                        <span class="rounds-slider-value">20</span>
                     </div>
-                </div>
-                
-                <!-- Preset Interval Buttons -->
-                <label class="text-sm font-semibold uppercase tracking-wide mb-4 block" style="color: rgb(var(--muted-foreground)); text-align: center; margin-top: 1.5rem;">
-                    Quick Presets
-                </label>
-                <div class="quick-select-grid">
-                    <button class="quick-select-btn" data-work="30" data-rest="30" aria-label="30 seconds work, 30 seconds rest">30/30</button>
-                    <button class="quick-select-btn" data-work="45" data-rest="15" aria-label="45 seconds work, 15 seconds rest">45/15</button>
-                    <button class="quick-select-btn" data-work="60" data-rest="30" aria-label="60 seconds work, 30 seconds rest">60/30</button>
-                    <button class="quick-select-btn" data-work="45" data-rest="45" aria-label="45 seconds work, 45 seconds rest">45/45</button>
-                    <button class="quick-select-btn" data-work="60" data-rest="60" aria-label="60 seconds work, 60 seconds rest">60/60</button>
-                    <button class="quick-select-btn" data-work="30" data-rest="60" aria-label="30 seconds work, 60 seconds rest">30/60</button>
-                    <button class="quick-select-btn" data-work="20" data-rest="10" aria-label="20 seconds work, 10 seconds rest">20/10</button>
-                    <button class="quick-select-btn" data-work="40" data-rest="20" aria-label="40 seconds work, 20 seconds rest">40/20</button>
-                    <button class="quick-select-btn" data-work="90" data-rest="30" aria-label="90 seconds work, 30 seconds rest">90/30</button>
-                    <button class="quick-select-btn" data-work="120" data-rest="60" aria-label="2 minutes work, 1 minute rest">2:00/1:00</button>
-                    <button class="quick-select-btn" data-work="180" data-rest="60" aria-label="3 minutes work, 1 minute rest">3:00/1:00</button>
-                    <button class="quick-select-btn" data-work="60" data-rest="30" aria-label="1 minute work, 30 seconds rest">1:00/30</button>
                 </div>
             </div>
         </div>
@@ -1113,29 +1003,30 @@
             <div class="drawer-section">
                 <h3>Setup Content</h3>
                 
-                <!-- Work Time -->
-                <div class="input-group">
+                <!-- EMOM: Work Time is fixed at 60 seconds, hidden/disabled -->
+                <div class="input-group" style="display: none;">
                     <label for="workTimeInput">Work Time (MM:SS)</label>
                     <div class="time-input-group">
-                        <button class="time-adjust-btn" id="workDecreaseBtn" type="button" aria-label="Decrease work time by 10 seconds">−10</button>
+                        <button class="time-adjust-btn" id="workDecreaseBtn" type="button" aria-label="Decrease work time by 10 seconds" disabled>−10</button>
                         <input 
                             type="text" 
                             id="workTimeInput" 
                             class="custom-time-input" 
-                            value="00:00"
+                            value="01:00"
                             pattern="[0-9]{2}:[0-9]{2}"
                             placeholder="MM:SS"
                             aria-label="Work time"
+                            disabled
                         >
-                        <button class="time-adjust-btn" id="workIncreaseBtn" type="button" aria-label="Increase work time by 10 seconds">+10</button>
+                        <button class="time-adjust-btn" id="workIncreaseBtn" type="button" aria-label="Increase work time by 10 seconds" disabled>+10</button>
                     </div>
                 </div>
                 
-                <!-- Rest Time -->
-                <div class="input-group">
+                <!-- EMOM: Rest Time is 0, hidden -->
+                <div class="input-group" style="display: none;">
                     <label for="restTimeInput">Rest Time (MM:SS)</label>
                     <div class="time-input-group">
-                        <button class="time-adjust-btn" id="restDecreaseBtn" type="button" aria-label="Decrease rest time by 10 seconds">−10</button>
+                        <button class="time-adjust-btn" id="restDecreaseBtn" type="button" aria-label="Decrease rest time by 10 seconds" disabled>−10</button>
                         <input 
                             type="text" 
                             id="restTimeInput" 
@@ -1144,20 +1035,21 @@
                             pattern="[0-9]{2}:[0-9]{2}"
                             placeholder="MM:SS"
                             aria-label="Rest time"
+                            disabled
                         >
-                        <button class="time-adjust-btn" id="restIncreaseBtn" type="button" aria-label="Increase rest time by 10 seconds">+10</button>
+                        <button class="time-adjust-btn" id="restIncreaseBtn" type="button" aria-label="Increase rest time by 10 seconds" disabled>+10</button>
                     </div>
                 </div>
                 
                 <!-- Number of Rounds -->
                 <div class="input-group">
-                    <label for="roundsInput">Number of Rounds</label>
+                    <label for="roundsInput">Total Rounds</label>
                     <div class="rounds-input-group">
                         <button class="rounds-adjust-btn" id="roundsDecreaseBtn" type="button" aria-label="Decrease rounds">−</button>
                         <input 
                             type="text" 
                             id="roundsInput" 
-                            value="0"
+                            value="10"
                             aria-label="Number of rounds"
                         >
                         <button class="rounds-adjust-btn" id="roundsIncreaseBtn" type="button" aria-label="Increase rounds">+</button>
@@ -1169,34 +1061,33 @@
             <div class="drawer-section">
                 <h3>About This Timer</h3>
                 <p>
-                    Ideal for HIIT, circuit training, or cardio sessions with work/rest intervals. 
-                    Set your work time, rest time, and number of rounds for structured interval workouts.
+                    EMOM (Every Minute On the Minute) timer for structured workouts. Each round is exactly 60 seconds. 
+                    When the countdown reaches 0, a beep sounds and the timer immediately resets to 60 seconds for the next round.
                 </p>
                 <p style="margin-top: 0.75rem;">
-                    <strong>Keywords:</strong> interval timer, HIIT interval, work rest timer, fitness interval tool, circuit training timer, cardio interval timer.
+                    <strong>Keywords:</strong> EMOM timer, every minute on the minute, EMOM workout, interval timer, fitness timer, workout timer, exercise timer, HIIT timer, time-based training.
                 </p>
             </div>
             
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.11</p>
+                <p><strong>Version:</strong> v0.13</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
     </div>
     
     <script>
-        // Interval Timer Logic
-        let currentTime = 0;
+        // EMOM Timer Logic - based on quick-interval.html
+        let currentTime = 60; // EMOM: Start at 60 seconds
         let interval = null;
         let isRunning = false;
         let isPaused = false;
-        let isWorkPhase = true;
         let currentRound = 1;
-        let workTime = 0;
-        let restTime = 0;
-        let totalRounds = 0;
+        let workTime = 60; // EMOM: Fixed at 60 seconds
+        let restTime = 0; // EMOM: No rest phase
+        let totalRounds = 10;
         
         const display = document.getElementById('display');
         const phaseLabel = document.getElementById('phaseLabel');
@@ -1262,80 +1153,44 @@
             return value;
         }
         
-        // Adjust time by ±10 seconds
+        // Adjust time by ±10 seconds (disabled for EMOM)
         function adjustTime(input, increment) {
-            if (isRunning) return;
-            
-            const currentSeconds = parseTime(input.value);
-            const newSeconds = Math.max(0, currentSeconds + (increment ? 10 : -10));
-            input.value = formatTime(newSeconds);
-            
-            // Update the corresponding time variable
-            if (input === workTimeInput) {
-                workTime = newSeconds;
-            } else if (input === restTimeInput) {
-                restTime = newSeconds;
-            }
-            
-            // Reset timer to reflect new time
-            if (!isRunning) {
-                resetTimer();
-                updateDisplay(); // Update button visibility based on validity
-            }
+            // EMOM: Work time is fixed at 60 seconds, no adjustments allowed
+            return;
         }
         
         // Disable inputs when timer is running
         function disableInputs() {
-            workTimeInput.disabled = true;
-            restTimeInput.disabled = true;
             roundsInput.disabled = true;
             roundsDecreaseBtn.disabled = true;
             roundsIncreaseBtn.disabled = true;
-            workDecreaseBtn.disabled = true;
-            workIncreaseBtn.disabled = true;
-            restDecreaseBtn.disabled = true;
-            restIncreaseBtn.disabled = true;
             if (roundsSlider) roundsSlider.disabled = true;
         }
         
         // Enable inputs when timer is stopped
         function enableInputs() {
-            workTimeInput.disabled = false;
-            restTimeInput.disabled = false;
             roundsInput.disabled = false;
             roundsDecreaseBtn.disabled = false;
             roundsIncreaseBtn.disabled = false;
-            workDecreaseBtn.disabled = false;
-            workIncreaseBtn.disabled = false;
-            restDecreaseBtn.disabled = false;
-            restIncreaseBtn.disabled = false;
             if (roundsSlider) roundsSlider.disabled = false;
         }
         
         // Check if timer has valid data to proceed
         function hasValidTimerData() {
-            return workTime > 0 && restTime > 0 && totalRounds > 0;
+            return workTime > 0 && totalRounds > 0; // EMOM: Only need workTime (60) and rounds
         }
         
         // Update display with color coding
         function updateDisplay() {
             display.textContent = formatTime(currentTime);
-            phaseLabel.textContent = isWorkPhase ? 'Work' : 'Rest';
+            // EMOM: Phase label is hidden, but keep it for compatibility
+            phaseLabel.textContent = 'Work';
             roundDisplay.textContent = currentRound;
             totalRoundsDisplay.textContent = totalRounds;
             
-            // Update phase label color
-            if (isWorkPhase) {
-                phaseLabel.classList.remove('rest');
-                phaseLabel.style.color = 'rgb(var(--primary))';
-            } else {
-                phaseLabel.classList.add('rest');
-                phaseLabel.style.color = 'rgb(var(--secondary))';
-            }
-            
             // Color coding: normal -> warning (last 30%) -> danger (last 10%)
             display.classList.remove('warning', 'danger');
-            const phaseDuration = isWorkPhase ? workTime : restTime;
+            const phaseDuration = workTime; // EMOM: Always work phase
             if (phaseDuration > 0) {
                 const percentRemaining = currentTime / phaseDuration;
                 if (percentRemaining <= 0.1) {
@@ -1391,14 +1246,14 @@
         
         // Start timer
         function startTimer() {
-            // Initialize from inputs if not already set
-            if (workTime === 0 && restTime === 0) {
-                workTime = parseTime(workTimeInput.value);
-                restTime = parseTime(restTimeInput.value);
-                totalRounds = parseInt(roundsInput.value) || 0;
-                currentTime = workTime;
+            // EMOM: Initialize from defaults if needed
+            if (workTime === 0) {
+                workTime = 60; // EMOM: Fixed at 60 seconds
+                restTime = 0; // EMOM: No rest phase
+            }
+            if (currentTime === 0) {
+                currentTime = workTime; // EMOM: Reset to 60
                 currentRound = 1;
-                isWorkPhase = true;
             }
             
             if (currentTime <= 0) return;
@@ -1410,27 +1265,24 @@
                 currentTime--;
                 updateDisplay();
                 
+                // EMOM: When countdown reaches 0, beep, reset to 60, increment round
                 if (currentTime <= 0) {
                     playSound();
                     
-                    if (isWorkPhase) {
-                        // Switch to rest
-                        isWorkPhase = false;
-                        currentTime = restTime;
-                    } else {
-                        // Finished rest phase - check if we've completed all rounds before incrementing
-                        if (currentRound >= totalRounds) {
-                            // Finished all rounds - stop timer
-                            stopTimer();
-                            playSound();
-                            return;
-                        }
-                        
-                        // Switch to work, next round
-                        isWorkPhase = true;
-                        currentRound++;
-                        currentTime = workTime;
+                    // Increment round
+                    currentRound++;
+                    
+                    // Check if we've completed all rounds
+                    if (currentRound > totalRounds) {
+                        // Finished all rounds - stop timer
+                        stopTimer();
+                        display.textContent = 'Complete';
+                        display.classList.add('danger');
+                        return;
                     }
+                    
+                    // EMOM: Reset to 60 seconds (no rest phase)
+                    currentTime = 60;
                     updateDisplay();
                 }
             }, 1000);
@@ -1482,15 +1334,14 @@
             isRunning = false;
             isPaused = false;
             
-            // Get current values from inputs
-            workTime = parseTime(workTimeInput.value);
-            restTime = parseTime(restTimeInput.value);
-            totalRounds = parseInt(roundsInput.value) || 0;
+            // EMOM: Get current values from inputs
+            totalRounds = parseInt(roundsInput.value) || 10;
+            workTime = 60; // EMOM: Fixed at 60 seconds
+            restTime = 0; // EMOM: No rest phase
             
-            // Reset to work phase, round 1
-            currentTime = workTime;
+            // Reset to round 1, 60 seconds
+            currentTime = 60;
             currentRound = 1;
-            isWorkPhase = true;
             
             // Update display immediately (this will enable inputs and check validity)
             updateDisplay();
@@ -1504,28 +1355,21 @@
             isRunning = false;
             isPaused = false;
             
-            // Zero out all values
-            workTimeInput.value = '00:00';
-            restTimeInput.value = '00:00';
-            roundsInput.value = '0';
+            // EMOM: Reset to defaults
+            roundsInput.value = '10';
             
-            // Reset rounds slider to 1
+            // Reset rounds slider to 10
             if (roundsSlider && roundsSliderValue) {
-                roundsSlider.value = 1;
-                roundsSliderValue.textContent = '1';
+                roundsSlider.value = 10;
+                roundsSliderValue.textContent = '10';
             }
             
-            // Clear selected preset button
-            const presetButtons = document.querySelectorAll('.quick-select-btn[data-work][data-rest]');
-            presetButtons.forEach(btn => btn.classList.remove('selected'));
-            
-            // Reset timer state to zero
-            workTime = 0;
-            restTime = 0;
-            totalRounds = 0;
-            currentTime = 0;
+            // Reset timer state
+            workTime = 60; // EMOM: Fixed at 60 seconds
+            restTime = 0; // EMOM: No rest phase
+            totalRounds = 10;
+            currentTime = 60; // EMOM: Start at 60 seconds
             currentRound = 1;
-            isWorkPhase = true;
             
             // Update display (this will enable inputs and show Set Up button)
             updateDisplay();
@@ -1572,28 +1416,28 @@
             toggleDrawer();
         });
         
-        // Time adjustment buttons
+        // Time adjustment buttons (disabled for EMOM)
         workDecreaseBtn.addEventListener('click', function() {
-            adjustTime(workTimeInput, false);
+            // EMOM: Work time is fixed at 60 seconds
         });
         
         workIncreaseBtn.addEventListener('click', function() {
-            adjustTime(workTimeInput, true);
+            // EMOM: Work time is fixed at 60 seconds
         });
         
         restDecreaseBtn.addEventListener('click', function() {
-            adjustTime(restTimeInput, false);
+            // EMOM: No rest phase
         });
         
         restIncreaseBtn.addEventListener('click', function() {
-            adjustTime(restTimeInput, true);
+            // EMOM: No rest phase
         });
         
         // Rounds adjustment buttons
         roundsDecreaseBtn.addEventListener('click', function() {
             if (isRunning) return;
-            let rounds = parseInt(roundsInput.value) || 0;
-            rounds = Math.max(0, rounds - 1);
+            let rounds = parseInt(roundsInput.value) || 10;
+            rounds = Math.max(1, rounds - 1);
             roundsInput.value = rounds;
             totalRounds = rounds;
             if (!isRunning) {
@@ -1604,7 +1448,7 @@
         
         roundsIncreaseBtn.addEventListener('click', function() {
             if (isRunning) return;
-            let rounds = parseInt(roundsInput.value) || 0;
+            let rounds = parseInt(roundsInput.value) || 10;
             rounds = Math.min(99, rounds + 1);
             roundsInput.value = rounds;
             totalRounds = rounds;
@@ -1616,26 +1460,18 @@
         
         // Input validation and updates
         workTimeInput.addEventListener('input', function() {
-            validateTimeInput(this);
-            if (!isRunning) {
-                workTime = parseTime(this.value);
-                resetTimer();
-                updateDisplay(); // Update button visibility based on validity
-            }
+            // EMOM: Work time is fixed at 60 seconds
+            this.value = '01:00';
         });
         
         restTimeInput.addEventListener('input', function() {
-            validateTimeInput(this);
-            if (!isRunning) {
-                restTime = parseTime(this.value);
-                resetTimer();
-                updateDisplay(); // Update button visibility based on validity
-            }
+            // EMOM: Rest time is fixed at 0
+            this.value = '00:00';
         });
         
         roundsInput.addEventListener('input', function() {
             if (!isRunning) {
-                totalRounds = parseInt(this.value) || 0;
+                totalRounds = parseInt(this.value) || 10;
                 resetTimer();
                 updateDisplay(); // Update button visibility based on validity
             }
@@ -1659,43 +1495,12 @@
             
             // Sync slider with rounds input when changed via other means
             roundsInput.addEventListener('input', function() {
-                const value = parseInt(this.value) || 1;
-                const clampedValue = Math.max(1, Math.min(12, value));
+                const value = parseInt(this.value) || 10;
+                const clampedValue = Math.max(1, Math.min(20, value));
                 roundsSlider.value = clampedValue;
                 roundsSliderValue.textContent = clampedValue;
             });
         }
-        
-        // Preset Interval Buttons
-        const presetButtons = document.querySelectorAll('.quick-select-btn[data-work][data-rest]');
-        
-        presetButtons.forEach(btn => {
-            btn.addEventListener('click', function() {
-                if (isRunning) return; // Don't allow changing presets while running
-                
-                const workSeconds = parseInt(this.getAttribute('data-work'));
-                const restSeconds = parseInt(this.getAttribute('data-rest'));
-                const selectedRounds = parseInt(roundsSlider.value) || 1;
-                
-                // Update work and rest time inputs
-                workTimeInput.value = formatTime(workSeconds);
-                restTimeInput.value = formatTime(restSeconds);
-                roundsInput.value = selectedRounds;
-                
-                // Update timer state
-                workTime = workSeconds;
-                restTime = restSeconds;
-                totalRounds = selectedRounds;
-                
-                // Update selected button state
-                presetButtons.forEach(b => b.classList.remove('selected'));
-                this.classList.add('selected');
-                
-                // Reset timer with new values
-                resetTimer();
-                updateDisplay();
-            });
-        });
         
         // Drawer Functions
         function toggleDrawer() {
@@ -1713,14 +1518,15 @@
         }
         
         // Initialize
-        workTime = parseTime(workTimeInput.value);
-        restTime = parseTime(restTimeInput.value);
-        totalRounds = parseInt(roundsInput.value) || 0;
-        currentTime = workTime;
+        workTime = 60; // EMOM: Fixed at 60 seconds
+        restTime = 0; // EMOM: No rest phase
+        totalRounds = parseInt(roundsInput.value) || 10;
+        currentTime = 60; // EMOM: Start at 60 seconds
+        currentRound = 1;
         
         // Initialize rounds slider
         if (roundsSlider && roundsSliderValue) {
-            const initialRounds = Math.max(1, Math.min(12, totalRounds || 1));
+            const initialRounds = Math.max(1, Math.min(20, totalRounds || 10));
             roundsSlider.value = initialRounds;
             roundsSliderValue.textContent = initialRounds;
             if (totalRounds === 0) {

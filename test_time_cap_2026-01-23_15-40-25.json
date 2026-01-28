@@ -1,0 +1,49 @@
+{
+  "title": "Time Cap Test Workout",
+  "roundGroups": [
+    {
+      "id": "time-cap-test-rg",
+      "name": "Time Cap Test Round",
+      "rounds": 2,
+      "activities": [
+        {
+          "name": "Pushups with 20:00 Cap",
+          "mode": "rep",
+          "duration": 0,
+          "repsTarget": 50,
+          "timeCapSeconds": 1200,
+          "restBetweenRounds": 30,
+          "restAfterPhase": 0,
+          "prepTime": 10,
+          "notes": "Test: Rep-based with both reps target (50) and time cap (20:00). Should auto-end at 20:00 even if reps not finished.",
+          "audioEnabled": true
+        },
+        {
+          "name": "Squats - Time Cap Only",
+          "mode": "rep",
+          "duration": 0,
+          "repsTarget": 0,
+          "timeCapSeconds": 300,
+          "restBetweenRounds": 20,
+          "restAfterPhase": 0,
+          "prepTime": 5,
+          "notes": "Test: Rep-based with ONLY time cap (5:00), no reps target. Validates that validation allows this.",
+          "audioEnabled": true
+        },
+        {
+          "name": "Burpees - Short Cap",
+          "mode": "rep",
+          "duration": 0,
+          "repsTarget": 20,
+          "timeCapSeconds": 60,
+          "restBetweenRounds": 15,
+          "restAfterPhase": 10,
+          "prepTime": 5,
+          "notes": "Test: Quick 1:00 cap to test auto-end functionality quickly.",
+          "audioEnabled": true
+        }
+      ]
+    }
+  ],
+  "exportedAt": "2026-01-23T15:40:25.000Z"
+}

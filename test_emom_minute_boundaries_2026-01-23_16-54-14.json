@@ -1,0 +1,142 @@
+{
+  "title": "EMOM Minute Boundaries Test",
+  "roundGroups": [
+    {
+      "id": "rg1_emom_test",
+      "name": "EMOM Test Round Group",
+      "rounds": 2,
+      "activities": [
+        {
+          "name": "EMOM 5 Minutes - Burpees",
+          "mode": "emom",
+          "duration": 300,
+          "repsTarget": 0,
+          "restBetweenRounds": 30,
+          "restAfterPhase": 0,
+          "prepTime": 5,
+          "timeCapSeconds": 0,
+          "notes": "EMOM: 5 minutes total. Should show 'Minute 1 of 5', 'Minute 2 of 5', etc. with double beep at each minute start.",
+          "audioEnabled": true
+        },
+        {
+          "name": "EMOM 3 Minutes - Push-ups",
+          "mode": "emom",
+          "duration": 180,
+          "repsTarget": 0,
+          "restBetweenRounds": 20,
+          "restAfterPhase": 0,
+          "prepTime": 3,
+          "timeCapSeconds": 0,
+          "notes": "EMOM: 3 minutes total. Tests shorter EMOM duration.",
+          "audioEnabled": true
+        },
+        {
+          "name": "Time-Based - Plank Hold",
+          "mode": "time",
+          "duration": 45,
+          "repsTarget": 0,
+          "restBetweenRounds": 15,
+          "restAfterPhase": 0,
+          "prepTime": 5,
+          "timeCapSeconds": 0,
+          "notes": "Regular time-based activity (non-EMOM) for comparison.",
+          "audioEnabled": true
+        }
+      ]
+    },
+    {
+      "id": "rg2_mixed_test",
+      "name": "Mixed Activities Test",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "EMOM 10 Minutes - Squats",
+          "mode": "emom",
+          "duration": 600,
+          "repsTarget": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 60,
+          "prepTime": 10,
+          "timeCapSeconds": 0,
+          "notes": "EMOM: 10 minutes total. Longer duration to test multiple minute boundaries. Should beep at start of minutes 1-10.",
+          "audioEnabled": true
+        },
+        {
+          "name": "Rep-Based - Pull-ups",
+          "mode": "rep",
+          "duration": 0,
+          "repsTarget": 15,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 30,
+          "prepTime": 5,
+          "timeCapSeconds": 0,
+          "notes": "Rep-based activity (non-EMOM) to test flow between different modes.",
+          "audioEnabled": true
+        },
+        {
+          "name": "AMRAP - Jumping Jacks",
+          "mode": "amrap",
+          "duration": 60,
+          "repsTarget": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "prepTime": 3,
+          "timeCapSeconds": 0,
+          "notes": "AMRAP activity (non-EMOM) for comparison.",
+          "audioEnabled": true
+        }
+      ]
+    },
+    {
+      "id": "rg3_emom_short",
+      "name": "Short EMOM Test",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "EMOM 2 Minutes - Mountain Climbers",
+          "mode": "emom",
+          "duration": 120,
+          "repsTarget": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 20,
+          "prepTime": 5,
+          "timeCapSeconds": 0,
+          "notes": "EMOM: 2 minutes total. Quick test of minute boundary cues.",
+          "audioEnabled": true
+        },
+        {
+          "name": "Time-Based - Rest",
+          "mode": "time",
+          "duration": 30,
+          "repsTarget": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "prepTime": 0,
+          "timeCapSeconds": 0,
+          "notes": "Simple time-based rest period.",
+          "audioEnabled": true
+        }
+      ]
+    },
+    {
+      "id": "rg4_emom_audio_off",
+      "name": "EMOM Audio OFF Test",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "EMOM 3 Minutes - Silent",
+          "mode": "emom",
+          "duration": 180,
+          "repsTarget": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "prepTime": 5,
+          "timeCapSeconds": 0,
+          "notes": "EMOM with audio disabled. Should still show minute countdown but no beeps.",
+          "audioEnabled": false
+        }
+      ]
+    }
+  ],
+  "exportedAt": "2026-01-23T16:54:14.000Z"
+}

@@ -1,0 +1,99 @@
+{
+  "title": "EMOM Failure Handling Test",
+  "roundGroups": [
+    {
+      "id": "rg1_emom_fail_test",
+      "name": "EMOM Failure Test - Continue Mode",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "EMOM 3 Min - Burpees (Target: 10)",
+          "mode": "emom",
+          "duration": 180,
+          "repsTarget": 10,
+          "restBetweenActivities": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "prepTime": 5,
+          "timeCapSeconds": 0,
+          "notes": "EMOM: 3 minutes, 10 reps per minute target. Test 'Continue on fail' mode. Try completing less than 10 reps in a minute to see failure tracking.",
+          "audioEnabled": true
+        }
+      ]
+    },
+    {
+      "id": "rg2_emom_stop_test",
+      "name": "EMOM Failure Test - Stop Mode",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "EMOM 5 Min - Push-ups (Target: 15)",
+          "mode": "emom",
+          "duration": 300,
+          "repsTarget": 15,
+          "restBetweenActivities": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "prepTime": 5,
+          "timeCapSeconds": 0,
+          "notes": "EMOM: 5 minutes, 15 reps per minute target. Test 'Stop on first fail' mode. Set fail mode to 'stop' in settings drawer. Complete less than 15 reps in any minute to trigger workout stop.",
+          "audioEnabled": true
+        }
+      ]
+    },
+    {
+      "id": "rg3_emom_mixed",
+      "name": "EMOM Mixed Scenarios",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "EMOM 4 Min - Squats (Target: 12)",
+          "mode": "emom",
+          "duration": 240,
+          "repsTarget": 12,
+          "restBetweenActivities": 30,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "prepTime": 5,
+          "timeCapSeconds": 0,
+          "notes": "EMOM: 4 minutes, 12 reps per minute. Test both success and failure scenarios. Use +/- buttons to adjust reps during each minute.",
+          "audioEnabled": true
+        },
+        {
+          "name": "EMOM 2 Min - Pull-ups (Target: 8)",
+          "mode": "emom",
+          "duration": 120,
+          "repsTarget": 8,
+          "restBetweenActivities": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "prepTime": 3,
+          "timeCapSeconds": 0,
+          "notes": "EMOM: 2 minutes, 8 reps per minute. Shorter duration to test quick failure scenarios.",
+          "audioEnabled": true
+        }
+      ]
+    },
+    {
+      "id": "rg4_emom_no_target",
+      "name": "EMOM Without Reps Target",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "EMOM 3 Min - No Rep Target",
+          "mode": "emom",
+          "duration": 180,
+          "repsTarget": 0,
+          "restBetweenActivities": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "prepTime": 5,
+          "timeCapSeconds": 0,
+          "notes": "EMOM: 3 minutes, no reps target. Should work normally without failure checking. Rep counter should not appear.",
+          "audioEnabled": true
+        }
+      ]
+    }
+  ],
+  "exportedAt": "2026-01-26T00:00:00.000Z"
+}

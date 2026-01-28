@@ -1,0 +1,132 @@
+{
+  "title": "EMOM Failure Behaviors - Individual Tests",
+  "roundGroups": [
+    {
+      "id": "rg1_continue_test",
+      "name": "Test 1: Continue on Fail",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "EMOM 3 Min - Burpees (Target: 10, Continue Mode)",
+          "mode": "emom",
+          "duration": 180,
+          "repsTarget": 10,
+          "emomFailMode": "continue",
+          "restBetweenActivities": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "prepTime": 5,
+          "timeCapSeconds": 0,
+          "notes": "TEST: Set EMOM Behavior to 'Continue on fail'. Complete less than 10 reps in any minute. Workout should continue and track failed minutes.",
+          "audioEnabled": true
+        }
+      ]
+    },
+    {
+      "id": "rg2_stop_test",
+      "name": "Test 2: Stop on First Fail",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "EMOM 3 Min - Push-ups (Target: 15, Stop Mode)",
+          "mode": "emom",
+          "duration": 180,
+          "repsTarget": 15,
+          "emomFailMode": "stop",
+          "restBetweenActivities": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "prepTime": 5,
+          "timeCapSeconds": 0,
+          "notes": "TEST: Set EMOM Behavior to 'Stop workout on first fail'. Complete less than 15 reps in any minute. Workout should stop immediately with alert.",
+          "audioEnabled": true
+        }
+      ]
+    },
+    {
+      "id": "rg3_continue_multiple_fails",
+      "name": "Test 3: Continue Mode - Multiple Failures",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "EMOM 5 Min - Squats (Target: 12, Continue Mode)",
+          "mode": "emom",
+          "duration": 300,
+          "repsTarget": 12,
+          "emomFailMode": "continue",
+          "restBetweenActivities": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "prepTime": 5,
+          "timeCapSeconds": 0,
+          "notes": "TEST: Set EMOM Behavior to 'Continue on fail'. Fail multiple minutes (complete less than 12 reps). Should track all failures and continue through all 5 minutes.",
+          "audioEnabled": true
+        }
+      ]
+    },
+    {
+      "id": "rg4_stop_first_minute",
+      "name": "Test 4: Stop Mode - Fail First Minute",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "EMOM 5 Min - Pull-ups (Target: 8, Stop Mode)",
+          "mode": "emom",
+          "duration": 300,
+          "repsTarget": 8,
+          "emomFailMode": "stop",
+          "restBetweenActivities": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "prepTime": 5,
+          "timeCapSeconds": 0,
+          "notes": "TEST: Set EMOM Behavior to 'Stop workout on first fail'. Complete less than 8 reps in the FIRST minute. Workout should stop immediately.",
+          "audioEnabled": true
+        }
+      ]
+    },
+    {
+      "id": "rg5_success_all_minutes",
+      "name": "Test 5: Success - All Minutes Complete",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "EMOM 3 Min - Jumping Jacks (Target: 20, Continue Mode)",
+          "mode": "emom",
+          "duration": 180,
+          "repsTarget": 20,
+          "emomFailMode": "continue",
+          "restBetweenActivities": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "prepTime": 5,
+          "timeCapSeconds": 0,
+          "notes": "TEST: Complete 20+ reps in each minute. Should complete all 3 minutes successfully with 0 failed minutes.",
+          "audioEnabled": true
+        }
+      ]
+    },
+    {
+      "id": "rg6_no_reps_target",
+      "name": "Test 6: No Reps Target (No Failure Checking)",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "EMOM 3 Min - Mountain Climbers (No Target)",
+          "mode": "emom",
+          "duration": 180,
+          "repsTarget": 0,
+          "emomFailMode": "continue",
+          "restBetweenActivities": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "prepTime": 5,
+          "timeCapSeconds": 0,
+          "notes": "TEST: No reps target set. Should work normally without failure checking. Rep counter should not appear.",
+          "audioEnabled": true
+        }
+      ]
+    }
+  ],
+  "exportedAt": "2026-01-26T00:00:00.000Z"
+}

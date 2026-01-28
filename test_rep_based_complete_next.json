@@ -1,0 +1,35 @@
+{
+  "title": "Test Rep-Based Complete/Next",
+  "roundGroups": [
+    {
+      "id": "test-rg-1",
+      "name": "Rep-Based Test Group",
+      "rounds": 2,
+      "activities": [
+        {
+          "name": "Push-ups",
+          "mode": "rep",
+          "duration": 0,
+          "repsTarget": 10,
+          "restBetweenRounds": 30,
+          "restAfterPhase": 60,
+          "prepTime": 5,
+          "notes": "Test rep-based activity with no time cap. Use Complete/Next button when done.",
+          "audioEnabled": true
+        },
+        {
+          "name": "Pull-ups",
+          "mode": "rep",
+          "duration": 0,
+          "repsTarget": 8,
+          "restBetweenRounds": 30,
+          "restAfterPhase": 0,
+          "prepTime": 5,
+          "notes": "Second rep-based activity to test flow between activities.",
+          "audioEnabled": true
+        }
+      ]
+    }
+  ],
+  "exportedAt": "2026-01-23T00:00:00.000Z"
+}

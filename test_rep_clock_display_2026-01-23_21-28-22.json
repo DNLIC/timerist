@@ -1,0 +1,35 @@
+{
+  "title": "Rep-Based Clock Display Test",
+  "roundGroups": [
+    {
+      "id": "test-rg-clock",
+      "name": "Clock Display Test",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "Push-ups",
+          "mode": "rep",
+          "duration": 0,
+          "repsTarget": 10,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "prepTime": 0,
+          "notes": "Test time of day clock display - no time cap, no prep",
+          "audioEnabled": true
+        },
+        {
+          "name": "Pull-ups",
+          "mode": "rep",
+          "duration": 0,
+          "repsTarget": 8,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "prepTime": 5,
+          "notes": "Test clock display after prep countdown",
+          "audioEnabled": true
+        }
+      ]
+    }
+  ],
+  "exportedAt": "2026-01-23T21:28:22.000Z"
+}

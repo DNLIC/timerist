@@ -87,22 +87,29 @@
         
         // Timer types list with their corresponding HTML files
         const TIMER_TYPES = [
-            { name: "Countdown", file: "countdown.html" },
             { name: "Quick Countdown", file: "quick-countdown.html" },
-            { name: "Interval", file: "interval.html" },
+            { name: "Countdown", file: "countdown.html" },
             { name: "Quick Interval", file: "quick-interval.html" },
-            { name: "StopWatch", file: "stopwatch.html" },
-            { name: "StopWatch Splits", file: "stopwatch-splits.html" },
+            { name: "Interval", file: "interval.html" },
+            { name: "Tabata", file: "tabata.html" },
             { name: "EMOM", file: "emom.html" },
             { name: "EMOM Splits", file: "emom-splits.html" },
-            { name: "HIIT", file: "hiit.html" },
-            { name: "Quick HIIT", file: "quick-hiit.html" },
+            { name: "StopWatch", file: "stopwatch.html" },
+            { name: "StopWatch Splits", file: "stopwatch-splits.html" },
             { name: "AMRAP", file: "amrap.html" },
             { name: "AMRAP Splits", file: "amrap-splits.html" },
-            { name: "Mobility Timer", file: "mobility.html" },
+            { name: "HIIT", file: "hiit.html" },
+            { name: "Quick HIIT", file: "quick-hiit.html" },
+            { name: "Pyramid", file: "pyramid.html" },
             { name: "Clock", file: "clock.html" },
+            { name: "Mobility Timer", file: "mobility.html" },
             { name: "Blog", file: "blog.html" },
             { name: "Apps", file: "apps.html" }
+        ];
+        
+        // Development timers (under development/testing)
+        const DEVELOPMENT_TIMERS = [
+            { name: "Custom Timer", file: "custom.html" }
         ];
         
         function MainPage() {
@@ -192,6 +199,38 @@
                                                 ? "none" 
                                                 : `1px solid rgb(var(--border))`,
                                             cursor: "pointer"
+                                        }}
+                                    >
+                                        {timerType.name}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                        
+                        {/* Development Timers Section */}
+                        <div className="p-6 bg-card border border-border rounded-lg shadow-lg" style={{border: `2px dashed rgb(var(--border))`}}>
+                            <h2 className="text-2xl font-semibold mb-2" style={{color: `rgb(var(--foreground))`}}>🚧 Development Timers</h2>
+                            <p className="mb-4" style={{color: `rgb(var(--muted-foreground))`, fontSize: '0.875rem'}}>
+                                Timers currently under development and testing
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                                {DEVELOPMENT_TIMERS.map((timerType) => (
+                                    <button
+                                        key={timerType.name}
+                                        onClick={() => handleTimerClick(timerType)}
+                                        className="px-4 py-2 rounded-md text-sm font-medium transition-colors min-w-[120px] hover:opacity-90"
+                                        style={{
+                                            background: selectedTimer === timerType.name 
+                                                ? `rgb(var(--primary))` 
+                                                : "transparent",
+                                            color: selectedTimer === timerType.name 
+                                                ? `rgb(var(--primary-foreground))` 
+                                                : `rgb(var(--foreground))`,
+                                            border: selectedTimer === timerType.name 
+                                                ? "none" 
+                                                : `2px dashed rgb(var(--border))`,
+                                            cursor: "pointer",
+                                            opacity: 0.9
                                         }}
                                     >
                                         {timerType.name}

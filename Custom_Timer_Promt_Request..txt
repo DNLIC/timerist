@@ -1,0 +1,44 @@
+I'm having trouble getting a Cursor AI to understand the timer logic for this custom timer that I am working on. This is part of the timerist.com project.  I am going to upload the page that we are currently using, but I'm having trouble getting the system to properly display. What I want and to proceed through a work out by coordinating the proper rest periods, set up periods, rounds the time or that should be displayed when a certain type of workout is happening.
+
+I also have a sample Jason file that can be read to understand how the structure works and I will upload that.   Here's what I want it to be able to do and I'm just looking for a set of clear prompts that will accomplish this.
+
+Here is the structure of the entities:
+
+1. Workouts - a single workout can have many phases/rounds.
+- The workout has a Name and a Description.
+- Pre-programs workouts in the form of a json file can be imported and exported.
+- workouts that are entered into the system can be exported as a json file to be shared or used later.
+- a set of pre-programmed workouts can be stored within the system and called from a pulldown menu for me settings, panel slider, pull down menu.
+
+2. Phases/Rounds - a phase or round is a grouping of activities
+- a single phase/round can have many activities associated with the Round
+- a phase/round can have a number of repetitions.  For example, I could have a phase that needed to be repeated three times with a one minute delay between each repetition, and it would be made up of a variety of activities.
+
+
+3. Activities - activities are things like push-ups, and sit ups and bench presses, and Burpees.
+- an activity can have a name.
+- an activity can have a mode.
+
+
+
+4. Modes - A mode is a way of timing an activity.  There are four modes.
+- Time Based
+- AMRAP
+- EMOM
+- Rep Based
+
+´ each of these places has a different time or that's associated with it. 
+
+ Time-based is a workout timing method.  It means that this particular activity needs to be completed within a certain variable time limit that the user specifies when setting up to work out. The timer for this type of work out would be a stopwatch I wear the user can see how much time they had left to complete the task.
+ 
+ 
+ EMOM is a specialized type of time based workout timing method where the clock runs in one minute increments.   It stands for every minute on the minute.  This type of workout might be complete 10 push-ups every minute on the minute for 20 minutes.  Or the timetable might be complete 10 push-ups every minute on the minute until you cannot complete 10 push-ups within one minute.  There might be a cap on this type of work out for people who could complete 10 push-ups every minute for longer than the workout tab might allow.  The timer for this workout would be a series of one minute countdowns
+ 
+ 
+ AMRAP is another type of time to work out, which means as many reps as possible within a certain timeframe.  An example of this workout would be how many push-ups can you do in three minutes.   The timer for this clock would be a countdown clock that the countdown from the allotted. Until the time is left.
+ 
+The rep-based is a workout timing method.  This involves a series of exercises where certain amount of repetitions must be completed, but there is no timer the workout is done when the amount of repetitions our completed however, there could be a overall time cap on this type of work ou
+
+
+
+

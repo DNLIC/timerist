@@ -330,6 +330,32 @@
             color: rgb(0, 0, 0);
         }
         
+        /* Set Up button hover - dark gray */
+        #setupBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode Set Up button hover - lighter gray */
+        .dark #setupBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        /* Clear button hover - dark gray */
+        #clearBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode Clear button hover - lighter gray */
+        .dark #clearBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
         .control-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
@@ -423,6 +449,59 @@
             line-height: 1.6;
             margin-bottom: 0.75rem;
             font-size: 0.875rem;
+        }
+        
+        .custom-time-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid rgb(var(--input));
+            border-radius: var(--radius);
+            background-color: rgb(var(--background));
+            color: rgb(var(--foreground));
+            font-size: 1.125rem;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            min-height: 48px;
+        }
+        
+        .custom-time-input:focus {
+            outline: none;
+            border-color: rgb(var(--ring));
+            box-shadow: 0 0 0 2px rgba(var(--ring), 0.2);
+        }
+        
+        .custom-time-input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Workout title and description styling */
+        #workoutTitleInput {
+            font-family: inherit;
+            text-align: left;
+            font-weight: 500;
+        }
+        
+        #workoutDescriptionInput {
+            font-family: inherit;
+            text-align: left;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+        
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: rgb(var(--muted-foreground));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
         
         /* Color Picker Styles - shadcn/ui compliant */
@@ -790,7 +869,17 @@
         <div class="timer-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
             <!-- Timer Display -->
             <div class="timer-display-block bg-card border border-border rounded-lg shadow-lg text-center" id="timerDisplayBlock">
+                <!-- Workout Title -->
+                <div id="workoutTitleDisplay" style="display: none; text-align: center; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid rgb(var(--border));">
+                    <h2 id="workoutTitleText" style="font-size: 1.25rem; font-weight: 600; color: rgb(var(--foreground)); margin: 0; word-wrap: break-word;"></h2>
+                </div>
+                
                 <div class="timer-display-large" id="timer-display">00:00:00</div>
+                
+                <!-- Workout Notes -->
+                <div id="workoutDescriptionDisplay" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgb(var(--border));">
+                    <p id="workoutDescriptionText" style="font-size: 0.875rem; color: rgb(var(--muted-foreground)); line-height: 1.6; margin: 0; text-align: left; white-space: pre-wrap; word-wrap: break-word;"></p>
+                </div>
             </div>
             
             <!-- Control Buttons -->
@@ -799,6 +888,8 @@
                     <button class="control-btn btn-primary" id="startBtn" aria-label="Start stopwatch">Start</button>
                     <button class="control-btn btn-primary" id="pauseBtn" style="display: none;" aria-label="Pause stopwatch">Pause</button>
                     <button class="control-btn btn-destructive" id="resetBtn" style="display: none;" aria-label="Reset stopwatch">Reset</button>
+                    <button class="control-btn btn-secondary" id="clearBtn" aria-label="Clear timer and content">Clear</button>
+                    <button class="control-btn btn-primary" id="setupBtn" aria-label="Set up timer">Set Up</button>
                 </div>
             </div>
         </div>
@@ -814,17 +905,43 @@
             <button class="drawer-close" onclick="closeDrawer()" aria-label="Close drawer">×</button>
         </div>
         <div class="drawer-content">
-            <!-- About This Timer -->
+            <!-- Setup Content -->
             <div class="drawer-section">
-                <h3>About This Timer</h3>
-                <p>
-                    Simple and accurate stopwatch timer for tracking workout duration, exercise time, or any timed activity. 
-                    Start the timer to begin tracking elapsed time, pause when needed, and reset to start fresh. Perfect for timing 
-                    workouts, runs, exercises, or any activity where you need to track duration.
-                </p>
-                <p style="margin-top: 0.75rem;">
-                    <strong>Keywords:</strong> stopwatch, workout timer, exercise timer, fitness stopwatch, running timer, timer app, stopwatch app, time tracker.
-                </p>
+                <h3>Setup Content</h3>
+                
+                <!-- Workout Title -->
+                <div class="input-group">
+                    <label for="workoutTitleInput">Workout Title</label>
+                    <input 
+                        type="text" 
+                        id="workoutTitleInput" 
+                        class="custom-time-input"
+                        placeholder="Enter workout title"
+                        aria-label="Workout title"
+                        maxlength="40"
+                        style="font-family: inherit;"
+                    >
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="workoutTitleCharCount">0</span>/40
+                    </p>
+                </div>
+                
+                <!-- Workout Notes -->
+                <div class="input-group">
+                    <label for="workoutDescriptionInput">Workout Notes</label>
+                    <textarea 
+                        id="workoutDescriptionInput" 
+                        class="custom-time-input"
+                        placeholder="Enter workout notes..."
+                        aria-label="Workout notes"
+                        rows="4"
+                        maxlength="200"
+                        style="resize: vertical; min-height: 80px; font-family: inherit; line-height: 1.5;"
+                    ></textarea>
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="workoutDescriptionCharCount">0</span>/200
+                    </p>
+                </div>
             </div>
             
             <!-- Timer Setup -->
@@ -946,10 +1063,23 @@
                 </div>
             </div>
             
+            <!-- About This Timer -->
+            <div class="drawer-section">
+                <h3>About This Timer</h3>
+                <p>
+                    Simple and accurate stopwatch timer for tracking workout duration, exercise time, or any timed activity. 
+                    Start the timer to begin tracking elapsed time, pause when needed, and reset to start fresh. Perfect for timing 
+                    workouts, runs, exercises, or any activity where you need to track duration.
+                </p>
+                <p style="margin-top: 0.75rem;">
+                    <strong>Keywords:</strong> stopwatch, workout timer, exercise timer, fitness stopwatch, running timer, timer app, stopwatch app, time tracker.
+                </p>
+            </div>
+            
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.23</p>
+                <p><strong>Version:</strong> v0.24</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -966,6 +1096,8 @@
         const startBtn = document.getElementById('startBtn');
         const pauseBtn = document.getElementById('pauseBtn');
         const resetBtn = document.getElementById('resetBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const setupBtn = document.getElementById('setupBtn');
         
         function formatTime(seconds) {
             const hours = Math.floor(seconds / 3600);
@@ -1039,6 +1171,38 @@
             updateDisplay();
         }
         
+        function clearTimer() {
+            // Stop the timer first
+            clearInterval(interval);
+            interval = null;
+            isRunning = false;
+            isPaused = false;
+            
+            // Reset elapsed time
+            elapsedTime = 0;
+            
+            // Clear workout title
+            const workoutTitleInput = document.getElementById('workoutTitleInput');
+            if (workoutTitleInput) {
+                workoutTitleInput.value = '';
+            }
+            
+            // Clear workout notes
+            const workoutDescriptionInput = document.getElementById('workoutDescriptionInput');
+            if (workoutDescriptionInput) {
+                workoutDescriptionInput.value = '';
+            }
+            
+            // Update display and character counts
+            updateDisplay();
+            if (typeof updateCharCounts === 'function') {
+                updateCharCounts();
+            }
+            if (typeof updateWorkoutDisplay === 'function') {
+                updateWorkoutDisplay();
+            }
+        }
+        
         // Toggle play/pause
         function togglePlayPause() {
             if (isRunning && !isPaused) {
@@ -1054,6 +1218,10 @@
         startBtn.addEventListener('click', togglePlayPause);
         pauseBtn.addEventListener('click', pauseTimer);
         resetBtn.addEventListener('click', resetTimer);
+        clearBtn.addEventListener('click', clearTimer);
+        setupBtn.addEventListener('click', function() {
+            toggleDrawer();
+        });
         
         // Initialize
         updateDisplay();
@@ -1327,6 +1495,67 @@
         // Set initial tab based on current mode (without switching theme)
         const isDark = document.documentElement.classList.contains('dark');
         setTabState(isDark ? 'dark' : 'light', false);
+        
+        // Workout Title and Notes Functionality
+        const workoutTitleInput = document.getElementById('workoutTitleInput');
+        const workoutDescriptionInput = document.getElementById('workoutDescriptionInput');
+        const workoutTitleDisplay = document.getElementById('workoutTitleDisplay');
+        const workoutTitleText = document.getElementById('workoutTitleText');
+        const workoutDescriptionDisplay = document.getElementById('workoutDescriptionDisplay');
+        const workoutDescriptionText = document.getElementById('workoutDescriptionText');
+        const workoutTitleCharCount = document.getElementById('workoutTitleCharCount');
+        const workoutDescriptionCharCount = document.getElementById('workoutDescriptionCharCount');
+        
+        // Update workout title and description display
+        function updateWorkoutDisplay() {
+            const title = workoutTitleInput ? workoutTitleInput.value.trim() : '';
+            const description = workoutDescriptionInput ? workoutDescriptionInput.value.trim() : '';
+            
+            // Update title display
+            if (title && workoutTitleText && workoutTitleDisplay) {
+                workoutTitleText.textContent = title;
+                workoutTitleDisplay.style.display = 'block';
+            } else if (workoutTitleDisplay) {
+                workoutTitleDisplay.style.display = 'none';
+            }
+            
+            // Update description display
+            if (description && workoutDescriptionText && workoutDescriptionDisplay) {
+                workoutDescriptionText.textContent = description;
+                workoutDescriptionDisplay.style.display = 'block';
+            } else if (workoutDescriptionDisplay) {
+                workoutDescriptionDisplay.style.display = 'none';
+            }
+        }
+        
+        // Update character counts
+        function updateCharCounts() {
+            if (workoutTitleCharCount && workoutTitleInput) {
+                workoutTitleCharCount.textContent = workoutTitleInput.value.length;
+            }
+            if (workoutDescriptionCharCount && workoutDescriptionInput) {
+                workoutDescriptionCharCount.textContent = workoutDescriptionInput.value.length;
+            }
+        }
+        
+        // Workout title and description event listeners
+        if (workoutTitleInput) {
+            workoutTitleInput.addEventListener('input', function() {
+                updateCharCounts();
+                updateWorkoutDisplay();
+            });
+        }
+        
+        if (workoutDescriptionInput) {
+            workoutDescriptionInput.addEventListener('input', function() {
+                updateCharCounts();
+                updateWorkoutDisplay();
+            });
+        }
+        
+        // Initialize workout display and character counts
+        updateCharCounts();
+        updateWorkoutDisplay();
     </script>
     <script src="scripts/dark-mode-toggle.js"></script>
     <script>

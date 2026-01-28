@@ -271,17 +271,23 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
-        /* Set Up button hover - dark gray like quick countdown timer */
-        #setupBtn:hover:not(:disabled) {
-            background-color: rgb(100, 100, 100);
-            color: rgb(255, 255, 255);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        /* Set Up button hover - dark gray like Reset button (higher specificity) */
+        .control-btn.btn-primary#setupBtn:hover:not(:disabled),
+        #setupBtn.control-btn.btn-primary:hover:not(:disabled),
+        .control-btn.btn-primary#customizeToggle:hover:not(:disabled),
+        #customizeToggle.control-btn.btn-primary:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100) !important;
+            color: rgb(255, 255, 255) !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
         }
         
-        /* Dark mode Set Up button hover - lighter gray */
-        [data-theme="style1"] #setupBtn:hover:not(:disabled) {
-            background-color: rgb(150, 150, 150);
-            color: rgb(0, 0, 0);
+        /* Dark mode Set Up button hover - lighter gray like Reset button */
+        [data-theme="style1"] .control-btn.btn-primary#setupBtn:hover:not(:disabled),
+        [data-theme="style1"] #setupBtn.control-btn.btn-primary:hover:not(:disabled),
+        [data-theme="style1"] .control-btn.btn-primary#customizeToggle:hover:not(:disabled),
+        [data-theme="style1"] #customizeToggle.control-btn.btn-primary:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150) !important;
+            color: rgb(0, 0, 0) !important;
         }
         
         /* Paused state - dark gray background with white text (daylight mode) */
@@ -315,15 +321,28 @@
         
         /* Clear button hover - dark gray like quick countdown timer */
         #clearBtn:hover:not(:disabled) {
-            background-color: rgb(100, 100, 100);
-            color: rgb(255, 255, 255);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            background-color: rgb(100, 100, 100) !important;
+            color: rgb(255, 255, 255) !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
         }
         
         /* Dark mode Clear button hover - lighter gray */
         [data-theme="style1"] #clearBtn:hover:not(:disabled) {
-            background-color: rgb(150, 150, 150);
-            color: rgb(0, 0, 0);
+            background-color: rgb(150, 150, 150) !important;
+            color: rgb(0, 0, 0) !important;
+        }
+        
+        /* Default Settings button hover - dark gray like Clear button */
+        #defaultSettingsBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100) !important;
+            color: rgb(255, 255, 255) !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+        }
+        
+        /* Dark mode Default Settings button hover - lighter gray */
+        [data-theme="style1"] #defaultSettingsBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150) !important;
+            color: rgb(0, 0, 0) !important;
         }
         
         /* Start button hover - dark gray like Set Up button */
@@ -362,17 +381,17 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
-        /* Reset button hover - dark gray like Set Up button */
+        /* Reset button hover - dark gray */
         #resetBtn:hover:not(:disabled) {
-            background-color: rgb(100, 100, 100);
-            color: rgb(255, 255, 255);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            background-color: rgb(100, 100, 100) !important;
+            color: rgb(255, 255, 255) !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
         }
         
         /* Dark mode Reset button hover - lighter gray */
         [data-theme="style1"] #resetBtn:hover:not(:disabled) {
-            background-color: rgb(150, 150, 150);
-            color: rgb(0, 0, 0);
+            background-color: rgb(150, 150, 150) !important;
+            color: rgb(0, 0, 0) !important;
         }
         
         .control-btn:disabled {
@@ -842,19 +861,6 @@
         }
         
         /* Tabata-specific styles */
-        .tabata-badge {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background-color: rgba(var(--primary), 0.1);
-            border: 1px solid rgb(var(--primary));
-            border-radius: var(--radius);
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: rgb(var(--primary));
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-        
         .tabata-values {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -914,38 +920,6 @@
             color: rgb(var(--primary));
         }
         
-        .motivational-label {
-            font-size: 1.5rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: rgb(var(--destructive));
-            margin-top: 0.5rem;
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-        
-        @media (min-width: 768px) {
-            .motivational-label {
-                font-size: 2rem;
-            }
-        }
-        
-        .progress-bar-container {
-            width: 100%;
-            height: 8px;
-            background-color: rgb(var(--accent));
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 1rem;
-        }
-        
-        .progress-bar {
-            height: 100%;
-            background-color: rgb(var(--primary));
-            transition: width 0.3s ease;
-            border-radius: 4px;
-        }
-        
         .completion-message {
             font-size: 1.5rem;
             font-weight: 700;
@@ -955,14 +929,6 @@
             padding: 1rem;
             background-color: rgba(var(--secondary), 0.1);
             border-radius: var(--radius);
-        }
-        
-        .custom-mode .tabata-values {
-            display: none;
-        }
-        
-        .custom-mode .tabata-badge {
-            display: none;
         }
     </style>
 </head>
@@ -999,13 +965,6 @@
         </div>
         
         <div class="timer-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
-            <!-- Tabata Protocol Badge -->
-            <div class="text-center">
-                <div class="tabata-badge">
-                    Classic Tabata: 20s all-out effort + 10s rest × 8 rounds (4 minutes total)
-                </div>
-            </div>
-            
             <!-- Tabata Fixed Values Display -->
             <div class="tabata-values" id="tabataValues">
                 <div class="tabata-value-card work">
@@ -1025,15 +984,10 @@
             <!-- Timer Display -->
             <div class="timer-display-block bg-card border border-border rounded-lg shadow-lg text-center">
                 <div class="phase-label" id="phaseLabel">Work</div>
-                <div id="motivationalLabel" class="motivational-label" style="display: none;">GO ALL OUT!</div>
                 <div class="timer-display-large" id="display">00:20</div>
                 <div class="round-info">
                     Round <span id="round">1</span> of <span id="totalRounds">8</span>
                 </div>
-                <div class="progress-bar-container">
-                    <div class="progress-bar" id="progressBar" style="width: 0%;"></div>
-                </div>
-                <div id="completionMessage" class="completion-message" style="display: none;">Tabata Complete! 🎉</div>
             </div>
             
             <!-- Control Buttons -->
@@ -1115,6 +1069,23 @@
                     </div>
                 </div>
                 
+                <!-- Completion Message -->
+                <div class="input-group">
+                    <label for="completionMessageInput">Completion Message (14 Characters Max)</label>
+                    <input 
+                        type="text" 
+                        id="completionMessageInput" 
+                        class="custom-time-input" 
+                        value="Complete"
+                        maxlength="14"
+                        placeholder="Enter message..."
+                        aria-label="Completion message"
+                    >
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+                        <span id="completionMessageCounter" style="font-size: 0.75rem; color: rgb(var(--muted-foreground));">8/14</span>
+                    </div>
+                </div>
+                
                 <!-- Default Settings Button -->
                 <div class="input-group" style="margin-top: 2rem;">
                     <button class="control-btn btn-secondary" id="defaultSettingsBtn" onclick="resetToDefaultSettings()" aria-label="Reset to default Tabata settings" style="width: 100%;">
@@ -1145,7 +1116,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.14</p>
+                <p><strong>Version:</strong> v0.15</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -1163,6 +1134,7 @@
         let restTime = 10; // Tabata: 10 seconds
         let totalRounds = 8; // Tabata: 8 rounds
         let isCustomMode = false;
+        let completionMessage = 'Complete'; // User-defined completion message
         
         const display = document.getElementById('display');
         const phaseLabel = document.getElementById('phaseLabel');
@@ -1177,14 +1149,13 @@
         const restTimeInput = document.getElementById('restTimeInput');
         const roundsInput = document.getElementById('roundsInput');
         const roundsDecreaseBtn = document.getElementById('roundsDecreaseBtn');
+        const completionMessageInput = document.getElementById('completionMessageInput');
+        const completionMessageCounter = document.getElementById('completionMessageCounter');
         const roundsIncreaseBtn = document.getElementById('roundsIncreaseBtn');
         const workDecreaseBtn = document.getElementById('workDecreaseBtn');
         const workIncreaseBtn = document.getElementById('workIncreaseBtn');
         const restDecreaseBtn = document.getElementById('restDecreaseBtn');
         const restIncreaseBtn = document.getElementById('restIncreaseBtn');
-        const progressBar = document.getElementById('progressBar');
-        const motivationalLabel = document.getElementById('motivationalLabel');
-        const completionMessage = document.getElementById('completionMessage');
         const customizeToggle = document.getElementById('customizeToggle');
         const tabataValues = document.getElementById('tabataValues');
         
@@ -1262,6 +1233,7 @@
             if (!isRunning) {
                 resetTimer();
                 updateDisplay(); // Update button visibility based on validity
+                updateTabataValueDisplays(); // Update value cards
             }
         }
         
@@ -1326,10 +1298,39 @@
             updateTabataValueDisplays();
         };
         
-        // Update Tabata value displays
+        // Update Tabata value displays - always shows current settings
         function updateTabataValueDisplays() {
-            document.getElementById('workValueDisplay').textContent = workTime + 's';
-            document.getElementById('restValueDisplay').textContent = restTime + 's';
+            // Format work time
+            let workDisplay = '';
+            if (workTime >= 60) {
+                const minutes = Math.floor(workTime / 60);
+                const seconds = workTime % 60;
+                if (seconds === 0) {
+                    workDisplay = minutes + 'm';
+                } else {
+                    workDisplay = minutes + 'm ' + seconds + 's';
+                }
+            } else {
+                workDisplay = workTime + 's';
+            }
+            
+            // Format rest time
+            let restDisplay = '';
+            if (restTime >= 60) {
+                const minutes = Math.floor(restTime / 60);
+                const seconds = restTime % 60;
+                if (seconds === 0) {
+                    restDisplay = minutes + 'm';
+                } else {
+                    restDisplay = minutes + 'm ' + seconds + 's';
+                }
+            } else {
+                restDisplay = restTime + 's';
+            }
+            
+            // Update display text with current settings values
+            document.getElementById('workValueDisplay').textContent = workDisplay;
+            document.getElementById('restValueDisplay').textContent = restDisplay;
             document.getElementById('roundsValueDisplay').textContent = totalRounds;
         }
         
@@ -1340,7 +1341,12 @@
         
         // Update display with color coding
         function updateDisplay() {
+            // Restore timer display (in case it was showing completion message)
             display.textContent = formatTime(currentTime);
+            // Reset color to primary (will be overridden by warning/danger classes if needed)
+            display.style.color = '';
+            // Restore phase label visibility
+            phaseLabel.style.display = 'block';
             phaseLabel.textContent = isWorkPhase ? 'Work' : 'Rest';
             roundDisplay.textContent = currentRound;
             totalRoundsDisplay.textContent = totalRounds;
@@ -1349,32 +1355,10 @@
             if (isWorkPhase) {
                 phaseLabel.classList.remove('rest');
                 phaseLabel.style.color = 'rgb(var(--primary))';
-                // Show motivational label during work phase
-                motivationalLabel.style.display = 'block';
             } else {
                 phaseLabel.classList.add('rest');
                 phaseLabel.style.color = 'rgb(var(--secondary))';
-                // Hide motivational label during rest
-                motivationalLabel.style.display = 'none';
             }
-            
-            // Update progress bar (overall progress through all rounds)
-            // Tabata ends after the 8th work phase, so total phases = (rounds * 2) - 1 (no final rest)
-            const totalPhases = (totalRounds * 2) - 1; // Each round has work + rest, but last round only has work
-            let completedPhases;
-            if (isWorkPhase) {
-                // During work: completed rounds * 2 (work + rest for each completed round)
-                completedPhases = (currentRound - 1) * 2;
-                const currentPhaseProgress = (workTime - currentTime) / workTime;
-                completedPhases += currentPhaseProgress;
-            } else {
-                // During rest: completed rounds * 2 + 1 (current work phase)
-                completedPhases = (currentRound - 1) * 2 + 1;
-                const currentPhaseProgress = (restTime - currentTime) / restTime;
-                completedPhases += currentPhaseProgress;
-            }
-            const overallProgress = Math.min(1, completedPhases / totalPhases);
-            progressBar.style.width = Math.min(100, Math.max(0, overallProgress * 100)) + '%';
             
             // Color coding: normal -> warning (last 30%) -> danger (last 10%)
             display.classList.remove('warning', 'danger');
@@ -1388,10 +1372,6 @@
                 }
             }
             
-            // Hide completion message if timer is running
-            if (isRunning || isPaused) {
-                completionMessage.style.display = 'none';
-            }
             
             // Add running class for styling
             if (isRunning) {
@@ -1470,10 +1450,16 @@
                         // Finished work phase
                         // Check if this was the last round (8th work phase)
                         if (currentRound >= totalRounds) {
-                            // Finished all rounds - stop timer and show completion
+                            // Finished all rounds - stop timer
                             stopTimer();
-                            completionMessage.style.display = 'block';
                             playCompletionSound();
+                            // Replace timer display with completion message
+                            const messageToShow = (completionMessage && completionMessage.trim()) ? completionMessage : 'Complete';
+                            display.textContent = messageToShow;
+                            // Use primary color to match timer display theme (daylight/nighttime)
+                            display.style.color = 'rgb(var(--primary))';
+                            // Hide phase label
+                            phaseLabel.style.display = 'none';
                             return;
                         }
                         
@@ -1554,9 +1540,6 @@
             currentRound = 1;
             isWorkPhase = true;
             
-            // Hide completion message
-            completionMessage.style.display = 'none';
-            
             // Update display immediately (this will enable inputs and check validity)
             updateDisplay();
             updateTabataValueDisplays();
@@ -1578,13 +1561,16 @@
             restTimeInput.value = '00:10';
             roundsInput.value = '8';
             
+            // Reset completion message to default
+            completionMessage = 'Complete';
+            completionMessageInput.value = 'Complete';
+            completionMessageCounter.textContent = '8/14';
+            completionMessageCounter.style.color = 'rgb(var(--muted-foreground))';
+            
             // Reset timer state
             currentTime = workTime;
             currentRound = 1;
             isWorkPhase = true;
-            
-            // Hide completion message
-            completionMessage.style.display = 'none';
             
             // Update display (this will enable inputs and show Set Up button)
             updateDisplay();
@@ -1702,6 +1688,7 @@
             if (!isRunning) {
                 resetTimer();
                 updateDisplay(); // Update button visibility based on validity
+                updateTabataValueDisplays(); // Update value cards
             }
         });
         
@@ -1728,6 +1715,7 @@
             if (!isRunning) {
                 resetTimer();
                 updateDisplay(); // Update button visibility based on validity
+                updateTabataValueDisplays(); // Update value cards
             }
         });
         
@@ -1751,6 +1739,7 @@
                 
                 resetTimer();
                 updateDisplay(); // Update button visibility based on validity
+                updateTabataValueDisplays(); // Update value cards
             }
         });
         
@@ -1773,6 +1762,7 @@
                 
                 resetTimer();
                 updateDisplay(); // Update button visibility based on validity
+                updateTabataValueDisplays(); // Update value cards
             }
         });
         
@@ -1795,6 +1785,28 @@
             
             resetTimer();
             updateDisplay(); // Update button visibility based on validity
+            updateTabataValueDisplays(); // Update value cards
+        });
+        
+        // Completion message input handler
+        completionMessageInput.addEventListener('input', function() {
+            const value = this.value;
+            const length = value.length;
+            
+            // Update character counter
+            completionMessageCounter.textContent = length + '/14';
+            
+            // Store the completion message
+            completionMessage = value;
+            
+            // Update counter color if approaching limit
+            if (length >= 14) {
+                completionMessageCounter.style.color = 'rgb(var(--destructive))';
+            } else if (length >= 12) {
+                completionMessageCounter.style.color = '#f59e0b';
+            } else {
+                completionMessageCounter.style.color = 'rgb(var(--muted-foreground))';
+            }
         });
         
         // Drawer Functions (make globally accessible)
@@ -1823,11 +1835,17 @@
                     restTime = currentRest;
                     totalRounds = currentRounds;
                     resetTimer();
+                    updateTabataValueDisplays(); // Update value cards
                 } else {
                     // Values match Tabata defaults, ensure we're in classic mode
                     if (!isCustomMode) {
                         disableInputs();
                     }
+                    // Still update displays in case values changed
+                    workTime = currentWork;
+                    restTime = currentRest;
+                    totalRounds = currentRounds;
+                    updateTabataValueDisplays(); // Update value cards
                 }
             }
         };
@@ -1858,6 +1876,12 @@
             workTimeInput.value = '00:20';
             restTimeInput.value = '00:10';
             roundsInput.value = '8';
+            
+            // Reset completion message to default
+            completionMessage = 'Complete';
+            completionMessageInput.value = 'Complete';
+            completionMessageCounter.textContent = '8/14';
+            completionMessageCounter.style.color = 'rgb(var(--muted-foreground))';
             
             // Exit custom mode
             isCustomMode = false;

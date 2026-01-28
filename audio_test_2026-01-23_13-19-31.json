@@ -1,0 +1,104 @@
+{
+  "title": "Audio Test Workout",
+  "roundGroups": [
+    {
+      "id": "rg1_audio_test",
+      "name": "Round Group 1 - Mixed Audio",
+      "rounds": 2,
+      "activities": [
+        {
+          "name": "Pushups",
+          "mode": "time",
+          "duration": 30,
+          "repsTarget": 0,
+          "restBetweenRounds": 10,
+          "restAfterPhase": 0,
+          "prepTime": 5,
+          "notes": "Audio ENABLED - should hear beeps",
+          "audioEnabled": true
+        },
+        {
+          "name": "Squats",
+          "mode": "rep",
+          "duration": 60,
+          "repsTarget": 15,
+          "restBetweenRounds": 15,
+          "restAfterPhase": 0,
+          "prepTime": 3,
+          "notes": "Audio DISABLED - should be silent",
+          "audioEnabled": false
+        },
+        {
+          "name": "Plank Hold",
+          "mode": "time",
+          "duration": 45,
+          "repsTarget": 0,
+          "restBetweenRounds": 20,
+          "restAfterPhase": 30,
+          "prepTime": 5,
+          "notes": "Audio ENABLED - should hear beeps",
+          "audioEnabled": true
+        }
+      ]
+    },
+    {
+      "id": "rg2_audio_test",
+      "name": "Round Group 2 - EMOM/AMRAP Test",
+      "rounds": 3,
+      "activities": [
+        {
+          "name": "Burpees EMOM",
+          "mode": "emom",
+          "duration": 60,
+          "repsTarget": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "prepTime": 5,
+          "notes": "Audio DISABLED - EMOM beeps should be silent",
+          "audioEnabled": false
+        },
+        {
+          "name": "Jumping Jacks AMRAP",
+          "mode": "amrap",
+          "duration": 120,
+          "repsTarget": 0,
+          "restBetweenRounds": 30,
+          "restAfterPhase": 60,
+          "prepTime": 5,
+          "notes": "Audio ENABLED - AMRAP beeps should play",
+          "audioEnabled": true
+        }
+      ]
+    },
+    {
+      "id": "rg3_audio_test",
+      "name": "Round Group 3 - Prep Time Test",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "Silent Prep Test",
+          "mode": "time",
+          "duration": 20,
+          "repsTarget": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "prepTime": 10,
+          "notes": "Audio DISABLED - prep countdown should be silent",
+          "audioEnabled": false
+        },
+        {
+          "name": "Loud Prep Test",
+          "mode": "time",
+          "duration": 20,
+          "repsTarget": 0,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "prepTime": 10,
+          "notes": "Audio ENABLED - prep countdown should beep",
+          "audioEnabled": true
+        }
+      ]
+    }
+  ],
+  "exportedAt": "2026-01-23T13:19:31.000Z"
+}

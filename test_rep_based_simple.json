@@ -1,0 +1,35 @@
+{
+  "title": "Simple Rep-Based Test",
+  "roundGroups": [
+    {
+      "id": "test-rg-simple",
+      "name": "Simple Rep Test",
+      "rounds": 1,
+      "activities": [
+        {
+          "name": "Exercise 1",
+          "mode": "rep",
+          "duration": 0,
+          "repsTarget": 10,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "prepTime": 20,
+          "notes": "First exercise - 10 reps, no time cap",
+          "audioEnabled": true
+        },
+        {
+          "name": "Exercise 2",
+          "mode": "rep",
+          "duration": 0,
+          "repsTarget": 10,
+          "restBetweenRounds": 0,
+          "restAfterPhase": 0,
+          "prepTime": 20,
+          "notes": "Second exercise - 10 reps, no time cap",
+          "audioEnabled": true
+        }
+      ]
+    }
+  ],
+  "exportedAt": "2026-01-23T00:00:00.000Z"
+}
