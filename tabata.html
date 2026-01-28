@@ -532,6 +532,20 @@
             opacity: 0.5;
             cursor: not-allowed;
         }
+
+        /* Workout title and description styling (match EMOM) */
+        #workoutTitleInput {
+            font-family: inherit;
+            text-align: left;
+            font-weight: 500;
+        }
+        
+        #workoutDescriptionInput {
+            font-family: inherit;
+            text-align: left;
+            font-weight: 400;
+            line-height: 1.5;
+        }
         
         .input-group {
             margin-bottom: 1.5rem;
@@ -865,13 +879,15 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 1rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
         
+        /* Keep Work/Rest/Rounds on one line on phones */
         @media (max-width: 640px) {
             .tabata-values {
-                grid-template-columns: 1fr;
-                gap: 0.75rem;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 0.5rem;
+                margin-bottom: 0.75rem;
             }
         }
         
@@ -881,6 +897,12 @@
             border-radius: var(--radius);
             padding: 1rem;
             text-align: center;
+        }
+
+        @media (max-width: 640px) {
+            .tabata-value-card {
+                padding: 0.75rem;
+            }
         }
         
         .tabata-value-card.work {
@@ -899,6 +921,13 @@
             color: rgb(var(--muted-foreground));
             margin-bottom: 0.5rem;
         }
+
+        @media (max-width: 640px) {
+            .tabata-value-label {
+                font-size: 0.625rem;
+                margin-bottom: 0.35rem;
+            }
+        }
         
         .tabata-value-number {
             font-size: 2rem;
@@ -906,6 +935,12 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1;
             letter-spacing: -0.01em;
+        }
+
+        @media (max-width: 640px) {
+            .tabata-value-number {
+                font-size: 1.5rem;
+            }
         }
         
         .tabata-value-card.work .tabata-value-number {
@@ -983,10 +1018,20 @@
             
             <!-- Timer Display -->
             <div class="timer-display-block bg-card border border-border rounded-lg shadow-lg text-center">
+                <!-- Workout Title (match EMOM) -->
+                <div id="workoutTitleDisplay" style="display: none; text-align: center; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid rgb(var(--border));">
+                    <h2 id="workoutTitleText" style="font-size: 1.25rem; font-weight: 600; color: rgb(var(--foreground)); margin: 0; word-wrap: break-word;"></h2>
+                </div>
+                
                 <div class="phase-label" id="phaseLabel">Work</div>
                 <div class="timer-display-large" id="display">00:20</div>
                 <div class="round-info">
                     Round <span id="round">1</span> of <span id="totalRounds">8</span>
+                </div>
+                
+                <!-- Workout Notes (match EMOM) -->
+                <div id="workoutDescriptionDisplay" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgb(var(--border));">
+                    <p id="workoutDescriptionText" style="font-size: 0.875rem; color: rgb(var(--muted-foreground)); line-height: 1.6; margin: 0; text-align: left; white-space: pre-wrap; word-wrap: break-word;"></p>
                 </div>
             </div>
             
@@ -1017,6 +1062,40 @@
             <!-- Setup Content -->
             <div class="drawer-section">
                 <h3>Setup Content</h3>
+
+                <!-- Workout Title (match EMOM format/position) -->
+                <div class="input-group">
+                    <label for="workoutTitleInput">Workout Title</label>
+                    <input 
+                        type="text" 
+                        id="workoutTitleInput" 
+                        class="custom-time-input"
+                        placeholder="Enter workout title"
+                        aria-label="Workout title"
+                        maxlength="40"
+                        style="font-family: inherit;"
+                    >
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="workoutTitleCharCount">0</span>/40
+                    </p>
+                </div>
+                
+                <!-- Workout Notes (match EMOM format/position) -->
+                <div class="input-group">
+                    <label for="workoutDescriptionInput">Workout Notes</label>
+                    <textarea 
+                        id="workoutDescriptionInput" 
+                        class="custom-time-input"
+                        placeholder="Enter workout notes..."
+                        aria-label="Workout notes"
+                        rows="4"
+                        maxlength="200"
+                        style="resize: vertical; min-height: 80px; font-family: inherit; line-height: 1.5;"
+                    ></textarea>
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="workoutDescriptionCharCount">0</span>/200
+                    </p>
+                </div>
                 
                 <!-- Work Time -->
                 <div class="input-group">
@@ -1116,7 +1195,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.15</p>
+                <p><strong>Version:</strong> v0.16</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -1158,6 +1237,16 @@
         const restIncreaseBtn = document.getElementById('restIncreaseBtn');
         const customizeToggle = document.getElementById('customizeToggle');
         const tabataValues = document.getElementById('tabataValues');
+
+        // Workout title/notes (match EMOM)
+        const workoutTitleInput = document.getElementById('workoutTitleInput');
+        const workoutDescriptionInput = document.getElementById('workoutDescriptionInput');
+        const workoutTitleDisplay = document.getElementById('workoutTitleDisplay');
+        const workoutTitleText = document.getElementById('workoutTitleText');
+        const workoutDescriptionDisplay = document.getElementById('workoutDescriptionDisplay');
+        const workoutDescriptionText = document.getElementById('workoutDescriptionText');
+        const workoutTitleCharCount = document.getElementById('workoutTitleCharCount');
+        const workoutDescriptionCharCount = document.getElementById('workoutDescriptionCharCount');
         
         // Parse MM:SS format to seconds
         function parseTime(timeString) {
@@ -1417,6 +1506,39 @@
                 }
             }
         }
+
+        // Update workout title and notes display (match EMOM)
+        function updateWorkoutDisplay() {
+            const title = workoutTitleInput ? workoutTitleInput.value.trim() : '';
+            const description = workoutDescriptionInput ? workoutDescriptionInput.value.trim() : '';
+            
+            if (workoutTitleDisplay && workoutTitleText) {
+                if (title) {
+                    workoutTitleText.textContent = title;
+                    workoutTitleDisplay.style.display = 'block';
+                } else {
+                    workoutTitleDisplay.style.display = 'none';
+                }
+            }
+            
+            if (workoutDescriptionDisplay && workoutDescriptionText) {
+                if (description) {
+                    workoutDescriptionText.textContent = description;
+                    workoutDescriptionDisplay.style.display = 'block';
+                } else {
+                    workoutDescriptionDisplay.style.display = 'none';
+                }
+            }
+        }
+        
+        function updateWorkoutCharCounts() {
+            if (workoutTitleInput && workoutTitleCharCount) {
+                workoutTitleCharCount.textContent = workoutTitleInput.value.length;
+            }
+            if (workoutDescriptionInput && workoutDescriptionCharCount) {
+                workoutDescriptionCharCount.textContent = workoutDescriptionInput.value.length;
+            }
+        }
         
         // Start timer
         function startTimer() {
@@ -1560,6 +1682,12 @@
             workTimeInput.value = '00:20';
             restTimeInput.value = '00:10';
             roundsInput.value = '8';
+
+            // Clear workout title/notes (match EMOM behavior expectations)
+            if (workoutTitleInput) workoutTitleInput.value = '';
+            if (workoutDescriptionInput) workoutDescriptionInput.value = '';
+            updateWorkoutCharCounts();
+            updateWorkoutDisplay();
             
             // Reset completion message to default
             completionMessage = 'Complete';
@@ -1808,6 +1936,21 @@
                 completionMessageCounter.style.color = 'rgb(var(--muted-foreground))';
             }
         });
+
+        // Workout title/notes listeners (match EMOM)
+        if (workoutTitleInput) {
+            workoutTitleInput.addEventListener('input', function() {
+                updateWorkoutCharCounts();
+                updateWorkoutDisplay();
+            });
+        }
+        
+        if (workoutDescriptionInput) {
+            workoutDescriptionInput.addEventListener('input', function() {
+                updateWorkoutCharCounts();
+                updateWorkoutDisplay();
+            });
+        }
         
         // Drawer Functions (make globally accessible)
         window.toggleDrawer = function() {
@@ -1876,6 +2019,12 @@
             workTimeInput.value = '00:20';
             restTimeInput.value = '00:10';
             roundsInput.value = '8';
+
+            // Clear workout title/notes (match EMOM behavior expectations)
+            if (workoutTitleInput) workoutTitleInput.value = '';
+            if (workoutDescriptionInput) workoutDescriptionInput.value = '';
+            updateWorkoutCharCounts();
+            updateWorkoutDisplay();
             
             // Reset completion message to default
             completionMessage = 'Complete';
@@ -1929,6 +2078,10 @@
         // Update displays
         updateDisplay();
         updateTabataValueDisplays();
+
+        // Initialize workout display and character counts
+        updateWorkoutCharCounts();
+        updateWorkoutDisplay();
         
         // Set release date
         document.getElementById('releaseDate').textContent = new Date().toISOString().split('T')[0];
