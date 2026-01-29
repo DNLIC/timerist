@@ -1052,7 +1052,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.16</p>
+                <p><strong>Version:</strong> v0.15</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -1228,13 +1228,13 @@
         }
 
         function getDoneMessage() {
-            const saved = localStorage.getItem('amrap-doneMessage');
+            const saved = localStorage.getItem('countdown-doneMessage');
             return saved || 'Completed';
         }
 
         function saveDoneMessage(message) {
             const v = (message || '').trim();
-            localStorage.setItem('amrap-doneMessage', v ? v : 'Completed');
+            localStorage.setItem('countdown-doneMessage', v ? v : 'Completed');
         }
         
         function updateDoneMessageCharCount() {
@@ -1436,11 +1436,6 @@
         }
 
         function startTimer() {
-            // Reset font size to default
-            if (display) {
-                display.style.fontSize = '';
-            }
-            
             if (totalSeconds <= 0) {
                 totalSeconds = readDurationFromInputs();
                 currentTime = totalSeconds;
@@ -1557,12 +1552,6 @@
             isRunning = false;
             isPaused = false;
             isRestPeriod = false;
-            
-            // Reset font size
-            if (display) {
-                display.style.fontSize = '';
-            }
-            
             totalSeconds = readDurationFromInputs();
             currentTime = totalSeconds;
             currentRestTime = 0;
@@ -1579,11 +1568,6 @@
             isRunning = false;
             isPaused = false;
             isRestPeriod = false;
-            
-            // Reset font size
-            if (display) {
-                display.style.fontSize = '';
-            }
             
             // Clear inputs
             minutesInput.value = '0';

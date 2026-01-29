@@ -123,6 +123,48 @@
             }
         }
         
+        /* Smartphone landscape spacing fix (tighten vertical space) */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .timer-container {
+                margin-top: clamp(3.25rem, 5vw, 4rem) !important;
+                gap: 0.75rem !important;
+            }
+
+            .timer-display-block {
+                padding: 1rem !important;
+            }
+
+            .timer-display-large {
+                margin-bottom: 0.5rem !important;
+            }
+
+            .phase-label {
+                margin-bottom: 0.25rem !important;
+                font-size: 1rem !important;
+            }
+
+            .round-info {
+                margin-top: 0.5rem !important;
+            }
+
+            /* Tighten workout title display spacing in landscape */
+            #workoutTitleDisplay {
+                padding-bottom: 0.5rem !important;
+                margin-bottom: 0.5rem !important;
+            }
+
+            /* Tighten workout notes display spacing in landscape */
+            #workoutDescriptionDisplay {
+                margin-top: 0.5rem !important;
+                padding-top: 0.5rem !important;
+            }
+
+            /* Tighten card sections below timer display */
+            .timer-container .p-6 {
+                padding: 1rem !important;
+            }
+        }
+        
         .bg-card { background-color: rgb(var(--card)); }
         .text-foreground { color: rgb(var(--foreground)); }
         .text-muted-foreground { color: rgb(var(--muted-foreground)); }
@@ -665,7 +707,10 @@
         
         .timer-running .custom-time-input:not(:disabled),
         .timer-running .rounds-adjust-btn:not(:disabled),
-        .timer-running .time-adjust-btn:not(:disabled) {
+        .timer-running .time-adjust-btn:not(:disabled),
+        .timer-running #workoutTitleInput:not(:disabled),
+        .timer-running #workoutDescriptionInput:not(:disabled),
+        .timer-running #doneMessageInput:not(:disabled) {
             opacity: 0.5;
             cursor: not-allowed;
             pointer-events: none;
@@ -888,10 +933,20 @@
         <div class="timer-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
             <!-- Timer Display -->
             <div class="timer-display-block bg-card border border-border rounded-lg shadow-lg text-center">
+                <!-- Workout Title -->
+                <div id="workoutTitleDisplay" style="display: none; text-align: center; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid rgb(var(--border));">
+                    <h2 id="workoutTitleText" style="font-size: 1.25rem; font-weight: 600; color: rgb(var(--foreground)); margin: 0; word-wrap: break-word;"></h2>
+                </div>
+                
                 <div class="phase-label" id="phaseLabel">Work</div>
                 <div class="timer-display-large" id="display">00:00</div>
                 <div class="round-info">
                     <span id="pyramidInfo">Level 1 of 9</span>
+                </div>
+                
+                <!-- Workout Notes -->
+                <div id="workoutDescriptionDisplay" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgb(var(--border));">
+                    <p id="workoutDescriptionText" style="font-size: 0.875rem; color: rgb(var(--muted-foreground)); line-height: 1.6; margin: 0; text-align: left; white-space: pre-wrap; word-wrap: break-word;"></p>
                 </div>
             </div>
             
@@ -919,6 +974,62 @@
         </div>
         <div class="drawer-content">
             <!-- Setup Content -->
+            <div class="drawer-section">
+                <h3>Setup Content</h3>
+                
+                <!-- Workout Title -->
+                <div class="input-group">
+                    <label for="workoutTitleInput">Workout Title</label>
+                    <input 
+                        type="text" 
+                        id="workoutTitleInput" 
+                        class="custom-time-input"
+                        placeholder="Enter workout title"
+                        aria-label="Workout title"
+                        maxlength="40"
+                        style="font-family: inherit; text-align: left; font-weight: 500;"
+                    >
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="workoutTitleCharCount">0</span>/40
+                    </p>
+                </div>
+                
+                <!-- Workout Notes -->
+                <div class="input-group">
+                    <label for="workoutDescriptionInput">Workout Notes</label>
+                    <textarea 
+                        id="workoutDescriptionInput" 
+                        class="custom-time-input"
+                        placeholder="Enter workout notes..."
+                        aria-label="Workout notes"
+                        rows="4"
+                        maxlength="200"
+                        style="resize: vertical; min-height: 80px; font-family: inherit; text-align: left; font-weight: 400; line-height: 1.5;"
+                    ></textarea>
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="workoutDescriptionCharCount">0</span>/200
+                    </p>
+                </div>
+                
+                <!-- Completion Message -->
+                <div class="input-group">
+                    <label for="doneMessageInput">COMPLETION MESSAGE (14 CHARACTERS MAX)</label>
+                    <input 
+                        type="text" 
+                        id="doneMessageInput" 
+                        class="custom-time-input"
+                        maxlength="14"
+                        value="Complete"
+                        placeholder="Complete"
+                        aria-label="Completion message"
+                    >
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="doneMessageCharCount">0</span>/14
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Pyramid Configuration -->
             <div class="drawer-section">
                 <h3>Pyramid Configuration</h3>
                 
@@ -1074,6 +1185,16 @@
                 </div>
             </div>
             
+            <!-- Export/Import -->
+            <div class="drawer-section">
+                <h3>Export / Import</h3>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="control-btn btn-primary" id="exportBtn" style="flex: 1;">Export JSON</button>
+                    <button class="control-btn btn-secondary" id="importBtn" style="flex: 1;">Import JSON</button>
+                </div>
+                <input type="file" id="importFileInput" accept=".json" style="display: none;">
+            </div>
+            
             <!-- About This Timer -->
             <div class="drawer-section">
                 <h3>About This Timer</h3>
@@ -1090,7 +1211,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.12</p>
+                <p><strong>Version:</strong> v0.13</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -1131,6 +1252,19 @@
         const pyramidsInput = document.getElementById('pyramidsInput');
         const warmupInput = document.getElementById('warmupInput');
         const cooldownInput = document.getElementById('cooldownInput');
+        const workoutTitleInput = document.getElementById('workoutTitleInput');
+        const workoutDescriptionInput = document.getElementById('workoutDescriptionInput');
+        const workoutTitleDisplay = document.getElementById('workoutTitleDisplay');
+        const workoutTitleText = document.getElementById('workoutTitleText');
+        const workoutDescriptionDisplay = document.getElementById('workoutDescriptionDisplay');
+        const workoutDescriptionText = document.getElementById('workoutDescriptionText');
+        const workoutTitleCharCount = document.getElementById('workoutTitleCharCount');
+        const workoutDescriptionCharCount = document.getElementById('workoutDescriptionCharCount');
+        const doneMessageInput = document.getElementById('doneMessageInput');
+        const doneMessageCharCount = document.getElementById('doneMessageCharCount');
+        const exportBtn = document.getElementById('exportBtn');
+        const importBtn = document.getElementById('importBtn');
+        const importFileInput = document.getElementById('importFileInput');
         
         // Adjustment buttons - Starting Work Time
         const startTimeDecrease5Btn = document.getElementById('startTimeDecrease5Btn');
@@ -1377,6 +1511,11 @@
             pyramidsInput.disabled = true;
             warmupInput.disabled = true;
             cooldownInput.disabled = true;
+            if (workoutTitleInput) workoutTitleInput.disabled = true;
+            if (workoutDescriptionInput) workoutDescriptionInput.disabled = true;
+            if (doneMessageInput) doneMessageInput.disabled = true;
+            if (exportBtn) exportBtn.disabled = true;
+            if (importBtn) importBtn.disabled = true;
             // Disable all adjustment buttons
             [startTimeDecrease5Btn, startTimeDecrease1Btn, startTimeIncrease1Btn, startTimeIncrease5Btn,
              incrementDecrease5Btn, incrementDecrease1Btn, incrementIncrease1Btn, incrementIncrease5Btn,
@@ -1396,6 +1535,11 @@
             pyramidsInput.disabled = false;
             warmupInput.disabled = false;
             cooldownInput.disabled = false;
+            if (workoutTitleInput) workoutTitleInput.disabled = false;
+            if (workoutDescriptionInput) workoutDescriptionInput.disabled = false;
+            if (doneMessageInput) doneMessageInput.disabled = false;
+            if (exportBtn) exportBtn.disabled = false;
+            if (importBtn) importBtn.disabled = false;
             // Enable all adjustment buttons
             [startTimeDecrease5Btn, startTimeDecrease1Btn, startTimeIncrease1Btn, startTimeIncrease5Btn,
              incrementDecrease5Btn, incrementDecrease1Btn, incrementIncrease1Btn, incrementIncrease5Btn,
@@ -1552,6 +1696,9 @@
                         // Pyramid complete!
                         stopTimer();
                         playSound(); // Play completion sound
+                        const completionMessage = getDoneMessage();
+                        display.textContent = completionMessage;
+                        display.classList.add('danger');
                         phaseLabel.textContent = 'Pyramid Complete!';
                         pyramidInfo.textContent = 'Workout finished';
                         return;
@@ -1894,6 +2041,243 @@
         
         updateEstimatedTime();
         updateDisplay();
+        
+        // Update workout title and description display
+        function updateWorkoutDisplay() {
+            const title = workoutTitleInput ? workoutTitleInput.value.trim() : '';
+            const description = workoutDescriptionInput ? workoutDescriptionInput.value.trim() : '';
+            
+            // Update title display
+            if (title && workoutTitleText && workoutTitleDisplay) {
+                workoutTitleText.textContent = title;
+                workoutTitleDisplay.style.display = 'block';
+            } else if (workoutTitleDisplay) {
+                workoutTitleDisplay.style.display = 'none';
+            }
+            
+            // Update description display
+            if (description && workoutDescriptionText && workoutDescriptionDisplay) {
+                workoutDescriptionText.textContent = description;
+                workoutDescriptionDisplay.style.display = 'block';
+            } else if (workoutDescriptionDisplay) {
+                workoutDescriptionDisplay.style.display = 'none';
+            }
+        }
+        
+        // Get completion message from localStorage or use default
+        function getDoneMessage() {
+            const saved = localStorage.getItem('pyramid-doneMessage');
+            if (saved) return saved;
+            return doneMessageInput ? (doneMessageInput.value || 'Complete') : 'Complete';
+        }
+        
+        function setDoneMessage(value) {
+            const v = (value || '').trim();
+            localStorage.setItem('pyramid-doneMessage', v ? v : 'Complete');
+        }
+        
+        // Update character counts
+        function updateCharCounts() {
+            if (workoutTitleCharCount && workoutTitleInput) {
+                workoutTitleCharCount.textContent = workoutTitleInput.value.length;
+            }
+            if (workoutDescriptionCharCount && workoutDescriptionInput) {
+                workoutDescriptionCharCount.textContent = workoutDescriptionInput.value.length;
+            }
+            if (doneMessageCharCount && doneMessageInput) {
+                doneMessageCharCount.textContent = doneMessageInput.value.length;
+            }
+        }
+        
+        // Workout title and description event listeners
+        if (workoutTitleInput) {
+            workoutTitleInput.addEventListener('input', function() {
+                updateCharCounts();
+                updateWorkoutDisplay();
+            });
+        }
+        
+        if (workoutDescriptionInput) {
+            workoutDescriptionInput.addEventListener('input', function() {
+                updateCharCounts();
+                updateWorkoutDisplay();
+            });
+        }
+        
+        // Completion message event listeners
+        if (doneMessageInput) {
+            doneMessageInput.addEventListener('input', function() {
+                updateCharCounts();
+                setDoneMessage(this.value);
+            });
+            doneMessageInput.addEventListener('change', function() {
+                setDoneMessage(this.value);
+            });
+        }
+        
+        // Initialize workout display and character counts
+        updateCharCounts();
+        updateWorkoutDisplay();
+        
+        // Initialize completion message
+        if (doneMessageInput) {
+            const savedDone = getDoneMessage();
+            doneMessageInput.value = savedDone;
+            updateCharCounts();
+        }
+        
+        // Export/Import functions
+        function exportWorkout() {
+            // Stop timer if running
+            if (isRunning || isPaused) {
+                stopTimer();
+                resetTimer();
+            }
+            
+            // Get current values directly from input fields to ensure accuracy
+            const workoutTitle = workoutTitleInput ? workoutTitleInput.value.trim() : '';
+            const workoutDescription = workoutDescriptionInput ? workoutDescriptionInput.value.trim() : '';
+            const doneMessage = doneMessageInput ? doneMessageInput.value.trim() : 'Complete';
+            const startTimeValue = startTimeInput ? parseInt(startTimeInput.value) || 10 : 10;
+            const incrementValue = incrementInput ? parseInt(incrementInput.value) || 10 : 10;
+            const peakTimeValue = peakTimeInput ? parseInt(peakTimeInput.value) || 50 : 50;
+            const restTimeValue = restTimeInput ? parseTime(restTimeInput.value) : 15;
+            const pyramidsValue = pyramidsInput ? parseInt(pyramidsInput.value) || 1 : 1;
+            const warmupTimeValue = warmupInput ? parseTime(warmupInput.value) : 30;
+            const cooldownTimeValue = cooldownInput ? parseTime(cooldownInput.value) : 60;
+            
+            // Create timestamp for filename: YYYYMMDD-HHMMSS
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const timestamp = `${year}${month}${day}-${hours}${minutes}${seconds}`;
+            const filename = `timerist_pyramid_${timestamp}.json`;
+            
+            // Collect all pyramid workout data - reading directly from inputs
+            const data = {
+                version: '1.0',
+                type: 'Pyramid',
+                title: workoutTitle,
+                description: workoutDescription,
+                doneMessage: doneMessage,
+                startTime: startTimeValue,
+                increment: incrementValue,
+                peakTime: peakTimeValue,
+                restTime: restTimeValue,
+                pyramids: pyramidsValue,
+                warmupTime: warmupTimeValue,
+                cooldownTime: cooldownTimeValue,
+                exportedAt: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        function importWorkout() {
+            if (importFileInput) {
+                importFileInput.click();
+            }
+        }
+        
+        if (importFileInput) {
+            importFileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        
+                        // Validate it's a Pyramid workout file
+                        if (data.type && data.type !== 'Pyramid') {
+                            alert('Invalid workout file format. This file is not a Pyramid workout.');
+                            e.target.value = '';
+                            return;
+                        }
+                        
+                        // Stop timer if running
+                        if (isRunning || isPaused) {
+                            stopTimer();
+                            resetTimer();
+                        }
+                        
+                        // Load workout title and notes
+                        if (data.title !== undefined && workoutTitleInput) {
+                            workoutTitleInput.value = data.title || '';
+                        }
+                        if (data.description !== undefined && workoutDescriptionInput) {
+                            workoutDescriptionInput.value = data.description || '';
+                        }
+                        if (doneMessageInput) {
+                            const importedDone = (data.doneMessage || '').trim();
+                            doneMessageInput.value = importedDone ? importedDone : 'Complete';
+                            setDoneMessage(doneMessageInput.value);
+                        }
+                        
+                        // Load timer settings - update both input fields and variables
+                        if (data.startTime !== undefined && startTimeInput) {
+                            startTime = data.startTime;
+                            startTimeInput.value = startTime;
+                        }
+                        if (data.increment !== undefined && incrementInput) {
+                            increment = data.increment;
+                            incrementInput.value = increment;
+                        }
+                        if (data.peakTime !== undefined && peakTimeInput) {
+                            peakTime = data.peakTime;
+                            peakTimeInput.value = peakTime;
+                        }
+                        if (data.restTime !== undefined && restTimeInput) {
+                            restTime = data.restTime;
+                            restTimeInput.value = formatTime(restTime);
+                        }
+                        if (data.pyramids !== undefined && pyramidsInput) {
+                            numPyramids = data.pyramids;
+                            pyramidsInput.value = numPyramids;
+                        }
+                        if (data.warmupTime !== undefined && warmupInput) {
+                            warmupTime = data.warmupTime;
+                            warmupInput.value = formatTime(warmupTime);
+                        }
+                        if (data.cooldownTime !== undefined && cooldownInput) {
+                            cooldownTime = data.cooldownTime;
+                            cooldownInput.value = formatTime(cooldownTime);
+                        }
+                        
+                        // Update displays and recalculate
+                        updateCharCounts();
+                        updateWorkoutDisplay();
+                        updateEstimatedTime();
+                        resetTimer();
+                        updateDisplay();
+                        
+                    } catch (err) {
+                        alert('Error importing workout: ' + err.message);
+                    }
+                };
+                reader.readAsText(file);
+                e.target.value = '';
+            });
+        }
+        
+        // Export/Import button event listeners
+        if (exportBtn) {
+            exportBtn.addEventListener('click', exportWorkout);
+        }
+        if (importBtn) {
+            importBtn.addEventListener('click', importWorkout);
+        }
         
         // Set release date
         document.getElementById('releaseDate').textContent = new Date().toISOString().split('T')[0];

@@ -32,24 +32,24 @@
             --radius: 0.5rem;
         }
         
-        .dark {
+        html.dark {
             --background: 0 0 0;
             --foreground: 255 255 255;
             --card: 26 26 26;
             --card-foreground: 255 255 255;
-            --primary: 74 144 226;
+            --primary: 255 0 0;
             --primary-foreground: 255 255 255;
-            --secondary: 80 200 120;
-            --secondary-foreground: 255 255 255;
+            --secondary: 0 255 0;
+            --secondary-foreground: 0 0 0;
             --muted: 204 204 204;
             --muted-foreground: 153 153 153;
             --accent: 51 51 51;
             --accent-foreground: 255 255 255;
-            --destructive: 231 76 60;
+            --destructive: 255 0 0;
             --destructive-foreground: 255 255 255;
             --border: 51 51 51;
             --input: 51 51 51;
-            --ring: 74 144 226;
+            --ring: 255 0 0;
         }
         
         body {
@@ -110,6 +110,39 @@
         @media (min-width: 1025px) {
             .timer-container {
                 margin-top: clamp(3.5rem, 5vw, 4.5rem);
+            }
+        }
+        
+        /* Smartphone landscape spacing fix (tighten vertical space) */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .timer-container {
+                margin-top: clamp(3.25rem, 5vw, 4rem) !important;
+                gap: 0.75rem !important;
+            }
+
+            .timer-display-block {
+                padding: 1rem !important;
+            }
+
+            .timer-display-large {
+                margin-bottom: 0.5rem !important;
+            }
+
+            /* Tighten workout title display spacing in landscape */
+            #workoutTitleDisplay {
+                padding-bottom: 0.5rem !important;
+                margin-bottom: 0.5rem !important;
+            }
+
+            /* Tighten workout notes display spacing in landscape */
+            #workoutDescriptionDisplay {
+                margin-top: 0.5rem !important;
+                padding-top: 0.5rem !important;
+            }
+
+            /* Tighten card sections below timer display */
+            .timer-container .p-6 {
+                padding: 1rem !important;
             }
         }
         
@@ -261,7 +294,7 @@
         }
         
         /* Dark mode Start button hover - lighter gray */
-        .dark #startBtn:hover:not(:disabled) {
+        html.dark #startBtn:hover:not(:disabled) {
             background-color: rgb(150, 150, 150);
             color: rgb(0, 0, 0);
         }
@@ -274,7 +307,7 @@
         }
         
         /* Dark mode Pause button hover - lighter gray (when not paused) */
-        .dark #pauseBtn:hover:not(:disabled):not(.paused) {
+        html.dark #pauseBtn:hover:not(:disabled):not(.paused) {
             background-color: rgb(150, 150, 150);
             color: rgb(0, 0, 0);
         }
@@ -289,10 +322,10 @@
         }
         
         /* Dark mode paused state - lighter gray */
-        .dark .control-btn.btn-primary.paused,
-        .dark .control-btn.btn-primary.paused:hover,
-        .dark .control-btn.btn-primary.paused:active,
-        .dark .control-btn.btn-primary.paused:focus {
+        html.dark .control-btn.btn-primary.paused,
+        html.dark .control-btn.btn-primary.paused:hover,
+        html.dark .control-btn.btn-primary.paused:active,
+        html.dark .control-btn.btn-primary.paused:focus {
             background-color: rgb(150, 150, 150) !important;
             color: rgb(0, 0, 0) !important;
         }
@@ -325,7 +358,7 @@
         }
         
         /* Dark mode Reset button hover - lighter gray */
-        .dark #resetBtn:hover:not(:disabled) {
+        html.dark #resetBtn:hover:not(:disabled) {
             background-color: rgb(150, 150, 150);
             color: rgb(0, 0, 0);
         }
@@ -338,7 +371,7 @@
         }
         
         /* Dark mode Set Up button hover - lighter gray */
-        .dark #setupBtn:hover:not(:disabled) {
+        html.dark #setupBtn:hover:not(:disabled) {
             background-color: rgb(150, 150, 150);
             color: rgb(0, 0, 0);
         }
@@ -351,7 +384,7 @@
         }
         
         /* Dark mode Clear button hover - lighter gray */
-        .dark #clearBtn:hover:not(:disabled) {
+        html.dark #clearBtn:hover:not(:disabled) {
             background-color: rgb(150, 150, 150);
             color: rgb(0, 0, 0);
         }
@@ -819,12 +852,12 @@
             stroke-width: 2.5;
         }
         
-        .dark #timerist-logo {
+        html.dark #timerist-logo {
             color: #fafafa;
         }
         
-        .dark #timerist-logo circle,
-        .dark #timerist-logo line {
+        html.dark #timerist-logo circle,
+        html.dark #timerist-logo line {
             stroke: #fafafa;
         }
         
@@ -1079,7 +1112,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.24</p>
+                <p><strong>Version:</strong> v0.25</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>

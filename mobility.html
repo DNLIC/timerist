@@ -385,6 +385,30 @@
             color: rgb(0, 0, 0);
         }
         
+        /* Export button hover - dark gray */
+        #exportBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        [data-theme="style1"] #exportBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        /* Import button hover - dark gray */
+        #importBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        [data-theme="style1"] #importBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
         .control-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
@@ -628,7 +652,14 @@
         }
         
         .btn-add:hover:not(:disabled) {
-            background-color: rgba(var(--primary), 0.9);
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        [data-theme="style1"] .btn-add:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
         }
         
         .btn-add:disabled {
@@ -950,6 +981,9 @@
                         <option value="daily-wake-up">Daily Mobility Wake-Up (Wake & Shake)</option>
                         <option value="daily-foot-roll-relief">Daily Foot Roll Relief</option>
                     </select>
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.5rem;">
+                        Select custom design your own workout using the "Create A Workout" section below.
+                    </p>
                 </div>
             </div>
             
@@ -957,13 +991,10 @@
             <div class="drawer-section">
                 <h3>Workout Title</h3>
                 <div class="input-group">
-                    <label for="workoutTitleInput">Workout Name</label>
-                    <input type="text" id="workoutTitleInput" placeholder="Enter workout name" maxlength="40">
-                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem;">
+                    <input type="text" id="workoutTitleInput" placeholder="Enter workout name" maxlength="40" aria-label="Workout name">
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; display: flex; justify-content: space-between; align-items: center;">
                         <span style="color: rgb(var(--destructive));">Maximum 40 characters.</span>
-                    </p>
-                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
-                        <span id="workoutTitleCharCount">0</span>/40
+                        <span><span id="workoutTitleCharCount">0</span>/40</span>
                     </p>
                 </div>
             </div>
@@ -972,7 +1003,6 @@
             <div class="drawer-section">
                 <h3>Workout Description</h3>
                 <div class="input-group">
-                    <label for="workoutDescriptionInput">Workout Notes</label>
                     <textarea 
                         id="workoutDescriptionInput" 
                         placeholder="Enter workout notes..."
@@ -981,8 +1011,27 @@
                         maxlength="200"
                         style="resize: vertical; min-height: 80px; font-family: inherit; line-height: 1.5;"
                     ></textarea>
-                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
-                        <span id="workoutDescriptionCharCount">0</span>/200
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: rgb(var(--destructive));">Maximum 200 characters.</span>
+                        <span><span id="workoutDescriptionCharCount">0</span>/200</span>
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Completion Message -->
+            <div class="drawer-section">
+                <h3>Completion Message</h3>
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        id="completionMessageInput" 
+                        placeholder="Enter completion message..."
+                        aria-label="Completion message"
+                        maxlength="14"
+                    >
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: rgb(var(--destructive));">Maximum 14 characters.</span>
+                        <span><span id="completionMessageCharCount">0</span>/14</span>
                     </p>
                 </div>
             </div>
@@ -999,7 +1048,7 @@
             
             <!-- Round Groups -->
             <div class="drawer-section">
-                <h3>Round Groups</h3>
+                <h3>Create Your Own Workout</h3>
                 <div id="roundGroupsContainer"></div>
                 <button class="btn-add" id="addRoundGroupBtn" style="width: 100%;">+ Add Round Group</button>
             </div>
@@ -1074,6 +1123,8 @@
         const workoutDescriptionDisplay = document.getElementById('workoutDescriptionDisplay');
         const workoutDescriptionText = document.getElementById('workoutDescriptionText');
         const workoutDescriptionCharCount = document.getElementById('workoutDescriptionCharCount');
+        const completionMessageInput = document.getElementById('completionMessageInput');
+        const completionMessageCharCount = document.getElementById('completionMessageCharCount');
         const exportBtn = document.getElementById('exportBtn');
         const importBtn = document.getElementById('importBtn');
         const importFileInput = document.getElementById('importFileInput');
@@ -1201,6 +1252,9 @@
                 if (workoutDescriptionInput) {
                     workoutDescriptionInput.value = '';
                 }
+                if (completionMessageInput) {
+                    completionMessageInput.value = '';
+                }
                 updateCharCounts();
                 updateWorkoutDisplay();
                 renderActivities();
@@ -1227,6 +1281,9 @@
             workoutTitleInput.value = workout.title;
             if (workoutDescriptionInput) {
                 workoutDescriptionInput.value = workout.description || '';
+            }
+            if (completionMessageInput) {
+                completionMessageInput.value = workout.completionMessage || '';
             }
             
             // Default missing audioEnabled to true for backward compatibility
@@ -1702,7 +1759,10 @@
             // Check if workout is complete
             if (isWorkoutComplete) {
                 display.textContent = '00:00';
-                phaseLabel.textContent = 'Workout Complete';
+                const completionMessage = completionMessageInput && completionMessageInput.value.trim() 
+                    ? completionMessageInput.value.trim() 
+                    : 'Workout Complete';
+                phaseLabel.textContent = completionMessage;
                 roundInfo.textContent = '';
                 return;
             }
@@ -3441,12 +3501,14 @@
         function exportWorkout() {
             const workoutTitle = workoutTitleInput.value.trim() || 'workout';
             const workoutDescription = workoutDescriptionInput ? workoutDescriptionInput.value.trim() : '';
+            const completionMessage = completionMessageInput ? completionMessageInput.value.trim() : '';
             const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
             const filename = `${workoutTitle}_${timestamp}.json`;
             
             const data = {
                 title: workoutTitle,
                 description: workoutDescription,
+                completionMessage: completionMessage,
                 roundGroups: roundGroups,
                 exportedAt: new Date().toISOString()
             };
@@ -3489,6 +3551,9 @@
                         }
                         if (data.description && workoutDescriptionInput) {
                             workoutDescriptionInput.value = data.description;
+                        }
+                        if (data.completionMessage && completionMessageInput) {
+                            completionMessageInput.value = data.completionMessage;
                         }
                         updateCharCounts();
                         updateWorkoutDisplay();
@@ -3533,6 +3598,9 @@
             if (workoutDescriptionCharCount && workoutDescriptionInput) {
                 workoutDescriptionCharCount.textContent = workoutDescriptionInput.value.length;
             }
+            if (completionMessageCharCount && completionMessageInput) {
+                completionMessageCharCount.textContent = completionMessageInput.value.length;
+            }
         }
         
         // Workout title update
@@ -3546,6 +3614,13 @@
             workoutDescriptionInput.addEventListener('input', function() {
                 updateCharCounts();
                 updateWorkoutDisplay();
+            });
+        }
+        
+        // Completion message update
+        if (completionMessageInput) {
+            completionMessageInput.addEventListener('input', function() {
+                updateCharCounts();
             });
         }
         

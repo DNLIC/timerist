@@ -513,6 +513,20 @@
             opacity: 0.5;
             cursor: not-allowed;
         }
+
+        /* Workout title and notes styling */
+        #workoutTitleInput {
+            font-family: inherit;
+            text-align: left;
+            font-weight: 500;
+        }
+        
+        #workoutDescriptionInput {
+            font-family: inherit;
+            text-align: left;
+            font-weight: 400;
+            line-height: 1.5;
+        }
         
         .input-group {
             margin-bottom: 1.5rem;
@@ -1041,6 +1055,56 @@
             .quick-select-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
+
+            /* Smartphone landscape spacing fix */
+            .timer-container {
+                margin-top: clamp(3.5rem, 6vw, 4.25rem) !important;
+                gap: 0.5rem !important;
+            }
+            
+            .timer-display-block {
+                padding: 1rem;
+            }
+            
+            .phase-label {
+                margin-bottom: 0.25rem;
+                font-size: 1rem;
+            }
+            
+            .timer-display-large {
+                font-size: 3.25rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .round-info {
+                margin-top: 0.5rem;
+                font-size: 0.8125rem;
+            }
+            
+            .p-6 {
+                padding: 0.75rem;
+            }
+            
+            .quick-select-grid {
+                gap: 0.4rem;
+            }
+            
+            .quick-select-btn {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.95rem;
+                min-height: 2.25rem;
+            }
+
+            /* Match quick-countdown internal title/notes spacing */
+            #workoutTitleDisplay {
+                padding-bottom: 0.5rem !important;
+                margin-bottom: 0.5rem !important;
+            }
+            
+            #workoutDescriptionDisplay {
+                margin-top: 0.5rem !important;
+                padding-top: 0.5rem !important;
+            }
         }
         
         /* Class to force single column when text wrapping is detected */
@@ -1111,10 +1175,20 @@
         <div class="timer-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
             <!-- Timer Display -->
             <div class="timer-display-block bg-card border border-border rounded-lg shadow-lg text-center">
+                <!-- Workout Title -->
+                <div id="workoutTitleDisplay" style="display: none; text-align: center; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid rgb(var(--border));">
+                    <h2 id="workoutTitleText" style="font-size: 1.25rem; font-weight: 600; color: rgb(var(--foreground)); margin: 0; word-wrap: break-word;"></h2>
+                </div>
+                
                 <div class="phase-label" id="phaseLabel">Work</div>
                 <div class="timer-display-large" id="display">00:00</div>
                 <div class="round-info">
                     Round <span id="round">1</span> of <span id="totalRounds">0</span> | <span id="presetNameDisplay">Custom</span>
+                </div>
+                
+                <!-- Workout Notes -->
+                <div id="workoutDescriptionDisplay" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgb(var(--border));">
+                    <p id="workoutDescriptionText" style="font-size: 0.875rem; color: rgb(var(--muted-foreground)); line-height: 1.6; margin: 0; text-align: left; white-space: pre-wrap; word-wrap: break-word;"></p>
                 </div>
             </div>
             
@@ -1250,6 +1324,57 @@
             <!-- Setup Content -->
             <div class="drawer-section">
                 <h3>Setup Content</h3>
+
+                <!-- Workout Title -->
+                <div class="input-group">
+                    <label for="workoutTitleInput">Workout Title</label>
+                    <input 
+                        type="text" 
+                        id="workoutTitleInput" 
+                        class="custom-time-input"
+                        placeholder="Enter workout title"
+                        aria-label="Workout title"
+                        maxlength="40"
+                        style="font-family: inherit;"
+                    >
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="workoutTitleCharCount">0</span>/40
+                    </p>
+                </div>
+                
+                <!-- Workout Notes -->
+                <div class="input-group">
+                    <label for="workoutDescriptionInput">Workout Notes</label>
+                    <textarea 
+                        id="workoutDescriptionInput" 
+                        class="custom-time-input"
+                        placeholder="Enter workout notes..."
+                        aria-label="Workout notes"
+                        rows="4"
+                        maxlength="200"
+                        style="resize: vertical; min-height: 80px; font-family: inherit; line-height: 1.5;"
+                    ></textarea>
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="workoutDescriptionCharCount">0</span>/200
+                    </p>
+                </div>
+
+                <!-- Completion Message -->
+                <div class="input-group">
+                    <label for="doneMessageInput">COMPLETION MESSAGE (14 CHARACTERS MAX)</label>
+                    <input 
+                        type="text" 
+                        id="doneMessageInput" 
+                        class="custom-time-input"
+                        maxlength="14"
+                        value="Complete"
+                        placeholder="Complete"
+                        aria-label="Completion message"
+                    >
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="doneMessageCharCount">0</span>/14
+                    </p>
+                </div>
                 
                 <!-- HIIT ADDITION: Preset selector dropdown -->
                 <div class="input-group">
@@ -1553,6 +1678,32 @@
         const presetSelect = document.getElementById('presetSelect');
         const currentPresetDisplay = document.getElementById('currentPresetDisplay');
         
+        // Workout title and notes (displayed in timer)
+        const workoutTitleInput = document.getElementById('workoutTitleInput');
+        const workoutDescriptionInput = document.getElementById('workoutDescriptionInput');
+        const workoutTitleDisplay = document.getElementById('workoutTitleDisplay');
+        const workoutTitleText = document.getElementById('workoutTitleText');
+        const workoutDescriptionDisplay = document.getElementById('workoutDescriptionDisplay');
+        const workoutDescriptionText = document.getElementById('workoutDescriptionText');
+        const workoutTitleCharCount = document.getElementById('workoutTitleCharCount');
+        const workoutDescriptionCharCount = document.getElementById('workoutDescriptionCharCount');
+        
+        // Completion message
+        const doneMessageInput = document.getElementById('doneMessageInput');
+        const doneMessageCharCount = document.getElementById('doneMessageCharCount');
+
+        // Completion message storage (match EMOM pattern)
+        function getDoneMessage() {
+            const saved = localStorage.getItem('quick-hiit-doneMessage');
+            if (saved) return saved;
+            return doneMessageInput ? (doneMessageInput.value || 'Complete') : 'Complete';
+        }
+        
+        function setDoneMessage(value) {
+            const v = (value || '').trim();
+            localStorage.setItem('quick-hiit-doneMessage', v ? v : 'Complete');
+        }
+        
         // Parse MM:SS format to seconds
         function parseTime(timeString) {
             const parts = timeString.split(':');
@@ -1698,6 +1849,10 @@
             setRestSecIncreaseBtn.disabled = true;
             // Disable preset select
             presetSelect.disabled = true;
+            // Workout title and notes
+            if (workoutTitleInput) workoutTitleInput.disabled = true;
+            if (workoutDescriptionInput) workoutDescriptionInput.disabled = true;
+            if (doneMessageInput) doneMessageInput.disabled = true;
         }
         
         // Enable inputs when timer is stopped
@@ -1742,6 +1897,10 @@
             setRestSecIncreaseBtn.disabled = false;
             // Enable preset select
             presetSelect.disabled = false;
+            // Workout title and notes
+            if (workoutTitleInput) workoutTitleInput.disabled = false;
+            if (workoutDescriptionInput) workoutDescriptionInput.disabled = false;
+            if (doneMessageInput) doneMessageInput.disabled = false;
         }
         
         // HIIT ADDITION: Preset configurations
@@ -1936,6 +2095,42 @@
                 setRestGroup.style.display = 'none';
             }
         }
+
+        // Update workout title and notes display
+        function updateWorkoutDisplay() {
+            if (!workoutTitleInput || !workoutDescriptionInput) return;
+            if (!workoutTitleDisplay || !workoutTitleText) return;
+            if (!workoutDescriptionDisplay || !workoutDescriptionText) return;
+            
+            const title = workoutTitleInput.value.trim();
+            const notes = workoutDescriptionInput.value.trim();
+            
+            if (title) {
+                workoutTitleText.textContent = title;
+                workoutTitleDisplay.style.display = 'block';
+            } else {
+                workoutTitleDisplay.style.display = 'none';
+            }
+            
+            if (notes) {
+                workoutDescriptionText.textContent = notes;
+                workoutDescriptionDisplay.style.display = 'block';
+            } else {
+                workoutDescriptionDisplay.style.display = 'none';
+            }
+        }
+        
+        function updateCharCounts() {
+            if (workoutTitleInput && workoutTitleCharCount) {
+                workoutTitleCharCount.textContent = workoutTitleInput.value.length;
+            }
+            if (workoutDescriptionInput && workoutDescriptionCharCount) {
+                workoutDescriptionCharCount.textContent = workoutDescriptionInput.value.length;
+            }
+            if (doneMessageInput && doneMessageCharCount) {
+                doneMessageCharCount.textContent = doneMessageInput.value.length;
+            }
+        }
         
         // Check if timer has valid data to proceed
         function hasValidTimerData() {
@@ -2115,6 +2310,9 @@
                                 } else {
                                     // No cool-down - stop timer
                                     stopTimer();
+                                    const completionMessage = getDoneMessage();
+                                    display.textContent = completionMessage;
+                                    display.classList.add('danger');
                                     playSound();
                                     return;
                                 }
@@ -2141,6 +2339,9 @@
                     } else if (currentPhase === 'cooldown') {
                         // Cool-down complete - stop timer
                         stopTimer();
+                        const completionMessage = getDoneMessage();
+                        display.textContent = completionMessage;
+                        display.classList.add('danger');
                         playSound();
                         return;
                     }
@@ -2596,6 +2797,33 @@
                 updateTotalTime();
             }
         });
+
+        // Workout title and notes listeners
+        if (workoutTitleInput) {
+            workoutTitleInput.addEventListener('input', function() {
+                updateCharCounts();
+                updateWorkoutDisplay();
+            });
+        }
+        
+        if (workoutDescriptionInput) {
+            workoutDescriptionInput.addEventListener('input', function() {
+                updateCharCounts();
+                updateWorkoutDisplay();
+            });
+        }
+
+        // Completion message listeners
+        if (doneMessageInput) {
+            doneMessageInput.addEventListener('input', function() {
+                updateCharCounts();
+                setDoneMessage(this.value);
+            });
+            
+            doneMessageInput.addEventListener('change', function() {
+                setDoneMessage(this.value);
+            });
+        }
         
         
         // Drawer Functions
@@ -2631,6 +2859,19 @@
         updateSetRestVisibility();
         updateTotalTime();
         updateDisplay();
+        
+        // Initialize workout title/notes display + counters
+        updateCharCounts();
+        updateWorkoutDisplay();
+
+        // Initialize completion message from storage
+        if (doneMessageInput) {
+            const savedDone = getDoneMessage();
+            doneMessageInput.value = savedDone;
+            if (doneMessageCharCount) {
+                doneMessageCharCount.textContent = savedDone.length;
+            }
+        }
         
         // Set release date
         document.getElementById('releaseDate').textContent = new Date().toISOString().split('T')[0];

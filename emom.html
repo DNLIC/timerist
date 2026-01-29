@@ -170,6 +170,13 @@
             color: rgb(var(--destructive));
         }
         
+        .timer-display-large.done-message {
+            white-space: nowrap;
+            letter-spacing: -0.01em;
+            font-variant-numeric: normal;
+            word-break: normal;
+        }
+        
         .timer-display-block {
             padding: 1.5rem;
             overflow: hidden;
@@ -922,7 +929,7 @@
                 <div class="phase-label" id="phaseLabel" style="display: none;">Work</div>
                 <div class="timer-display-large" id="display">01:00</div>
                 <div class="round-info">
-                    Round <span id="round">1</span> of <span id="totalRounds">5</span> | Target <span id="targetRepsDisplay">0</span> Reps Every Minute
+                    Round <span id="round">1</span> of <span id="totalRounds">5</span> | <span id="targetRepsDisplay">0</span> Per Min
                 </div>
                 <!-- Workout Notes -->
                 <div id="workoutDescriptionDisplay" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgb(var(--border));">
@@ -1132,7 +1139,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.15</p>
+                <p><strong>Version:</strong> v0.16</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -1366,8 +1373,34 @@
             }
         }
         
+        // Shrink text until it fits on one line (mobile-safe)
+        function fitTextToContainer(el, { minPx = 16 } = {}) {
+            if (!el) return;
+
+            // Reset any prior inline size first
+            el.style.fontSize = '';
+
+            let fontSize = parseFloat(window.getComputedStyle(el).fontSize || '0');
+            if (!Number.isFinite(fontSize) || fontSize <= 0) return;
+
+            const fits = () => el.scrollWidth <= el.clientWidth;
+            if (fits()) return;
+
+            let iterations = 0;
+            while (!fits() && fontSize > minPx && iterations < 120) {
+                fontSize -= 1;
+                el.style.fontSize = `${fontSize}px`;
+                iterations += 1;
+            }
+        }
+        
         // Start timer
         function startTimer() {
+            // Reset font size to default
+            if (display) {
+                display.style.fontSize = '';
+            }
+            
             // EMOM: Initialize from defaults if needed
             if (workTime === 0) {
                 workTime = 60; // EMOM: Fixed at 60 seconds
@@ -1400,7 +1433,9 @@
                         stopTimer();
                         const completionMessage = getDoneMessage();
                         display.textContent = completionMessage;
-                        display.classList.add('danger');
+                        display.classList.add('danger', 'done-message');
+                        // Shrink text to fit (message persists until reset)
+                        fitTextToContainer(display, { minPx: 18 });
                         return;
                     }
                     
@@ -1457,6 +1492,12 @@
             isRunning = false;
             isPaused = false;
             
+            // Reset font size
+            if (display) {
+                display.style.fontSize = '';
+                display.classList.remove('done-message');
+            }
+            
             // EMOM: Get current values from inputs (prefer main input, fallback to drawer input)
             const roundsValue = roundsInputMain ? parseInt(roundsInputMain.value) : parseInt(roundsInput.value);
             totalRounds = isNaN(roundsValue) ? 5 : roundsValue;
@@ -1481,6 +1522,12 @@
             interval = null;
             isRunning = false;
             isPaused = false;
+            
+            // Reset font size
+            if (display) {
+                display.style.fontSize = '';
+                display.classList.remove('done-message');
+            }
             
             // EMOM: Set rounds to 0
             roundsInput.value = '0';

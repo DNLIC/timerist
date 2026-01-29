@@ -22,6 +22,38 @@ Important rules to follow strictly:
 - **Dark/Light mode only**: No references to multiple styles (style1, style2, style3) or URL parameters. Use Tailwind's dark: variants and document.documentElement.classList.toggle('dark').
 - **Button hovers**: Ensure hover states maintain visibility and contrast (e.g. hover:bg-primary/90). Never let buttons disappear on hover (no white-on-white or black-on-black).
 - **Top spacing**: Minimize vertical whitespace above the timer container. Pull the timer display and controls close under the header (use small pt- or mt- values like pt-2 or clamp for mobile). Optimize for portrait smartphone view so the timer is near the top with little wasted space.
+- **Smartphone landscape spacing (IMPORTANT)**: When the header is `position: absolute` and the timer container uses a `margin-top` clamp, ensure the **timer card never overlaps the header** in smartphone landscape. Add a landscape-only media query (this exact pattern) and tune `margin-top` to avoid overlap while keeping vertical space tight:
+  
+  - Use `@media (orientation: landscape) and (max-height: 500px)` (targets most phones in landscape)
+  - Override the timer container offset + tighten vertical spacing:
+  
+```css
+/* Smartphone landscape - prevent header/timer overlap + tighten vertical space */
+@media (orientation: landscape) and (max-height: 500px) {
+  .timer-container {
+    /* raise/lower this as needed to avoid header overlap */
+    margin-top: clamp(3.5rem, 6vw, 4.25rem) !important;
+    /* override inline gap if present */
+    gap: 0.5rem !important;
+  }
+
+  .timer-display-block {
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* if using Tailwind-ish card padding classes like p-6 */
+  .p-6 {
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
+```
+  - If the timer box is still too low/high, adjust only the `margin-top` clamp (e.g. nudge between ~3.0rem–5.5rem) until overlap is gone.
 - **Adherence**: Use only ShadCN-inspired components and Tailwind utilities. No custom non-Tailwind CSS selectors, external libraries, or inline styles that override the shell. Match typography, spacing, shadows, and border-radius exactly from the shell.
 - **Mobile optimization**: Test layout for small screens (320–480px width). Keep header compact, hide separator/text if needed, ensure buttons are tappable.
 - **Do NOT add**: Inter font, HSL variables, hover transforms/scales/extra shadows, min-height extras, or any elements specific to other timers (e.g. quick-select presets unless required for this timer).

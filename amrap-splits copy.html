@@ -6,7 +6,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <title>AMRAP Timer - Timerist | Workout AMRAP Timer, As Many Rounds As Possible</title>
+    <title>AMRAP Splits Timer - Timerist | Workout AMRAP Timer, As Many Rounds As Possible</title>
     <meta name="description" content="AMRAP timer for workouts - track rounds while the countdown runs. Set minutes/seconds and start fast with big digits, pause/resume, and reset. Great for HIIT, CrossFit, and home training.">
     <link rel="stylesheet" href="styles/timerist-design-system.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -136,11 +136,6 @@
 
             .timer-display-large {
                 margin-bottom: 0.5rem !important;
-            }
-
-            /* Tighten rounds display spacing in landscape */
-            #rounds {
-                margin-top: 0.5rem !important;
             }
 
             /* Tighten workout title display spacing in landscape */
@@ -574,6 +569,34 @@
             font-size: 0.875rem;
         }
         
+        /* Workout title and description styling */
+        #workoutTitleInput {
+            font-family: inherit;
+            text-align: left;
+            font-weight: 500;
+        }
+        
+        #workoutDescriptionInput {
+            font-family: inherit;
+            text-align: left;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+        
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: rgb(var(--muted-foreground));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
         .drawer-close {
             background: transparent;
             border: none;
@@ -865,6 +888,53 @@
         html.dark #timerist-logo .logo-line {
             stroke: #fafafa !important;
         }
+        
+        .splits-display {
+            padding: 1.5rem;
+            background-color: rgb(var(--card));
+            border: 1px solid rgb(var(--border));
+            border-radius: var(--radius);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            margin-top: 1rem;
+        }
+        
+        .splits-display h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: rgb(var(--foreground));
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .splits-display ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1rem 0;
+        }
+        
+        .splits-display li {
+            padding: 0.5rem;
+            font-size: 1rem;
+            color: rgb(var(--foreground));
+            border-bottom: 1px solid rgb(var(--border));
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+        
+        .splits-display li:last-child {
+            border-bottom: none;
+        }
+        
+        #total-elapsed {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: rgb(var(--foreground));
+            text-align: center;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
     </style>
 </head>
 <body class="font-sans">
@@ -886,7 +956,7 @@
                 </a>
                 <a href="index.html" style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground)); text-decoration: none; cursor: pointer;">timerist.com</a>
                 <span class="separator" style="color: rgb(var(--muted-foreground));">|</span>
-                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">AMRAP Timer</span>
+                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">AMRAP Splits Timer</span>
             </div>
             
             <div class="header-actions">
@@ -927,6 +997,13 @@
                     <button class="control-btn btn-primary" id="complete-round" disabled aria-label="Round completed">Round Completed</button>
                 </div>
             </div>
+            
+            <!-- Splits Display -->
+            <div id="splits" class="splits-display" aria-live="polite">
+                <h3>Split Times</h3>
+                <ul id="splits-list"></ul>
+                <div id="total-elapsed">Total Elapsed: 00:00</div>
+            </div>
         </div>
     </div>
     
@@ -942,8 +1019,8 @@
                 <h3>Setup Content</h3>
                 
                 <!-- Workout Title -->
-                <div class="space-y-2" style="margin-bottom: 1.5rem;">
-                    <label for="workoutTitleInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Workout Title</label>
+                <div class="input-group">
+                    <label for="workoutTitleInput">Workout Title</label>
                     <input 
                         type="text" 
                         id="workoutTitleInput" 
@@ -959,8 +1036,8 @@
                 </div>
                 
                 <!-- Workout Notes -->
-                <div class="space-y-2" style="margin-bottom: 1.5rem;">
-                    <label for="workoutDescriptionInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Workout Notes</label>
+                <div class="input-group">
+                    <label for="workoutDescriptionInput">Workout Notes</label>
                     <textarea 
                         id="workoutDescriptionInput" 
                         class="custom-time-input"
@@ -968,7 +1045,7 @@
                         aria-label="Workout notes"
                         rows="4"
                         maxlength="200"
-                        style="resize: vertical; min-height: 80px; font-family: inherit; line-height: 1.5; text-align: left; font-weight: 400;"
+                        style="resize: vertical; min-height: 80px; font-family: inherit; text-align: left; font-weight: 400; line-height: 1.5;"
                     ></textarea>
                     <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
                         <span id="workoutDescriptionCharCount">0</span>/200
@@ -1005,33 +1082,10 @@
                     </div>
                 </div>
                 
-                <!-- Rest Minutes Between Rounds (only show if rounds > 1) -->
-                <div class="space-y-2" id="restMinutesContainer" style="display: none;">
-                    <label for="restMinutesInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Rest Minutes</label>
-                    <div class="time-input-group">
-                        <button class="time-adjust-btn" id="restMinutesDecreaseBtn" type="button" aria-label="Decrease rest minutes by 1">−</button>
-                        <input type="number" id="restMinutesInputDrawer" class="custom-time-input" min="0" max="99" inputmode="numeric" value="0" aria-label="Rest minutes (drawer)">
-                        <button class="time-adjust-btn" id="restMinutesIncreaseBtn" type="button" aria-label="Increase rest minutes by 1">+</button>
-                    </div>
-                </div>
-                
-                <!-- Rest Seconds Between Rounds (only show if rounds > 1) -->
-                <div class="space-y-2" id="restSecondsContainer" style="display: none;">
-                    <label for="restSecondsInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Rest Seconds</label>
-                    <div class="time-input-group">
-                        <button class="time-adjust-btn" id="restSecondsDecreaseBtn" type="button" aria-label="Decrease rest seconds by 1">−</button>
-                        <input type="number" id="restSecondsInputDrawer" class="custom-time-input" min="0" max="59" inputmode="numeric" value="0" aria-label="Rest seconds (drawer)">
-                        <button class="time-adjust-btn" id="restSecondsIncreaseBtn" type="button" aria-label="Increase rest seconds by 1">+</button>
-                    </div>
-                </div>
-                
                 <!-- Completion Message -->
                 <div class="space-y-2">
-                    <label for="doneMessageInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">COMPLETION MESSAGE (14 CHARACTERS MAX)</label>
-                    <input type="text" id="doneMessageInputDrawer" class="custom-time-input" maxlength="14" value="Completed" placeholder="Completed" aria-label="Completion message (drawer)">
-                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
-                        <span id="doneMessageCharCount">0</span>/14
-                    </p>
+                    <label for="doneMessageInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Completion Message (14 characters max)</label>
+                    <input type="text" id="doneMessageInputDrawer" class="custom-time-input" maxlength="14" value="Done" placeholder="Done" aria-label="Completion message (drawer)">
                 </div>
                 <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.75rem;">
                     Set minutes/seconds for your countdown and customize the message shown when it completes.
@@ -1052,7 +1106,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.16</p>
+                <p><strong>Version:</strong> v0.13</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -1062,14 +1116,14 @@
         // Countdown Timer Logic (shell-integrated)
         let currentTime = 0;
         let totalSeconds = 0;
-        let restTimeSeconds = 0;
-        let currentRestTime = 0;
         let interval = null;
         let isRunning = false;
         let isPaused = false;
         let rounds = 0; // Completed rounds
-        let currentRound = 1; // Current round number (1-based)
-        let isRestPeriod = false; // Whether we're in rest period
+        let targetRounds = 0; // Target number of rounds
+        let lastSplitTime = 0;
+        let splits = [];
+        let timerDone = false;
 
         const display = document.getElementById('display');
         const statusLabel = document.getElementById('statusLabel');
@@ -1084,21 +1138,12 @@
         const secondsInput = document.getElementById('secondsInputDrawer');
         const roundsInput = document.getElementById('roundsInputDrawer');
         const doneMessageInput = document.getElementById('doneMessageInputDrawer');
-        const doneMessageCharCount = document.getElementById('doneMessageCharCount');
         const minutesDecreaseBtn = document.getElementById('minutesDecreaseBtn');
         const minutesIncreaseBtn = document.getElementById('minutesIncreaseBtn');
         const secondsDecreaseBtn = document.getElementById('secondsDecreaseBtn');
         const secondsIncreaseBtn = document.getElementById('secondsIncreaseBtn');
         const roundsDecreaseBtn = document.getElementById('roundsDecreaseBtn');
         const roundsIncreaseBtn = document.getElementById('roundsIncreaseBtn');
-        const restMinutesContainer = document.getElementById('restMinutesContainer');
-        const restSecondsContainer = document.getElementById('restSecondsContainer');
-        const restMinutesInput = document.getElementById('restMinutesInputDrawer');
-        const restSecondsInput = document.getElementById('restSecondsInputDrawer');
-        const restMinutesDecreaseBtn = document.getElementById('restMinutesDecreaseBtn');
-        const restMinutesIncreaseBtn = document.getElementById('restMinutesIncreaseBtn');
-        const restSecondsDecreaseBtn = document.getElementById('restSecondsDecreaseBtn');
-        const restSecondsIncreaseBtn = document.getElementById('restSecondsIncreaseBtn');
         const workoutTitleInput = document.getElementById('workoutTitleInput');
         const workoutDescriptionInput = document.getElementById('workoutDescriptionInput');
         const workoutTitleDisplay = document.getElementById('workoutTitleDisplay');
@@ -1118,92 +1163,6 @@
             const mins = Math.floor(seconds / 60);
             const secs = seconds % 60;
             return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-        }
-        
-        function getTargetRounds() {
-            return clampInt(roundsInput.value, 0, 999);
-        }
-        
-        function readRestTimeFromInputs() {
-            const mins = clampInt(restMinutesInput.value, 0, 99);
-            const secs = clampInt(restSecondsInput.value, 0, 59);
-            restMinutesInput.value = String(mins);
-            restSecondsInput.value = String(secs);
-            return (mins * 60) + secs;
-        }
-        
-        function updateRestTimeContainerVisibility() {
-            const targetRounds = getTargetRounds();
-            const restMinutesEl = document.getElementById('restMinutesContainer');
-            const restSecondsEl = document.getElementById('restSecondsContainer');
-            
-            // Show rest time inputs only if more than 1 round is selected
-            if (targetRounds > 1) {
-                if (restMinutesEl) {
-                    restMinutesEl.style.display = 'block';
-                    restMinutesEl.style.visibility = 'visible';
-                }
-                if (restSecondsEl) {
-                    restSecondsEl.style.display = 'block';
-                    restSecondsEl.style.visibility = 'visible';
-                }
-            } else {
-                // Hide rest time inputs if 1 or fewer rounds
-                if (restMinutesEl) {
-                    restMinutesEl.style.display = 'none';
-                    restMinutesEl.style.visibility = 'hidden';
-                }
-                if (restSecondsEl) {
-                    restSecondsEl.style.display = 'none';
-                    restSecondsEl.style.visibility = 'hidden';
-                }
-            }
-        }
-        
-        function updateRoundsDisplay() {
-            const target = getTargetRounds();
-            if (target > 1) {
-                // Show current round and completed rounds
-                roundsDisplay.textContent = `Round ${currentRound} of ${target} | Completed: ${rounds}`;
-            } else if (target === 1) {
-                // Single round - just show completed
-                roundsDisplay.textContent = `Rounds: ${rounds}`;
-            } else {
-                // No target set
-                roundsDisplay.textContent = `Rounds: ${rounds}`;
-            }
-        }
-        
-        // Update workout title and description display
-        function updateWorkoutDisplay() {
-            const title = workoutTitleInput.value.trim();
-            const description = workoutDescriptionInput.value.trim();
-            
-            // Update title display
-            if (title) {
-                workoutTitleText.textContent = title;
-                workoutTitleDisplay.style.display = 'block';
-            } else {
-                workoutTitleDisplay.style.display = 'none';
-            }
-            
-            // Update description display
-            if (description) {
-                workoutDescriptionText.textContent = description;
-                workoutDescriptionDisplay.style.display = 'block';
-            } else {
-                workoutDescriptionDisplay.style.display = 'none';
-            }
-        }
-        
-        // Update character counts
-        function updateCharCounts() {
-            if (workoutTitleCharCount) {
-                workoutTitleCharCount.textContent = workoutTitleInput.value.length;
-            }
-            if (workoutDescriptionCharCount) {
-                workoutDescriptionCharCount.textContent = workoutDescriptionInput.value.length;
-            }
         }
 
         function calculateFontSize(text) {
@@ -1228,18 +1187,13 @@
         }
 
         function getDoneMessage() {
-            const saved = localStorage.getItem('amrap-doneMessage');
-            return saved || 'Completed';
+            const saved = localStorage.getItem('countdown-doneMessage');
+            return saved || 'Done';
         }
 
         function saveDoneMessage(message) {
             const v = (message || '').trim();
-            localStorage.setItem('amrap-doneMessage', v ? v : 'Completed');
-        }
-        
-        function updateDoneMessageCharCount() {
-            const count = doneMessageInput.value.length;
-            doneMessageCharCount.textContent = count;
+            localStorage.setItem('countdown-doneMessage', v ? v : 'Done');
         }
 
         function readDurationFromInputs() {
@@ -1254,18 +1208,12 @@
             minutesInput.disabled = disabled;
             secondsInput.disabled = disabled;
             roundsInput.disabled = disabled;
-            if (restMinutesInput) restMinutesInput.disabled = disabled;
-            if (restSecondsInput) restSecondsInput.disabled = disabled;
             minutesDecreaseBtn.disabled = disabled;
             minutesIncreaseBtn.disabled = disabled;
             secondsDecreaseBtn.disabled = disabled;
             secondsIncreaseBtn.disabled = disabled;
             roundsDecreaseBtn.disabled = disabled;
             roundsIncreaseBtn.disabled = disabled;
-            if (restMinutesDecreaseBtn) restMinutesDecreaseBtn.disabled = disabled;
-            if (restMinutesIncreaseBtn) restMinutesIncreaseBtn.disabled = disabled;
-            if (restSecondsDecreaseBtn) restSecondsDecreaseBtn.disabled = disabled;
-            if (restSecondsIncreaseBtn) restSecondsIncreaseBtn.disabled = disabled;
         }
         
         function adjustMinutes(increment) {
@@ -1289,39 +1237,28 @@
             const current = clampInt(roundsInput.value, 0, 999);
             const newValue = increment ? Math.min(999, current + 1) : Math.max(0, current - 1);
             roundsInput.value = String(newValue);
-            updateRestTimeContainerVisibility();
+            targetRounds = newValue;
             updateRoundsDisplay();
         }
         
-        function adjustRestMinutes(increment) {
-            if (isRunning || isPaused) return;
-            const current = clampInt(restMinutesInput.value, 0, 99);
-            const newValue = increment ? Math.min(99, current + 1) : Math.max(0, current - 1);
-            restMinutesInput.value = String(newValue);
+        function getTargetRounds() {
+            return clampInt(roundsInput.value, 0, 999);
         }
         
-        function adjustRestSeconds(increment) {
-            if (isRunning || isPaused) return;
-            const current = clampInt(restSecondsInput.value, 0, 59);
-            const newValue = increment ? Math.min(59, current + 1) : Math.max(0, current - 1);
-            restSecondsInput.value = String(newValue);
+        function updateRoundsDisplay() {
+            const target = getTargetRounds();
+            if (target > 0) {
+                roundsDisplay.textContent = `Round ${rounds + 1} of ${target} | Completed: ${rounds}`;
+            } else {
+                roundsDisplay.textContent = `Rounds: ${rounds}`;
+            }
         }
 
         function updateDisplay() {
-            // Show rest time or work time based on current phase
-            if (isRestPeriod) {
-                display.textContent = formatTime(currentRestTime);
-                display.classList.remove('warning', 'danger');
-                if (restTimeSeconds > 0) {
-                    const percentRemaining = currentRestTime / restTimeSeconds;
-                    if (percentRemaining <= 0.1) {
-                        display.classList.add('danger');
-                    } else if (percentRemaining <= 0.3) {
-                        display.classList.add('warning');
-                    }
-                }
-            } else {
+            // Don't update display text if timer is done - keep the done message
+            if (!timerDone) {
                 display.textContent = formatTime(currentTime);
+                display.style.fontSize = '';
                 display.classList.remove('warning', 'danger');
                 if (totalSeconds > 0) {
                     const percentRemaining = currentTime / totalSeconds;
@@ -1337,11 +1274,7 @@
             if (isRunning) {
                 document.body.classList.add('timer-running');
                 setInputsDisabled(true);
-                if (isRestPeriod) {
-                    statusLabel.textContent = 'Rest';
-                } else {
-                    statusLabel.textContent = 'Running';
-                }
+                statusLabel.textContent = 'Running';
                 startPauseBtn.textContent = 'Pause';
                 startPauseBtn.classList.remove('paused');
                 startPauseBtn.setAttribute('aria-label', 'Pause timer');
@@ -1349,14 +1282,11 @@
                 setupBtn.style.display = 'none';
                 resetBtn.style.display = 'inline-block';
                 clearBtn.style.display = 'inline-block';
+                completeRoundBtn.style.display = 'inline-block';
             } else if (isPaused) {
                 document.body.classList.remove('timer-running');
                 setInputsDisabled(true);
-                if (isRestPeriod) {
-                    statusLabel.textContent = 'Rest (Paused)';
-                } else {
-                    statusLabel.textContent = 'Paused';
-                }
+                statusLabel.textContent = 'Paused';
                 startPauseBtn.textContent = 'Resume';
                 startPauseBtn.classList.add('paused');
                 startPauseBtn.setAttribute('aria-label', 'Resume timer');
@@ -1364,11 +1294,23 @@
                 setupBtn.style.display = 'none';
                 resetBtn.style.display = 'inline-block';
                 clearBtn.style.display = 'inline-block';
+                completeRoundBtn.style.display = 'inline-block';
             } else {
                 document.body.classList.remove('timer-running');
                 setInputsDisabled(false);
                 
-                if (totalSeconds > 0) {
+                // If timer is done, show Set Up button and Start button (to restart with same time)
+                if (timerDone) {
+                    statusLabel.textContent = 'Set time';
+                    startPauseBtn.textContent = 'Start';
+                    startPauseBtn.classList.remove('paused');
+                    startPauseBtn.setAttribute('aria-label', 'Start timer');
+                    startPauseBtn.style.display = 'inline-block';
+                    setupBtn.style.display = 'inline-block';
+                    resetBtn.style.display = 'inline-block';
+                    clearBtn.style.display = 'inline-block';
+                    completeRoundBtn.style.display = 'none';
+                } else if (totalSeconds > 0) {
                     // Has time set - show Start and Reset
                     statusLabel.textContent = 'Ready';
                     startPauseBtn.textContent = 'Start';
@@ -1378,6 +1320,7 @@
                     setupBtn.style.display = 'none';
                     resetBtn.style.display = 'inline-block';
                     clearBtn.style.display = 'inline-block';
+                    completeRoundBtn.style.display = 'none';
                 } else {
                     // No time set - show Set Up button
                     statusLabel.textContent = 'Set time';
@@ -1385,6 +1328,7 @@
                     setupBtn.style.display = 'inline-block';
                     resetBtn.style.display = 'none';
                     clearBtn.style.display = 'inline-block';
+                    completeRoundBtn.style.display = 'none';
                 }
             }
         }
@@ -1413,7 +1357,7 @@
 
         function showDoneMessage() {
             const message = getDoneMessage();
-            const originalFontSize = display.style.fontSize;
+            timerDone = true;
 
             display.textContent = message;
             display.classList.add('danger');
@@ -1421,10 +1365,7 @@
             const fontSize = calculateFontSize(message);
             display.style.fontSize = `${fontSize}px`;
 
-            setTimeout(() => {
-                display.style.fontSize = originalFontSize || '';
-                updateDisplay();
-            }, 2000);
+            // Keep message displayed until cleared - don't auto-hide
         }
 
         function stopTimer() {
@@ -1436,88 +1377,45 @@
         }
 
         function startTimer() {
-            // Reset font size to default
-            if (display) {
-                display.style.fontSize = '';
-            }
-            
             if (totalSeconds <= 0) {
                 totalSeconds = readDurationFromInputs();
                 currentTime = totalSeconds;
             }
 
-            if (currentTime <= 0 && !isRestPeriod) return;
+            if (currentTime <= 0) return;
 
             isRunning = true;
+            const wasPaused = isPaused;
             isPaused = false;
             clearInterval(interval);
             interval = null;
 
-            // Reset rounds on fresh start (not when resuming)
-            if (!isPaused && !isRestPeriod) {
+            // Reset rounds on fresh start (not when resuming from pause)
+            if (!wasPaused) {
                 rounds = 0;
-                currentRound = 1;
-                isRestPeriod = false;
+                targetRounds = getTargetRounds();
+                lastSplitTime = 0;
+                splits = [];
+                document.getElementById('splits-list').innerHTML = '';
+                document.getElementById('total-elapsed').textContent = 'Total Elapsed: 00:00';
                 updateRoundsDisplay();
             }
-            
-            // If we're in rest period, don't enable complete round button
-            if (!isRestPeriod) {
-                completeRoundBtn.disabled = false;
-            } else {
-                completeRoundBtn.disabled = true;
-            }
+            completeRoundBtn.disabled = false;
 
             interval = setInterval(() => {
-                if (isRestPeriod) {
-                    // Rest period countdown
-                    currentRestTime--;
-                    if (currentRestTime <= 0) {
-                        currentRestTime = 0;
-                        // Rest period over, start next round
-                        isRestPeriod = false;
-                        currentRound++;
-                        currentTime = totalSeconds;
-                        playSound();
-                        updateRoundsDisplay();
-                        updateDisplay();
-                        return;
-                    }
-                } else {
-                    // Work period countdown
-                    currentTime--;
-                    if (currentTime <= 0) {
-                        currentTime = 0;
-                        rounds++;
-                        updateRoundsDisplay();
-                        playSound();
-                        
-                        const targetRounds = getTargetRounds();
-                        restTimeSeconds = readRestTimeFromInputs();
-                        
-                        // Check if there are more rounds to do
-                        if (targetRounds > 0 && currentRound < targetRounds) {
-                            if (restTimeSeconds > 0) {
-                                // Start rest period before next round
-                                isRestPeriod = true;
-                                currentRestTime = restTimeSeconds;
-                                statusLabel.textContent = 'Rest';
-                                completeRoundBtn.disabled = true;
-                            } else {
-                                // No rest time, immediately start next round
-                                currentRound++;
-                                currentTime = totalSeconds;
-                                playSound();
-                            }
-                        } else {
-                            // All rounds complete
-                            stopTimer();
-                            showDoneMessage();
-                            completeRoundBtn.disabled = true;
-                            return;
-                        }
-                    }
+                currentTime--;
+                if (currentTime <= 0) {
+                    currentTime = 0;
+                    stopTimer();
+                    playSound();
+                    showDoneMessage();
+                    completeRoundBtn.disabled = true;
+                    updateDisplay(); // Update to hide Round Completed button and show Set Up
+                    return;
                 }
+                // Update total elapsed display every second
+                let currentElapsed = totalSeconds - currentTime;
+                document.getElementById('total-elapsed').textContent = `Total Elapsed: ${Math.floor(currentElapsed / 60).toString().padStart(2, '0')}:${(currentElapsed % 60).toString().padStart(2, '0')}`;
                 updateDisplay();
             }, 1000);
 
@@ -1545,8 +1443,12 @@
                 return;
             }
 
-            // Fresh start
-            totalSeconds = readDurationFromInputs();
+            // Fresh start or restart after timer done
+            timerDone = false;
+            // If timer was done, keep the existing totalSeconds, otherwise read from inputs
+            if (totalSeconds <= 0) {
+                totalSeconds = readDurationFromInputs();
+            }
             currentTime = totalSeconds;
             startTimer();
         }
@@ -1556,20 +1458,17 @@
             interval = null;
             isRunning = false;
             isPaused = false;
-            isRestPeriod = false;
-            
-            // Reset font size
-            if (display) {
-                display.style.fontSize = '';
-            }
-            
+            timerDone = false;
             totalSeconds = readDurationFromInputs();
             currentTime = totalSeconds;
-            currentRestTime = 0;
             rounds = 0;
-            currentRound = 1;
-            updateRoundsDisplay();
+            targetRounds = getTargetRounds();
+            lastSplitTime = 0;
+            splits = [];
+            document.getElementById('splits-list').innerHTML = '';
+            document.getElementById('total-elapsed').textContent = 'Total Elapsed: 00:00';
             completeRoundBtn.disabled = true;
+            updateRoundsDisplay();
             updateDisplay();
         }
         
@@ -1578,26 +1477,24 @@
             interval = null;
             isRunning = false;
             isPaused = false;
-            isRestPeriod = false;
-            
-            // Reset font size
-            if (display) {
-                display.style.fontSize = '';
-            }
+            timerDone = false;
             
             // Clear inputs
             minutesInput.value = '0';
             secondsInput.value = '0';
+            roundsInput.value = '0';
             
             // Reset timer state
             totalSeconds = 0;
             currentTime = 0;
-            currentRestTime = 0;
             rounds = 0;
-            currentRound = 1;
-            updateRoundsDisplay();
+            targetRounds = 0;
+            lastSplitTime = 0;
+            splits = [];
+            document.getElementById('splits-list').innerHTML = '';
+            document.getElementById('total-elapsed').textContent = 'Total Elapsed: 00:00';
             completeRoundBtn.disabled = true;
-            
+            updateRoundsDisplay();
             updateDisplay();
         }
 
@@ -1606,10 +1503,6 @@
             const overlay = document.getElementById('drawerOverlay');
             drawer.classList.toggle('open');
             overlay.classList.toggle('open');
-            // Update rest time visibility when drawer opens
-            if (drawer.classList.contains('open')) {
-                updateRestTimeContainerVisibility();
-            }
         }
         
         function closeDrawer() {
@@ -1654,12 +1547,29 @@
         completeRoundBtn.addEventListener('click', () => {
             if (interval && isRunning && !isPaused) {
                 rounds++;
+                targetRounds = getTargetRounds();
+                // Calculate elapsed = totalSeconds - currentTime
+                let currentElapsed = totalSeconds - currentTime;
+                // Split time for this round = currentElapsed - lastSplitTime
+                let splitTime = currentElapsed - lastSplitTime;
+                splits.push(splitTime);
+                lastSplitTime = currentElapsed;
+                // Update rounds display
                 updateRoundsDisplay();
+                // Add to splits list
+                let li = document.createElement('li');
+                const splitTimeFormatted = `${Math.floor(splitTime / 60).toString().padStart(2, '0')}:${(splitTime % 60).toString().padStart(2, '0')}`;
+                const elapsedTimeFormatted = `${Math.floor(currentElapsed / 60).toString().padStart(2, '0')}:${(currentElapsed % 60).toString().padStart(2, '0')}`;
+                li.textContent = `Round ${rounds}: ${splitTimeFormatted} (Elapsed: ${elapsedTimeFormatted})`;
+                document.getElementById('splits-list').appendChild(li);
+                // Update total elapsed
+                document.getElementById('total-elapsed').textContent = `Total Elapsed: ${Math.floor(currentElapsed / 60).toString().padStart(2, '0')}:${(currentElapsed % 60).toString().padStart(2, '0')}`;
             }
         });
 
         function onTimeChange() {
             if (isRunning || isPaused) return;
+            timerDone = false;
             totalSeconds = readDurationFromInputs();
             currentTime = totalSeconds;
             updateDisplay();
@@ -1674,41 +1584,14 @@
         secondsIncreaseBtn.addEventListener('click', () => adjustSeconds(true));
         roundsDecreaseBtn.addEventListener('click', () => adjustRounds(false));
         roundsIncreaseBtn.addEventListener('click', () => adjustRounds(true));
-
+        
         roundsInput.addEventListener('input', function() {
+            if (isRunning || isPaused) return;
             const value = clampInt(this.value, 0, 999);
             this.value = String(value);
-            updateRestTimeContainerVisibility();
+            targetRounds = value;
             updateRoundsDisplay();
         });
-        
-        // Rest time adjustment buttons
-        if (restMinutesDecreaseBtn) {
-            restMinutesDecreaseBtn.addEventListener('click', () => adjustRestMinutes(false));
-        }
-        if (restMinutesIncreaseBtn) {
-            restMinutesIncreaseBtn.addEventListener('click', () => adjustRestMinutes(true));
-        }
-        if (restSecondsDecreaseBtn) {
-            restSecondsDecreaseBtn.addEventListener('click', () => adjustRestSeconds(false));
-        }
-        if (restSecondsIncreaseBtn) {
-            restSecondsIncreaseBtn.addEventListener('click', () => adjustRestSeconds(true));
-        }
-        
-        // Rest time input validation
-        if (restMinutesInput) {
-            restMinutesInput.addEventListener('input', function() {
-                const value = clampInt(this.value, 0, 99);
-                this.value = String(value);
-            });
-        }
-        if (restSecondsInput) {
-            restSecondsInput.addEventListener('input', function() {
-                const value = clampInt(this.value, 0, 59);
-                this.value = String(value);
-            });
-        }
 
         doneMessageInput.addEventListener('input', function() {
             let value = this.value.trim();
@@ -1716,34 +1599,17 @@
                 value = value.substring(0, 14);
                 this.value = value;
             }
-            updateDoneMessageCharCount();
-            saveDoneMessage(value || 'Completed');
+            saveDoneMessage(value || 'Done');
         });
         
         doneMessageInput.addEventListener('change', function() {
             let value = this.value.trim();
             if (!value) {
-                value = 'Completed';
+                value = 'Done';
                 this.value = value;
             }
-            updateDoneMessageCharCount();
             saveDoneMessage(value);
         });
-
-        // Workout title and description event listeners
-        if (workoutTitleInput) {
-            workoutTitleInput.addEventListener('input', function() {
-                updateCharCounts();
-                updateWorkoutDisplay();
-            });
-        }
-        
-        if (workoutDescriptionInput) {
-            workoutDescriptionInput.addEventListener('input', function() {
-                updateCharCounts();
-                updateWorkoutDisplay();
-            });
-        }
 
         // Initialize theme + UI
         applyTheme(getInitialTheme());
@@ -1773,43 +1639,67 @@
         // Load saved done message
         const savedDone = getDoneMessage();
         doneMessageInput.value = savedDone;
-        updateDoneMessageCharCount();
-
-        // Initialize workout display and character counts
-        updateCharCounts();
-        updateWorkoutDisplay();
-
-        // Initialize rest time container visibility
-        updateRestTimeContainerVisibility();
 
         // Initialize timer
         totalSeconds = readDurationFromInputs();
         currentTime = totalSeconds;
+        targetRounds = getTargetRounds();
         updateRoundsDisplay();
         updateDisplay();
 
+        // Update workout title and description display
+        function updateWorkoutDisplay() {
+            const title = workoutTitleInput.value.trim();
+            const description = workoutDescriptionInput.value.trim();
+            
+            // Update title display
+            if (title) {
+                workoutTitleText.textContent = title;
+                workoutTitleDisplay.style.display = 'block';
+            } else {
+                workoutTitleDisplay.style.display = 'none';
+            }
+            
+            // Update description display
+            if (description) {
+                workoutDescriptionText.textContent = description;
+                workoutDescriptionDisplay.style.display = 'block';
+            } else {
+                workoutDescriptionDisplay.style.display = 'none';
+            }
+        }
+        
+        // Update character counts
+        function updateCharCounts() {
+            if (workoutTitleCharCount) {
+                workoutTitleCharCount.textContent = workoutTitleInput.value.length;
+            }
+            if (workoutDescriptionCharCount) {
+                workoutDescriptionCharCount.textContent = workoutDescriptionInput.value.length;
+            }
+        }
+        
+        // Workout title and description event listeners
+        if (workoutTitleInput) {
+            workoutTitleInput.addEventListener('input', function() {
+                updateCharCounts();
+                updateWorkoutDisplay();
+            });
+        }
+        
+        if (workoutDescriptionInput) {
+            workoutDescriptionInput.addEventListener('input', function() {
+                updateCharCounts();
+                updateWorkoutDisplay();
+            });
+        }
+        
+        // Initialize workout display and character counts
+        updateCharCounts();
+        updateWorkoutDisplay();
+
         // Release date
         document.getElementById('releaseDate').textContent = new Date().toISOString().split('T')[0];
-        
-        // Ensure rest time visibility is updated after everything loads
-        window.addEventListener('load', function() {
-            updateRestTimeContainerVisibility();
-        });
-        
-        // Also update when drawer is opened (in case rounds changed)
-        const drawer = document.getElementById('settingsDrawer');
-        if (drawer) {
-            const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                        if (drawer.classList.contains('open')) {
-                            updateRestTimeContainerVisibility();
-                        }
-                    }
-                });
-            });
-            observer.observe(drawer, { attributes: true, attributeFilter: ['class'] });
-        }
     </script>
 </body>
 </html>

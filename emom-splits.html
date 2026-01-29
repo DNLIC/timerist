@@ -170,6 +170,13 @@
             color: rgb(var(--destructive));
         }
         
+        .timer-display-large.done-message {
+            white-space: nowrap;
+            letter-spacing: -0.01em;
+            font-variant-numeric: normal;
+            word-break: normal;
+        }
+        
         .timer-display-block {
             padding: 1.5rem;
             overflow: hidden;
@@ -1405,8 +1412,34 @@
             }
         }
         
+        // Shrink text until it fits on one line (mobile-safe)
+        function fitTextToContainer(el, { minPx = 16 } = {}) {
+            if (!el) return;
+
+            // Reset any prior inline size first
+            el.style.fontSize = '';
+
+            let fontSize = parseFloat(window.getComputedStyle(el).fontSize || '0');
+            if (!Number.isFinite(fontSize) || fontSize <= 0) return;
+
+            const fits = () => el.scrollWidth <= el.clientWidth;
+            if (fits()) return;
+
+            let iterations = 0;
+            while (!fits() && fontSize > minPx && iterations < 120) {
+                fontSize -= 1;
+                el.style.fontSize = `${fontSize}px`;
+                iterations += 1;
+            }
+        }
+        
         // Start timer
         function startTimer() {
+            // Reset font size to default
+            if (display) {
+                display.style.fontSize = '';
+            }
+            
             // EMOM: Initialize from defaults if needed
             if (workTime === 0) {
                 workTime = 60; // EMOM: Fixed at 60 seconds
@@ -1448,7 +1481,9 @@
                         stopTimer();
                         const completionMessage = getDoneMessage();
                         display.textContent = completionMessage;
-                        display.classList.add('danger');
+                        display.classList.add('danger', 'done-message');
+                        // Shrink text to fit (message persists until reset)
+                        fitTextToContainer(display, { minPx: 18 });
                         
                         // Create a split entry for the last round if it wasn't recorded
                         if (lastRecordedMinute < currentRound) {
@@ -1522,6 +1557,12 @@
             isRunning = false;
             isPaused = false;
             
+            // Reset font size
+            if (display) {
+                display.style.fontSize = '';
+                display.classList.remove('done-message');
+            }
+            
             // EMOM: Get current values from inputs (prefer main input, fallback to drawer input)
             const roundsValue = roundsInputMain ? parseInt(roundsInputMain.value) : parseInt(roundsInput.value);
             totalRounds = isNaN(roundsValue) ? 5 : roundsValue;
@@ -1551,6 +1592,12 @@
             interval = null;
             isRunning = false;
             isPaused = false;
+            
+            // Reset font size
+            if (display) {
+                display.style.fontSize = '';
+                display.classList.remove('done-message');
+            }
             
             // EMOM: Set rounds to 0
             roundsInput.value = '0';

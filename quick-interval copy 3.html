@@ -6,8 +6,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <title>Tabata Timer - Timerist | Classic Tabata Protocol Timer (20s/10s × 8 rounds)</title>
-    <meta name="description" content="Classic Tabata protocol timer: 20 seconds all-out effort + 10 seconds rest × 8 rounds (4 minutes total). Based on Dr. Izumi Tabata's research for maximum VO2 max and anaerobic capacity.">
+    <title>Quick Interval Timer - Timerist | Quick HIIT Interval Timer, Preset Work Rest Timer</title>
+    <meta name="description" content="Quick interval timer with preset intervals for HIIT, circuit training, or cardio sessions. Tap a preset to start instantly—no setup required.">
     <link rel="stylesheet" href="styles/timerist-design-system.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -170,13 +170,6 @@
             color: rgb(var(--destructive));
         }
         
-        .timer-display-large.done-message {
-            white-space: nowrap;
-            letter-spacing: -0.01em;
-            font-variant-numeric: normal;
-            word-break: normal;
-        }
-        
         .timer-display-block {
             padding: 1.5rem;
             overflow: hidden;
@@ -278,23 +271,17 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
-        /* Set Up button hover - dark gray like Reset button (higher specificity) */
-        .control-btn.btn-primary#setupBtn:hover:not(:disabled),
-        #setupBtn.control-btn.btn-primary:hover:not(:disabled),
-        .control-btn.btn-primary#customizeToggle:hover:not(:disabled),
-        #customizeToggle.control-btn.btn-primary:hover:not(:disabled) {
-            background-color: rgb(100, 100, 100) !important;
-            color: rgb(255, 255, 255) !important;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+        /* Set Up button hover - dark gray like quick countdown timer */
+        #setupBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
-        /* Dark mode Set Up button hover - lighter gray like Reset button */
-        [data-theme="style1"] .control-btn.btn-primary#setupBtn:hover:not(:disabled),
-        [data-theme="style1"] #setupBtn.control-btn.btn-primary:hover:not(:disabled),
-        [data-theme="style1"] .control-btn.btn-primary#customizeToggle:hover:not(:disabled),
-        [data-theme="style1"] #customizeToggle.control-btn.btn-primary:hover:not(:disabled) {
-            background-color: rgb(150, 150, 150) !important;
-            color: rgb(0, 0, 0) !important;
+        /* Dark mode Set Up button hover - lighter gray */
+        [data-theme="style1"] #setupBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
         }
         
         /* Paused state - dark gray background with white text (daylight mode) */
@@ -328,28 +315,15 @@
         
         /* Clear button hover - dark gray like quick countdown timer */
         #clearBtn:hover:not(:disabled) {
-            background-color: rgb(100, 100, 100) !important;
-            color: rgb(255, 255, 255) !important;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
         /* Dark mode Clear button hover - lighter gray */
         [data-theme="style1"] #clearBtn:hover:not(:disabled) {
-            background-color: rgb(150, 150, 150) !important;
-            color: rgb(0, 0, 0) !important;
-        }
-        
-        /* Default Settings button hover - dark gray like Clear button */
-        #defaultSettingsBtn:hover:not(:disabled) {
-            background-color: rgb(100, 100, 100) !important;
-            color: rgb(255, 255, 255) !important;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
-        }
-        
-        /* Dark mode Default Settings button hover - lighter gray */
-        [data-theme="style1"] #defaultSettingsBtn:hover:not(:disabled) {
-            background-color: rgb(150, 150, 150) !important;
-            color: rgb(0, 0, 0) !important;
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
         }
         
         /* Start button hover - dark gray like Set Up button */
@@ -388,17 +362,17 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
-        /* Reset button hover - dark gray */
+        /* Reset button hover - dark gray like Set Up button */
         #resetBtn:hover:not(:disabled) {
-            background-color: rgb(100, 100, 100) !important;
-            color: rgb(255, 255, 255) !important;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
         /* Dark mode Reset button hover - lighter gray */
         [data-theme="style1"] #resetBtn:hover:not(:disabled) {
-            background-color: rgb(150, 150, 150) !important;
-            color: rgb(0, 0, 0) !important;
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
         }
         
         .control-btn:disabled {
@@ -538,20 +512,6 @@
         .custom-time-input:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-        }
-
-        /* Workout title and description styling (match EMOM) */
-        #workoutTitleInput {
-            font-family: inherit;
-            text-align: left;
-            font-weight: 500;
-        }
-        
-        #workoutDescriptionInput {
-            font-family: inherit;
-            text-align: left;
-            font-weight: 400;
-            line-height: 1.5;
         }
         
         .input-group {
@@ -742,7 +702,7 @@
                 display: none;
             }
             
-            /* Make "Interval" text smaller */
+            /* Make "Quick Interval" text smaller */
             .header-top > div:first-child > span:last-of-type {
                 font-size: 0.875rem !important;
             }
@@ -881,96 +841,85 @@
             stroke: #fafafa !important;
         }
         
-        /* Tabata-specific styles */
-        .tabata-values {
+        /* Preset Interval Buttons */
+        .quick-select-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 1.125rem;
+            font-weight: 500;
+            line-height: 1.2;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            background-color: rgb(var(--primary));
+            color: rgb(var(--primary-foreground));
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            min-width: 0;
+            width: 100%;
+        }
+        
+        @media (min-width: 640px) {
+            .quick-select-btn {
+                min-width: 100px;
+                font-size: 1.25rem;
+                height: 2.5rem;
+            }
+        }
+        
+        .quick-select-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            margin-bottom: 1rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
         }
         
-        /* Keep Work/Rest/Rounds on one line on phones */
-        @media (max-width: 640px) {
-            .tabata-values {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-                gap: 0.5rem;
-                margin-bottom: 0.75rem;
+        @media (min-width: 480px) {
+            .quick-select-grid {
+                grid-template-columns: repeat(3, 1fr);
             }
         }
         
-        .tabata-value-card {
-            background-color: rgb(var(--card));
-            border: 2px solid rgb(var(--border));
-            border-radius: var(--radius);
-            padding: 1rem;
-            text-align: center;
-        }
-
-        @media (max-width: 640px) {
-            .tabata-value-card {
-                padding: 0.75rem;
+        @media (min-width: 640px) {
+            .quick-select-grid {
+                grid-template-columns: repeat(4, 1fr);
             }
         }
         
-        .tabata-value-card.work {
-            border-color: rgb(var(--secondary));
-        }
-        
-        .tabata-value-card.rest {
-            border-color: #f59e0b;
-        }
-        
-        .tabata-value-label {
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: rgb(var(--muted-foreground));
-            margin-bottom: 0.5rem;
-        }
-
-        @media (max-width: 640px) {
-            .tabata-value-label {
-                font-size: 0.625rem;
-                margin-bottom: 0.35rem;
+        @media (orientation: landscape) and (max-height: 500px) {
+            .quick-select-grid {
+                grid-template-columns: repeat(4, 1fr);
             }
         }
         
-        .tabata-value-number {
-            font-size: 2rem;
+        .quick-select-btn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode hover state - use lighter gray */
+        [data-theme="style1"] .quick-select-btn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        .quick-select-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .quick-select-btn.selected {
             font-weight: 700;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1;
-            letter-spacing: -0.01em;
-        }
-
-        @media (max-width: 640px) {
-            .tabata-value-number {
-                font-size: 1.5rem;
-            }
         }
         
-        .tabata-value-card.work .tabata-value-number {
-            color: rgb(var(--secondary));
-        }
-        
-        .tabata-value-card.rest .tabata-value-number {
-            color: #f59e0b;
-        }
-        
-        .tabata-value-card.rounds .tabata-value-number {
-            color: rgb(var(--primary));
-        }
-        
-        .completion-message {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: rgb(var(--secondary));
-            text-align: center;
-            margin-top: 1rem;
-            padding: 1rem;
-            background-color: rgba(var(--secondary), 0.1);
-            border-radius: var(--radius);
+        .timer-running .quick-select-btn:not(.reset-btn):not(.selected) {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -993,7 +942,7 @@
                 </a>
                 <a href="index.html" style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground)); text-decoration: none; cursor: pointer;">timerist.com</a>
                 <span class="separator" style="color: rgb(var(--muted-foreground));">|</span>
-                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">Tabata</span>
+                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">Quick Interval</span>
             </div>
             
             <div class="header-actions">
@@ -1007,38 +956,12 @@
         </div>
         
         <div class="timer-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
-            <!-- Tabata Fixed Values Display -->
-            <div class="tabata-values" id="tabataValues">
-                <div class="tabata-value-card work">
-                    <div class="tabata-value-label">Work</div>
-                    <div class="tabata-value-number" id="workValueDisplay">20s</div>
-                </div>
-                <div class="tabata-value-card rest">
-                    <div class="tabata-value-label">Rest</div>
-                    <div class="tabata-value-number" id="restValueDisplay">10s</div>
-                </div>
-                <div class="tabata-value-card rounds">
-                    <div class="tabata-value-label">Rounds</div>
-                    <div class="tabata-value-number" id="roundsValueDisplay">8</div>
-                </div>
-            </div>
-            
             <!-- Timer Display -->
             <div class="timer-display-block bg-card border border-border rounded-lg shadow-lg text-center">
-                <!-- Workout Title (match EMOM) -->
-                <div id="workoutTitleDisplay" style="display: none; text-align: center; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid rgb(var(--border));">
-                    <h2 id="workoutTitleText" style="font-size: 1.25rem; font-weight: 600; color: rgb(var(--foreground)); margin: 0; word-wrap: break-word;"></h2>
-                </div>
-                
                 <div class="phase-label" id="phaseLabel">Work</div>
-                <div class="timer-display-large" id="display">00:20</div>
+                <div class="timer-display-large" id="display">00:00</div>
                 <div class="round-info">
-                    Round <span id="round">1</span> of <span id="totalRounds">8</span>
-                </div>
-                
-                <!-- Workout Notes (match EMOM) -->
-                <div id="workoutDescriptionDisplay" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgb(var(--border));">
-                    <p id="workoutDescriptionText" style="font-size: 0.875rem; color: rgb(var(--muted-foreground)); line-height: 1.6; margin: 0; text-align: left; white-space: pre-wrap; word-wrap: break-word;"></p>
+                    Round <span id="round">1</span> of <span id="totalRounds">0</span>
                 </div>
             </div>
             
@@ -1050,7 +973,43 @@
                     <button class="control-btn btn-destructive" id="resetBtn" style="display: none;" aria-label="Reset timer">Reset</button>
                     <button class="control-btn btn-secondary" id="clearBtn" aria-label="Clear timer">Clear</button>
                     <button class="control-btn btn-primary" id="setupBtn" style="display: none;" aria-label="Set up timer">Set Up</button>
-                    <button class="control-btn btn-primary" id="customizeToggle" onclick="toggleDrawer()" aria-label="Open settings">Set Up</button>
+                </div>
+            </div>
+            
+            <!-- Rounds Input and Preset Intervals -->
+            <div class="p-6 bg-card border border-border rounded-lg shadow-lg">
+                <!-- Rounds Input -->
+                <div class="input-group">
+                    <label for="roundsInputMain" style="text-align: center;">Rounds</label>
+                    <div class="rounds-input-group" style="justify-content: center;">
+                        <button class="rounds-adjust-btn" id="roundsDecreaseBtnMain" type="button" aria-label="Decrease rounds">−</button>
+                        <input 
+                            type="text" 
+                            id="roundsInputMain" 
+                            value="1"
+                            aria-label="Number of rounds"
+                        >
+                        <button class="rounds-adjust-btn" id="roundsIncreaseBtnMain" type="button" aria-label="Increase rounds">+</button>
+                    </div>
+                </div>
+                
+                <!-- Preset Interval Buttons -->
+                <label class="text-sm font-semibold uppercase tracking-wide mb-4 block" style="color: rgb(var(--muted-foreground)); text-align: center; margin-top: 1.5rem;">
+                    Quick Presets
+                </label>
+                <div class="quick-select-grid">
+                    <button class="quick-select-btn" data-work="30" data-rest="30" aria-label="30 seconds work, 30 seconds rest">30/30</button>
+                    <button class="quick-select-btn" data-work="45" data-rest="15" aria-label="45 seconds work, 15 seconds rest">45/15</button>
+                    <button class="quick-select-btn" data-work="60" data-rest="30" aria-label="60 seconds work, 30 seconds rest">60/30</button>
+                    <button class="quick-select-btn" data-work="45" data-rest="45" aria-label="45 seconds work, 45 seconds rest">45/45</button>
+                    <button class="quick-select-btn" data-work="60" data-rest="60" aria-label="60 seconds work, 60 seconds rest">60/60</button>
+                    <button class="quick-select-btn" data-work="30" data-rest="60" aria-label="30 seconds work, 60 seconds rest">30/60</button>
+                    <button class="quick-select-btn" data-work="20" data-rest="10" aria-label="20 seconds work, 10 seconds rest">20/10</button>
+                    <button class="quick-select-btn" data-work="40" data-rest="20" aria-label="40 seconds work, 20 seconds rest">40/20</button>
+                    <button class="quick-select-btn" data-work="90" data-rest="30" aria-label="90 seconds work, 30 seconds rest">90/30</button>
+                    <button class="quick-select-btn" data-work="120" data-rest="60" aria-label="2 minutes work, 1 minute rest">2:00/1:00</button>
+                    <button class="quick-select-btn" data-work="180" data-rest="60" aria-label="3 minutes work, 1 minute rest">3:00/1:00</button>
+                    <button class="quick-select-btn" data-work="60" data-rest="30" aria-label="1 minute work, 30 seconds rest">1:00/30</button>
                 </div>
             </div>
         </div>
@@ -1062,53 +1021,19 @@
     <!-- Settings Drawer -->
     <div class="settings-drawer" id="settingsDrawer">
         <div class="drawer-header">
-            <h2 style="font-size: 1rem; font-weight: 600; color: rgb(var(--foreground)); text-transform: uppercase; letter-spacing: 0.05em;">Tabata Setup</h2>
+            <h2 style="font-size: 1rem; font-weight: 600; color: rgb(var(--foreground)); text-transform: uppercase; letter-spacing: 0.05em;">Timer Setup</h2>
             <button class="drawer-close" onclick="closeDrawer()" aria-label="Close drawer">×</button>
         </div>
         <div class="drawer-content">
             <!-- Setup Content -->
             <div class="drawer-section">
                 <h3>Setup Content</h3>
-
-                <!-- Workout Title (match EMOM format/position) -->
-                <div class="input-group">
-                    <label for="workoutTitleInput">Workout Title</label>
-                    <input 
-                        type="text" 
-                        id="workoutTitleInput" 
-                        class="custom-time-input"
-                        placeholder="Enter workout title"
-                        aria-label="Workout title"
-                        maxlength="40"
-                        style="font-family: inherit;"
-                    >
-                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
-                        <span id="workoutTitleCharCount">0</span>/40
-                    </p>
-                </div>
-                
-                <!-- Workout Notes (match EMOM format/position) -->
-                <div class="input-group">
-                    <label for="workoutDescriptionInput">Workout Notes</label>
-                    <textarea 
-                        id="workoutDescriptionInput" 
-                        class="custom-time-input"
-                        placeholder="Enter workout notes..."
-                        aria-label="Workout notes"
-                        rows="4"
-                        maxlength="200"
-                        style="resize: vertical; min-height: 80px; font-family: inherit; line-height: 1.5;"
-                    ></textarea>
-                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
-                        <span id="workoutDescriptionCharCount">0</span>/200
-                    </p>
-                </div>
                 
                 <!-- Work Time -->
                 <div class="input-group">
                     <label for="workTimeInput">Work Time (MM:SS)</label>
                     <div class="time-input-group">
-                        <button class="time-adjust-btn" id="workDecreaseBtn" type="button" aria-label="Decrease work time by 5 seconds">−5</button>
+                        <button class="time-adjust-btn" id="workDecreaseBtn" type="button" aria-label="Decrease work time by 10 seconds">−10</button>
                         <input 
                             type="text" 
                             id="workTimeInput" 
@@ -1118,7 +1043,7 @@
                             placeholder="MM:SS"
                             aria-label="Work time"
                         >
-                        <button class="time-adjust-btn" id="workIncreaseBtn" type="button" aria-label="Increase work time by 5 seconds">+5</button>
+                        <button class="time-adjust-btn" id="workIncreaseBtn" type="button" aria-label="Increase work time by 10 seconds">+10</button>
                     </div>
                 </div>
                 
@@ -1126,7 +1051,7 @@
                 <div class="input-group">
                     <label for="restTimeInput">Rest Time (MM:SS)</label>
                     <div class="time-input-group">
-                        <button class="time-adjust-btn" id="restDecreaseBtn" type="button" aria-label="Decrease rest time by 5 seconds">−5</button>
+                        <button class="time-adjust-btn" id="restDecreaseBtn" type="button" aria-label="Decrease rest time by 10 seconds">−10</button>
                         <input 
                             type="text" 
                             id="restTimeInput" 
@@ -1136,7 +1061,7 @@
                             placeholder="MM:SS"
                             aria-label="Rest time"
                         >
-                        <button class="time-adjust-btn" id="restIncreaseBtn" type="button" aria-label="Increase rest time by 5 seconds">+5</button>
+                        <button class="time-adjust-btn" id="restIncreaseBtn" type="button" aria-label="Increase rest time by 10 seconds">+10</button>
                     </div>
                 </div>
                 
@@ -1157,70 +1082,54 @@
                 
                 <!-- Completion Message -->
                 <div class="input-group">
-                    <label for="completionMessageInput">Completion Message (14 Characters Max)</label>
+                    <label for="doneMessageInput">COMPLETION MESSAGE (14 CHARACTERS MAX)</label>
                     <input 
                         type="text" 
-                        id="completionMessageInput" 
-                        class="custom-time-input" 
-                        value="Complete"
+                        id="doneMessageInput" 
+                        class="custom-time-input"
                         maxlength="14"
-                        placeholder="Enter message..."
+                        value="completed"
+                        placeholder="completed"
                         aria-label="Completion message"
                     >
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
-                        <span id="completionMessageCounter" style="font-size: 0.75rem; color: rgb(var(--muted-foreground));">8/14</span>
-                    </div>
-                </div>
-                
-                <!-- Default Settings Button -->
-                <div class="input-group" style="margin-top: 2rem;">
-                    <button class="control-btn btn-secondary" id="defaultSettingsBtn" onclick="resetToDefaultSettings()" aria-label="Reset to default Tabata settings" style="width: 100%;">
-                        Default Settings
-                    </button>
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="doneMessageCharCount">0</span>/14
+                    </p>
                 </div>
             </div>
             
             <!-- About This Timer -->
             <div class="drawer-section">
-                <h3>About Tabata Protocol</h3>
+                <h3>About This Timer</h3>
                 <p>
-                    The Tabata protocol was developed by Dr. Izumi Tabata in 1996 at the National Institute of Fitness and Sports in Tokyo. 
-                    The research showed that 4 minutes of Tabata training (20 seconds all-out effort, 10 seconds rest, repeated 8 times) 
-                    improved both aerobic and anaerobic capacity more effectively than longer moderate-intensity workouts.
+                    Ideal for HIIT, circuit training, or cardio sessions with work/rest intervals. 
+                    Set your work time, rest time, and number of rounds for structured interval workouts.
                 </p>
                 <p style="margin-top: 0.75rem;">
-                    <strong>Classic Tabata:</strong> 20 seconds maximum effort, 10 seconds rest, 8 rounds total (4 minutes).
-                </p>
-                <p style="margin-top: 0.75rem;">
-                    <strong>Benefits:</strong> Improves VO2 max, anaerobic capacity, and metabolic efficiency. Perfect for time-efficient, high-intensity workouts.
-                </p>
-                <p style="margin-top: 0.75rem;">
-                    <strong>Keywords:</strong> Tabata timer, Tabata protocol, HIIT timer, 20/10 Tabata, 4 minute workout, Tabata interval timer.
+                    <strong>Keywords:</strong> interval timer, HIIT interval, work rest timer, fitness interval tool, circuit training timer, cardio interval timer.
                 </p>
             </div>
             
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.17</p>
+                <p><strong>Version:</strong> v0.14</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
     </div>
     
     <script>
-        // Tabata Timer Logic
+        // Interval Timer Logic
         let currentTime = 0;
         let interval = null;
         let isRunning = false;
         let isPaused = false;
         let isWorkPhase = true;
         let currentRound = 1;
-        let workTime = 20; // Tabata: 20 seconds
-        let restTime = 10; // Tabata: 10 seconds
-        let totalRounds = 8; // Tabata: 8 rounds
-        let isCustomMode = false;
-        let completionMessage = 'Complete'; // User-defined completion message
+        let workTime = 0;
+        let restTime = 0;
+        let totalRounds = 0;
         
         const display = document.getElementById('display');
         const phaseLabel = document.getElementById('phaseLabel');
@@ -1235,25 +1144,16 @@
         const restTimeInput = document.getElementById('restTimeInput');
         const roundsInput = document.getElementById('roundsInput');
         const roundsDecreaseBtn = document.getElementById('roundsDecreaseBtn');
-        const completionMessageInput = document.getElementById('completionMessageInput');
-        const completionMessageCounter = document.getElementById('completionMessageCounter');
         const roundsIncreaseBtn = document.getElementById('roundsIncreaseBtn');
         const workDecreaseBtn = document.getElementById('workDecreaseBtn');
         const workIncreaseBtn = document.getElementById('workIncreaseBtn');
         const restDecreaseBtn = document.getElementById('restDecreaseBtn');
         const restIncreaseBtn = document.getElementById('restIncreaseBtn');
-        const customizeToggle = document.getElementById('customizeToggle');
-        const tabataValues = document.getElementById('tabataValues');
-
-        // Workout title/notes (match EMOM)
-        const workoutTitleInput = document.getElementById('workoutTitleInput');
-        const workoutDescriptionInput = document.getElementById('workoutDescriptionInput');
-        const workoutTitleDisplay = document.getElementById('workoutTitleDisplay');
-        const workoutTitleText = document.getElementById('workoutTitleText');
-        const workoutDescriptionDisplay = document.getElementById('workoutDescriptionDisplay');
-        const workoutDescriptionText = document.getElementById('workoutDescriptionText');
-        const workoutTitleCharCount = document.getElementById('workoutTitleCharCount');
-        const workoutDescriptionCharCount = document.getElementById('workoutDescriptionCharCount');
+        const roundsInputMain = document.getElementById('roundsInputMain');
+        const roundsDecreaseBtnMain = document.getElementById('roundsDecreaseBtnMain');
+        const roundsIncreaseBtnMain = document.getElementById('roundsIncreaseBtnMain');
+        const doneMessageInput = document.getElementById('doneMessageInput');
+        const doneMessageCharCount = document.getElementById('doneMessageCharCount');
         
         // Parse MM:SS format to seconds
         function parseTime(timeString) {
@@ -1298,18 +1198,12 @@
             return value;
         }
         
-        // Adjust time by ±5 seconds
+        // Adjust time by ±10 seconds
         function adjustTime(input, increment) {
             if (isRunning) return;
             
-            const drawer = document.getElementById('settingsDrawer');
-            const isDrawerOpen = drawer && drawer.classList.contains('open');
-            
-            // Allow adjustment if in custom mode OR drawer is open
-            if (!isCustomMode && !isDrawerOpen) return;
-            
             const currentSeconds = parseTime(input.value);
-            const newSeconds = Math.max(0, currentSeconds + (increment ? 5 : -5));
+            const newSeconds = Math.max(0, currentSeconds + (increment ? 10 : -10));
             input.value = formatTime(newSeconds);
             
             // Update the corresponding time variable
@@ -1319,21 +1213,14 @@
                 restTime = newSeconds;
             }
             
-            // If values differ from Tabata defaults, switch to custom mode
-            if (workTime !== 20 || restTime !== 10 || totalRounds !== 8) {
-                isCustomMode = true;
-                document.body.classList.add('custom-mode');
-            }
-            
             // Reset timer to reflect new time
             if (!isRunning) {
                 resetTimer();
                 updateDisplay(); // Update button visibility based on validity
-                updateTabataValueDisplays(); // Update value cards
             }
         }
         
-        // Disable inputs when timer is running or in classic Tabata mode
+        // Disable inputs when timer is running
         function disableInputs() {
             workTimeInput.disabled = true;
             restTimeInput.disabled = true;
@@ -1344,90 +1231,25 @@
             workIncreaseBtn.disabled = true;
             restDecreaseBtn.disabled = true;
             restIncreaseBtn.disabled = true;
+            if (roundsInputMain) roundsInputMain.disabled = true;
+            if (roundsDecreaseBtnMain) roundsDecreaseBtnMain.disabled = true;
+            if (roundsIncreaseBtnMain) roundsIncreaseBtnMain.disabled = true;
         }
         
-        // Enable inputs when timer is stopped and in custom mode OR when drawer is open
+        // Enable inputs when timer is stopped
         function enableInputs() {
-            const drawer = document.getElementById('settingsDrawer');
-            const isDrawerOpen = drawer && drawer.classList.contains('open');
-            
-            // Enable if in custom mode OR drawer is open (and timer not running)
-            if (isCustomMode || (isDrawerOpen && !isRunning)) {
-                workTimeInput.disabled = false;
-                restTimeInput.disabled = false;
-                roundsInput.disabled = false;
-                roundsDecreaseBtn.disabled = false;
-                roundsIncreaseBtn.disabled = false;
-                workDecreaseBtn.disabled = false;
-                workIncreaseBtn.disabled = false;
-                restDecreaseBtn.disabled = false;
-                restIncreaseBtn.disabled = false;
-            }
-        }
-        
-        // Toggle custom mode (make globally accessible)
-        window.toggleCustomMode = function() {
-            isCustomMode = !isCustomMode;
-            document.body.classList.toggle('custom-mode', isCustomMode);
-            
-            if (isCustomMode) {
-                // Show inputs
-                workTimeInput.disabled = false;
-                restTimeInput.disabled = false;
-                roundsInput.disabled = false;
-                roundsDecreaseBtn.disabled = false;
-                roundsIncreaseBtn.disabled = false;
-                workDecreaseBtn.disabled = false;
-                workIncreaseBtn.disabled = false;
-                restDecreaseBtn.disabled = false;
-                restIncreaseBtn.disabled = false;
-            } else {
-                // Reset to classic Tabata
-                workTime = 20;
-                restTime = 10;
-                totalRounds = 8;
-                workTimeInput.value = '00:20';
-                restTimeInput.value = '00:10';
-                roundsInput.value = '8';
-                resetTimer();
-            }
-            updateTabataValueDisplays();
-        };
-        
-        // Update Tabata value displays - always shows current settings
-        function updateTabataValueDisplays() {
-            // Format work time
-            let workDisplay = '';
-            if (workTime >= 60) {
-                const minutes = Math.floor(workTime / 60);
-                const seconds = workTime % 60;
-                if (seconds === 0) {
-                    workDisplay = minutes + 'm';
-                } else {
-                    workDisplay = minutes + 'm ' + seconds + 's';
-                }
-            } else {
-                workDisplay = workTime + 's';
-            }
-            
-            // Format rest time
-            let restDisplay = '';
-            if (restTime >= 60) {
-                const minutes = Math.floor(restTime / 60);
-                const seconds = restTime % 60;
-                if (seconds === 0) {
-                    restDisplay = minutes + 'm';
-                } else {
-                    restDisplay = minutes + 'm ' + seconds + 's';
-                }
-            } else {
-                restDisplay = restTime + 's';
-            }
-            
-            // Update display text with current settings values
-            document.getElementById('workValueDisplay').textContent = workDisplay;
-            document.getElementById('restValueDisplay').textContent = restDisplay;
-            document.getElementById('roundsValueDisplay').textContent = totalRounds;
+            workTimeInput.disabled = false;
+            restTimeInput.disabled = false;
+            roundsInput.disabled = false;
+            roundsDecreaseBtn.disabled = false;
+            roundsIncreaseBtn.disabled = false;
+            workDecreaseBtn.disabled = false;
+            workIncreaseBtn.disabled = false;
+            restDecreaseBtn.disabled = false;
+            restIncreaseBtn.disabled = false;
+            if (roundsInputMain) roundsInputMain.disabled = false;
+            if (roundsDecreaseBtnMain) roundsDecreaseBtnMain.disabled = false;
+            if (roundsIncreaseBtnMain) roundsIncreaseBtnMain.disabled = false;
         }
         
         // Check if timer has valid data to proceed
@@ -1437,12 +1259,7 @@
         
         // Update display with color coding
         function updateDisplay() {
-            // Restore timer display (in case it was showing completion message)
             display.textContent = formatTime(currentTime);
-            // Reset color to primary (will be overridden by warning/danger classes if needed)
-            display.style.color = '';
-            // Restore phase label visibility
-            phaseLabel.style.display = 'block';
             phaseLabel.textContent = isWorkPhase ? 'Work' : 'Rest';
             roundDisplay.textContent = currentRound;
             totalRoundsDisplay.textContent = totalRounds;
@@ -1468,14 +1285,12 @@
                 }
             }
             
-            
             // Add running class for styling
             if (isRunning) {
                 document.body.classList.add('timer-running');
                 disableInputs();
             } else {
                 document.body.classList.remove('timer-running');
-                // Enable inputs if in custom mode OR drawer is open
                 enableInputs();
             }
             
@@ -1513,82 +1328,25 @@
                 }
             }
         }
-
-        // Update workout title and notes display (match EMOM)
-        function updateWorkoutDisplay() {
-            const title = workoutTitleInput ? workoutTitleInput.value.trim() : '';
-            const description = workoutDescriptionInput ? workoutDescriptionInput.value.trim() : '';
-            
-            if (workoutTitleDisplay && workoutTitleText) {
-                if (title) {
-                    workoutTitleText.textContent = title;
-                    workoutTitleDisplay.style.display = 'block';
-                } else {
-                    workoutTitleDisplay.style.display = 'none';
-                }
-            }
-            
-            if (workoutDescriptionDisplay && workoutDescriptionText) {
-                if (description) {
-                    workoutDescriptionText.textContent = description;
-                    workoutDescriptionDisplay.style.display = 'block';
-                } else {
-                    workoutDescriptionDisplay.style.display = 'none';
-                }
-            }
-        }
-        
-        function updateWorkoutCharCounts() {
-            if (workoutTitleInput && workoutTitleCharCount) {
-                workoutTitleCharCount.textContent = workoutTitleInput.value.length;
-            }
-            if (workoutDescriptionInput && workoutDescriptionCharCount) {
-                workoutDescriptionCharCount.textContent = workoutDescriptionInput.value.length;
-            }
-        }
-        
-        // Shrink text until it fits on one line (mobile-safe)
-        function fitTextToContainer(el, { minPx = 16 } = {}) {
-            if (!el) return;
-
-            // Reset any prior inline size first
-            el.style.fontSize = '';
-
-            let fontSize = parseFloat(window.getComputedStyle(el).fontSize || '0');
-            if (!Number.isFinite(fontSize) || fontSize <= 0) return;
-
-            const fits = () => el.scrollWidth <= el.clientWidth;
-            if (fits()) return;
-
-            let iterations = 0;
-            while (!fits() && fontSize > minPx && iterations < 120) {
-                fontSize -= 1;
-                el.style.fontSize = `${fontSize}px`;
-                iterations += 1;
-            }
-        }
         
         // Start timer
         function startTimer() {
-            // Reset font size to default
-            if (display) {
-                display.style.fontSize = '';
-            }
-            // Initialize from inputs if in custom mode, otherwise use Tabata defaults
-            if (isCustomMode) {
+            // Initialize from inputs if not already set
+            if (workTime === 0 && restTime === 0) {
                 workTime = parseTime(workTimeInput.value);
                 restTime = parseTime(restTimeInput.value);
                 totalRounds = parseInt(roundsInput.value) || 0;
-            }
-            
-            // If timer hasn't been initialized, set it up
-            if (currentTime === 0 || (!isPaused && currentTime === workTime && currentRound === 1 && isWorkPhase)) {
                 currentTime = workTime;
                 currentRound = 1;
                 isWorkPhase = true;
             }
             
             if (currentTime <= 0) return;
+            
+            // Clear completion message when starting
+            if (display) {
+                display.classList.remove('danger');
+            }
             
             isRunning = true;
             isPaused = false;
@@ -1601,30 +1359,20 @@
                     playSound();
                     
                     if (isWorkPhase) {
-                        // Finished work phase
-                        // Check if this was the last round (8th work phase)
-                        if (currentRound >= totalRounds) {
-                            // Finished all rounds - stop timer
-                            stopTimer();
-                            playCompletionSound();
-                            // Replace timer display with completion message
-                            const messageToShow = (completionMessage && completionMessage.trim()) ? completionMessage : 'Complete';
-                            display.textContent = messageToShow;
-                            // Use primary color to match timer display theme (daylight/nighttime)
-                            display.style.color = 'rgb(var(--primary))';
-                            display.classList.add('done-message');
-                            // Hide phase label
-                            phaseLabel.style.display = 'none';
-                            // Shrink text to fit
-                            fitTextToContainer(display, { minPx: 18 });
-                            return;
-                        }
-                        
                         // Switch to rest
                         isWorkPhase = false;
                         currentTime = restTime;
                     } else {
-                        // Finished rest phase - move to next round
+                        // Finished rest phase - check if we've completed all rounds before incrementing
+                        if (currentRound >= totalRounds) {
+                            // Finished all rounds - stop timer
+                            stopTimer();
+                            playSound();
+                            showDoneMessage();
+                            return;
+                        }
+                        
+                        // Switch to work, next round
                         isWorkPhase = true;
                         currentRound++;
                         currentTime = workTime;
@@ -1680,22 +1428,16 @@
             isRunning = false;
             isPaused = false;
             
-            // Reset font size
-            if (display) {
-                display.style.fontSize = '';
-                display.classList.remove('done-message');
-            }
+            // Get current values from inputs (prefer main page input if available)
+            workTime = parseTime(workTimeInput.value);
+            restTime = parseTime(restTimeInput.value);
+            const roundsValue = roundsInputMain ? parseInt(roundsInputMain.value) : parseInt(roundsInput.value);
+            totalRounds = roundsValue || 0;
             
-            // Get current values from inputs if in custom mode, otherwise use Tabata defaults
-            if (isCustomMode) {
-                workTime = parseTime(workTimeInput.value);
-                restTime = parseTime(restTimeInput.value);
-                totalRounds = parseInt(roundsInput.value) || 0;
-            } else {
-                // Ensure Tabata values
-                workTime = 20;
-                restTime = 10;
-                totalRounds = 8;
+            // Sync both inputs
+            if (roundsInputMain && roundsInput) {
+                roundsInput.value = totalRounds;
+                roundsInputMain.value = totalRounds;
             }
             
             // Reset to work phase, round 1
@@ -1703,12 +1445,16 @@
             currentRound = 1;
             isWorkPhase = true;
             
+            // Clear completion message display
+            if (display) {
+                display.classList.remove('danger');
+            }
+            
             // Update display immediately (this will enable inputs and check validity)
             updateDisplay();
-            updateTabataValueDisplays();
         }
         
-        // Clear timer (resets to Tabata defaults)
+        // Clear timer (sets to 00:00)
         function clearTimer() {
             // Stop the timer first
             clearInterval(interval);
@@ -1716,40 +1462,35 @@
             isRunning = false;
             isPaused = false;
             
-            // Reset font size
-            if (display) {
-                display.style.fontSize = '';
-                display.classList.remove('done-message');
+            // Zero out all values
+            workTimeInput.value = '00:00';
+            restTimeInput.value = '00:00';
+            roundsInput.value = '0';
+            
+            // Reset main page rounds input to 1
+            if (roundsInputMain) {
+                roundsInputMain.value = '1';
             }
             
-            // Reset to Tabata defaults
-            workTime = 20;
-            restTime = 10;
-            totalRounds = 8;
-            workTimeInput.value = '00:20';
-            restTimeInput.value = '00:10';
-            roundsInput.value = '8';
-
-            // Clear workout title/notes (match EMOM behavior expectations)
-            if (workoutTitleInput) workoutTitleInput.value = '';
-            if (workoutDescriptionInput) workoutDescriptionInput.value = '';
-            updateWorkoutCharCounts();
-            updateWorkoutDisplay();
+            // Clear selected preset button
+            const presetButtons = document.querySelectorAll('.quick-select-btn[data-work][data-rest]');
+            presetButtons.forEach(btn => btn.classList.remove('selected'));
             
-            // Reset completion message to default
-            completionMessage = 'Complete';
-            completionMessageInput.value = 'Complete';
-            completionMessageCounter.textContent = '8/14';
-            completionMessageCounter.style.color = 'rgb(var(--muted-foreground))';
-            
-            // Reset timer state
-            currentTime = workTime;
+            // Reset timer state to zero
+            workTime = 0;
+            restTime = 0;
+            totalRounds = 0;
+            currentTime = 0;
             currentRound = 1;
             isWorkPhase = true;
             
+            // Clear completion message display
+            if (display) {
+                display.classList.remove('danger');
+            }
+            
             // Update display (this will enable inputs and show Set Up button)
             updateDisplay();
-            updateTabataValueDisplays();
         }
         
         // Play sound when timer completes
@@ -1775,32 +1516,25 @@
             }
         }
         
-        // Play completion sound (longer, more celebratory)
-        function playCompletionSound() {
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                
-                // Play a sequence of beeps for completion
-                for (let i = 0; i < 3; i++) {
-                    setTimeout(() => {
-                        const oscillator = audioContext.createOscillator();
-                        const gainNode = audioContext.createGain();
-                        
-                        oscillator.connect(gainNode);
-                        gainNode.connect(audioContext.destination);
-                        
-                        oscillator.frequency.value = 600 + (i * 200);
-                        oscillator.type = 'sine';
-                        
-                        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-                        
-                        oscillator.start(audioContext.currentTime);
-                        oscillator.stop(audioContext.currentTime + 0.3);
-                    }, i * 200);
-                }
-            } catch (e) {
-                console.log('Audio not available');
+        // Get completion message from localStorage or use default
+        function getDoneMessage() {
+            const saved = localStorage.getItem('quick-interval-doneMessage');
+            return saved || 'completed';
+        }
+        
+        // Save completion message to localStorage
+        function saveDoneMessage(message) {
+            const v = (message || '').trim();
+            localStorage.setItem('quick-interval-doneMessage', v ? v : 'completed');
+        }
+        
+        // Show completion message on display
+        function showDoneMessage() {
+            const message = getDoneMessage();
+            if (display) {
+                display.textContent = message;
+                display.classList.add('danger');
+                display.classList.remove('warning');
             }
         }
         
@@ -1839,296 +1573,223 @@
             adjustTime(restTimeInput, true);
         });
         
-        // Rounds adjustment buttons
+        // Rounds adjustment buttons (drawer)
         roundsDecreaseBtn.addEventListener('click', function() {
             if (isRunning) return;
-            
-            const drawer = document.getElementById('settingsDrawer');
-            const isDrawerOpen = drawer && drawer.classList.contains('open');
-            
-            // Allow adjustment if in custom mode OR drawer is open
-            if (!isCustomMode && !isDrawerOpen) return;
-            
             let rounds = parseInt(roundsInput.value) || 0;
-            rounds = Math.max(1, rounds - 1);
+            rounds = Math.max(0, rounds - 1);
             roundsInput.value = rounds;
-            totalRounds = rounds;
-            
-            // If values differ from Tabata defaults, switch to custom mode
-            if (workTime !== 20 || restTime !== 10 || totalRounds !== 8) {
-                isCustomMode = true;
-                document.body.classList.add('custom-mode');
+            if (roundsInputMain) {
+                roundsInputMain.value = rounds;
             }
-            
+            totalRounds = rounds;
             if (!isRunning) {
                 resetTimer();
                 updateDisplay(); // Update button visibility based on validity
-                updateTabataValueDisplays(); // Update value cards
             }
         });
         
         roundsIncreaseBtn.addEventListener('click', function() {
             if (isRunning) return;
-            
-            const drawer = document.getElementById('settingsDrawer');
-            const isDrawerOpen = drawer && drawer.classList.contains('open');
-            
-            // Allow adjustment if in custom mode OR drawer is open
-            if (!isCustomMode && !isDrawerOpen) return;
-            
             let rounds = parseInt(roundsInput.value) || 0;
             rounds = Math.min(99, rounds + 1);
             roundsInput.value = rounds;
-            totalRounds = rounds;
-            
-            // If values differ from Tabata defaults, switch to custom mode
-            if (workTime !== 20 || restTime !== 10 || totalRounds !== 8) {
-                isCustomMode = true;
-                document.body.classList.add('custom-mode');
+            if (roundsInputMain) {
+                roundsInputMain.value = rounds;
             }
-            
+            totalRounds = rounds;
             if (!isRunning) {
                 resetTimer();
                 updateDisplay(); // Update button visibility based on validity
-                updateTabataValueDisplays(); // Update value cards
             }
         });
         
         // Input validation and updates
         workTimeInput.addEventListener('input', function() {
-            const drawer = document.getElementById('settingsDrawer');
-            const isDrawerOpen = drawer && drawer.classList.contains('open');
-            
-            // Allow input if in custom mode OR drawer is open
-            if (!isCustomMode && !isDrawerOpen) return;
-            
             validateTimeInput(this);
             if (!isRunning) {
                 workTime = parseTime(this.value);
-                
-                // If values differ from Tabata defaults, switch to custom mode
-                if (workTime !== 20 || restTime !== 10 || totalRounds !== 8) {
-                    isCustomMode = true;
-                    document.body.classList.add('custom-mode');
-                }
-                
                 resetTimer();
                 updateDisplay(); // Update button visibility based on validity
-                updateTabataValueDisplays(); // Update value cards
             }
         });
         
         restTimeInput.addEventListener('input', function() {
-            const drawer = document.getElementById('settingsDrawer');
-            const isDrawerOpen = drawer && drawer.classList.contains('open');
-            
-            // Allow input if in custom mode OR drawer is open
-            if (!isCustomMode && !isDrawerOpen) return;
-            
             validateTimeInput(this);
             if (!isRunning) {
                 restTime = parseTime(this.value);
-                
-                // If values differ from Tabata defaults, switch to custom mode
-                if (workTime !== 20 || restTime !== 10 || totalRounds !== 8) {
-                    isCustomMode = true;
-                    document.body.classList.add('custom-mode');
-                }
-                
                 resetTimer();
                 updateDisplay(); // Update button visibility based on validity
-                updateTabataValueDisplays(); // Update value cards
             }
         });
         
         roundsInput.addEventListener('input', function() {
-            if (isRunning) return;
-            
-            const drawer = document.getElementById('settingsDrawer');
-            const isDrawerOpen = drawer && drawer.classList.contains('open');
-            
-            // Allow input if in custom mode OR drawer is open
-            if (!isCustomMode && !isDrawerOpen) return;
-            
-            totalRounds = parseInt(this.value) || 0;
-            
-            // If values differ from Tabata defaults, switch to custom mode
-            if (workTime !== 20 || restTime !== 10 || totalRounds !== 8) {
-                isCustomMode = true;
-                document.body.classList.add('custom-mode');
+            if (!isRunning) {
+                const value = parseInt(this.value) || 0;
+                totalRounds = value;
+                if (roundsInputMain) {
+                    roundsInputMain.value = value;
+                }
+                resetTimer();
+                updateDisplay(); // Update button visibility based on validity
             }
-            
-            resetTimer();
-            updateDisplay(); // Update button visibility based on validity
-            updateTabataValueDisplays(); // Update value cards
         });
         
-        // Completion message input handler
-        completionMessageInput.addEventListener('input', function() {
-            const value = this.value;
-            const length = value.length;
+        // Main page rounds adjustment buttons
+        if (roundsDecreaseBtnMain && roundsIncreaseBtnMain && roundsInputMain) {
+            roundsDecreaseBtnMain.addEventListener('click', function() {
+                if (isRunning) return;
+                let rounds = parseInt(roundsInputMain.value) || 1;
+                rounds = Math.max(1, rounds - 1);
+                roundsInputMain.value = rounds;
+                roundsInput.value = rounds;
+                totalRounds = rounds;
+                if (!isRunning) {
+                    resetTimer();
+                    updateDisplay();
+                }
+            });
             
-            // Update character counter
-            completionMessageCounter.textContent = length + '/14';
+            roundsIncreaseBtnMain.addEventListener('click', function() {
+                if (isRunning) return;
+                let rounds = parseInt(roundsInputMain.value) || 1;
+                rounds = Math.min(12, rounds + 1);
+                roundsInputMain.value = rounds;
+                roundsInput.value = rounds;
+                totalRounds = rounds;
+                if (!isRunning) {
+                    resetTimer();
+                    updateDisplay();
+                }
+            });
             
-            // Store the completion message
-            completionMessage = value;
+            // Sync main page input with drawer input
+            roundsInputMain.addEventListener('input', function() {
+                if (!isRunning) {
+                    const value = parseInt(this.value) || 1;
+                    const clampedValue = Math.max(1, Math.min(12, value));
+                    roundsInputMain.value = clampedValue;
+                    roundsInput.value = clampedValue;
+                    totalRounds = clampedValue;
+                    resetTimer();
+                    updateDisplay();
+                }
+            });
             
-            // Update counter color if approaching limit
-            if (length >= 14) {
-                completionMessageCounter.style.color = 'rgb(var(--destructive))';
-            } else if (length >= 12) {
-                completionMessageCounter.style.color = '#f59e0b';
-            } else {
-                completionMessageCounter.style.color = 'rgb(var(--muted-foreground))';
-            }
-        });
-
-        // Workout title/notes listeners (match EMOM)
-        if (workoutTitleInput) {
-            workoutTitleInput.addEventListener('input', function() {
-                updateWorkoutCharCounts();
-                updateWorkoutDisplay();
+            // Sync drawer input with main page input
+            roundsInput.addEventListener('input', function() {
+                if (!isRunning && roundsInputMain) {
+                    const value = parseInt(this.value) || 1;
+                    const clampedValue = Math.max(1, Math.min(12, value));
+                    roundsInputMain.value = clampedValue;
+                }
             });
         }
         
-        if (workoutDescriptionInput) {
-            workoutDescriptionInput.addEventListener('input', function() {
-                updateWorkoutCharCounts();
-                updateWorkoutDisplay();
-            });
-        }
+        // Preset Interval Buttons
+        const presetButtons = document.querySelectorAll('.quick-select-btn[data-work][data-rest]');
         
-        // Drawer Functions (make globally accessible)
-        window.toggleDrawer = function() {
+        presetButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (isRunning) return; // Don't allow changing presets while running
+                
+                const workSeconds = parseInt(this.getAttribute('data-work'));
+                const restSeconds = parseInt(this.getAttribute('data-rest'));
+                const selectedRounds = parseInt(roundsInputMain ? roundsInputMain.value : roundsInput.value) || 1;
+                
+                // Update work and rest time inputs
+                workTimeInput.value = formatTime(workSeconds);
+                restTimeInput.value = formatTime(restSeconds);
+                roundsInput.value = selectedRounds;
+                if (roundsInputMain) {
+                    roundsInputMain.value = selectedRounds;
+                }
+                
+                // Update timer state
+                workTime = workSeconds;
+                restTime = restSeconds;
+                totalRounds = selectedRounds;
+                
+                // Update selected button state
+                presetButtons.forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+                
+                // Reset timer with new values
+                resetTimer();
+                updateDisplay();
+            });
+        });
+        
+        // Drawer Functions
+        function toggleDrawer() {
             const drawer = document.getElementById('settingsDrawer');
             const overlay = document.getElementById('drawerOverlay');
-            const isOpening = !drawer.classList.contains('open');
-            
             drawer.classList.toggle('open');
             overlay.classList.toggle('open');
-            
-            // Enable inputs when drawer opens (if timer not running)
-            if (isOpening && !isRunning) {
-                enableInputs();
-            } else if (!isOpening) {
-                // When drawer closes, check if values differ from Tabata defaults
-                const currentWork = parseTime(workTimeInput.value);
-                const currentRest = parseTime(restTimeInput.value);
-                const currentRounds = parseInt(roundsInput.value) || 0;
-                
-                if (currentWork !== 20 || currentRest !== 10 || currentRounds !== 8) {
-                    // Values differ from Tabata defaults, switch to custom mode
-                    isCustomMode = true;
-                    document.body.classList.add('custom-mode');
-                    workTime = currentWork;
-                    restTime = currentRest;
-                    totalRounds = currentRounds;
-                    resetTimer();
-                    updateTabataValueDisplays(); // Update value cards
-                } else {
-                    // Values match Tabata defaults, ensure we're in classic mode
-                    if (!isCustomMode) {
-                        disableInputs();
-                    }
-                    // Still update displays in case values changed
-                    workTime = currentWork;
-                    restTime = currentRest;
-                    totalRounds = currentRounds;
-                    updateTabataValueDisplays(); // Update value cards
-                }
-            }
-        };
+        }
         
-        window.closeDrawer = function() {
+        function closeDrawer() {
             const drawer = document.getElementById('settingsDrawer');
             const overlay = document.getElementById('drawerOverlay');
             drawer.classList.remove('open');
             overlay.classList.remove('open');
-        };
+        }
         
-        // Reset to default Tabata settings (make globally accessible)
-        window.resetToDefaultSettings = function() {
-            // Stop timer if running
-            if (isRunning) {
-                clearInterval(interval);
-                interval = null;
-                isRunning = false;
-                isPaused = false;
+        // Completion message event listeners
+        if (doneMessageInput) {
+            // Initialize completion message from localStorage
+            const savedMessage = getDoneMessage();
+            doneMessageInput.value = savedMessage;
+            if (doneMessageCharCount) {
+                doneMessageCharCount.textContent = savedMessage.length;
             }
             
-            // Reset to classic Tabata values
-            workTime = 20;
-            restTime = 10;
-            totalRounds = 8;
+            // Update character count and save on input
+            doneMessageInput.addEventListener('input', function() {
+                let value = this.value.trim();
+                if (value.length > 14) {
+                    value = value.substring(0, 14);
+                    this.value = value;
+                }
+                if (doneMessageCharCount) {
+                    doneMessageCharCount.textContent = value.length;
+                }
+                saveDoneMessage(value || 'completed');
+            });
             
-            // Update input fields
-            workTimeInput.value = '00:20';
-            restTimeInput.value = '00:10';
-            roundsInput.value = '8';
-
-            // Clear workout title/notes (match EMOM behavior expectations)
-            if (workoutTitleInput) workoutTitleInput.value = '';
-            if (workoutDescriptionInput) workoutDescriptionInput.value = '';
-            updateWorkoutCharCounts();
-            updateWorkoutDisplay();
-            
-            // Reset completion message to default
-            completionMessage = 'Complete';
-            completionMessageInput.value = 'Complete';
-            completionMessageCounter.textContent = '8/14';
-            completionMessageCounter.style.color = 'rgb(var(--muted-foreground))';
-            
-            // Exit custom mode
-            isCustomMode = false;
-            document.body.classList.remove('custom-mode');
-            
-            // Reset timer state
-            currentTime = workTime;
-            currentRound = 1;
-            isWorkPhase = true;
-            
-            // Update displays
-            updateDisplay();
-            updateTabataValueDisplays();
-            
-            // Check if drawer is open - if so, enable inputs so user can continue editing
-            const drawer = document.getElementById('settingsDrawer');
-            const isDrawerOpen = drawer && drawer.classList.contains('open');
-            
-            if (isDrawerOpen && !isRunning) {
-                // Drawer is open, enable inputs so user can make changes
-                enableInputs();
-            } else {
-                // Drawer is closed, disable inputs (classic Tabata mode)
-                disableInputs();
-            }
-        };
+            // Ensure default value on change if empty
+            doneMessageInput.addEventListener('change', function() {
+                let value = this.value.trim();
+                if (!value) {
+                    value = 'completed';
+                    this.value = value;
+                }
+                if (doneMessageCharCount) {
+                    doneMessageCharCount.textContent = value.length;
+                }
+                saveDoneMessage(value);
+            });
+        }
         
-        // Initialize Tabata timer
-        // Set Tabata defaults in inputs
-        workTimeInput.value = '00:20';
-        restTimeInput.value = '00:10';
-        roundsInput.value = '8';
-        
-        // Initialize timer state
-        workTime = 20;
-        restTime = 10;
-        totalRounds = 8;
+        // Initialize
+        workTime = parseTime(workTimeInput.value);
+        restTime = parseTime(restTimeInput.value);
+        totalRounds = parseInt(roundsInput.value) || 0;
         currentTime = workTime;
-        currentRound = 1;
-        isWorkPhase = true;
         
-        // Lock inputs initially (classic Tabata mode)
-        disableInputs();
+        // Initialize main page rounds input
+        if (roundsInputMain) {
+            const initialRounds = Math.max(1, Math.min(12, totalRounds || 1));
+            roundsInputMain.value = initialRounds;
+            if (totalRounds === 0) {
+                roundsInput.value = initialRounds;
+                totalRounds = initialRounds;
+            } else {
+                roundsInputMain.value = totalRounds;
+            }
+        }
         
-        // Update displays
         updateDisplay();
-        updateTabataValueDisplays();
-
-        // Initialize workout display and character counts
-        updateWorkoutCharCounts();
-        updateWorkoutDisplay();
         
         // Set release date
         document.getElementById('releaseDate').textContent = new Date().toISOString().split('T')[0];
