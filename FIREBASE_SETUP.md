@@ -36,18 +36,28 @@ After adding the secret, any push to the `main` branch will automatically:
 2. Deploy your site to Firebase Hosting
 3. Make it live at your Firebase URL
 
-## Manual Deployment (Alternative)
+## Manual Deployment (Deploy the same as Cursor / Out folder)
 
-If you prefer manual deployment, you can always run:
+**Always use this command** so Firebase gets the correct built files (same as the `out` folder Cursor uses):
 
 ```bash
-firebase deploy --only hosting
+npm run deploy
 ```
 
-This will deploy directly from your local machine.
+Or explicitly:
+
+```bash
+npm run deploy:firebase
+```
+
+Both commands will:
+1. Build the app and populate the `out` folder (Next.js export + HTML timers)
+2. Deploy **only** that `out` folder to Firebase
+
+**Do not run `firebase deploy --only hosting` by itself.** That deploys whatever is currently in `out`, which may be old or wrong. Always run `npm run deploy` (or `npm run deploy:firebase`) so the correct files are built first.
 
 ## Current Deployment Status
 
 - **Automatic**: ❌ Not yet configured (needs service account)
-- **Manual**: ✅ Ready (run `firebase deploy --only hosting`)
+- **Manual**: ✅ Ready (run `npm run deploy` or `npm run deploy:firebase`)
 

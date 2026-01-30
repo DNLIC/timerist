@@ -10,7 +10,8 @@
     "copy-html": "node scripts/copy-html-to-out.js",
     "start": "next start",
     "lint": "next lint",
-    "deploy": "npm run export && firebase deploy --only hosting"
+    "deploy": "npm run export && firebase deploy --only hosting",
+    "deploy:firebase": "npm run export && firebase deploy --only hosting"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",

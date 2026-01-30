@@ -593,6 +593,22 @@
             flex: 1;
         }
         
+        /* Stacked mobile-friendly row: +5 +1 [input] -5 -1 */
+        .time-input-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            flex-wrap: nowrap;
+        }
+        .time-input-row .time-adjust-btn {
+            flex-shrink: 0;
+        }
+        .time-input-row input {
+            flex: 1;
+            min-width: 0;
+        }
+        
         @media (max-width: 390px) {
             .time-adjust-btn {
                 width: 40px;
@@ -602,6 +618,15 @@
             
             .time-input-group {
                 gap: 0.5rem;
+            }
+            
+            .time-input-row .time-adjust-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 0.875rem;
+            }
+            .time-input-row {
+                gap: 0.35rem;
             }
         }
         
@@ -1104,69 +1129,66 @@
                     </p>
                 </div>
                 
-                <!-- Total AMRAP Time -->
+                <!-- Total AMRAP Time (stacked for mobile) -->
                 <div class="space-y-2" style="margin-bottom: 1.5rem;">
                     <label class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Total AMRAP Time</label>
-                    <div style="display: flex; gap: 0.75rem;">
-                        <div style="flex: 1;">
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div>
                             <label for="minutesInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block" style="margin-bottom: 0.5rem;">Minutes</label>
-                            <div class="time-input-group">
-                                <button class="time-adjust-btn" id="minutesDecreaseBtn" type="button" aria-label="Decrease minutes by 1">−</button>
+                            <div class="time-input-row">
+                                <button class="time-adjust-btn" id="minutesPlus5Btn" type="button" aria-label="Add 5 minutes">+5</button>
+                                <button class="time-adjust-btn" id="minutesPlus1Btn" type="button" aria-label="Add 1 minute">+1</button>
                                 <input type="number" id="minutesInputDrawer" class="custom-time-input" min="0" max="99" inputmode="numeric" value="0" aria-label="Minutes">
-                                <button class="time-adjust-btn" id="minutesIncreaseBtn" type="button" aria-label="Increase minutes by 1">+</button>
+                                <button class="time-adjust-btn" id="minutesMinus5Btn" type="button" aria-label="Subtract 5 minutes">−5</button>
+                                <button class="time-adjust-btn" id="minutesMinus1Btn" type="button" aria-label="Subtract 1 minute">−1</button>
                             </div>
                         </div>
-                        <div style="flex: 1;">
+                        <div>
                             <label for="secondsInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block" style="margin-bottom: 0.5rem;">Seconds</label>
-                            <div class="time-input-group">
-                                <button class="time-adjust-btn" id="secondsDecreaseBtn" type="button" aria-label="Decrease seconds by 1">−</button>
+                            <div class="time-input-row">
+                                <button class="time-adjust-btn" id="secondsPlus5Btn" type="button" aria-label="Add 5 seconds">+5</button>
+                                <button class="time-adjust-btn" id="secondsPlus1Btn" type="button" aria-label="Add 1 second">+1</button>
                                 <input type="number" id="secondsInputDrawer" class="custom-time-input" min="0" max="59" inputmode="numeric" value="0" aria-label="Seconds">
-                                <button class="time-adjust-btn" id="secondsIncreaseBtn" type="button" aria-label="Increase seconds by 1">+</button>
+                                <button class="time-adjust-btn" id="secondsMinus5Btn" type="button" aria-label="Subtract 5 seconds">−5</button>
+                                <button class="time-adjust-btn" id="secondsMinus1Btn" type="button" aria-label="Subtract 1 second">−1</button>
                             </div>
                         </div>
+                    </div>
+                </div>
+                
+                <!-- Workout PREP Countdown (seconds) -->
+                <div class="space-y-2" style="margin-bottom: 1.5rem;">
+                    <label for="prepTimeInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Workout PREP Countdown (SECONDS)</label>
+                    <div class="time-input-row">
+                        <button class="time-adjust-btn" id="prepTimePlus5Btn" type="button" aria-label="Add 5 seconds">+5</button>
+                        <button class="time-adjust-btn" id="prepTimePlus1Btn" type="button" aria-label="Add 1 second">+1</button>
+                        <input type="number" id="prepTimeInput" class="custom-time-input" min="0" max="300" inputmode="numeric" value="30" aria-label="Prep time">
+                        <button class="time-adjust-btn" id="prepTimeMinus5Btn" type="button" aria-label="Subtract 5 seconds">−5</button>
+                        <button class="time-adjust-btn" id="prepTimeMinus1Btn" type="button" aria-label="Subtract 1 second">−1</button>
                     </div>
                 </div>
                 
                 <!-- Number of Rounds (Rounds mode uses this for multi-round + rest) -->
                 <div class="space-y-2" style="margin-bottom: 1.5rem;">
                     <label for="roundsInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Number of Rounds</label>
-                    <div class="time-input-group">
-                        <button class="time-adjust-btn" id="roundsDecreaseBtn" type="button" aria-label="Decrease rounds by 1">−</button>
+                    <div class="time-input-row">
+                        <button class="time-adjust-btn" id="roundsPlus5Btn" type="button" aria-label="Add 5 rounds">+5</button>
+                        <button class="time-adjust-btn" id="roundsPlus1Btn" type="button" aria-label="Add 1 round">+1</button>
                         <input type="number" id="roundsInputDrawer" class="custom-time-input" min="0" max="999" inputmode="numeric" value="0" aria-label="Number of rounds">
-                        <button class="time-adjust-btn" id="roundsIncreaseBtn" type="button" aria-label="Increase rounds by 1">+</button>
+                        <button class="time-adjust-btn" id="roundsMinus5Btn" type="button" aria-label="Subtract 5 rounds">−5</button>
+                        <button class="time-adjust-btn" id="roundsMinus1Btn" type="button" aria-label="Subtract 1 round">−1</button>
                     </div>
                 </div>
                 
                 <!-- Rest Between Rounds (only show if rounds > 1) -->
                 <div class="space-y-2" id="restBetweenRoundsContainer" style="display: none; margin-bottom: 1.5rem;">
-                    <label class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Rest Between Rounds</label>
-                    <div style="display: flex; gap: 0.75rem;">
-                        <div style="flex: 1;">
-                            <label for="restMinutesInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block" style="margin-bottom: 0.5rem;">Minutes</label>
-                            <div class="time-input-group">
-                                <button class="time-adjust-btn" id="restMinutesDecreaseBtn" type="button" aria-label="Decrease rest minutes by 1">−</button>
-                                <input type="number" id="restMinutesInputDrawer" class="custom-time-input" min="0" max="99" inputmode="numeric" value="0" aria-label="Rest minutes">
-                                <button class="time-adjust-btn" id="restMinutesIncreaseBtn" type="button" aria-label="Increase rest minutes by 1">+</button>
-                            </div>
-                        </div>
-                        <div style="flex: 1;">
-                            <label for="restSecondsInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block" style="margin-bottom: 0.5rem;">Seconds</label>
-                            <div class="time-input-group">
-                                <button class="time-adjust-btn" id="restSecondsDecreaseBtn" type="button" aria-label="Decrease rest seconds by 1">−</button>
-                                <input type="number" id="restSecondsInputDrawer" class="custom-time-input" min="0" max="59" inputmode="numeric" value="0" aria-label="Rest seconds">
-                                <button class="time-adjust-btn" id="restSecondsIncreaseBtn" type="button" aria-label="Increase rest seconds by 1">+</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Setup / Prep Time -->
-                <div class="space-y-2" style="margin-bottom: 1.5rem;">
-                    <label for="prepTimeInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Setup / Prep Time (seconds)</label>
-                    <div class="time-input-group">
-                        <button class="time-adjust-btn" id="prepTimeDecreaseBtn" type="button" aria-label="Decrease prep time by 1">−</button>
-                        <input type="number" id="prepTimeInput" class="custom-time-input" min="0" max="300" inputmode="numeric" value="30" aria-label="Prep time">
-                        <button class="time-adjust-btn" id="prepTimeIncreaseBtn" type="button" aria-label="Increase prep time by 1">+</button>
+                    <label for="restBetweenRoundsInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Rest Between Rounds (Seconds)</label>
+                    <div class="time-input-row">
+                        <button class="time-adjust-btn" id="restBetweenRoundsPlus5Btn" type="button" aria-label="Add 5 seconds">+5</button>
+                        <button class="time-adjust-btn" id="restBetweenRoundsPlus1Btn" type="button" aria-label="Add 1 second">+1</button>
+                        <input type="number" id="restBetweenRoundsInput" class="custom-time-input" min="0" max="600" inputmode="numeric" value="0" aria-label="Rest between rounds seconds">
+                        <button class="time-adjust-btn" id="restBetweenRoundsMinus5Btn" type="button" aria-label="Subtract 5 seconds">−5</button>
+                        <button class="time-adjust-btn" id="restBetweenRoundsMinus1Btn" type="button" aria-label="Subtract 1 second">−1</button>
                     </div>
                 </div>
                 
@@ -1199,7 +1221,7 @@
                     <p id="cycleExercisesHelpText" class="text-muted-foreground" style="margin-top: 0.25rem; margin-bottom: 0; margin-left: 0; font-size: inherit; font-weight: 500;">Freestyle – any order, any time</p>
                     
                     <div id="workTimePerExerciseContainer" style="display: none; margin-top: 1rem;">
-                        <label for="workTimePerExerciseInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Work time per exercise (max reps)</label>
+                        <label for="workTimePerExerciseInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Work time per exercise (AMRAP - reps)</label>
                         <div class="time-input-group">
                             <button class="time-adjust-btn" id="workTimePerExerciseDecreaseBtn" type="button" aria-label="Decrease work time by 1">−</button>
                             <input type="number" id="workTimePerExerciseInput" class="custom-time-input" min="10" max="300" inputmode="numeric" value="60" aria-label="Work time per exercise seconds">
@@ -1250,7 +1272,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v1.01</p>
+                <p><strong>Version:</strong> v1.02</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2026-01-28</span></p>
             </div>
         </div>
@@ -1322,8 +1344,7 @@
         const cycleTimeToast = document.getElementById('cycleTimeToast');
         const roundsInput = document.getElementById('roundsInputDrawer');
         const restBetweenRoundsContainer = document.getElementById('restBetweenRoundsContainer');
-        const restMinutesInput = document.getElementById('restMinutesInputDrawer');
-        const restSecondsInput = document.getElementById('restSecondsInputDrawer');
+        const restBetweenRoundsInput = document.getElementById('restBetweenRoundsInput');
         
         function clampInt(value, min, max) {
             const n = Number.parseInt(String(value), 10);
@@ -1632,20 +1653,18 @@
         }
         
         function readRestTimeFromInputs() {
-            if (!restMinutesInput || !restSecondsInput) return 0;
-            const mins = clampInt(restMinutesInput.value, 0, 99);
-            const secs = clampInt(restSecondsInput.value, 0, 59);
-            restMinutesInput.value = String(mins);
-            restSecondsInput.value = String(secs);
-            return (mins * 60) + secs;
+            if (!restBetweenRoundsInput) return 0;
+            const secs = clampInt(restBetweenRoundsInput.value, 0, 600);
+            restBetweenRoundsInput.value = String(secs);
+            return secs;
         }
         
         function buildExportPayload() {
             const durationSeconds = minutesInput && secondsInput
                 ? (clampInt(minutesInput.value, 0, 99) * 60) + clampInt(secondsInput.value, 0, 59)
                 : totalSeconds;
-            const restBetweenRoundsSeconds = restMinutesInput && restSecondsInput
-                ? (clampInt(restMinutesInput.value, 0, 99) * 60) + clampInt(restSecondsInput.value, 0, 59)
+            const restBetweenRoundsSeconds = restBetweenRoundsInput
+                ? clampInt(restBetweenRoundsInput.value, 0, 600)
                 : 0;
             const workout = {
                 title: (workoutTitleInput && workoutTitleInput.value) ? workoutTitleInput.value.trim() : '',
@@ -1706,8 +1725,7 @@
             if (doneMessageInput) doneMessageInput.value = (w.doneMessage != null ? String(w.doneMessage) : '') || 'Completed';
             if (roundsInput) roundsInput.value = String(Math.min(999, Math.max(0, Number(w.targetRounds) || 0)));
             const restRounds = Number(w.restBetweenRoundsSeconds) || 0;
-            if (restMinutesInput) restMinutesInput.value = String(Math.min(99, Math.floor(restRounds / 60)));
-            if (restSecondsInput) restSecondsInput.value = String(Math.min(59, restRounds % 60));
+            if (restBetweenRoundsInput) restBetweenRoundsInput.value = String(Math.min(600, Math.max(0, restRounds)));
             cycleExercises = !!w.cycleExercises;
             if (document.getElementById('cycleExercisesToggle')) document.getElementById('cycleExercisesToggle').checked = cycleExercises;
             if (typeof updateCycleExercisesHelpText === 'function') updateCycleExercisesHelpText();
@@ -1764,9 +1782,8 @@
             secondsInput.disabled = disabled;
             prepTimeInput.disabled = disabled;
             if (roundsInput) roundsInput.disabled = disabled;
-            if (restMinutesInput) restMinutesInput.disabled = disabled;
-            if (restSecondsInput) restSecondsInput.disabled = disabled;
-            [document.getElementById('roundsDecreaseBtn'), document.getElementById('roundsIncreaseBtn'), document.getElementById('restMinutesDecreaseBtn'), document.getElementById('restMinutesIncreaseBtn'), document.getElementById('restSecondsDecreaseBtn'), document.getElementById('restSecondsIncreaseBtn')].forEach(el => { if (el) el.disabled = disabled; });
+            if (restBetweenRoundsInput) restBetweenRoundsInput.disabled = disabled;
+            document.querySelectorAll('#settingsDrawer .time-adjust-btn').forEach(el => { el.disabled = disabled; });
             document.querySelectorAll('#roundsExercisesList input, #repsExercisesList input').forEach(input => {
                 input.disabled = disabled;
             });
@@ -2150,8 +2167,7 @@
             secondsInput.value = '0';
             prepTimeInput.value = '30';
             if (roundsInput) roundsInput.value = '0';
-            if (restMinutesInput) restMinutesInput.value = '0';
-            if (restSecondsInput) restSecondsInput.value = '0';
+            if (restBetweenRoundsInput) restBetweenRoundsInput.value = '0';
             
             totalSeconds = 0;
             currentTime = 0;
@@ -2174,10 +2190,10 @@
             updateDisplay();
         }
         
-        function adjustRounds(increment) {
+        function adjustRounds(delta) {
             if (isRunning || isPaused) return;
             const current = clampInt(roundsInput.value, 0, 999);
-            const newValue = increment ? Math.min(999, current + 1) : Math.max(0, current - 1);
+            const newValue = Math.min(999, Math.max(0, current + delta));
             roundsInput.value = String(newValue);
             if (newValue >= 1 && currentRound === 0) currentRound = 1;
             if (newValue === 0) currentRound = 0;
@@ -2185,40 +2201,33 @@
             updateRoundsDisplay();
         }
         
-        function adjustRestMinutes(increment) {
+        function adjustRestBetweenRounds(delta) {
             if (isRunning || isPaused) return;
-            const current = clampInt(restMinutesInput.value, 0, 99);
-            const newValue = increment ? Math.min(99, current + 1) : Math.max(0, current - 1);
-            restMinutesInput.value = String(newValue);
+            const current = clampInt(restBetweenRoundsInput.value, 0, 600);
+            const newValue = Math.min(600, Math.max(0, current + delta));
+            restBetweenRoundsInput.value = String(newValue);
         }
         
-        function adjustRestSeconds(increment) {
-            if (isRunning || isPaused) return;
-            const current = clampInt(restSecondsInput.value, 0, 59);
-            const newValue = increment ? Math.min(59, current + 1) : Math.max(0, current - 1);
-            restSecondsInput.value = String(newValue);
-        }
-        
-        function adjustMinutes(increment) {
+        function adjustMinutes(delta) {
             if (isRunning || isPaused) return;
             const current = clampInt(minutesInput.value, 0, 99);
-            const newValue = increment ? Math.min(99, current + 1) : Math.max(0, current - 1);
+            const newValue = Math.min(99, Math.max(0, current + delta));
             minutesInput.value = String(newValue);
             onTimeChange();
         }
         
-        function adjustSeconds(increment) {
+        function adjustSeconds(delta) {
             if (isRunning || isPaused) return;
             const current = clampInt(secondsInput.value, 0, 59);
-            const newValue = increment ? Math.min(59, current + 1) : Math.max(0, current - 1);
+            const newValue = Math.min(59, Math.max(0, current + delta));
             secondsInput.value = String(newValue);
             onTimeChange();
         }
         
-        function adjustPrepTime(increment) {
+        function adjustPrepTime(delta) {
             if (isRunning || isPaused) return;
             const current = clampInt(prepTimeInput.value, 0, 300);
-            const newValue = increment ? Math.min(300, current + 1) : Math.max(0, current - 1);
+            const newValue = Math.min(300, Math.max(0, current + delta));
             prepTimeInput.value = String(newValue);
         }
         
@@ -2256,24 +2265,26 @@
         minutesInput.addEventListener('input', onTimeChange);
         secondsInput.addEventListener('input', onTimeChange);
         
-        minutesDecreaseBtn.addEventListener('click', () => adjustMinutes(false));
-        minutesIncreaseBtn.addEventListener('click', () => adjustMinutes(true));
-        secondsDecreaseBtn.addEventListener('click', () => adjustSeconds(false));
-        secondsIncreaseBtn.addEventListener('click', () => adjustSeconds(true));
-        
-        prepTimeDecreaseBtn.addEventListener('click', () => adjustPrepTime(false));
-        prepTimeIncreaseBtn.addEventListener('click', () => adjustPrepTime(true));
-        
-        if (document.getElementById('roundsDecreaseBtn')) {
-            document.getElementById('roundsDecreaseBtn').addEventListener('click', () => adjustRounds(false));
-            document.getElementById('roundsIncreaseBtn').addEventListener('click', () => adjustRounds(true));
-        }
-        if (document.getElementById('restMinutesDecreaseBtn')) {
-            document.getElementById('restMinutesDecreaseBtn').addEventListener('click', () => adjustRestMinutes(false));
-            document.getElementById('restMinutesIncreaseBtn').addEventListener('click', () => adjustRestMinutes(true));
-            document.getElementById('restSecondsDecreaseBtn').addEventListener('click', () => adjustRestSeconds(false));
-            document.getElementById('restSecondsIncreaseBtn').addEventListener('click', () => adjustRestSeconds(true));
-        }
+        document.getElementById('minutesPlus5Btn').addEventListener('click', () => adjustMinutes(5));
+        document.getElementById('minutesPlus1Btn').addEventListener('click', () => adjustMinutes(1));
+        document.getElementById('minutesMinus1Btn').addEventListener('click', () => adjustMinutes(-1));
+        document.getElementById('minutesMinus5Btn').addEventListener('click', () => adjustMinutes(-5));
+        document.getElementById('secondsPlus5Btn').addEventListener('click', () => adjustSeconds(5));
+        document.getElementById('secondsPlus1Btn').addEventListener('click', () => adjustSeconds(1));
+        document.getElementById('secondsMinus1Btn').addEventListener('click', () => adjustSeconds(-1));
+        document.getElementById('secondsMinus5Btn').addEventListener('click', () => adjustSeconds(-5));
+        document.getElementById('roundsPlus5Btn').addEventListener('click', () => adjustRounds(5));
+        document.getElementById('roundsPlus1Btn').addEventListener('click', () => adjustRounds(1));
+        document.getElementById('roundsMinus1Btn').addEventListener('click', () => adjustRounds(-1));
+        document.getElementById('roundsMinus5Btn').addEventListener('click', () => adjustRounds(-5));
+        document.getElementById('prepTimePlus5Btn').addEventListener('click', () => adjustPrepTime(5));
+        document.getElementById('prepTimePlus1Btn').addEventListener('click', () => adjustPrepTime(1));
+        document.getElementById('prepTimeMinus1Btn').addEventListener('click', () => adjustPrepTime(-1));
+        document.getElementById('prepTimeMinus5Btn').addEventListener('click', () => adjustPrepTime(-5));
+        document.getElementById('restBetweenRoundsPlus5Btn').addEventListener('click', () => adjustRestBetweenRounds(5));
+        document.getElementById('restBetweenRoundsPlus1Btn').addEventListener('click', () => adjustRestBetweenRounds(1));
+        document.getElementById('restBetweenRoundsMinus5Btn').addEventListener('click', () => adjustRestBetweenRounds(-5));
+        document.getElementById('restBetweenRoundsMinus1Btn').addEventListener('click', () => adjustRestBetweenRounds(-1));
         if (roundsInput) {
             roundsInput.addEventListener('input', function() {
                 const value = clampInt(this.value, 0, 999);
@@ -2284,8 +2295,10 @@
                 updateRoundsDisplay();
             });
         }
-        if (restMinutesInput) restMinutesInput.addEventListener('input', function() { const v = clampInt(this.value, 0, 99); this.value = String(v); });
-        if (restSecondsInput) restSecondsInput.addEventListener('input', function() { const v = clampInt(this.value, 0, 59); this.value = String(v); });
+        if (restBetweenRoundsInput) restBetweenRoundsInput.addEventListener('input', function() {
+            const v = clampInt(this.value, 0, 600);
+            this.value = String(v);
+        });
         
         prepTimeInput.addEventListener('input', function() {
             const value = clampInt(this.value, 0, 300);
