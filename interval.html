@@ -1070,6 +1070,24 @@
                     </div>
                 </div>
                 
+                <!-- Countdown before start -->
+                <div class="input-group">
+                    <label for="countdownBeforeStartInput">COUNTDOWN BEFORE START (SECONDS)</label>
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-bottom: 0.5rem;">Runs before the workout when you tap Start. Set to 0 to start immediately.</p>
+                    <div class="rounds-input-group">
+                        <button class="rounds-adjust-btn" id="countdownDecreaseBtn" type="button" aria-label="Decrease countdown">−</button>
+                        <input 
+                            type="number" 
+                            id="countdownBeforeStartInput" 
+                            value="10"
+                            min="0"
+                            max="60"
+                            aria-label="Countdown before start (seconds)"
+                        >
+                        <button class="rounds-adjust-btn" id="countdownIncreaseBtn" type="button" aria-label="Increase countdown">+</button>
+                    </div>
+                </div>
+                
                 <!-- Completion Message -->
                 <div class="input-group">
                     <label for="doneMessageInput">COMPLETION MESSAGE (14 CHARACTERS MAX)</label>
@@ -1103,7 +1121,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.14</p>
+                <p><strong>Version:</strong> v0.15</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -1120,6 +1138,7 @@
         let workTime = 0;
         let restTime = 0;
         let totalRounds = 0;
+        let isCountdownPhase = false;
         
         const display = document.getElementById('display');
         const phaseLabel = document.getElementById('phaseLabel');
@@ -1149,6 +1168,20 @@
         const workoutDescriptionText = document.getElementById('workoutDescriptionText');
         const workoutTitleCharCount = document.getElementById('workoutTitleCharCount');
         const workoutDescriptionCharCount = document.getElementById('workoutDescriptionCharCount');
+        const countdownBeforeStartInput = document.getElementById('countdownBeforeStartInput');
+        const countdownDecreaseBtn = document.getElementById('countdownDecreaseBtn');
+        const countdownIncreaseBtn = document.getElementById('countdownIncreaseBtn');
+        
+        // Get/save countdown before start (default 10)
+        function getCountdownBeforeStart() {
+            const v = parseInt(countdownBeforeStartInput?.value, 10);
+            return (Number.isFinite(v) && v >= 0 && v <= 60) ? v : 10;
+        }
+        function saveCountdownBeforeStart(seconds) {
+            const s = Math.max(0, Math.min(60, seconds));
+            if (countdownBeforeStartInput) countdownBeforeStartInput.value = s;
+            try { localStorage.setItem('interval-countdownBeforeStart', String(s)); } catch (e) {}
+        }
         
         // Parse MM:SS format to seconds
         function parseTime(timeString) {
@@ -1229,6 +1262,9 @@
             if (doneMessageInput) doneMessageInput.disabled = true;
             if (workoutTitleInput) workoutTitleInput.disabled = true;
             if (workoutDescriptionInput) workoutDescriptionInput.disabled = true;
+            if (countdownBeforeStartInput) countdownBeforeStartInput.disabled = true;
+            if (countdownDecreaseBtn) countdownDecreaseBtn.disabled = true;
+            if (countdownIncreaseBtn) countdownIncreaseBtn.disabled = true;
         }
         
         // Enable inputs when timer is stopped
@@ -1245,6 +1281,9 @@
             if (doneMessageInput) doneMessageInput.disabled = false;
             if (workoutTitleInput) workoutTitleInput.disabled = false;
             if (workoutDescriptionInput) workoutDescriptionInput.disabled = false;
+            if (countdownBeforeStartInput) countdownBeforeStartInput.disabled = false;
+            if (countdownDecreaseBtn) countdownDecreaseBtn.disabled = false;
+            if (countdownIncreaseBtn) countdownIncreaseBtn.disabled = false;
         }
         
         // Check if timer has valid data to proceed
@@ -1254,29 +1293,37 @@
         
         // Update display with color coding
         function updateDisplay() {
-            display.textContent = formatTime(currentTime);
-            phaseLabel.textContent = isWorkPhase ? 'Work' : 'Rest';
-            roundDisplay.textContent = currentRound;
-            totalRoundsDisplay.textContent = totalRounds;
-            
-            // Update phase label color
-            if (isWorkPhase) {
+            if (isCountdownPhase) {
+                display.textContent = String(currentTime);
+                phaseLabel.textContent = 'Get ready';
                 phaseLabel.classList.remove('rest');
                 phaseLabel.style.color = 'rgb(var(--primary))';
+                roundDisplay.textContent = currentRound;
+                totalRoundsDisplay.textContent = totalRounds;
+                display.classList.remove('warning', 'danger');
+                if (currentTime <= 3 && currentTime > 0) display.classList.add('warning');
+                if (currentTime <= 1 && currentTime > 0) display.classList.add('danger');
             } else {
-                phaseLabel.classList.add('rest');
-                phaseLabel.style.color = 'rgb(var(--secondary))';
-            }
-            
-            // Color coding: normal -> warning (last 30%) -> danger (last 10%)
-            display.classList.remove('warning', 'danger');
-            const phaseDuration = isWorkPhase ? workTime : restTime;
-            if (phaseDuration > 0) {
-                const percentRemaining = currentTime / phaseDuration;
-                if (percentRemaining <= 0.1) {
-                    display.classList.add('danger');
-                } else if (percentRemaining <= 0.3) {
-                    display.classList.add('warning');
+                display.textContent = formatTime(currentTime);
+                phaseLabel.textContent = isWorkPhase ? 'Work' : 'Rest';
+                roundDisplay.textContent = currentRound;
+                totalRoundsDisplay.textContent = totalRounds;
+                if (isWorkPhase) {
+                    phaseLabel.classList.remove('rest');
+                    phaseLabel.style.color = 'rgb(var(--primary))';
+                } else {
+                    phaseLabel.classList.add('rest');
+                    phaseLabel.style.color = 'rgb(var(--secondary))';
+                }
+                display.classList.remove('warning', 'danger');
+                const phaseDuration = isWorkPhase ? workTime : restTime;
+                if (phaseDuration > 0) {
+                    const percentRemaining = currentTime / phaseDuration;
+                    if (percentRemaining <= 0.1) {
+                        display.classList.add('danger');
+                    } else if (percentRemaining <= 0.3) {
+                        display.classList.add('warning');
+                    }
                 }
             }
             
@@ -1324,14 +1371,12 @@
             }
         }
         
-        // Start timer
+        // Start timer (optionally after countdown phase)
         function startTimer() {
-            // Reset font size to default
             if (display) {
                 display.style.fontSize = '';
             }
             
-            // Initialize from inputs if not already set
             if (workTime === 0 && restTime === 0) {
                 workTime = parseTime(workTimeInput.value);
                 restTime = parseTime(restTimeInput.value);
@@ -1341,47 +1386,61 @@
                 isWorkPhase = true;
             }
             
-            if (currentTime <= 0) return;
+            if (currentTime <= 0 && !isCountdownPhase) return;
             
-            // Clear completion message when starting
             if (display) {
                 display.classList.remove('danger', 'done-message');
             }
             
+            const countdownSecs = getCountdownBeforeStart();
+            if (countdownSecs > 0 && !isPaused) {
+                isCountdownPhase = true;
+                currentTime = countdownSecs;
+                isRunning = true;
+                isPaused = false;
+                interval = setInterval(tick, 1000);
+                updateDisplay();
+                return;
+            }
+            
+            isCountdownPhase = false;
             isRunning = true;
             isPaused = false;
-            
-            interval = setInterval(() => {
-                currentTime--;
-                updateDisplay();
-                
-                if (currentTime <= 0) {
-                    playSound();
-                    
-                    if (isWorkPhase) {
-                        // Switch to rest
-                        isWorkPhase = false;
-                        currentTime = restTime;
-                    } else {
-                        // Finished rest phase - check if we've completed all rounds before incrementing
-                        if (currentRound >= totalRounds) {
-                            // Finished all rounds - stop timer
-                            stopTimer();
-                            playSound();
-                            showDoneMessage();
-                            return;
-                        }
-                        
-                        // Switch to work, next round
-                        isWorkPhase = true;
-                        currentRound++;
-                        currentTime = workTime;
-                    }
-                    updateDisplay();
-                }
-            }, 1000);
-            
+            interval = setInterval(tick, 1000);
             updateDisplay();
+        }
+        
+        function tick() {
+            currentTime--;
+            updateDisplay();
+            
+            if (currentTime <= 0) {
+                playSound();
+                if (isCountdownPhase) {
+                    isCountdownPhase = false;
+                    currentTime = workTime;
+                    currentRound = 1;
+                    isWorkPhase = true;
+                    updateDisplay();
+                    return;
+                }
+                if (isWorkPhase) {
+                    isWorkPhase = false;
+                    currentTime = restTime;
+                    updateDisplay();
+                    return;
+                }
+                if (currentRound >= totalRounds) {
+                    stopTimer();
+                    playSound();
+                    showDoneMessage();
+                    return;
+                }
+                isWorkPhase = true;
+                currentRound++;
+                currentTime = workTime;
+                updateDisplay();
+            }
         }
         
         // Pause timer
@@ -1415,6 +1474,7 @@
         function stopTimer() {
             isRunning = false;
             isPaused = false;
+            isCountdownPhase = false;
             clearInterval(interval);
             interval = null;
             updateDisplay();
@@ -1422,11 +1482,11 @@
         
         // Reset timer
         function resetTimer() {
-            // Stop the timer
             clearInterval(interval);
             interval = null;
             isRunning = false;
             isPaused = false;
+            isCountdownPhase = false;
             
             // Reset font size and clear completion message display
             if (display) {
@@ -1450,11 +1510,11 @@
         
         // Clear timer (sets to 00:00)
         function clearTimer() {
-            // Stop the timer first
             clearInterval(interval);
             interval = null;
             isRunning = false;
             isPaused = false;
+            isCountdownPhase = false;
             
             // Reset font size and clear completion message display
             if (display) {
@@ -1660,6 +1720,37 @@
         document.getElementById('releaseDate').textContent = new Date().toISOString().split('T')[0];
         
         // Completion message event listeners
+        // Countdown before start: init from localStorage, +/- buttons, persist on change
+        const savedCountdownInterval = (function() {
+            try { return parseInt(localStorage.getItem('interval-countdownBeforeStart'), 10); } catch (e) { return 10; }
+        })();
+        if (countdownBeforeStartInput) {
+            if (Number.isFinite(savedCountdownInterval) && savedCountdownInterval >= 0 && savedCountdownInterval <= 60) {
+                countdownBeforeStartInput.value = savedCountdownInterval;
+            } else {
+                countdownBeforeStartInput.value = 10;
+            }
+            countdownBeforeStartInput.addEventListener('input', function() {
+                const v = parseInt(this.value, 10);
+                if (Number.isFinite(v)) saveCountdownBeforeStart(v);
+            });
+            countdownBeforeStartInput.addEventListener('change', function() {
+                saveCountdownBeforeStart(getCountdownBeforeStart());
+            });
+        }
+        if (countdownDecreaseBtn) {
+            countdownDecreaseBtn.addEventListener('click', function() {
+                if (isRunning) return;
+                saveCountdownBeforeStart(getCountdownBeforeStart() - 1);
+            });
+        }
+        if (countdownIncreaseBtn) {
+            countdownIncreaseBtn.addEventListener('click', function() {
+                if (isRunning) return;
+                saveCountdownBeforeStart(getCountdownBeforeStart() + 1);
+            });
+        }
+        
         if (doneMessageInput) {
             // Initialize completion message from localStorage
             const savedMessage = getDoneMessage();
