@@ -6,7 +6,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <title>AMRAP Enhanced Timer - Timerist | Group Workout AMRAP Timer</title>
+    <title>AMRAP Timer - Timerist | Group Workout AMRAP Timer</title>
     <meta name="description" content="AMRAP timer for group workouts - same setup and timing as enhanced splits. Instructions in workout notes; athletes track results off-timer.">
     <link rel="stylesheet" href="styles/timerist-design-system.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -1027,7 +1027,7 @@
                 </a>
                 <a href="index.html" style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground)); text-decoration: none; cursor: pointer;">timerist.com</a>
                 <span class="separator" style="color: rgb(var(--muted-foreground));">|</span>
-                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">AMRAP Enhanced</span>
+                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">AMRAP</span>
             </div>
             
             <div class="header-actions">
@@ -1168,27 +1168,27 @@
                     </div>
                 </div>
                 
-                <!-- Number of Rounds (Rounds mode uses this for multi-round + rest) -->
-                <div class="space-y-2" style="margin-bottom: 1.5rem;">
-                    <label for="roundsInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Number of Rounds</label>
-                    <div class="time-input-row">
-                        <button class="time-adjust-btn" id="roundsPlus5Btn" type="button" aria-label="Add 5 rounds">+5</button>
-                        <button class="time-adjust-btn" id="roundsPlus1Btn" type="button" aria-label="Add 1 round">+1</button>
-                        <input type="number" id="roundsInputDrawer" class="custom-time-input" min="0" max="999" inputmode="numeric" value="0" aria-label="Number of rounds">
-                        <button class="time-adjust-btn" id="roundsMinus5Btn" type="button" aria-label="Subtract 5 rounds">−5</button>
-                        <button class="time-adjust-btn" id="roundsMinus1Btn" type="button" aria-label="Subtract 1 round">−1</button>
+                <!-- Number of Rounds / Rest Between Rounds (Reps mode only: cycles and rest between cycles) -->
+                <div id="repsOnlyRoundsOptions" style="display: none;">
+                    <div class="space-y-2" style="margin-bottom: 1.5rem;">
+                        <label for="roundsInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Number of Rounds</label>
+                        <div class="time-input-row">
+                            <button class="time-adjust-btn" id="roundsPlus5Btn" type="button" aria-label="Add 5 rounds">+5</button>
+                            <button class="time-adjust-btn" id="roundsPlus1Btn" type="button" aria-label="Add 1 round">+1</button>
+                            <input type="number" id="roundsInputDrawer" class="custom-time-input" min="0" max="999" inputmode="numeric" value="0" aria-label="Number of rounds">
+                            <button class="time-adjust-btn" id="roundsMinus5Btn" type="button" aria-label="Subtract 5 rounds">−5</button>
+                            <button class="time-adjust-btn" id="roundsMinus1Btn" type="button" aria-label="Subtract 1 round">−1</button>
+                        </div>
                     </div>
-                </div>
-                
-                <!-- Rest Between Rounds (only show if rounds > 1) -->
-                <div class="space-y-2" id="restBetweenRoundsContainer" style="display: none; margin-bottom: 1.5rem;">
-                    <label for="restBetweenRoundsInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Rest Between Rounds (Seconds)</label>
-                    <div class="time-input-row">
-                        <button class="time-adjust-btn" id="restBetweenRoundsPlus5Btn" type="button" aria-label="Add 5 seconds">+5</button>
-                        <button class="time-adjust-btn" id="restBetweenRoundsPlus1Btn" type="button" aria-label="Add 1 second">+1</button>
-                        <input type="number" id="restBetweenRoundsInput" class="custom-time-input" min="0" max="600" inputmode="numeric" value="0" aria-label="Rest between rounds seconds">
-                        <button class="time-adjust-btn" id="restBetweenRoundsMinus5Btn" type="button" aria-label="Subtract 5 seconds">−5</button>
-                        <button class="time-adjust-btn" id="restBetweenRoundsMinus1Btn" type="button" aria-label="Subtract 1 second">−1</button>
+                    <div class="space-y-2" id="restBetweenRoundsContainer" style="display: none; margin-bottom: 1.5rem;">
+                        <label for="restBetweenRoundsInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Rest Between Rounds (Seconds)</label>
+                        <div class="time-input-row">
+                            <button class="time-adjust-btn" id="restBetweenRoundsPlus5Btn" type="button" aria-label="Add 5 seconds">+5</button>
+                            <button class="time-adjust-btn" id="restBetweenRoundsPlus1Btn" type="button" aria-label="Add 1 second">+1</button>
+                            <input type="number" id="restBetweenRoundsInput" class="custom-time-input" min="0" max="600" inputmode="numeric" value="0" aria-label="Rest between rounds seconds">
+                            <button class="time-adjust-btn" id="restBetweenRoundsMinus5Btn" type="button" aria-label="Subtract 5 seconds">−5</button>
+                            <button class="time-adjust-btn" id="restBetweenRoundsMinus1Btn" type="button" aria-label="Subtract 1 second">−1</button>
+                        </div>
                     </div>
                 </div>
                 
@@ -1221,19 +1221,23 @@
                     <p id="cycleExercisesHelpText" class="text-muted-foreground" style="margin-top: 0.25rem; margin-bottom: 0; margin-left: 0; font-size: inherit; font-weight: 500;">Freestyle – any order, any time</p>
                     
                     <div id="workTimePerExerciseContainer" style="display: none; margin-top: 1rem;">
-                        <label for="workTimePerExerciseInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Work time per exercise (AMRAP - reps)</label>
-                        <div class="time-input-group">
-                            <button class="time-adjust-btn" id="workTimePerExerciseDecreaseBtn" type="button" aria-label="Decrease work time by 1">−</button>
+                        <label for="workTimePerExerciseInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">WORK TIME PER EXERCISE (AMRAP - REPS)</label>
+                        <div class="time-input-row">
+                            <button class="time-adjust-btn" id="workTimePerExercisePlus5Btn" type="button" aria-label="Add 5 seconds">+5</button>
+                            <button class="time-adjust-btn" id="workTimePerExercisePlus1Btn" type="button" aria-label="Add 1 second">+1</button>
                             <input type="number" id="workTimePerExerciseInput" class="custom-time-input" min="10" max="300" inputmode="numeric" value="60" aria-label="Work time per exercise seconds">
-                            <button class="time-adjust-btn" id="workTimePerExerciseIncreaseBtn" type="button" aria-label="Increase work time by 1">+</button>
+                            <button class="time-adjust-btn" id="workTimePerExerciseMinus5Btn" type="button" aria-label="Subtract 5 seconds">−5</button>
+                            <button class="time-adjust-btn" id="workTimePerExerciseMinus1Btn" type="button" aria-label="Subtract 1 second">−1</button>
                         </div>
                     </div>
                     <div id="restBetweenExercisesContainer" style="display: none; margin-top: 1rem;">
-                        <label for="restBetweenExercisesInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Rest Between Exercises (seconds)</label>
-                        <div class="time-input-group">
-                            <button class="time-adjust-btn" id="restBetweenExercisesDecreaseBtn" type="button" aria-label="Decrease rest time by 1">−</button>
+                        <label for="restBetweenExercisesInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">REST BETWEEN EXERCISES (SECONDS)</label>
+                        <div class="time-input-row">
+                            <button class="time-adjust-btn" id="restBetweenExercisesPlus5Btn" type="button" aria-label="Add 5 seconds">+5</button>
+                            <button class="time-adjust-btn" id="restBetweenExercisesPlus1Btn" type="button" aria-label="Add 1 second">+1</button>
                             <input type="number" id="restBetweenExercisesInput" class="custom-time-input" min="0" max="300" inputmode="numeric" value="0" aria-label="Rest between exercises">
-                            <button class="time-adjust-btn" id="restBetweenExercisesIncreaseBtn" type="button" aria-label="Increase rest time by 1">+</button>
+                            <button class="time-adjust-btn" id="restBetweenExercisesMinus5Btn" type="button" aria-label="Subtract 5 seconds">−5</button>
+                            <button class="time-adjust-btn" id="restBetweenExercisesMinus1Btn" type="button" aria-label="Subtract 1 second">−1</button>
                         </div>
                     </div>
                     <div id="cycleTimeSummaryBlock" style="display: none; margin-top: 1.25rem; padding: 0.75rem; border-radius: var(--radius); border: 1px solid rgb(var(--border)); background-color: rgb(var(--accent));" aria-live="polite">
@@ -1272,7 +1276,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v1.02</p>
+                <p><strong>Version:</strong> v1.03</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2026-01-28</span></p>
             </div>
         </div>
@@ -1289,8 +1293,9 @@
         let isPaused = false;
         let isPrepPhase = false;
         let amrapType = 'rounds'; // 'rounds' or 'reps'
-        let rounds = 0;
-        let currentRound = 0;
+        // Rounds mode semantics: rounds = completedRounds (count of "Round Completed" clicks); currentRound = UI progress (1-based, increments after rest or when no rest); targetRounds = goal from input (soft goal, never used to end workout).
+        let rounds = 0;       // completedRounds
+        let currentRound = 0; // UI: "Round X of Y"
         let exercises = [];
         let cycleExercises = false;
         let restBetweenExercises = 0;
@@ -1330,8 +1335,6 @@
         const cycleExercisesToggle = document.getElementById('cycleExercisesToggle');
         const restBetweenExercisesContainer = document.getElementById('restBetweenExercisesContainer');
         const restBetweenExercisesInput = document.getElementById('restBetweenExercisesInput');
-        const restBetweenExercisesDecreaseBtn = document.getElementById('restBetweenExercisesDecreaseBtn');
-        const restBetweenExercisesIncreaseBtn = document.getElementById('restBetweenExercisesIncreaseBtn');
         const workTimePerExerciseContainer = document.getElementById('workTimePerExerciseContainer');
         const workTimePerExerciseInput = document.getElementById('workTimePerExerciseInput');
         const cycleTimeSummaryBlock = document.getElementById('cycleTimeSummaryBlock');
@@ -1343,6 +1346,7 @@
         const dismissCycleWarningBtn = document.getElementById('dismissCycleWarningBtn');
         const cycleTimeToast = document.getElementById('cycleTimeToast');
         const roundsInput = document.getElementById('roundsInputDrawer');
+        const repsOnlyRoundsOptions = document.getElementById('repsOnlyRoundsOptions');
         const restBetweenRoundsContainer = document.getElementById('restBetweenRoundsContainer');
         const restBetweenRoundsInput = document.getElementById('restBetweenRoundsInput');
         
@@ -1370,15 +1374,18 @@
             if (amrapType === 'rounds') {
                 roundsModeFields.style.display = 'block';
                 repsModeFields.style.display = 'none';
-                completeRoundBtn.style.display = 'inline-block';
+                if (repsOnlyRoundsOptions) repsOnlyRoundsOptions.style.display = 'none';
+                completeRoundBtn.style.display = 'inline-block'; // Rounds mode: show Round Completed to count circuits (no target/rest in settings)
                 if (cycleTimeSummaryBlock) cycleTimeSummaryBlock.style.display = 'none';
             } else {
                 roundsModeFields.style.display = 'none';
                 repsModeFields.style.display = 'block';
+                if (repsOnlyRoundsOptions) repsOnlyRoundsOptions.style.display = 'block';
                 completeRoundBtn.style.display = 'none';
                 if (workTimePerExerciseContainer) workTimePerExerciseContainer.style.display = cycleExercises ? 'block' : 'none';
                 if (cycleTimeSummaryBlock) cycleTimeSummaryBlock.style.display = cycleExercises ? 'block' : 'none';
                 updateCycleTimeSummary();
+                updateRestBetweenRoundsVisibility();
             }
             updateRoundsDisplay();
         }
@@ -1389,6 +1396,19 @@
             const work = getWorkTimePerExerciseSeconds();
             const rest = Math.min(300, Math.max(0, Number(restBetweenExercisesInput?.value) || restBetweenExercises || 0));
             return n * work + (n - 1) * rest;
+        }
+        
+        function getRestBetweenRoundsSeconds() {
+            if (!restBetweenRoundsInput) return 0;
+            return Math.min(600, Math.max(0, Number(restBetweenRoundsInput.value) || 0));
+        }
+        
+        /** Time needed to complete all target rounds: cycles + rest between rounds. When targetRounds is 0, returns single cycle time. */
+        function getTimeNeededForRounds(cycleSeconds) {
+            const targetRounds = getTargetRounds();
+            if (targetRounds <= 0) return cycleSeconds;
+            const restBetweenRounds = getRestBetweenRoundsSeconds();
+            return cycleSeconds * targetRounds + restBetweenRounds * (targetRounds - 1);
         }
         
         function updateCycleTimeSummary() {
@@ -1404,17 +1424,27 @@
             const work = getWorkTimePerExerciseSeconds();
             const rest = Math.min(300, Math.max(0, Number(restBetweenExercisesInput?.value) || restBetweenExercises || 0));
             const cycleSeconds = n * work + (n - 1) * rest;
+            const timeNeededForRounds = getTimeNeededForRounds(cycleSeconds);
             const workPart = n + ' × ' + work + 's work';
             const restPart = n > 1 ? ' + ' + (n - 1) + ' × ' + rest + 's rest' : '';
             cycleTimeSummaryText.textContent = 'Estimated time per full cycle: ' + formatTime(cycleSeconds) + ' (' + workPart + restPart + ')';
-            const showWarning = cycleSeconds > totalSecondsVal && !cycleWarningDismissed;
-            const showSuggest = totalSecondsVal >= 30 && (cycleSeconds > totalSecondsVal || cycleSeconds < totalSecondsVal * 0.4);
+            const notEnoughTime = timeNeededForRounds > totalSecondsVal;
+            const showWarning = notEnoughTime && !cycleWarningDismissed;
+            const showSuggest = totalSecondsVal >= 30 && (notEnoughTime || timeNeededForRounds < totalSecondsVal * 0.4);
             if (cycleTimeWarningBanner) {
                 cycleTimeWarningBanner.style.display = showWarning ? 'block' : 'none';
                 const msg = document.getElementById('cycleTimeWarningMessage');
-                if (msg) msg.textContent = cycleSeconds > totalSecondsVal
-                    ? 'Cycle time (' + formatTime(cycleSeconds) + ') exceeds total workout time (' + formatTime(totalSecondsVal) + ') — you may complete 0 full cycles.'
-                    : 'Cycle time exceeds total workout time — you may complete 0 full cycles.';
+                if (msg) {
+                    const targetRounds = getTargetRounds();
+                    if (targetRounds > 1) {
+                        const neededFormatted = formatTime(timeNeededForRounds);
+                        msg.textContent = 'Time needed for ' + targetRounds + ' rounds (' + neededFormatted + ', including rest between rounds) exceeds total workout time (' + formatTime(totalSecondsVal) + ') — you may not complete all rounds.';
+                    } else {
+                        msg.textContent = notEnoughTime
+                            ? 'Cycle time (' + formatTime(cycleSeconds) + ') exceeds total workout time (' + formatTime(totalSecondsVal) + ') — you may complete 0 full cycles.'
+                            : 'Cycle time exceeds total workout time — you may complete 0 full cycles.';
+                    }
+                }
             }
             if (cycleTimeSuggestButtons) cycleTimeSuggestButtons.style.display = showSuggest ? 'flex' : 'none';
             if (setRealisticWorkTimeBtn) setRealisticWorkTimeBtn.disabled = !showSuggest || n === 0 || totalSecondsVal < 30;
@@ -1426,8 +1456,9 @@
             if (n === 0) return null;
             const totalSecondsVal = readDurationFromInputs();
             const rest = Math.min(300, Math.max(0, Number(restBetweenExercisesInput?.value) || restBetweenExercises || 0));
-            const numerator = totalSecondsVal - (n - 1) * rest;
             const numCycles = getTargetRounds() > 0 ? getTargetRounds() : 4;
+            const restBetweenRounds = getRestBetweenRoundsSeconds();
+            const numerator = totalSecondsVal - (n - 1) * rest * numCycles - (numCycles - 1) * restBetweenRounds;
             const denominator = n * Math.max(1, numCycles);
             if (denominator <= 0 || numerator <= 0) return null;
             let suggested = Math.floor(numerator / denominator);
@@ -1443,7 +1474,10 @@
             const cycleSeconds = n * work + (n - 1) * rest;
             const bufferSeconds = 60;
             const numCycles = getTargetRounds() > 0 ? getTargetRounds() : 3;
-            let total = Math.max(1, numCycles) * cycleSeconds + bufferSeconds;
+            const restBetweenRounds = getRestBetweenRoundsSeconds();
+            const cyclesTime = Math.max(1, numCycles) * cycleSeconds;
+            const restBetweenRoundsTime = (Math.max(1, numCycles) - 1) * restBetweenRounds;
+            let total = cyclesTime + restBetweenRoundsTime + bufferSeconds;
             total = Math.ceil(total / 30) * 30;
             total = Math.max(30, Math.min(99 * 60 + 59, total));
             return total;
@@ -1557,17 +1591,10 @@
         function updateRoundsDisplay() {
             const cleared = totalSeconds === 0 && !timerDone && !isRunning && !isPaused;
             if (amrapType === 'rounds') {
-                if (cleared && roundsDisplay) {
-                    roundsDisplay.style.display = 'none';
-                    roundsDisplay.textContent = '';
-                } else if (roundsDisplay) {
-                    roundsDisplay.style.display = 'block';
-                    const targetRounds = getTargetRounds();
-                    if (targetRounds >= 1) {
-                        roundsDisplay.textContent = `Round ${currentRound} of ${targetRounds} | Completed: ${rounds}`;
-                    } else {
-                        roundsDisplay.textContent = `Round 0 of 0 | Completed: ${rounds}`;
-                    }
+                // AMRAP - Rounds: show count of completed rounds (no target in settings)
+                if (roundsDisplay) {
+                    roundsDisplay.style.display = (cleared && rounds === 0) ? 'none' : 'block';
+                    roundsDisplay.textContent = cleared ? '' : `Rounds completed: ${rounds}`;
                 }
             } else if (amrapType === 'reps' && cycleExercises && exercises.length > 0) {
                 if (roundsDisplay) {
@@ -1765,6 +1792,7 @@
         }
         
         function updateRestBetweenRoundsVisibility() {
+            if (amrapType === 'rounds') return; // Only Reps mode uses rounds/rest options
             const targetRounds = getTargetRounds();
             if (restBetweenRoundsContainer) {
                 if (targetRounds > 1) {
@@ -1968,11 +1996,13 @@
             }
             prepTimeSeconds = readPrepTimeFromInput();
             if (currentTime <= 0 && !isPrepPhase && !isRestPeriod) return;
+            const resuming = isPaused;
             isRunning = true;
             isPaused = false;
             clearInterval(interval);
             interval = null;
-            if (!isPaused && !isPrepPhase && !isRestPeriod) {
+            // Initialize only on fresh start (not when resuming from pause). Ensures completedRounds/currentRound and phase are set; workout ends only when currentTime <= 0.
+            if (!resuming) {
                 rounds = 0;
                 currentRound = getTargetRounds() >= 1 ? 1 : 0;
                 isPrepPhase = prepTimeSeconds > 0;
@@ -1994,17 +2024,20 @@
                     if (currentPrepTime <= 0) {
                         currentPrepTime = 0;
                         isPrepPhase = false;
+                        if (amrapType === 'rounds' && getTargetRounds() >= 1) currentRound = 1;
                         if (amrapType === 'reps' && cycleExercises && exercises.length > 0) {
                             workTimePerExerciseSeconds = getWorkTimePerExerciseSeconds();
                             workTimeRemaining = workTimePerExerciseSeconds;
                         }
+                        updateRoundsDisplay();
                         playSound();
                         updateDisplay();
                         return;
                     }
                 } else if (isRestPeriod) {
                     currentRestTime--;
-                    if (amrapType === 'reps') currentTime--;
+                    // Total time is sole authority: count down during rest in both modes.
+                    currentTime--;
                     if (currentTime <= 0) {
                         currentTime = 0;
                         stopTimer();
@@ -2017,9 +2050,9 @@
                         isRestPeriod = false;
                         if (amrapType === 'rounds') {
                             currentRound++;
-                            currentTime = totalSeconds;
                             updateRoundsDisplay();
                             completeRoundBtn.disabled = false;
+                            if (statusLabel) statusLabel.textContent = 'Running';
                         } else if (cycleExercises && exercises.length > 0) {
                             currentExerciseIndex = (currentExerciseIndex + 1) % exercises.length;
                             if (currentExerciseIndex === 0) {
@@ -2045,37 +2078,10 @@
                     if (isRepsCycling) workTimeRemaining--;
                     if (currentTime <= 0) {
                         currentTime = 0;
-                        if (amrapType === 'rounds') {
-                            rounds++;
-                            updateRoundsDisplay();
-                            playSound();
-                            const targetRounds = getTargetRounds();
-                            const restTimeSeconds = readRestTimeFromInputs();
-                            if (targetRounds >= 1 && currentRound < targetRounds) {
-                                if (restTimeSeconds > 0) {
-                                    isRestPeriod = true;
-                                    currentRestTime = restTimeSeconds;
-                                    restBetweenRoundsSeconds = restTimeSeconds;
-                                    completeRoundBtn.disabled = true;
-                                    statusLabel.textContent = 'Rest';
-                                } else {
-                                    currentRound++;
-                                    currentTime = totalSeconds;
-                                    playSound();
-                                }
-                            } else {
-                                stopTimer();
-                                playSound();
-                                showDoneMessage();
-                                completeRoundBtn.disabled = true;
-                                return;
-                            }
-                        } else {
-                            stopTimer();
-                            playSound();
-                            showDoneMessage();
-                            return;
-                        }
+                        stopTimer();
+                        playSound();
+                        showDoneMessage();
+                        if (amrapType === 'rounds') completeRoundBtn.disabled = true;
                         updateDisplay();
                         return;
                     }
@@ -2199,6 +2205,7 @@
             if (newValue === 0) currentRound = 0;
             updateRestBetweenRoundsVisibility();
             updateRoundsDisplay();
+            if (amrapType === 'reps' && cycleExercises) updateCycleTimeSummary();
         }
         
         function adjustRestBetweenRounds(delta) {
@@ -2206,6 +2213,7 @@
             const current = clampInt(restBetweenRoundsInput.value, 0, 600);
             const newValue = Math.min(600, Math.max(0, current + delta));
             restBetweenRoundsInput.value = String(newValue);
+            if (amrapType === 'reps' && cycleExercises) updateCycleTimeSummary();
         }
         
         function adjustMinutes(delta) {
@@ -2231,10 +2239,10 @@
             prepTimeInput.value = String(newValue);
         }
         
-        function adjustRestBetweenExercises(increment) {
+        function adjustRestBetweenExercises(delta) {
             if (isRunning || isPaused) return;
             const current = clampInt(restBetweenExercisesInput.value, 0, 300);
-            const newValue = increment ? Math.min(300, current + 1) : Math.max(0, current - 1);
+            const newValue = Math.min(300, Math.max(0, current + delta));
             restBetweenExercisesInput.value = String(newValue);
             restBetweenExercises = newValue;
         }
@@ -2254,11 +2262,13 @@
         clearBtn.addEventListener('click', clearTimer);
         setupBtn.addEventListener('click', toggleDrawer);
         
+        // Round Completed: count the circuit (Rounds mode has no rest/target in settings — just increment and show count).
         completeRoundBtn.addEventListener('click', () => {
             if (interval && isRunning && !isPaused && amrapType === 'rounds' && !isPrepPhase && !isRestPeriod) {
                 rounds++;
                 updateRoundsDisplay();
                 playSound();
+                updateDisplay();
             }
         });
         
@@ -2293,12 +2303,16 @@
                 if (value === 0) currentRound = 0;
                 updateRestBetweenRoundsVisibility();
                 updateRoundsDisplay();
+                if (amrapType === 'reps' && cycleExercises) updateCycleTimeSummary();
             });
         }
-        if (restBetweenRoundsInput) restBetweenRoundsInput.addEventListener('input', function() {
-            const v = clampInt(this.value, 0, 600);
-            this.value = String(v);
-        });
+        if (restBetweenRoundsInput) {
+            restBetweenRoundsInput.addEventListener('input', function() {
+                const v = clampInt(this.value, 0, 600);
+                this.value = String(v);
+                if (amrapType === 'reps' && cycleExercises) updateCycleTimeSummary();
+            });
+        }
         
         prepTimeInput.addEventListener('input', function() {
             const value = clampInt(this.value, 0, 300);
@@ -2367,8 +2381,10 @@
         });
         updateCycleExercisesHelpText();
         
-        restBetweenExercisesDecreaseBtn.addEventListener('click', () => adjustRestBetweenExercises(false));
-        restBetweenExercisesIncreaseBtn.addEventListener('click', () => adjustRestBetweenExercises(true));
+        document.getElementById('restBetweenExercisesPlus5Btn').addEventListener('click', () => adjustRestBetweenExercises(5));
+        document.getElementById('restBetweenExercisesPlus1Btn').addEventListener('click', () => adjustRestBetweenExercises(1));
+        document.getElementById('restBetweenExercisesMinus5Btn').addEventListener('click', () => adjustRestBetweenExercises(-5));
+        document.getElementById('restBetweenExercisesMinus1Btn').addEventListener('click', () => adjustRestBetweenExercises(-1));
         
         restBetweenExercisesInput.addEventListener('input', function() {
             const value = clampInt(this.value, 0, 300);
@@ -2384,18 +2400,18 @@
             if (cycleTimeWarningBanner) cycleTimeWarningBanner.style.display = 'none';
         });
         
-        function adjustWorkTimePerExercise(increment) {
+        function adjustWorkTimePerExercise(delta) {
             if (isRunning || isPaused) return;
             const current = clampInt(workTimePerExerciseInput.value, 10, 300);
-            const newValue = increment ? Math.min(300, current + 1) : Math.max(10, current - 1);
+            const newValue = Math.min(300, Math.max(10, current + delta));
             workTimePerExerciseInput.value = String(newValue);
             workTimePerExerciseSeconds = newValue;
             updateCycleTimeSummary();
         }
-        if (document.getElementById('workTimePerExerciseDecreaseBtn')) {
-            document.getElementById('workTimePerExerciseDecreaseBtn').addEventListener('click', () => adjustWorkTimePerExercise(false));
-            document.getElementById('workTimePerExerciseIncreaseBtn').addEventListener('click', () => adjustWorkTimePerExercise(true));
-        }
+        document.getElementById('workTimePerExercisePlus5Btn').addEventListener('click', () => adjustWorkTimePerExercise(5));
+        document.getElementById('workTimePerExercisePlus1Btn').addEventListener('click', () => adjustWorkTimePerExercise(1));
+        document.getElementById('workTimePerExerciseMinus5Btn').addEventListener('click', () => adjustWorkTimePerExercise(-5));
+        document.getElementById('workTimePerExerciseMinus1Btn').addEventListener('click', () => adjustWorkTimePerExercise(-1));
         if (workTimePerExerciseInput) workTimePerExerciseInput.addEventListener('input', function() {
             const value = clampInt(this.value, 10, 300);
             this.value = String(value);

@@ -1,13 +1,25 @@
-# Firebase Automatic Deployment Setup
+# Firebase Deployment Setup
+
+## Deploy from Cursor (recommended)
+
+**The connection between GitHub and Firebase is not used.** Deploy directly from the project:
+
+```bash
+npm run deploy
+```
+
+Run this in Cursor’s terminal (or your local terminal). It builds the app and deploys to Firebase Hosting. Live site: **https://timerist-4ecd9.web.app**
+
+---
 
 ## Current Status
 
-✅ **GitHub Repository**: Linked to `https://github.com/DNLIC/timerist`  
 ✅ **Firebase Project**: `timerist-4ecd9` (alias: `ttimer`)  
-✅ **GitHub Actions Workflow**: Created at `.github/workflows/firebase-deploy.yml`  
-⚠️ **Automatic Deployment**: Needs Firebase Service Account setup
+✅ **Direct deploy**: Use `npm run deploy` from the project  
+✅ **GitHub Repository**: `https://github.com/DNLIC/timerist` (for code only)  
+❌ **GitHub → Firebase auto-deploy**: Not connected (workflow exists but needs service account; optional)
 
-## To Enable Automatic Deployment
+## Optional: Enable GitHub → Firebase Auto-Deploy
 
 Currently, **pushing to GitHub does NOT automatically deploy to Firebase**. You need to set up a Firebase Service Account for GitHub Actions.
 
@@ -58,6 +70,6 @@ Both commands will:
 
 ## Current Deployment Status
 
-- **Automatic**: ❌ Not yet configured (needs service account)
-- **Manual**: ✅ Ready (run `npm run deploy` or `npm run deploy:firebase`)
+- **Direct from project**: ✅ Use `npm run deploy` from Cursor or terminal
+- **GitHub → Firebase**: ❌ Not connected (optional; see “Optional: Enable GitHub → Firebase” above)
 
