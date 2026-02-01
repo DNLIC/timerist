@@ -949,8 +949,8 @@
                         id="doneMessageInput" 
                         class="custom-time-input" 
                         maxlength="14"
-                        value="Done"
-                        placeholder="Done"
+                        value="Completed"
+                        placeholder="Completed"
                         aria-label="Custom completion message"
                     >
                     <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
@@ -974,7 +974,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.16</p>
+                <p><strong>Version:</strong> v0.17</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -1008,7 +1008,7 @@
         // Get done message from localStorage or use default
         function getDoneMessage() {
             const saved = localStorage.getItem('quickCountdown-doneMessage');
-            return saved || 'Done';
+            return saved || 'Completed';
         }
         
         // Save done message to localStorage
@@ -1016,7 +1016,7 @@
             if (message && message.trim()) {
                 localStorage.setItem('quickCountdown-doneMessage', message.trim());
             } else {
-                localStorage.setItem('quickCountdown-doneMessage', 'Done');
+                localStorage.setItem('quickCountdown-doneMessage', 'Completed');
             }
         }
         

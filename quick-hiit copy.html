@@ -663,75 +663,6 @@
             cursor: not-allowed;
         }
         
-        /* Main-page Rounds & Sets: same size and look as Rest between sets (compact, legible) */
-        #roundsSetsBlockMain .rounds-input-group {
-            gap: 0.75rem;
-            margin-top: 0.5rem;
-        }
-        #roundsSetsBlockMain .rounds-input-group .rounds-adjust-btn {
-            width: 36px;
-            height: 36px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-        #roundsSetsBlockMain .rounds-input-group input {
-            width: 5rem;
-            min-width: 5rem;
-            max-width: 5rem;
-            text-align: center;
-            padding: 0.5rem 0.75rem;
-            font-size: 1rem;
-            font-weight: 600;
-            min-height: auto;
-        }
-        #roundsSetsBlockMain .rounds-input-group input:focus {
-            outline: none;
-            border-color: rgb(var(--ring));
-            box-shadow: 0 0 0 2px rgba(var(--ring), 0.2);
-        }
-        #roundsSetsBlockMain .rounds-input-group input:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        /* Main-page Rest between sets row: match settings panel sizing (smaller buttons, spacing, input padding) */
-        .set-rest-main-row {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-top: 0.5rem;
-        }
-        .set-rest-main-row .time-adjust-btn {
-            flex-shrink: 0;
-            width: 36px;
-            height: 36px;
-            font-size: 0.75rem;
-            font-weight: 700;
-        }
-        .set-rest-main-row .set-rest-time-input-main {
-            width: 5rem;
-            min-width: 5rem;
-            text-align: center;
-            padding: 0.5rem 0.75rem;
-            font-size: 1rem;
-            font-weight: 600;
-            font-family: 'Courier New', monospace;
-            background-color: rgb(var(--background));
-            border: 2px solid rgb(var(--input));
-            border-radius: var(--radius);
-            color: rgb(var(--foreground));
-        }
-        .set-rest-main-row .set-rest-time-input-main:focus {
-            outline: none;
-            border-color: rgb(var(--ring));
-            box-shadow: 0 0 0 2px rgba(var(--ring), 0.2);
-        }
-        .set-rest-main-row .set-rest-time-input-main:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
         .time-input-group input {
             flex: 1;
         }
@@ -764,7 +695,6 @@
         }
         
         .timer-running .custom-time-input:not(:disabled),
-        .timer-running .set-rest-time-input-main:not(:disabled),
         .timer-running .rounds-adjust-btn:not(:disabled),
         .timer-running .time-adjust-btn:not(:disabled),
         .timer-running .preset-select:not(:disabled) {
@@ -1250,7 +1180,7 @@
                     <h2 id="workoutTitleText" style="font-size: 1.25rem; font-weight: 600; color: rgb(var(--foreground)); margin: 0; word-wrap: break-word;"></h2>
                 </div>
                 
-                <div class="phase-label" id="phaseLabel">HIIT Timer</div>
+                <div class="phase-label" id="phaseLabel">Work</div>
                 <div class="timer-display-large" id="display">00:00</div>
                 <div class="round-info">
                     Round <span id="round">1</span> of <span id="totalRounds">0</span> | <span id="presetNameDisplay">Custom</span>
@@ -1273,62 +1203,109 @@
                 </div>
             </div>
             
-            <!-- Rounds, Sets & Rest between sets (main page – only visible after a workout is selected; hidden when cleared) -->
-            <div id="roundsSetsBlockMain" class="p-6 bg-card border border-border rounded-lg shadow-lg" style="display: none;">
-                <p class="text-sm mb-4" style="color: rgb(var(--muted-foreground)); text-align: center;">
-                    <strong>Rounds</strong> = work/rest cycles per block. <strong>Sets</strong> = how many times you repeat that block (e.g. 2 sets = do the workout twice).
-                </p>
-                <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center; align-items: flex-start;">
-                    <div class="input-group" style="flex: 0 1 auto; min-width: 200px;">
-                        <label for="roundsInputMain">Rounds</label>
-                        <div class="rounds-input-group">
-                            <button class="rounds-adjust-btn" id="roundsDecreaseBtnMain" type="button" aria-label="Decrease rounds">−</button>
-                            <input type="text" id="roundsInputMain" value="0" aria-label="Number of rounds">
-                            <button class="rounds-adjust-btn" id="roundsIncreaseBtnMain" type="button" aria-label="Increase rounds">+</button>
-                        </div>
-                    </div>
-                    <div class="input-group" style="flex: 0 1 auto; min-width: 200px;">
-                        <label for="setsInputMain">Sets</label>
-                        <div class="rounds-input-group">
-                            <button class="rounds-adjust-btn" id="setsDecreaseBtnMain" type="button" aria-label="Decrease sets">−</button>
-                            <input type="text" id="setsInputMain" value="1" aria-label="Number of sets">
-                            <button class="rounds-adjust-btn" id="setsIncreaseBtnMain" type="button" aria-label="Increase sets">+</button>
-                        </div>
-                    </div>
-                    <div id="setRestGroupMain" class="input-group" style="flex: 0 1 auto; min-width: 200px; display: none;">
-                        <label for="setRestTimeInputMain">Rest between sets (MM:SS)</label>
-                        <div class="set-rest-main-row">
-                            <button class="time-adjust-btn" id="setRestDecrease10BtnMain" type="button" aria-label="Decrease rest between sets by 10 seconds">−10</button>
-                            <input type="text" id="setRestTimeInputMain" class="set-rest-time-input-main" value="02:00" pattern="[0-9]{2}:[0-9]{2}" placeholder="MM:SS" aria-label="Rest between sets">
-                            <button class="time-adjust-btn" id="setRestIncrease10BtnMain" type="button" aria-label="Increase rest between sets by 10 seconds">+10</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Preset Workout Buttons (same order as quick-interval.html: Workout Presets then Time Presets) -->
+            <!-- Preset Workout Buttons -->
             <div class="p-6 bg-card border border-border rounded-lg shadow-lg">
                 <label class="text-sm font-semibold uppercase tracking-wide mb-4 block" style="color: rgb(var(--muted-foreground)); text-align: center; margin-bottom: 1.5rem;">
                     Quick Presets
                 </label>
                 <div class="quick-select-grid">
-                    <button class="quick-select-btn" data-work="20" data-rest="10" data-rounds="8" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="tabata" data-title="Tabata Protocol" data-description="20 s high-intensity work / 10 s rest × 8 rounds. Classic interval structure shown to improve VO2 max in a short session." aria-label="Tabata: 20 seconds work, 10 seconds rest, 8 rounds">Tabata</button>
-                    <button class="quick-select-btn" data-work="40" data-rest="20" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="emom" data-title="EMOM Interval" data-description="40 s work / 20 s rest every minute. High-intensity format used in circuits; supports VO2 max development with repeated efforts." aria-label="EMOM: 40 seconds work, 20 seconds rest">EMOM</button>
-                    <button class="quick-select-btn" data-work="60" data-rest="75" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="little" data-title="Little Method" data-description="60 s high-intensity work / 75 s rest. Interval pattern from research demonstrating significant VO2 max gains." aria-label="Little Method: 60 seconds work, 75 seconds rest">Little</button>
-                    <button class="quick-select-btn" data-work="60" data-rest="75" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="gibala" data-title="Gibala Protocol" data-description="60 s high-intensity work / 75 s rest. Evidence-based HIIT method effective for increasing VO2 max." aria-label="Gibala: 60 seconds work, 75 seconds rest">Gibala</button>
-                    <button class="quick-select-btn" data-work="240" data-rest="180" data-rounds="8" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="norwegian" data-title="Norwegian 4×4" data-description="4 min high-intensity work / 3 min active recovery × 4 rounds. Well-studied protocol for improving VO2 max." aria-label="Norwegian 4x4: 4 minutes work, 3 minutes rest, 8 rounds">Norwegian</button>
-                    <button class="quick-select-btn" data-work="30" data-rest="30" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="30/30" data-title="30/30 Interval" data-description="30 s high-intensity work / 30 s rest. Balanced HIIT ratio that can contribute to VO2 max improvement." aria-label="30/30: 30 seconds work, 30 seconds rest">30/30</button>
-                    <button class="quick-select-btn" data-work="45" data-rest="15" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="45/15" data-title="45/15 Interval" data-description="45 s high-intensity work / 15 s rest. Short-recovery format suitable for VO2 max training." aria-label="45/15: 45 seconds work, 15 seconds rest">45/15</button>
-                    <button class="quick-select-btn" data-work="60" data-rest="30" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="60/30" data-title="60/30 Interval" data-description="60 s high-intensity work / 30 s rest. Moderate-duration efforts effective for VO2 max gains." aria-label="60/30: 60 seconds work, 30 seconds rest">60/30</button>
-                    <button class="quick-select-btn" data-work="45" data-rest="45" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="45/45" data-title="45/45 Interval" data-description="45 s high-intensity work / 45 s rest. Equal work–rest ratio used in VO2 max-focused sessions." aria-label="45/45: 45 seconds work, 45 seconds rest">45/45</button>
-                    <button class="quick-select-btn" data-work="60" data-rest="60" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="60/60" data-title="60/60 Interval" data-description="60 s high-intensity work / 60 s rest. Allows repeated high-effort intervals to support VO2 max." aria-label="60/60: 60 seconds work, 60 seconds rest">60/60</button>
-                    <button class="quick-select-btn" data-work="30" data-rest="60" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="30/60" data-title="30/60 Interval" data-description="30 s high-intensity work / 60 s rest. Shorter bursts with longer recovery; useful for VO2 max work." aria-label="30/60: 30 seconds work, 60 seconds rest">30/60</button>
-                    <button class="quick-select-btn" data-work="20" data-rest="10" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="20/10" data-title="20/10 Interval" data-description="20 s high-intensity work / 10 s rest. Very short, intense efforts linked to VO2 max improvement." aria-label="20/10: 20 seconds work, 10 seconds rest">20/10</button>
-                    <button class="quick-select-btn" data-work="40" data-rest="20" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="40/20" data-title="40/20 Interval" data-description="40 s high-intensity work / 20 s rest. Common ratio in protocols that enhance VO2 max." aria-label="40/20: 40 seconds work, 20 seconds rest">40/20</button>
-                    <button class="quick-select-btn" data-work="90" data-rest="30" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="90/30" data-title="90/30 Interval" data-description="90 s high-intensity work / 30 s rest. Longer efforts suitable for VO2 max development." aria-label="90/30: 90 seconds work, 30 seconds rest">90/30</button>
-                    <button class="quick-select-btn" data-work="120" data-rest="60" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="2:00/1:00" data-title="2:00/1:00 Interval" data-description="2 min high-intensity work / 1 min rest. Extended intervals effective for VO2 max gains." aria-label="2:00/1:00: 2 minutes work, 1 minute rest">2:00/1:00</button>
-                    <button class="quick-select-btn" data-work="180" data-rest="60" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="3:00/1:00" data-title="3:00/1:00 Interval" data-description="3 min high-intensity work / 1 min rest. Longer high-effort rounds shown to improve VO2 max." aria-label="3:00/1:00: 3 minutes work, 1 minute rest">3:00/1:00</button>
-                    <button class="quick-select-btn" data-work="60" data-rest="30" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="1:00/30" data-title="1:00/30 Interval" data-description="60 s high-intensity work / 30 s rest. Moderate-length efforts that support VO2 max training." aria-label="1:00/30: 1 minute work, 30 seconds rest">1:00/30</button>
+                    <button class="quick-select-btn" 
+                            data-work="20" 
+                            data-rest="10" 
+                            data-rounds="8" 
+                            data-warmup="30" 
+                            data-cooldown="60" 
+                            data-sets="1"
+                            data-preset="tabata"
+                            aria-label="Tabata: 20 seconds work, 10 seconds rest, 8 rounds">Tabata</button>
+                    <button class="quick-select-btn" 
+                            data-work="30" 
+                            data-rest="30" 
+                            data-rounds="10" 
+                            data-warmup="30" 
+                            data-cooldown="60" 
+                            data-sets="1"
+                            data-preset="3030"
+                            aria-label="30/30: 30 seconds work, 30 seconds rest, 10 rounds">30/30</button>
+                    <button class="quick-select-btn" 
+                            data-work="240" 
+                            data-rest="180" 
+                            data-rounds="4" 
+                            data-warmup="60" 
+                            data-cooldown="60" 
+                            data-sets="1"
+                            data-preset="4x4"
+                            aria-label="4x4 Norwegian: 4 minutes work, 3 minutes rest, 4 rounds">4×4 Norwegian</button>
+                    <!-- HIIT PRESET ADDITION: Little Method -->
+                    <button class="quick-select-btn" 
+                            data-work="60" 
+                            data-rest="75" 
+                            data-rounds="10" 
+                            data-warmup="180" 
+                            data-cooldown="300" 
+                            data-sets="1"
+                            data-preset="littlemethod"
+                            aria-label="Little Method: 60 seconds work, 75 seconds rest, 10 rounds">Little Method (60/75 ×10)</button>
+                    <!-- HIIT PRESET ADDITION: Gibala -->
+                    <button class="quick-select-btn" 
+                            data-work="60" 
+                            data-rest="75" 
+                            data-rounds="8" 
+                            data-warmup="180" 
+                            data-cooldown="300" 
+                            data-sets="1"
+                            data-preset="gibala"
+                            aria-label="Gibala: 60 seconds work, 75 seconds rest, 8 rounds">Gibala</button>
+                    <!-- HIIT PRESET ADDITION: 40/20 -->
+                    <button class="quick-select-btn" 
+                            data-work="40" 
+                            data-rest="20" 
+                            data-rounds="10" 
+                            data-warmup="180" 
+                            data-cooldown="300" 
+                            data-sets="1"
+                            data-preset="4020"
+                            aria-label="40/20: 40 seconds work, 20 seconds rest, 10 rounds">40/20 ×10</button>
+                    <!-- HIIT PRESET ADDITION: 20/40 -->
+                    <button class="quick-select-btn" 
+                            data-work="20" 
+                            data-rest="40" 
+                            data-rounds="10" 
+                            data-warmup="180" 
+                            data-cooldown="300" 
+                            data-sets="1"
+                            data-preset="2040"
+                            aria-label="20/40: 20 seconds work, 40 seconds rest, 10 rounds">20/40 ×10</button>
+                    <!-- HIIT PRESET ADDITION: 60/60 -->
+                    <button class="quick-select-btn" 
+                            data-work="60" 
+                            data-rest="60" 
+                            data-rounds="10" 
+                            data-warmup="180" 
+                            data-cooldown="300" 
+                            data-sets="1"
+                            data-preset="6060"
+                            aria-label="60/60: 60 seconds work, 60 seconds rest, 10 rounds">60/60 ×10</button>
+                    <!-- HIIT PRESET ADDITION: 45/45 -->
+                    <button class="quick-select-btn" 
+                            data-work="45" 
+                            data-rest="45" 
+                            data-rounds="10" 
+                            data-warmup="180" 
+                            data-cooldown="300" 
+                            data-sets="1"
+                            data-preset="4545"
+                            aria-label="45/45: 45 seconds work, 45 seconds rest, 10 rounds">45/45 ×10</button>
+                    <!-- HIIT PRESET ADDITION: Sprint SIT -->
+                    <button class="quick-select-btn" 
+                            data-work="30" 
+                            data-rest="240" 
+                            data-rounds="4" 
+                            data-warmup="180" 
+                            data-cooldown="300" 
+                            data-sets="1"
+                            data-preset="sprintsit"
+                            aria-label="Sprint SIT: 30 seconds work, 240 seconds rest, 4 rounds">Sprint SIT (30/240 ×4)</button>
                 </div>
             </div>
         </div>
@@ -1344,48 +1321,6 @@
             <button class="drawer-close" onclick="closeDrawer()" aria-label="Close drawer">×</button>
         </div>
         <div class="drawer-content">
-            <!-- Select Workout (same functionality as quick-interval; titles/descriptions stay from quick-hiit presets) -->
-            <div class="drawer-section">
-                <h3>Select Workout</h3>
-                <div class="input-group">
-                    <label for="presetSelect">Preset</label>
-                    <select
-                        id="presetSelect"
-                        class="preset-select"
-                        aria-label="Select preset workout"
-                    >
-                        <option value="custom" selected>Custom</option>
-                        <optgroup label="Workout Presets">
-                            <option value="tabata">Tabata</option>
-                            <option value="emom">EMOM</option>
-                            <option value="little">Little Method</option>
-                            <option value="gibala">Gibala</option>
-                            <option value="norwegian">Norwegian 4x4</option>
-                        </optgroup>
-                        <optgroup label="Time Presets">
-                            <option value="30/30">30/30</option>
-                            <option value="45/15">45/15</option>
-                            <option value="60/30">60/30</option>
-                            <option value="45/45">45/45</option>
-                            <option value="60/60">60/60</option>
-                            <option value="30/60">30/60</option>
-                            <option value="20/10">20/10</option>
-                            <option value="40/20">40/20</option>
-                            <option value="90/30">90/30</option>
-                            <option value="2:00/1:00">2:00/1:00</option>
-                            <option value="3:00/1:00">3:00/1:00</option>
-                            <option value="1:00/30">1:00/30</option>
-                        </optgroup>
-                    </select>
-                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.5rem;">
-                        Choose a preset to fill work, rest, rounds, sets, prep countdown, and cool-down. Or choose Custom to build your own HIIT workout.
-                    </p>
-                    <div class="current-preset-display" id="currentPresetDisplay">
-                        Current Timer: <strong>Custom</strong>
-                    </div>
-                </div>
-            </div>
-
             <!-- Setup Content -->
             <div class="drawer-section">
                 <h3>Setup Content</h3>
@@ -1430,15 +1365,40 @@
                     <input 
                         type="text" 
                         id="doneMessageInput" 
-                        class="custom-time-input" 
+                        class="custom-time-input"
                         maxlength="14"
-                        value="Completed"
-                        placeholder="Completed"
+                        value="Complete"
+                        placeholder="Complete"
                         aria-label="Completion message"
                     >
                     <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
                         <span id="doneMessageCharCount">0</span>/14
                     </p>
+                </div>
+                
+                <!-- HIIT ADDITION: Preset selector dropdown -->
+                <div class="input-group">
+                    <label for="presetSelect">Timer Preset</label>
+                    <select 
+                        id="presetSelect" 
+                        class="preset-select"
+                        aria-label="Select timer preset"
+                    >
+                        <option value="custom" selected>Custom</option>
+                        <option value="tabata">Tabata</option>
+                        <option value="3030">30/30</option>
+                        <option value="4x4">4×4 Norwegian</option>
+                        <option value="littlemethod">Little Method</option>
+                        <option value="gibala">Gibala</option>
+                        <option value="4020">40/20</option>
+                        <option value="2040">20/40</option>
+                        <option value="6060">60/60</option>
+                        <option value="4545">45/45</option>
+                        <option value="sprintsit">Sprint SIT</option>
+                    </select>
+                    <div class="current-preset-display" id="currentPresetDisplay">
+                        Current Timer: <strong>Custom</strong>
+                    </div>
                 </div>
                 
                 <!-- Work Time -->
@@ -1531,7 +1491,7 @@
                             type="text" 
                             id="warmupTimeInput" 
                             class="custom-time-input" 
-                            value="00:00"
+                            value="00:10"
                             pattern="[0-9]{2}:[0-9]{2}"
                             placeholder="MM:SS"
                             aria-label="Prep countdown"
@@ -1682,16 +1642,6 @@
         const roundsInput = document.getElementById('roundsInput');
         const roundsDecreaseBtn = document.getElementById('roundsDecreaseBtn');
         const roundsIncreaseBtn = document.getElementById('roundsIncreaseBtn');
-        const roundsInputMain = document.getElementById('roundsInputMain');
-        const roundsDecreaseBtnMain = document.getElementById('roundsDecreaseBtnMain');
-        const roundsIncreaseBtnMain = document.getElementById('roundsIncreaseBtnMain');
-        const setsInputMain = document.getElementById('setsInputMain');
-        const setsDecreaseBtnMain = document.getElementById('setsDecreaseBtnMain');
-        const setsIncreaseBtnMain = document.getElementById('setsIncreaseBtnMain');
-        const roundsSetsBlockMain = document.getElementById('roundsSetsBlockMain');
-        const setRestTimeInputMain = document.getElementById('setRestTimeInputMain');
-        const setRestDecrease10BtnMain = document.getElementById('setRestDecrease10BtnMain');
-        const setRestIncrease10BtnMain = document.getElementById('setRestIncrease10BtnMain');
         
         // Time adjustment buttons - minutes and seconds
         const workMinDecreaseBtn = document.getElementById('workMinDecreaseBtn');
@@ -1709,7 +1659,6 @@
         const setsInput = document.getElementById('setsInput');
         const setRestTimeInput = document.getElementById('setRestTimeInput');
         const setRestGroup = document.getElementById('setRestGroup');
-        const setRestGroupMain = document.getElementById('setRestGroupMain');
         const totalTimeDisplay = document.getElementById('totalTimeDisplay');
         const warmupMinDecreaseBtn = document.getElementById('warmupMinDecreaseBtn');
         const warmupMinIncreaseBtn = document.getElementById('warmupMinIncreaseBtn');
@@ -1747,12 +1696,12 @@
         function getDoneMessage() {
             const saved = localStorage.getItem('quick-hiit-doneMessage');
             if (saved) return saved;
-            return doneMessageInput ? (doneMessageInput.value || 'Completed') : 'Completed';
+            return doneMessageInput ? (doneMessageInput.value || 'Complete') : 'Complete';
         }
         
         function setDoneMessage(value) {
             const v = (value || '').trim();
-            localStorage.setItem('quick-hiit-doneMessage', v ? v : 'Completed');
+            localStorage.setItem('quick-hiit-doneMessage', v ? v : 'Complete');
         }
         
         // Parse MM:SS format to seconds
@@ -1898,16 +1847,6 @@
             setRestMinIncreaseBtn.disabled = true;
             setRestSecDecreaseBtn.disabled = true;
             setRestSecIncreaseBtn.disabled = true;
-            // Disable main-page rounds/sets
-            if (roundsInputMain) roundsInputMain.disabled = true;
-            if (roundsDecreaseBtnMain) roundsDecreaseBtnMain.disabled = true;
-            if (roundsIncreaseBtnMain) roundsIncreaseBtnMain.disabled = true;
-            if (setsInputMain) setsInputMain.disabled = true;
-            if (setsDecreaseBtnMain) setsDecreaseBtnMain.disabled = true;
-            if (setsIncreaseBtnMain) setsIncreaseBtnMain.disabled = true;
-            if (setRestTimeInputMain) setRestTimeInputMain.disabled = true;
-            if (setRestDecrease10BtnMain) setRestDecrease10BtnMain.disabled = true;
-            if (setRestIncrease10BtnMain) setRestIncrease10BtnMain.disabled = true;
             // Disable preset select
             presetSelect.disabled = true;
             // Workout title and notes
@@ -1951,16 +1890,6 @@
             // Sets buttons
             setsDecreaseBtn.disabled = false;
             setsIncreaseBtn.disabled = false;
-            // Enable main-page rounds/sets
-            if (roundsInputMain) roundsInputMain.disabled = false;
-            if (roundsDecreaseBtnMain) roundsDecreaseBtnMain.disabled = false;
-            if (roundsIncreaseBtnMain) roundsIncreaseBtnMain.disabled = false;
-            if (setsInputMain) setsInputMain.disabled = false;
-            if (setsDecreaseBtnMain) setsDecreaseBtnMain.disabled = false;
-            if (setsIncreaseBtnMain) setsIncreaseBtnMain.disabled = false;
-            if (setRestTimeInputMain) setRestTimeInputMain.disabled = false;
-            if (setRestDecrease10BtnMain) setRestDecrease10BtnMain.disabled = false;
-            if (setRestIncrease10BtnMain) setRestIncrease10BtnMain.disabled = false;
             // Time adjustment buttons - Set Rest
             setRestMinDecreaseBtn.disabled = false;
             setRestMinIncreaseBtn.disabled = false;
@@ -1976,24 +1905,93 @@
         
         // HIIT ADDITION: Preset configurations
         const presets = {
-            // Same order and parameters as quick-interval.html (workout presets then time presets)
-            tabata:     { workTime: 20,  restTime: 10,  rounds: 8, warmup: 10, cooldown: 60, sets: 1, title: 'Tabata Protocol', description: '20 s high-intensity work / 10 s rest × 8 rounds. Classic interval structure shown to improve VO2 max in a short session.' },
-            emom:       { workTime: 40,  restTime: 20,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: 'EMOM Interval', description: '40 s work / 20 s rest every minute. High-intensity format used in circuits; supports VO2 max development with repeated efforts.' },
-            little:     { workTime: 60,  restTime: 75,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: 'Little Method', description: '60 s high-intensity work / 75 s rest. Interval pattern from research demonstrating significant VO2 max gains.' },
-            gibala:     { workTime: 60,  restTime: 75,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: 'Gibala Protocol', description: '60 s high-intensity work / 75 s rest. Evidence-based HIIT method effective for increasing VO2 max.' },
-            norwegian:  { workTime: 240, restTime: 180, rounds: 8, warmup: 10, cooldown: 60, sets: 1, title: 'Norwegian 4×4', description: '4 min high-intensity work / 3 min active recovery × 4 rounds. Well-studied protocol for improving VO2 max.' },
-            '30/30':    { workTime: 30,  restTime: 30,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: '30/30 Interval', description: '30 s high-intensity work / 30 s rest. Balanced HIIT ratio that can contribute to VO2 max improvement.' },
-            '45/15':    { workTime: 45,  restTime: 15,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: '45/15 Interval', description: '45 s high-intensity work / 15 s rest. Short-recovery format suitable for VO2 max training.' },
-            '60/30':    { workTime: 60,  restTime: 30,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: '60/30 Interval', description: '60 s high-intensity work / 30 s rest. Moderate-duration efforts effective for VO2 max gains.' },
-            '45/45':    { workTime: 45,  restTime: 45,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: '45/45 Interval', description: '45 s high-intensity work / 45 s rest. Equal work–rest ratio used in VO2 max-focused sessions.' },
-            '60/60':    { workTime: 60,  restTime: 60,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: '60/60 Interval', description: '60 s high-intensity work / 60 s rest. Allows repeated high-effort intervals to support VO2 max.' },
-            '30/60':    { workTime: 30,  restTime: 60,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: '30/60 Interval', description: '30 s high-intensity work / 60 s rest. Shorter bursts with longer recovery; useful for VO2 max work.' },
-            '20/10':    { workTime: 20,  restTime: 10,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: '20/10 Interval', description: '20 s high-intensity work / 10 s rest. Very short, intense efforts linked to VO2 max improvement.' },
-            '40/20':    { workTime: 40,  restTime: 20,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: '40/20 Interval', description: '40 s high-intensity work / 20 s rest. Common ratio in protocols that enhance VO2 max.' },
-            '90/30':    { workTime: 90,  restTime: 30,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: '90/30 Interval', description: '90 s high-intensity work / 30 s rest. Longer efforts suitable for VO2 max development.' },
-            '2:00/1:00': { workTime: 120, restTime: 60, rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: '2:00/1:00 Interval', description: '2 min high-intensity work / 1 min rest. Extended intervals effective for VO2 max gains.' },
-            '3:00/1:00': { workTime: 180, restTime: 60, rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: '3:00/1:00 Interval', description: '3 min high-intensity work / 1 min rest. Longer high-effort rounds shown to improve VO2 max.' },
-            '1:00/30':   { workTime: 60,  restTime: 30,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: '1:00/30 Interval', description: '60 s high-intensity work / 30 s rest. Moderate-length efforts that support VO2 max training.' }
+            tabata: {
+                workTime: 20,
+                restTime: 10,
+                rounds: 8,
+                warmup: 0,
+                cooldown: 0,
+                sets: 1
+            },
+            '3030': {
+                workTime: 30,
+                restTime: 30,
+                rounds: 10,
+                warmup: 0,
+                cooldown: 0,
+                sets: 1
+            },
+            '4x4': {
+                workTime: 240, // 4 minutes
+                restTime: 180, // 3 minutes
+                rounds: 4,
+                warmup: 60, // 1 minute
+                cooldown: 60, // 1 minute
+                sets: 1
+            },
+            // HIIT PRESET ADDITION: Little Method
+            'littlemethod': {
+                workTime: 60, // 60 seconds
+                restTime: 75, // 75 seconds
+                rounds: 10,
+                warmup: 180, // 3 minutes
+                cooldown: 300, // 5 minutes
+                sets: 1
+            },
+            // HIIT PRESET ADDITION: Gibala
+            'gibala': {
+                workTime: 60, // 60 seconds
+                restTime: 75, // 75 seconds
+                rounds: 8,
+                warmup: 180, // 3 minutes
+                cooldown: 300, // 5 minutes
+                sets: 1
+            },
+            // HIIT PRESET ADDITION: 40/20
+            '4020': {
+                workTime: 40, // 40 seconds
+                restTime: 20, // 20 seconds
+                rounds: 10,
+                warmup: 180, // 3 minutes
+                cooldown: 300, // 5 minutes
+                sets: 1
+            },
+            // HIIT PRESET ADDITION: 20/40
+            '2040': {
+                workTime: 20, // 20 seconds
+                restTime: 40, // 40 seconds
+                rounds: 10,
+                warmup: 180, // 3 minutes
+                cooldown: 300, // 5 minutes
+                sets: 1
+            },
+            // HIIT PRESET ADDITION: 60/60
+            '6060': {
+                workTime: 60, // 60 seconds
+                restTime: 60, // 60 seconds
+                rounds: 10,
+                warmup: 180, // 3 minutes
+                cooldown: 300, // 5 minutes
+                sets: 1
+            },
+            // HIIT PRESET ADDITION: 45/45
+            '4545': {
+                workTime: 45, // 45 seconds
+                restTime: 45, // 45 seconds
+                rounds: 10,
+                warmup: 180, // 3 minutes
+                cooldown: 300, // 5 minutes
+                sets: 1
+            },
+            // HIIT PRESET ADDITION: Sprint SIT
+            'sprintsit': {
+                workTime: 30, // 30 seconds
+                restTime: 240, // 240 seconds (4 minutes)
+                rounds: 4,
+                warmup: 180, // 3 minutes
+                cooldown: 300, // 5 minutes
+                sets: 1
+            }
         };
         
         // HIIT ADDITION: Get preset display name
@@ -2001,22 +1999,15 @@
             const displayNames = {
                 'custom': 'Custom',
                 'tabata': 'Tabata',
-                'emom': 'EMOM',
-                'little': 'Little Method',
+                '3030': '30/30',
+                '4x4': '4×4 Norwegian',
+                'littlemethod': 'Little Method',
                 'gibala': 'Gibala',
-                'norwegian': 'Norwegian 4x4',
-                '30/30': '30/30',
-                '45/15': '45/15',
-                '60/30': '60/30',
-                '45/45': '45/45',
-                '60/60': '60/60',
-                '30/60': '30/60',
-                '20/10': '20/10',
-                '40/20': '40/20',
-                '90/30': '90/30',
-                '2:00/1:00': '2:00/1:00',
-                '3:00/1:00': '3:00/1:00',
-                '1:00/30': '1:00/30'
+                '4020': '40/20',
+                '2040': '20/40',
+                '6060': '60/60',
+                '4545': '45/45',
+                'sprintsit': 'Sprint SIT'
             };
             return displayNames[presetName] || 'Custom';
         }
@@ -2038,14 +2029,10 @@
             updateCurrentPresetDisplay(presetName);
             
             if (presetName === 'custom') {
-                updateRoundsSetsBlockVisibility(); // Hide panel when cleared
                 return; // Don't change inputs for custom
             }
             
             const preset = presets[presetName];
-            
-            // Show panel first, then populate with this preset’s values (clears previous preset’s values)
-            updateRoundsSetsBlockVisibility();
             
             // Update inputs
             workTimeInput.value = formatTime(preset.workTime);
@@ -2054,15 +2041,6 @@
             warmupTimeInput.value = formatTime(preset.warmup);
             cooldownTimeInput.value = formatTime(preset.cooldown);
             setsInput.value = preset.sets;
-            syncRoundsSetsToMain();
-            syncSetRestToMain();
-            
-            const title = preset.title || '';
-            const description = preset.description || '';
-            if (workoutTitleInput) workoutTitleInput.value = title;
-            if (workoutDescriptionInput) workoutDescriptionInput.value = description;
-            updateCharCounts();
-            updateWorkoutDisplay();
             
             // Update variables
             workTime = preset.workTime;
@@ -2109,45 +2087,12 @@
             totalTimeDisplay.textContent = 'Total: ' + formatTime(total);
         }
         
-        // HIIT ADDITION: Update set rest visibility (drawer and main page)
+        // HIIT ADDITION: Update set rest visibility
         function updateSetRestVisibility() {
             if (totalSets > 1) {
                 setRestGroup.style.display = 'block';
-                if (setRestGroupMain) setRestGroupMain.style.display = 'block';
             } else {
                 setRestGroup.style.display = 'none';
-                if (setRestGroupMain) setRestGroupMain.style.display = 'none';
-            }
-        }
-        
-        // HIIT ADDITION: Sync main-page rounds/sets from drawer (single source of truth: roundsInput, setsInput)
-        function syncRoundsSetsToMain() {
-            if (roundsInputMain) roundsInputMain.value = roundsInput.value;
-            if (setsInputMain) setsInputMain.value = setsInput.value;
-        }
-        
-        // HIIT ADDITION: Sync main-page set rest from drawer
-        function syncSetRestToMain() {
-            if (setRestTimeInputMain && setRestTimeInput) setRestTimeInputMain.value = setRestTimeInput.value;
-        }
-        
-        // HIIT ADDITION: Adjust set rest time by ±10 seconds (used by main-page −10 / +10 buttons)
-        function adjustSetRestBySeconds(delta) {
-            if (isRunning) return;
-            const current = parseTime(setRestTimeInput ? setRestTimeInput.value : '00:00');
-            const newSec = Math.max(0, current + delta);
-            const formatted = formatTime(newSec);
-            if (setRestTimeInput) setRestTimeInput.value = formatted;
-            if (setRestTimeInputMain) setRestTimeInputMain.value = formatted;
-            setRestTime = newSec;
-            resetTimer();
-            updateTotalTime();
-        }
-        
-        // HIIT ADDITION: Show Rounds/Sets block only when a workout preset is selected; hide when cleared
-        function updateRoundsSetsBlockVisibility() {
-            if (roundsSetsBlockMain) {
-                roundsSetsBlockMain.style.display = (selectedPreset !== 'custom') ? 'block' : 'none';
             }
         }
 
@@ -2212,7 +2157,7 @@
                 phaseLabel.classList.add('rest');
                 phaseLabel.style.color = 'rgb(var(--muted-foreground))';
             } else if (isWorkPhase) {
-                phaseLabel.textContent = 'HIIT Timer';
+                phaseLabel.textContent = 'HIGH INTENSITY';
                 phaseLabel.classList.add('work-intense');
                 phaseLabel.style.color = 'rgb(var(--primary))';
             } else {
@@ -2478,7 +2423,7 @@
             updateTotalTime();
         }
         
-        // Clear timer: clean slate – stop timer, zero all drawer/settings data and runtime state
+        // Clear timer (sets to 00:00)
         function clearTimer() {
             // Stop the timer first
             clearInterval(interval);
@@ -2486,28 +2431,21 @@
             isRunning = false;
             isPaused = false;
             
-            // Zero out all timer inputs (drawer and main page)
+            // Zero out all values
             workTimeInput.value = '00:00';
             restTimeInput.value = '00:00';
             roundsInput.value = '0';
+            // HIIT ADDITION: Clear new inputs
             warmupTimeInput.value = '00:00';
             cooldownTimeInput.value = '00:00';
             setsInput.value = '1';
             setRestTimeInput.value = '02:00';
-            syncRoundsSetsToMain();
-            syncSetRestToMain();
-            
-            // Clear all settings panel data (workout title, notes, completion message)
-            if (workoutTitleInput) workoutTitleInput.value = '';
-            if (workoutDescriptionInput) workoutDescriptionInput.value = '';
-            if (doneMessageInput) doneMessageInput.value = 'Completed';
-            updateCharCounts();
-            updateWorkoutDisplay();
             
             // Reset timer state to zero
             workTime = 0;
             restTime = 0;
             totalRounds = 0;
+            // HIIT ADDITION: Reset new state
             warmupTime = 0;
             cooldownTime = 0;
             totalSets = 1;
@@ -2518,12 +2456,14 @@
             currentPhase = 'work';
             isWorkPhase = true;
             
-            // Clear selected quick preset buttons and reset to Custom (hides rounds/sets panel)
+            // Clear selected quick preset buttons
             const quickPresetButtons = document.querySelectorAll('.quick-select-btn[data-work][data-rest]');
             quickPresetButtons.forEach(b => b.classList.remove('selected'));
+            
+            // HIIT ADDITION: Reset to custom preset
             applyPreset('custom');
             
-            // Update display (enable inputs, show Set Up button)
+            // Update display (this will enable inputs and show Set Up button)
             updateDisplay();
             updateTotalTime();
         }
@@ -2634,7 +2574,6 @@
             rounds = Math.max(0, rounds - 1);
             roundsInput.value = rounds;
             totalRounds = rounds;
-            syncRoundsSetsToMain();
             if (!isRunning) {
                 resetTimer();
                 updateDisplay(); // Update button visibility based on validity
@@ -2648,7 +2587,6 @@
             rounds = Math.min(99, rounds + 1);
             roundsInput.value = rounds;
             totalRounds = rounds;
-            syncRoundsSetsToMain();
             if (!isRunning) {
                 resetTimer();
                 updateDisplay(); // Update button visibility based on validity
@@ -2680,7 +2618,6 @@
         roundsInput.addEventListener('input', function() {
             if (!isRunning) {
                 totalRounds = parseInt(this.value) || 0;
-                syncRoundsSetsToMain();
                 resetTimer();
                 updateDisplay(); // Update button visibility based on validity
                 updateTotalTime();
@@ -2711,21 +2648,13 @@
                 // Get preset name from button, or default to 'custom'
                 const presetName = this.getAttribute('data-preset') || 'custom';
                 
-                // Set preset first so visibility and display reflect the selected preset immediately (one-click show)
-                selectedPreset = presetName;
-                presetSelect.value = presetName;
-                updateCurrentPresetDisplay(presetName);
-                
-                // Update all inputs (clears to zero/previous then populates with this preset’s values)
+                // Update all inputs
                 workTimeInput.value = formatTime(workSeconds);
                 restTimeInput.value = formatTime(restSeconds);
                 roundsInput.value = rounds;
                 warmupTimeInput.value = formatTime(warmupSeconds);
                 cooldownTimeInput.value = formatTime(cooldownSeconds);
                 setsInput.value = sets;
-                syncRoundsSetsToMain();
-                syncSetRestToMain();
-                updateRoundsSetsBlockVisibility();
                 
                 // Update timer state
                 workTime = workSeconds;
@@ -2735,16 +2664,13 @@
                 cooldownTime = cooldownSeconds;
                 totalSets = sets;
                 
+                // Update preset selection
+                selectedPreset = presetName;
+                presetSelect.value = presetName;
+                updateCurrentPresetDisplay(presetName);
+                
                 // Update set rest visibility
                 updateSetRestVisibility();
-                
-                const preset = presets[presetName];
-                const title = this.getAttribute('data-title') || (preset && preset.title) || '';
-                const description = this.getAttribute('data-description') || (preset && preset.description) || '';
-                if (workoutTitleInput) workoutTitleInput.value = title;
-                if (workoutDescriptionInput) workoutDescriptionInput.value = description;
-                updateCharCounts();
-                updateWorkoutDisplay();
                 
                 // Update selected button state
                 quickPresetButtons.forEach(b => b.classList.remove('selected'));
@@ -2797,7 +2723,6 @@
             sets = Math.max(1, sets - 1);
             setsInput.value = sets;
             totalSets = sets;
-            syncRoundsSetsToMain();
             updateSetRestVisibility();
             if (!isRunning) {
                 resetTimer();
@@ -2811,7 +2736,6 @@
             sets = Math.min(10, sets + 1);
             setsInput.value = sets;
             totalSets = sets;
-            syncRoundsSetsToMain();
             updateSetRestVisibility();
             if (!isRunning) {
                 resetTimer();
@@ -2819,125 +2743,21 @@
             }
         });
         
-        // Main-page rounds/sets: sync with drawer and respond to changes
-        if (roundsDecreaseBtnMain) {
-            roundsDecreaseBtnMain.addEventListener('click', function() {
-                if (isRunning) return;
-                let rounds = parseInt(roundsInput.value) || 0;
-                rounds = Math.max(0, rounds - 1);
-                roundsInput.value = rounds;
-                totalRounds = rounds;
-                syncRoundsSetsToMain();
-                resetTimer();
-                updateDisplay();
-                updateTotalTime();
-            });
-        }
-        if (roundsIncreaseBtnMain) {
-            roundsIncreaseBtnMain.addEventListener('click', function() {
-                if (isRunning) return;
-                let rounds = parseInt(roundsInput.value) || 0;
-                rounds = Math.min(99, rounds + 1);
-                roundsInput.value = rounds;
-                totalRounds = rounds;
-                syncRoundsSetsToMain();
-                resetTimer();
-                updateDisplay();
-                updateTotalTime();
-            });
-        }
-        if (roundsInputMain) {
-            roundsInputMain.addEventListener('input', function() {
-                if (!isRunning) {
-                    totalRounds = parseInt(this.value) || 0;
-                    roundsInput.value = this.value;
-                    syncRoundsSetsToMain();
-                    resetTimer();
-                    updateDisplay();
-                    updateTotalTime();
-                }
-            });
-        }
-        if (setsDecreaseBtnMain) {
-            setsDecreaseBtnMain.addEventListener('click', function() {
-                if (isRunning) return;
-                let sets = parseInt(setsInput.value) || 1;
-                sets = Math.max(1, sets - 1);
-                setsInput.value = sets;
-                totalSets = sets;
-                syncRoundsSetsToMain();
-                updateSetRestVisibility();
-                resetTimer();
-                updateTotalTime();
-            });
-        }
-        if (setsIncreaseBtnMain) {
-            setsIncreaseBtnMain.addEventListener('click', function() {
-                if (isRunning) return;
-                let sets = parseInt(setsInput.value) || 1;
-                sets = Math.min(10, sets + 1);
-                setsInput.value = sets;
-                totalSets = sets;
-                syncRoundsSetsToMain();
-                updateSetRestVisibility();
-                resetTimer();
-                updateTotalTime();
-            });
-        }
-        if (setsInputMain) {
-            setsInputMain.addEventListener('input', function() {
-                if (!isRunning) {
-                    totalSets = Math.max(1, Math.min(10, parseInt(this.value) || 1));
-                    this.value = totalSets;
-                    setsInput.value = totalSets;
-                    syncRoundsSetsToMain();
-                    updateSetRestVisibility();
-                    resetTimer();
-                    updateTotalTime();
-                }
-            });
-        }
-        if (setRestTimeInputMain) {
-            setRestTimeInputMain.addEventListener('input', function() {
-                if (!isRunning) {
-                    validateTimeInput(this);
-                    setRestTime = parseTime(this.value);
-                    if (setRestTimeInput) setRestTimeInput.value = this.value;
-                    resetTimer();
-                    updateTotalTime();
-                }
-            });
-        }
-        if (setRestDecrease10BtnMain) {
-            setRestDecrease10BtnMain.addEventListener('click', function() {
-                adjustSetRestBySeconds(-10);
-            });
-        }
-        if (setRestIncrease10BtnMain) {
-            setRestIncrease10BtnMain.addEventListener('click', function() {
-                adjustSetRestBySeconds(10);
-            });
-        }
-        
         // HIIT ADDITION: Set rest time adjustment
         setRestMinDecreaseBtn.addEventListener('click', function() {
             adjustTimeMinutes(setRestTimeInput, false);
-            syncSetRestToMain();
         });
         
         setRestMinIncreaseBtn.addEventListener('click', function() {
             adjustTimeMinutes(setRestTimeInput, true);
-            syncSetRestToMain();
         });
         
         setRestSecDecreaseBtn.addEventListener('click', function() {
             adjustTimeSeconds(setRestTimeInput, false);
-            syncSetRestToMain();
         });
         
         setRestSecIncreaseBtn.addEventListener('click', function() {
             adjustTimeSeconds(setRestTimeInput, true);
-            syncSetRestToMain();
         });
         
         // HIIT ADDITION: Input event listeners for new inputs
@@ -2963,7 +2783,6 @@
             if (!isRunning) {
                 totalSets = Math.max(1, Math.min(10, parseInt(this.value) || 1));
                 this.value = totalSets;
-                syncRoundsSetsToMain();
                 updateSetRestVisibility();
                 resetTimer();
                 updateTotalTime();
@@ -2974,7 +2793,6 @@
             validateTimeInput(this);
             if (!isRunning) {
                 setRestTime = parseTime(this.value);
-                syncSetRestToMain();
                 resetTimer();
                 updateTotalTime();
             }
@@ -3039,9 +2857,6 @@
         presetSelect.value = selectedPreset;
         updateCurrentPresetDisplay(selectedPreset);
         updateSetRestVisibility();
-        syncRoundsSetsToMain();
-        syncSetRestToMain();
-        updateRoundsSetsBlockVisibility();
         updateTotalTime();
         updateDisplay();
         

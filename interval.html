@@ -1096,8 +1096,8 @@
                         id="doneMessageInput" 
                         class="custom-time-input"
                         maxlength="14"
-                        value="completed"
-                        placeholder="completed"
+                        value="Completed"
+                        placeholder="Completed"
                         aria-label="Completion message"
                     >
                     <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
@@ -1121,7 +1121,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.15</p>
+                <p><strong>Version:</strong> v0.16</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -1565,13 +1565,13 @@
         // Get completion message from localStorage or use default
         function getDoneMessage() {
             const saved = localStorage.getItem('interval-doneMessage');
-            return saved || 'completed';
+            return saved || 'Completed';
         }
         
         // Save completion message to localStorage
         function saveDoneMessage(message) {
             const v = (message || '').trim();
-            localStorage.setItem('interval-doneMessage', v ? v : 'completed');
+            localStorage.setItem('interval-doneMessage', v ? v : 'Completed');
         }
         
         // Shrink text until it fits on one line (mobile-safe)

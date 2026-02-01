@@ -1162,9 +1162,9 @@
                         type="text" 
                         id="completionMessageInput" 
                         class="custom-time-input" 
-                        value="Complete"
+                        value="Completed"
                         maxlength="14"
-                        placeholder="Enter message..."
+                        placeholder="Completed"
                         aria-label="Completion message"
                     >
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
@@ -1202,7 +1202,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.17</p>
+                <p><strong>Version:</strong> v0.18</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -1608,7 +1608,7 @@
                             stopTimer();
                             playCompletionSound();
                             // Replace timer display with completion message
-                            const messageToShow = (completionMessage && completionMessage.trim()) ? completionMessage : 'Complete';
+                            const messageToShow = (completionMessage && completionMessage.trim()) ? completionMessage : 'Completed';
                             display.textContent = messageToShow;
                             // Use primary color to match timer display theme (daylight/nighttime)
                             display.style.color = 'rgb(var(--primary))';
@@ -2074,9 +2074,9 @@
             updateWorkoutDisplay();
             
             // Reset completion message to default
-            completionMessage = 'Complete';
-            completionMessageInput.value = 'Complete';
-            completionMessageCounter.textContent = '8/14';
+            completionMessage = 'Completed';
+            completionMessageInput.value = 'Completed';
+            completionMessageCounter.textContent = '9/14';
             completionMessageCounter.style.color = 'rgb(var(--muted-foreground))';
             
             // Exit custom mode

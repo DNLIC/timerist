@@ -1,0 +1,3198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <title>AMRAP Splits Timer - Timerist | Workout AMRAP Timer, Rounds & Reps</title>
+    <meta name="description" content="Enhanced AMRAP splits timer for workouts - track rounds or total reps with result entry. Support for circuit-style rounds and max reps modes.">
+    <link rel="stylesheet" href="styles/timerist-design-system.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Define drawer functions immediately in head
+        window.toggleDrawer = function() {
+            const drawer = document.getElementById('settingsDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+            if (drawer && overlay) {
+                drawer.classList.toggle('open');
+                overlay.classList.toggle('open');
+            }
+        };
+        
+        window.closeDrawer = function() {
+            const drawer = document.getElementById('settingsDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+            if (drawer && overlay) {
+                drawer.classList.remove('open');
+                overlay.classList.remove('open');
+            }
+        };
+    </script>
+    <style>
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        :root {
+            --background: 245 247 250;
+            --foreground: 51 51 51;
+            --card: 255 255 255;
+            --card-foreground: 51 51 51;
+            --primary: 74 144 226;
+            --primary-foreground: 255 255 255;
+            --secondary: 80 200 120;
+            --secondary-foreground: 255 255 255;
+            --muted: 102 102 102;
+            --muted-foreground: 153 153 153;
+            --accent: 225 232 237;
+            --accent-foreground: 51 51 51;
+            --destructive: 231 76 60;
+            --destructive-foreground: 255 255 255;
+            --border: 225 232 237;
+            --input: 225 232 237;
+            --ring: 74 144 226;
+            --radius: 0.5rem;
+        }
+        
+        html.dark {
+            --background: 0 0 0;
+            --foreground: 255 255 255;
+            --card: 26 26 26;
+            --card-foreground: 255 255 255;
+            --primary: 255 0 0;
+            --primary-foreground: 255 255 255;
+            --secondary: 0 255 0;
+            --secondary-foreground: 0 0 0;
+            --muted: 204 204 204;
+            --muted-foreground: 153 153 153;
+            --accent: 51 51 51;
+            --accent-foreground: 255 255 255;
+            --destructive: 255 0 0;
+            --destructive-foreground: 255 255 255;
+            --border: 51 51 51;
+            --input: 51 51 51;
+            --ring: 255 0 0;
+        }
+        
+        body {
+            background: rgb(var(--background));
+            color: rgb(var(--foreground));
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        .container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            max-width: 1200px;
+            padding: 1rem;
+            margin: 0 auto;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .timer-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            overflow-x: hidden;
+            margin-top: clamp(3.75rem, 6vw, 4.5rem);
+            width: 100%;
+        }
+        
+        @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+            .timer-container {
+                margin-top: clamp(3.5rem, 5vw, 4.25rem);
+            }
+        }
+        
+        @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+            .timer-container {
+                margin-top: clamp(3.5rem, 5.5vw, 4.25rem);
+            }
+        }
+        
+        @media (min-width: 1025px) {
+            .timer-container {
+                margin-top: clamp(3.5rem, 5vw, 4.25rem);
+            }
+        }
+        
+        @media (orientation: landscape) and (max-height: 500px) {
+            .timer-container {
+                margin-top: clamp(3.25rem, 5vw, 4rem) !important;
+                gap: 0.75rem !important;
+            }
+
+            .timer-display-block {
+                padding: 1rem !important;
+            }
+
+            .timer-display-large {
+                margin-bottom: 0.5rem !important;
+            }
+
+            #rounds {
+                margin-top: 0.5rem !important;
+            }
+
+            #workoutTitleDisplay {
+                padding-bottom: 0.5rem !important;
+                margin-bottom: 0.5rem !important;
+            }
+
+            #workoutDescriptionDisplay {
+                margin-top: 0.5rem !important;
+                padding-top: 0.5rem !important;
+            }
+
+            .timer-container .p-6 {
+                padding: 1rem !important;
+            }
+        }
+        
+        .bg-card { background-color: rgb(var(--card)); }
+        .text-foreground { color: rgb(var(--foreground)); }
+        .text-muted-foreground { color: rgb(var(--muted-foreground)); }
+        .bg-primary { background-color: rgb(var(--primary)); }
+        .text-primary-foreground { color: rgb(var(--primary-foreground)); }
+        .bg-secondary { background-color: rgb(var(--secondary)); }
+        .text-secondary-foreground { color: rgb(var(--secondary-foreground)); }
+        .bg-destructive { background-color: rgb(var(--destructive)); }
+        .text-destructive-foreground { color: rgb(var(--destructive-foreground)); }
+        .border-border { border-color: rgb(var(--border)); }
+        .hover\:bg-primary\/90:hover { background-color: rgba(var(--primary), 0.9); }
+        .hover\:bg-secondary\/90:hover { background-color: rgba(var(--secondary), 0.9); }
+        
+        .timer-display-large {
+            font-size: 4rem;
+            font-weight: 700;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
+            letter-spacing: -0.02em;
+            color: rgb(var(--primary));
+            transition: color 0.3s ease;
+            margin-bottom: 0;
+            word-break: keep-all;
+            overflow-wrap: normal;
+        }
+        
+        @media (min-width: 390px) {
+            .timer-display-large {
+                font-size: 5rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .timer-display-large {
+                font-size: 8rem;
+            }
+        }
+        
+        .timer-display-large.warning {
+            color: #f59e0b;
+        }
+        
+        .timer-display-large.danger {
+            color: rgb(var(--destructive));
+        }
+        
+        .timer-display-large.prepare {
+            color: #f59e0b;
+        }
+        
+        .timer-display-block {
+            padding: 1.5rem;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        
+        @media (min-width: 640px) {
+            .timer-display-block {
+                padding: 2rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .timer-display-block {
+                padding: 2rem;
+            }
+        }
+        
+        .control-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            white-space: nowrap;
+            flex-shrink: 1;
+        }
+        
+        @media (max-width: 390px) {
+            .control-btn {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.75rem;
+            }
+        }
+        
+        .control-buttons-container {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+        
+        @media (min-width: 390px) {
+            .control-buttons-container {
+                gap: 0.75rem;
+            }
+        }
+        
+        @media (min-width: 640px) {
+            .control-buttons-container {
+                gap: 1rem;
+            }
+        }
+        
+        .control-btn.btn-primary {
+            background-color: rgb(var(--primary));
+            color: rgb(var(--primary-foreground));
+        }
+        
+        .control-btn.btn-primary:hover:not(:disabled) {
+            background-color: rgba(var(--primary), 0.9);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        #startPauseBtn:hover:not(:disabled):not(.paused) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        html.dark #startPauseBtn:hover:not(:disabled):not(.paused) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        .control-btn.btn-primary.paused,
+        .control-btn.btn-primary.paused:hover,
+        .control-btn.btn-primary.paused:active,
+        .control-btn.btn-primary.paused:focus {
+            background-color: rgb(100, 100, 100) !important;
+            color: rgb(255, 255, 255) !important;
+        }
+        
+        html.dark .control-btn.btn-primary.paused,
+        html.dark .control-btn.btn-primary.paused:hover,
+        html.dark .control-btn.btn-primary.paused:active,
+        html.dark .control-btn.btn-primary.paused:focus {
+            background-color: rgb(150, 150, 150) !important;
+            color: rgb(0, 0, 0) !important;
+        }
+        
+        .control-btn.btn-secondary {
+            background-color: rgb(var(--secondary));
+            color: rgb(var(--secondary-foreground));
+        }
+        
+        .control-btn.btn-secondary:hover:not(:disabled) {
+            background-color: rgba(var(--secondary), 0.9);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        #setupBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        html.dark #setupBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        #clearBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        html.dark #clearBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        .control-btn.btn-destructive {
+            background-color: rgb(var(--destructive));
+            color: rgb(var(--destructive-foreground));
+        }
+        
+        .control-btn.btn-destructive:hover:not(:disabled) {
+            background-color: rgba(var(--destructive), 0.9);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        #resetBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        html.dark #resetBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        #complete-round:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        html.dark #complete-round:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        /* Export AMRAP button hover - match Mobility size/colors */
+        #exportWorkoutBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        html.dark #exportWorkoutBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        /* Import AMRAP button hover - match Mobility size/colors */
+        #importWorkoutBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        html.dark #importWorkoutBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        .control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        #cycleTimeToast {
+            transition: opacity 0.3s ease;
+        }
+        
+        .live-rep-entry-container {
+            border-radius: var(--radius);
+            background-color: rgb(var(--accent));
+            border: 1px solid rgb(var(--border));
+            padding: 0.5rem;
+        }
+        
+        .live-rep-entry-list {
+            /* Container for the list of cycle/exercise rows */
+        }
+        
+        .live-rep-entry-row {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.5rem;
+            margin-bottom: 0;
+            border-radius: 0;
+            background-color: rgb(var(--card));
+            border: none;
+            border-bottom: 1px solid rgb(var(--border));
+            transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+            font-weight: 600;
+            color: rgb(var(--foreground));
+            font-size: 1rem;
+            letter-spacing: -0.01em;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .live-rep-entry-row.active {
+            background-color: rgb(var(--primary));
+            color: rgb(var(--primary-foreground));
+            border-color: rgb(var(--primary));
+            box-shadow: 0 0 0 2px rgba(var(--primary), 0.4);
+            font-weight: 600;
+            animation: live-rep-active-pulse 2s ease-in-out infinite;
+        }
+        @keyframes live-rep-active-pulse {
+            0%, 100% { box-shadow: 0 0 0 2px rgba(var(--primary), 0.4); }
+            50% { box-shadow: 0 0 0 3px rgba(var(--primary), 0.6); }
+        }
+        
+        .live-rep-entry-row .label {
+            flex: 1 1 auto;
+            min-width: 0;
+            font-size: 1rem;
+            font-weight: 600;
+            color: rgb(var(--foreground));
+            letter-spacing: -0.01em;
+        }
+        
+        .live-rep-entry-row .controls {
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+            flex-shrink: 0;
+        }
+        
+        .live-rep-entry-row .rep-btn {
+            min-width: 2.75rem;
+            min-height: 2.75rem;
+            padding: 0.35rem 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: var(--radius);
+            border: 1px solid rgb(var(--input));
+            background-color: rgb(var(--background));
+            color: rgb(var(--foreground));
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        @media (min-width: 768px) {
+            .live-rep-entry-row .rep-btn {
+                min-width: 2.25rem;
+                min-height: 2.25rem;
+                padding: 0.25rem 0.35rem;
+                font-size: 0.75rem;
+            }
+        }
+        
+        .live-rep-entry-row .rep-btn:active {
+            transform: scale(0.96);
+        }
+        
+        .live-rep-entry-row .rep-input {
+            width: 3rem;
+            min-height: 2.75rem;
+            padding: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-align: center;
+            border-radius: var(--radius);
+            border: 1px solid rgb(var(--input));
+            background-color: rgb(var(--background));
+            color: rgb(var(--foreground));
+        }
+        @media (min-width: 768px) {
+            .live-rep-entry-row .rep-input {
+                width: 2.75rem;
+                min-height: 2.25rem;
+            }
+        }
+        
+        .live-rep-entry-sep {
+            height: 1px;
+            background-color: rgb(var(--border));
+            margin: 0;
+            min-height: 1px;
+        }
+        
+        /* Totals block below cycles (splits-style: bold text, hairline under each line) */
+        .result-entry-totals {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgb(var(--border));
+        }
+        .result-entry-totals-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: rgb(var(--foreground));
+            margin-bottom: 0.75rem;
+            text-align: left;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .result-entry-totals-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .result-entry-totals-list li {
+            padding: 0.5rem 0;
+            font-size: 1rem;
+            font-weight: 600;
+            color: rgb(var(--foreground));
+            border-bottom: 1px solid rgb(var(--border));
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            letter-spacing: -0.01em;
+        }
+        .result-entry-totals-list li:last-child {
+            border-bottom: none;
+        }
+        .result-entry-totals-list li.result-entry-totals-grand {
+            font-size: 1.125rem;
+            margin-top: 0.25rem;
+            padding-top: 0.5rem;
+        }
+        
+        .live-rep-totals {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: rgb(var(--foreground));
+            margin-bottom: 0.5rem;
+        }
+        
+        .hamburger-menu {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgb(var(--foreground));
+            font-size: 1.5rem;
+            transition: opacity 0.2s;
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius);
+            flex-shrink: 0;
+        }
+        
+        .hamburger-menu:hover {
+            opacity: 0.7;
+        }
+        
+        .settings-drawer {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            background: rgb(var(--card));
+            border-left: 1px solid rgb(var(--border));
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            z-index: 1002;
+            overflow-y: auto;
+        }
+        
+        .settings-drawer.open {
+            right: 0;
+        }
+        
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 1001;
+        }
+        
+        .drawer-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .drawer-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgb(var(--border));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .drawer-content {
+            padding: 1.5rem;
+        }
+        
+        .drawer-section {
+            margin-bottom: 2rem;
+        }
+        
+        .drawer-section h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: rgb(var(--foreground));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .drawer-section p {
+            color: rgb(var(--muted-foreground));
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        .drawer-close {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: rgb(var(--foreground));
+            padding: 0.25rem;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius);
+        }
+        
+        .drawer-close:hover {
+            opacity: 0.7;
+        }
+        
+        .custom-time-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid rgb(var(--input));
+            border-radius: var(--radius);
+            background-color: rgb(var(--background));
+            color: rgb(var(--foreground));
+            font-size: 1.125rem;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            min-height: 48px;
+        }
+        
+        .custom-time-input:focus {
+            outline: none;
+            border-color: rgb(var(--ring));
+            box-shadow: 0 0 0 2px rgba(var(--ring), 0.2);
+        }
+        
+        .custom-time-input[type="number"]::-webkit-inner-spin-button,
+        .custom-time-input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        .custom-time-input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        
+        .time-input-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        
+        .time-adjust-btn {
+            width: 44px;
+            height: 44px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            border: 2px solid rgb(var(--border));
+            border-radius: var(--radius);
+            background-color: rgb(var(--card));
+            color: rgb(var(--foreground));
+            cursor: pointer;
+            transition: opacity 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        
+        .time-adjust-btn:hover:not(:disabled) {
+            opacity: 0.7;
+        }
+        
+        .time-adjust-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .time-input-group input {
+            flex: 1;
+        }
+        
+        /* Stacked mobile-friendly row: +5 +1 [input] -5 -1 */
+        .time-input-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            flex-wrap: nowrap;
+        }
+        .time-input-row .time-adjust-btn {
+            flex-shrink: 0;
+        }
+        .time-input-row input {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        @media (max-width: 390px) {
+            .time-adjust-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.25rem;
+            }
+            
+            .time-input-group {
+                gap: 0.5rem;
+            }
+            
+            .time-input-row .time-adjust-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 0.875rem;
+            }
+            .time-input-row {
+                gap: 0.35rem;
+            }
+        }
+        
+        .timer-running .adjust-btn {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
+        .header-top {
+            position: absolute;
+            top: clamp(1rem, 3vw, 2rem);
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 clamp(1rem, 3vw, 2rem);
+            z-index: 10;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 0.5rem;
+            min-width: 0;
+        }
+        
+        .header-top > div:first-child {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 0;
+            flex-shrink: 1;
+            overflow: hidden;
+        }
+        
+        @media (max-width: 390px) {
+            .header-top {
+                padding: 0 0.75rem;
+            }
+            
+            .header-top > div:first-child {
+                gap: 0.5rem;
+            }
+            
+            .header-top .separator,
+            .header-top > div:first-child > a:nth-of-type(2) {
+                display: none;
+            }
+            
+            .header-top > div:first-child > span:last-of-type {
+                font-size: 0.875rem !important;
+            }
+            
+            #timerist-logo {
+                width: 36px !important;
+                height: 36px !important;
+                flex-shrink: 0;
+            }
+        }
+        
+        @media (min-width: 391px) and (max-width: 428px) {
+            .header-top {
+                padding: 0 1rem;
+            }
+            
+            .header-top .separator {
+                display: none;
+            }
+            
+            .header-top > div:first-child > span {
+                font-size: 0.875rem !important;
+            }
+        }
+        
+        @media (min-width: 640px) {
+            .container {
+                padding: 2rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                padding: 2rem 3rem;
+            }
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+            min-width: fit-content;
+        }
+        
+        @media (max-width: 428px) {
+            .header-actions {
+                gap: 0.375rem;
+            }
+            
+            .header-actions .mode-toggle-btn,
+            .header-actions .hamburger-menu {
+                width: 40px;
+                height: 40px;
+                padding: 0.375rem;
+                font-size: 1.25rem;
+            }
+        }
+        
+        .header-top .mode-toggle-btn {
+            position: relative;
+            top: auto;
+            right: auto;
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgb(var(--foreground));
+            font-size: 1.5rem;
+            transition: opacity 0.2s;
+            border-radius: var(--radius);
+            min-width: 44px;
+        }
+        
+        .header-top .mode-toggle-btn:hover,
+        .header-top .mode-toggle-btn:active {
+            opacity: 0.7;
+            background-color: rgba(var(--accent), 0.5);
+        }
+        
+        .header-top .mode-toggle-btn:focus {
+            outline: 2px solid rgb(var(--ring));
+            outline-offset: 2px;
+        }
+        
+        .header-top .mode-toggle-btn {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        
+        #timerist-logo {
+            display: block;
+            width: 40px;
+            height: 40px;
+            color: #0a0a0a;
+        }
+        
+        .header-top a {
+            transition: opacity 0.2s ease;
+        }
+        
+        .header-top a:hover {
+            opacity: 0.7;
+        }
+        
+        #timerist-logo circle,
+        #timerist-logo line {
+            stroke: #0a0a0a;
+            stroke-width: 2.5;
+        }
+        
+        html.dark #timerist-logo {
+            color: #fafafa;
+        }
+        
+        html.dark #timerist-logo circle,
+        html.dark #timerist-logo line {
+            stroke: #fafafa;
+        }
+        
+        html.dark #timerist-logo .logo-circle,
+        html.dark #timerist-logo .logo-line {
+            stroke: #fafafa !important;
+        }
+        
+        /* Radio button styles */
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            border: 2px solid rgb(var(--border));
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .radio-option:hover {
+            background-color: rgba(var(--accent), 0.5);
+        }
+        
+        .radio-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .radio-option label {
+            cursor: pointer;
+            font-weight: 500;
+            flex: 1;
+        }
+        
+        /* Exercise list styles */
+        .exercise-item {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            padding: 0.75rem;
+            border: 1px solid rgb(var(--border));
+            border-radius: var(--radius);
+            background-color: rgb(var(--card));
+        }
+        
+        .exercise-item input[type="text"] {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid rgb(var(--input));
+            border-radius: var(--radius);
+            background-color: rgb(var(--background));
+            color: rgb(var(--foreground));
+            font-size: 0.875rem;
+        }
+        
+        .exercise-item input[type="number"] {
+            width: 80px;
+            padding: 0.5rem;
+            border: 1px solid rgb(var(--input));
+            border-radius: var(--radius);
+            background-color: rgb(var(--background));
+            color: rgb(var(--foreground));
+            font-size: 0.875rem;
+            text-align: center;
+        }
+        
+        .exercise-item button {
+            padding: 0.5rem;
+            border: none;
+            background-color: rgb(var(--destructive));
+            color: rgb(var(--destructive-foreground));
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.875rem;
+            min-width: 32px;
+        }
+        
+        .exercise-item button:hover {
+            opacity: 0.8;
+        }
+        
+        /* Result entry styles */
+        .result-entry {
+            margin-top: 1rem;
+            padding: 1.5rem;
+            background-color: rgb(var(--card));
+            border: 1px solid rgb(var(--border));
+            border-radius: var(--radius);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-entry h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: rgb(var(--foreground));
+        }
+        
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+        
+        .result-table th,
+        .result-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid rgb(var(--border));
+        }
+        
+        .result-table th {
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            color: rgb(var(--muted-foreground));
+        }
+        
+        .result-table td input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid rgb(var(--input));
+            border-radius: var(--radius);
+            background-color: rgb(var(--background));
+            color: rgb(var(--foreground));
+            font-size: 0.875rem;
+            text-align: center;
+        }
+        
+        .result-table tr.partial {
+            background-color: rgba(var(--accent), 0.3);
+        }
+        
+        .result-table .completed-at {
+            white-space: nowrap;
+            font-size: 0.75rem;
+            color: rgb(var(--muted-foreground));
+        }
+        
+        .btn-add-round {
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .result-summary {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: rgba(var(--primary), 0.1);
+            border-radius: var(--radius);
+            font-weight: 600;
+        }
+        
+        /* Toggle switch */
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .toggle-switch input[type="checkbox"] {
+            width: 44px;
+            height: 24px;
+            appearance: none;
+            background-color: rgb(var(--input));
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .toggle-switch input[type="checkbox"]:checked {
+            background-color: rgb(var(--primary));
+        }
+        
+        .toggle-switch input[type="checkbox"]::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: white;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.2s;
+        }
+        
+        .toggle-switch input[type="checkbox"]:checked::before {
+            transform: translateX(20px);
+        }
+        
+        .toggle-switch label {
+            cursor: pointer;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body class="font-sans">
+    <div class="container">
+        <div class="header-top">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <a href="index.html" style="display: flex; align-items: center; text-decoration: none; cursor: pointer;">
+                    <svg
+                        width="40"
+                        height="40"
+                        viewBox="0 0 40 40"
+                        xmlns="http://www.w3.org/2000/svg"
+                        id="timerist-logo"
+                    >
+                        <circle cx="20" cy="20" r="15" fill="none" stroke="#0a0a0a" stroke-width="2.5" class="logo-circle"/>
+                        <line x1="20" y1="20" x2="20" y2="8" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
+                        <line x1="20" y1="20" x2="30" y2="20" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
+                    </svg>
+                </a>
+                <a href="index.html" style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground)); text-decoration: none; cursor: pointer;">timerist.com</a>
+                <span class="separator" style="color: rgb(var(--muted-foreground));">|</span>
+                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">AMRAP Splits</span>
+            </div>
+            
+            <div class="header-actions">
+                <button class="mode-toggle-btn mode-toggle" id="themeToggleBtn" aria-label="Toggle dark mode">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="hamburger-menu" onclick="toggleDrawer()" aria-label="Open Timer Setup menu">
+                    ☰
+                </button>
+            </div>
+        </div>
+        
+        <div class="timer-container" style="display: flex; flex-direction: column; gap: 1rem;">
+            <!-- Timer Display -->
+            <div class="timer-display-block bg-card border border-border rounded-lg shadow-lg text-center">
+                <!-- Workout Title -->
+                <div id="workoutTitleDisplay" style="display: none; text-align: center; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid rgb(var(--border));">
+                    <h2 id="workoutTitleText" style="font-size: 1.25rem; font-weight: 600; color: rgb(var(--foreground)); margin: 0; word-wrap: break-word;"></h2>
+                </div>
+                
+                <div class="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-2" id="statusLabel">Ready</div>
+                <div class="timer-display-large" id="display">00:00</div>
+                <div id="rounds" class="rounds-display" aria-live="polite" style="font-size: 2rem; font-weight: 600; color: rgb(var(--foreground)); margin-top: 1rem; display: none;"></div>
+                
+                <!-- Workout Notes -->
+                <div id="workoutDescriptionDisplay" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgb(var(--border));">
+                    <p id="workoutDescriptionText" style="font-size: 0.875rem; color: rgb(var(--muted-foreground)); line-height: 1.6; margin: 0; text-align: left; white-space: pre-wrap; word-wrap: break-word;"></p>
+                </div>
+            </div>
+            
+            <!-- Controls -->
+            <div class="p-6 bg-card border border-border rounded-lg shadow-lg">
+                <div class="control-buttons-container">
+                    <button class="control-btn btn-primary" id="startPauseBtn" style="display: none;" aria-label="Start timer">Start</button>
+                    <button class="control-btn btn-primary" id="setupBtn" style="display: none;" aria-label="Set up timer">Set Up</button>
+                    <button class="control-btn btn-destructive" id="resetBtn" style="display: none;" aria-label="Reset timer">Reset</button>
+                    <button class="control-btn btn-secondary" id="clearBtn" aria-label="Clear timer">Clear</button>
+                    <button class="control-btn btn-primary" id="complete-round" disabled aria-label="Round completed" style="display: none;">Round Completed</button>
+                </div>
+            </div>
+            
+            <!-- Result Entry (reps+cycling: list inside this white box; rounds/timer end: table or summary) -->
+            <div id="resultEntry" class="result-entry" style="display: none;"></div>
+        </div>
+    </div>
+    
+    <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+    <div class="settings-drawer" id="settingsDrawer">
+        <div class="drawer-header">
+            <h2 style="font-size: 1rem; font-weight: 600; color: rgb(var(--foreground)); text-transform: uppercase; letter-spacing: 0.05em;">Timer Setup</h2>
+            <button class="drawer-close" onclick="closeDrawer()" aria-label="Close drawer">×</button>
+        </div>
+        <div class="drawer-content">
+            <!-- Setup Content -->
+            <div class="drawer-section">
+                <h3>Setup Content</h3>
+                
+                <!-- AMRAP Type Selection -->
+                <div class="radio-group">
+                    <label class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block" style="margin-bottom: 0.5rem;">AMRAP Type</label>
+                    <div class="radio-option">
+                        <input type="radio" id="amrapTypeRounds" name="amrapType" value="rounds" checked>
+                        <label for="amrapTypeRounds">AMRAP - Rounds (circuit)</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="amrapTypeReps" name="amrapType" value="reps">
+                        <label for="amrapTypeReps">AMRAP - Reps (max total reps)</label>
+                    </div>
+                </div>
+                
+                <!-- Workout Title -->
+                <div class="space-y-2" style="margin-bottom: 1.5rem;">
+                    <label for="workoutTitleInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Workout Title</label>
+                    <input 
+                        type="text" 
+                        id="workoutTitleInput" 
+                        class="custom-time-input"
+                        placeholder="Enter workout title"
+                        aria-label="Workout title"
+                        maxlength="40"
+                        style="font-family: inherit; text-align: left; font-weight: 500;"
+                    >
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="workoutTitleCharCount">0</span>/40
+                    </p>
+                </div>
+                
+                <!-- Workout Notes -->
+                <div class="space-y-2" style="margin-bottom: 1.5rem;">
+                    <label for="workoutDescriptionInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Workout Description / Notes</label>
+                    <textarea 
+                        id="workoutDescriptionInput" 
+                        class="custom-time-input"
+                        placeholder="Enter workout notes..."
+                        aria-label="Workout notes"
+                        rows="4"
+                        maxlength="200"
+                        style="resize: vertical; min-height: 80px; font-family: inherit; line-height: 1.5; text-align: left; font-weight: 400;"
+                    ></textarea>
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="workoutDescriptionCharCount">0</span>/200
+                    </p>
+                </div>
+                
+                <!-- Total AMRAP Time (stacked for mobile) -->
+                <div class="space-y-2" style="margin-bottom: 1.5rem;">
+                    <label class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Total AMRAP Time</label>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div>
+                            <label for="minutesInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block" style="margin-bottom: 0.5rem;">Minutes</label>
+                            <div class="time-input-row">
+                                <button class="time-adjust-btn" id="minutesPlus5Btn" type="button" aria-label="Add 5 minutes">+5</button>
+                                <button class="time-adjust-btn" id="minutesPlus1Btn" type="button" aria-label="Add 1 minute">+1</button>
+                                <input type="number" id="minutesInputDrawer" class="custom-time-input" min="0" max="99" inputmode="numeric" value="0" aria-label="Minutes">
+                                <button class="time-adjust-btn" id="minutesMinus5Btn" type="button" aria-label="Subtract 5 minutes">−5</button>
+                                <button class="time-adjust-btn" id="minutesMinus1Btn" type="button" aria-label="Subtract 1 minute">−1</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="secondsInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block" style="margin-bottom: 0.5rem;">Seconds</label>
+                            <div class="time-input-row">
+                                <button class="time-adjust-btn" id="secondsPlus5Btn" type="button" aria-label="Add 5 seconds">+5</button>
+                                <button class="time-adjust-btn" id="secondsPlus1Btn" type="button" aria-label="Add 1 second">+1</button>
+                                <input type="number" id="secondsInputDrawer" class="custom-time-input" min="0" max="59" inputmode="numeric" value="0" aria-label="Seconds">
+                                <button class="time-adjust-btn" id="secondsMinus5Btn" type="button" aria-label="Subtract 5 seconds">−5</button>
+                                <button class="time-adjust-btn" id="secondsMinus1Btn" type="button" aria-label="Subtract 1 second">−1</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Workout PREP Countdown (seconds) -->
+                <div class="space-y-2" style="margin-bottom: 1.5rem;">
+                    <label for="prepTimeInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Workout PREP Countdown (SECONDS)</label>
+                    <div class="time-input-row">
+                        <button class="time-adjust-btn" id="prepTimePlus5Btn" type="button" aria-label="Add 5 seconds">+5</button>
+                        <button class="time-adjust-btn" id="prepTimePlus1Btn" type="button" aria-label="Add 1 second">+1</button>
+                        <input type="number" id="prepTimeInput" class="custom-time-input" min="0" max="300" inputmode="numeric" value="30" aria-label="Prep time">
+                        <button class="time-adjust-btn" id="prepTimeMinus5Btn" type="button" aria-label="Subtract 5 seconds">−5</button>
+                        <button class="time-adjust-btn" id="prepTimeMinus1Btn" type="button" aria-label="Subtract 1 second">−1</button>
+                    </div>
+                </div>
+                
+                <!-- Number of Rounds (Rounds mode uses this for multi-round + rest) -->
+                <div class="space-y-2" style="margin-bottom: 1.5rem;">
+                    <label for="roundsInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Number of Rounds</label>
+                    <div class="time-input-row">
+                        <button class="time-adjust-btn" id="roundsPlus5Btn" type="button" aria-label="Add 5 rounds">+5</button>
+                        <button class="time-adjust-btn" id="roundsPlus1Btn" type="button" aria-label="Add 1 round">+1</button>
+                        <input type="number" id="roundsInputDrawer" class="custom-time-input" min="0" max="999" inputmode="numeric" value="0" aria-label="Number of rounds">
+                        <button class="time-adjust-btn" id="roundsMinus5Btn" type="button" aria-label="Subtract 5 rounds">−5</button>
+                        <button class="time-adjust-btn" id="roundsMinus1Btn" type="button" aria-label="Subtract 1 round">−1</button>
+                    </div>
+                </div>
+                
+                <!-- Rest Between Rounds (only show if rounds > 1) -->
+                <div class="space-y-2" id="restBetweenRoundsContainer" style="display: none; margin-bottom: 1.5rem;">
+                    <label for="restBetweenRoundsInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Rest Between Rounds (Seconds)</label>
+                    <div class="time-input-row">
+                        <button class="time-adjust-btn" id="restBetweenRoundsPlus5Btn" type="button" aria-label="Add 5 seconds">+5</button>
+                        <button class="time-adjust-btn" id="restBetweenRoundsPlus1Btn" type="button" aria-label="Add 1 second">+1</button>
+                        <input type="number" id="restBetweenRoundsInput" class="custom-time-input" min="0" max="600" inputmode="numeric" value="0" aria-label="Rest between rounds seconds">
+                        <button class="time-adjust-btn" id="restBetweenRoundsMinus5Btn" type="button" aria-label="Subtract 5 seconds">−5</button>
+                        <button class="time-adjust-btn" id="restBetweenRoundsMinus1Btn" type="button" aria-label="Subtract 1 second">−1</button>
+                    </div>
+                </div>
+                
+                <!-- Completion Message -->
+                <div class="space-y-2" style="margin-bottom: 1.5rem;">
+                    <label for="doneMessageInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Completion Message (14 characters max)</label>
+                    <input type="text" id="doneMessageInputDrawer" class="custom-time-input" maxlength="14" value="Completed" placeholder="Completed" aria-label="Completion message">
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="doneMessageCharCount">9</span>/14
+                    </p>
+                </div>
+                
+                <!-- Splits / Result Entry always enabled in splits version -->
+                
+                <!-- Rounds Mode Fields -->
+                <div id="roundsModeFields">
+                    <h3 style="margin-top: 1.5rem; margin-bottom: 1rem;">Exercises</h3>
+                    <div id="roundsExercisesList"></div>
+                    <button type="button" id="addRoundsExerciseBtn" class="control-btn btn-secondary" style="width: 100%; margin-top: 0.75rem;">+ Add Exercise</button>
+                </div>
+                
+                <!-- Reps Mode Fields -->
+                <div id="repsModeFields" style="display: none;">
+                    <h3 style="margin-top: 1.5rem; margin-bottom: 1rem;">Exercises</h3>
+                    <div id="repsExercisesList"></div>
+                    <button type="button" id="addRepsExerciseBtn" class="control-btn btn-secondary" style="width: 100%; margin-top: 0.75rem;">+ Add Exercise</button>
+                    
+                    <div class="toggle-switch" style="margin-top: 1.5rem; margin-bottom: 0;">
+                        <input type="checkbox" id="cycleExercisesToggle">
+                        <label for="cycleExercisesToggle">Cycle through exercises</label>
+                    </div>
+                    <p id="cycleExercisesHelpText" class="text-muted-foreground" style="margin-top: 0.25rem; margin-bottom: 0; margin-left: 0; font-size: inherit; font-weight: 500;">Freestyle – any order, any time</p>
+                    
+                    <div id="workTimePerExerciseContainer" style="display: none; margin-top: 1rem;">
+                        <label for="workTimePerExerciseInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">WORK TIME PER EXERCISE (AMRAP - REPS)</label>
+                        <div class="time-input-row">
+                            <button class="time-adjust-btn" id="workTimePerExercisePlus5Btn" type="button" aria-label="Add 5 seconds">+5</button>
+                            <button class="time-adjust-btn" id="workTimePerExercisePlus1Btn" type="button" aria-label="Add 1 second">+1</button>
+                            <input type="number" id="workTimePerExerciseInput" class="custom-time-input" min="10" max="300" inputmode="numeric" value="60" aria-label="Work time per exercise seconds">
+                            <button class="time-adjust-btn" id="workTimePerExerciseMinus5Btn" type="button" aria-label="Subtract 5 seconds">−5</button>
+                            <button class="time-adjust-btn" id="workTimePerExerciseMinus1Btn" type="button" aria-label="Subtract 1 second">−1</button>
+                        </div>
+                    </div>
+                    <div id="restBetweenExercisesContainer" style="display: none; margin-top: 1rem;">
+                        <label for="restBetweenExercisesInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">REST BETWEEN EXERCISES (SECONDS)</label>
+                        <div class="time-input-row">
+                            <button class="time-adjust-btn" id="restBetweenExercisesPlus5Btn" type="button" aria-label="Add 5 seconds">+5</button>
+                            <button class="time-adjust-btn" id="restBetweenExercisesPlus1Btn" type="button" aria-label="Add 1 second">+1</button>
+                            <input type="number" id="restBetweenExercisesInput" class="custom-time-input" min="0" max="300" inputmode="numeric" value="0" aria-label="Rest between exercises">
+                            <button class="time-adjust-btn" id="restBetweenExercisesMinus5Btn" type="button" aria-label="Subtract 5 seconds">−5</button>
+                            <button class="time-adjust-btn" id="restBetweenExercisesMinus1Btn" type="button" aria-label="Subtract 1 second">−1</button>
+                        </div>
+                    </div>
+                    <!-- Cycle time summary, warning, and auto-suggest (visible when cycleExercises = true) -->
+                    <div id="cycleTimeSummaryBlock" style="display: none; margin-top: 1.25rem; padding: 0.75rem; border-radius: var(--radius); border: 1px solid rgb(var(--border)); background-color: rgb(var(--accent));" aria-live="polite">
+                        <p id="cycleTimeSummaryText" class="text-sm font-medium" style="color: rgb(var(--foreground)); margin: 0 0 0.5rem 0;">Estimated time per full cycle: —</p>
+                        <div id="cycleTimeWarningBanner" style="display: none; padding: 0.5rem 0.75rem; border-radius: var(--radius); background-color: rgb(var(--destructive)); color: rgb(var(--destructive-foreground)); font-size: 0.875rem; font-weight: 500; margin-bottom: 0.75rem;" role="alert">
+                            <span id="cycleTimeWarningMessage">Cycle time exceeds total workout time — you may complete 0 full cycles.</span>
+                        </div>
+                        <div id="cycleTimeSuggestButtons" style="display: none; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+                            <button type="button" id="setRealisticWorkTimeBtn" class="control-btn btn-secondary" style="font-size: 0.8125rem; padding: 0.4rem 0.75rem;" title="Sets work time per exercise so total time fits your target cycles (or ~4 if unlimited)">Set realistic work time</button>
+                            <button type="button" id="setRealisticTotalTimeBtn" class="control-btn btn-secondary" style="font-size: 0.8125rem; padding: 0.4rem 0.75rem;" title="Sets total AMRAP time for your target cycles + 1 min buffer (or 3 cycles if unlimited)">Set realistic total time</button>
+                            <button type="button" id="dismissCycleWarningBtn" class="control-btn" style="font-size: 0.8125rem; padding: 0.4rem 0.75rem; background-color: rgb(var(--muted)); color: rgb(var(--muted-foreground));" title="Hide warning for this session">Ignore</button>
+                        </div>
+                        <p id="cycleTimeToast" role="status" aria-live="polite" class="text-xs font-medium text-muted-foreground" style="margin: 0.5rem 0 0 0; min-height: 1.25rem; opacity: 0;"></p>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Export / Import -->
+            <div class="drawer-section">
+                <h3>Export / Import</h3>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button type="button" id="exportWorkoutBtn" class="control-btn btn-primary" style="flex: 1;">Export AMRAP</button>
+                    <button type="button" id="importWorkoutBtn" class="control-btn btn-secondary" style="flex: 1;">Import AMRAP</button>
+                </div>
+                <input type="file" id="importFileInput" accept=".json" style="display: none;">
+            </div>
+    
+            <!-- About This Timer -->
+            <div class="drawer-section">
+                <h3>About This Timer</h3>
+                <p>
+                    Enhanced AMRAP timer supports two modes: Rounds (circuit style) tracks full rounds + partial progress. Reps mode can use timed cycles: work time per exercise, rest between exercises, and per-cycle result entry (Cycle 1, Cycle 2, …) with grand totals.
+                </p>
+            </div>
+
+            <!-- General Info -->
+            <div class="drawer-section">
+                <h3>General Info</h3>
+                <p><strong>Version:</strong> v1.0</p>
+                <p><strong>Released:</strong> <span id="releaseDate">2026-01-28</span></p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Timer state
+        let currentTime = 0;
+        let totalSeconds = 0;
+        let prepTimeSeconds = 30;
+        let currentPrepTime = 0;
+        let interval = null;
+        let isRunning = false;
+        let isPaused = false;
+        let isPrepPhase = false;
+        let amrapType = 'rounds'; // 'rounds' or 'reps'
+        let rounds = 0;
+        let currentRound = 0;
+        let enableSplits = true; // Always enabled in splits version
+        let exercises = [];
+        let cycleExercises = false;
+        let restBetweenExercises = 0;
+        let currentExerciseIndex = 0;
+        let isRestPeriod = false;
+        let currentRestTime = 0;
+        let restBetweenRoundsSeconds = 0;
+        let timerDone = false;
+        // Reps mode with cycling: per-cycle tracking
+        let workTimePerExerciseSeconds = 60;
+        let currentCycle = 1;
+        let workTimeRemaining = 0; // seconds left in current work window (reps+cycling)
+        
+        // Results data
+        let roundsResults = []; // Array of {round: number, exercises: {name: string, reps: number}[], completedAt?: string}
+        let repsResults = {}; // {exerciseName: totalReps} (legacy / fallback)
+        let cycleResults = []; // Reps+cycling: [{ cycle, exercises: [{ name, reps }], completedAt? }]
+        let cycleWarningDismissed = false; // Session-only: hide warning banner when user clicks Ignore
+        
+        // DOM elements
+        const display = document.getElementById('display');
+        const statusLabel = document.getElementById('statusLabel');
+        const startPauseBtn = document.getElementById('startPauseBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const setupBtn = document.getElementById('setupBtn');
+        const completeRoundBtn = document.getElementById('complete-round');
+        const roundsDisplay = document.getElementById('rounds');
+        const resultEntry = document.getElementById('resultEntry');
+        
+        const minutesInput = document.getElementById('minutesInputDrawer');
+        const secondsInput = document.getElementById('secondsInputDrawer');
+        const prepTimeInput = document.getElementById('prepTimeInput');
+        const doneMessageInput = document.getElementById('doneMessageInputDrawer');
+        const workoutTitleInput = document.getElementById('workoutTitleInput');
+        const workoutDescriptionInput = document.getElementById('workoutDescriptionInput');
+        const amrapTypeRounds = document.getElementById('amrapTypeRounds');
+        const amrapTypeReps = document.getElementById('amrapTypeReps');
+        const roundsModeFields = document.getElementById('roundsModeFields');
+        const repsModeFields = document.getElementById('repsModeFields');
+        const roundsExercisesList = document.getElementById('roundsExercisesList');
+        const repsExercisesList = document.getElementById('repsExercisesList');
+        // enableSplitsToggle removed - splits always enabled
+        const cycleExercisesToggle = document.getElementById('cycleExercisesToggle');
+        const restBetweenExercisesContainer = document.getElementById('restBetweenExercisesContainer');
+        const restBetweenExercisesInput = document.getElementById('restBetweenExercisesInput');
+        const workTimePerExerciseContainer = document.getElementById('workTimePerExerciseContainer');
+        const workTimePerExerciseInput = document.getElementById('workTimePerExerciseInput');
+        const cycleTimeSummaryBlock = document.getElementById('cycleTimeSummaryBlock');
+        const cycleTimeSummaryText = document.getElementById('cycleTimeSummaryText');
+        const cycleTimeWarningBanner = document.getElementById('cycleTimeWarningBanner');
+        const cycleTimeSuggestButtons = document.getElementById('cycleTimeSuggestButtons');
+        const setRealisticWorkTimeBtn = document.getElementById('setRealisticWorkTimeBtn');
+        const setRealisticTotalTimeBtn = document.getElementById('setRealisticTotalTimeBtn');
+        const dismissCycleWarningBtn = document.getElementById('dismissCycleWarningBtn');
+        const cycleTimeToast = document.getElementById('cycleTimeToast');
+        const roundsInput = document.getElementById('roundsInputDrawer');
+        const restBetweenRoundsContainer = document.getElementById('restBetweenRoundsContainer');
+        const restBetweenRoundsInput = document.getElementById('restBetweenRoundsInput');
+        
+        function clampInt(value, min, max) {
+            const n = Number.parseInt(String(value), 10);
+            if (Number.isNaN(n)) return min;
+            return Math.min(max, Math.max(min, n));
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+        
+        function getWorkTimePerExerciseSeconds() {
+            if (!workTimePerExerciseInput) return workTimePerExerciseSeconds;
+            const v = clampInt(workTimePerExerciseInput.value, 10, 300);
+            workTimePerExerciseInput.value = String(v);
+            return v;
+        }
+        
+        function updateAmrapType() {
+            amrapType = document.querySelector('input[name="amrapType"]:checked').value;
+            if (amrapType === 'rounds') {
+                roundsModeFields.style.display = 'block';
+                repsModeFields.style.display = 'none';
+                completeRoundBtn.style.display = 'inline-block';
+                if (cycleTimeSummaryBlock) cycleTimeSummaryBlock.style.display = 'none';
+            } else {
+                roundsModeFields.style.display = 'none';
+                repsModeFields.style.display = 'block';
+                completeRoundBtn.style.display = 'none';
+                if (workTimePerExerciseContainer) workTimePerExerciseContainer.style.display = cycleExercises ? 'block' : 'none';
+                if (cycleTimeSummaryBlock) cycleTimeSummaryBlock.style.display = cycleExercises ? 'block' : 'none';
+                updateCycleTimeSummary();
+            }
+            updateRoundsDisplay();
+        }
+        
+        function getCycleTimeSeconds() {
+            const n = amrapType === 'reps' ? exercises.length : 0;
+            if (n === 0) return 0;
+            const work = getWorkTimePerExerciseSeconds();
+            const rest = Math.min(300, Math.max(0, Number(restBetweenExercisesInput?.value) || restBetweenExercises || 0));
+            return n * work + (n - 1) * rest;
+        }
+        
+        function getRestBetweenRoundsSeconds() {
+            if (!restBetweenRoundsInput) return 0;
+            return Math.min(600, Math.max(0, Number(restBetweenRoundsInput.value) || 0));
+        }
+        
+        /** Time needed to complete all target rounds: cycles + rest between rounds. When targetRounds is 0, returns single cycle time. */
+        function getTimeNeededForRounds(cycleSeconds) {
+            const targetRounds = getTargetRounds();
+            if (targetRounds <= 0) return cycleSeconds;
+            const restBetweenRounds = getRestBetweenRoundsSeconds();
+            return cycleSeconds * targetRounds + restBetweenRounds * (targetRounds - 1);
+        }
+        
+        function updateCycleTimeSummary() {
+            if (!cycleTimeSummaryBlock || !cycleTimeSummaryText || amrapType !== 'reps' || !cycleExercises) return;
+            const n = exercises.length;
+            const totalSeconds = readDurationFromInputs();
+            if (n === 0) {
+                cycleTimeSummaryText.textContent = 'Add at least one exercise to see estimated cycle time.';
+                if (cycleTimeWarningBanner) cycleTimeWarningBanner.style.display = 'none';
+                if (cycleTimeSuggestButtons) cycleTimeSuggestButtons.style.display = 'none';
+                return;
+            }
+            const work = getWorkTimePerExerciseSeconds();
+            const rest = Math.min(300, Math.max(0, Number(restBetweenExercisesInput?.value) || restBetweenExercises || 0));
+            const cycleSeconds = n * work + (n - 1) * rest;
+            const timeNeededForRounds = getTimeNeededForRounds(cycleSeconds);
+            const workPart = n + ' × ' + work + 's work';
+            const restPart = n > 1 ? ' + ' + (n - 1) + ' × ' + rest + 's rest' : '';
+            const cycleFormatted = formatTime(cycleSeconds);
+            cycleTimeSummaryText.textContent = 'Estimated time per full cycle: ' + cycleFormatted + ' (' + workPart + restPart + ')';
+            const notEnoughTime = timeNeededForRounds > totalSeconds;
+            const showWarning = notEnoughTime && !cycleWarningDismissed;
+            const showSuggest = totalSeconds >= 30 && (notEnoughTime || timeNeededForRounds < totalSeconds * 0.4);
+            if (cycleTimeWarningBanner) {
+                cycleTimeWarningBanner.style.display = showWarning ? 'block' : 'none';
+                const msg = document.getElementById('cycleTimeWarningMessage');
+                if (msg) {
+                    const targetRounds = getTargetRounds();
+                    if (targetRounds > 1) {
+                        const neededFormatted = formatTime(timeNeededForRounds);
+                        msg.textContent = 'Time needed for ' + targetRounds + ' rounds (' + neededFormatted + ', including rest between rounds) exceeds total workout time (' + formatTime(totalSeconds) + ') — you may not complete all rounds.';
+                    } else {
+                        msg.textContent = notEnoughTime
+                            ? 'Cycle time (' + cycleFormatted + ') exceeds total workout time (' + formatTime(totalSeconds) + ') — you may complete 0 full cycles.'
+                            : 'Cycle time exceeds total workout time — you may complete 0 full cycles.';
+                    }
+                }
+            }
+            if (cycleTimeSuggestButtons) {
+                cycleTimeSuggestButtons.style.display = showSuggest ? 'flex' : 'none';
+            }
+            if (setRealisticWorkTimeBtn) setRealisticWorkTimeBtn.disabled = !showSuggest || n === 0 || totalSeconds < 30;
+            if (setRealisticTotalTimeBtn) setRealisticTotalTimeBtn.disabled = !showSuggest || n === 0;
+        }
+        
+        function calculateSuggestedWorkTime() {
+            const n = exercises.length;
+            if (n === 0) return null;
+            const totalSeconds = readDurationFromInputs();
+            const rest = Math.min(300, Math.max(0, Number(restBetweenExercisesInput?.value) || restBetweenExercises || 0));
+            const numCycles = getTargetRounds() > 0 ? getTargetRounds() : 4;
+            const restBetweenRounds = getRestBetweenRoundsSeconds();
+            const numerator = totalSeconds - (n - 1) * rest * numCycles - (numCycles - 1) * restBetweenRounds;
+            const denominator = n * Math.max(1, numCycles);
+            if (denominator <= 0 || numerator <= 0) return null;
+            let suggested = Math.floor(numerator / denominator);
+            suggested = Math.max(10, Math.min(300, suggested));
+            return suggested;
+        }
+        
+        function calculateSuggestedTotalTime() {
+            const n = exercises.length;
+            if (n === 0) return null;
+            const work = getWorkTimePerExerciseSeconds();
+            const rest = Math.min(300, Math.max(0, Number(restBetweenExercisesInput?.value) || restBetweenExercises || 0));
+            const cycleSeconds = n * work + (n - 1) * rest;
+            const bufferSeconds = 60;
+            const numCycles = getTargetRounds() > 0 ? getTargetRounds() : 3;
+            const restBetweenRounds = getRestBetweenRoundsSeconds();
+            const cyclesTime = Math.max(1, numCycles) * cycleSeconds;
+            const restBetweenRoundsTime = (Math.max(1, numCycles) - 1) * restBetweenRounds;
+            let total = cyclesTime + restBetweenRoundsTime + bufferSeconds;
+            total = Math.ceil(total / 30) * 30;
+            total = Math.max(30, Math.min(99 * 60 + 59, total));
+            return total;
+        }
+        
+        function applySuggestedWorkTime() {
+            const suggested = calculateSuggestedWorkTime();
+            if (suggested == null) return;
+            if (workTimePerExerciseInput) {
+                workTimePerExerciseInput.value = String(suggested);
+                workTimePerExerciseSeconds = suggested;
+            }
+            updateCycleTimeSummary();
+            showCycleToast('Work time updated to ' + suggested + 's');
+        }
+        
+        function applySuggestedTotalTime() {
+            const suggested = calculateSuggestedTotalTime();
+            if (suggested == null) return;
+            const mins = Math.floor(suggested / 60);
+            const secs = suggested % 60;
+            if (minutesInput) minutesInput.value = String(Math.min(99, mins));
+            if (secondsInput) secondsInput.value = String(Math.min(59, secs));
+            onTimeChange();
+            updateCycleTimeSummary();
+            showCycleToast('Total time updated to ' + formatTime(suggested));
+        }
+        
+        function showCycleToast(message) {
+            if (!cycleTimeToast) return;
+            cycleTimeToast.textContent = message;
+            cycleTimeToast.style.opacity = '1';
+            setTimeout(function() {
+                if (cycleTimeToast) cycleTimeToast.style.opacity = '0';
+            }, 3000);
+        }
+        
+        function addRoundsExercise() {
+            const index = exercises.length;
+            exercises.push({ name: '', targetReps: 10 });
+            renderRoundsExercises();
+        }
+        
+        function addRepsExercise() {
+            const index = exercises.length;
+            exercises.push({ name: '' });
+            renderRepsExercises();
+        }
+        
+        function removeExercise(index) {
+            exercises.splice(index, 1);
+            if (amrapType === 'rounds') {
+                renderRoundsExercises();
+            } else {
+                renderRepsExercises();
+            }
+        }
+        
+        function renderRoundsExercises() {
+            roundsExercisesList.innerHTML = '';
+            exercises.forEach((exercise, index) => {
+                const div = document.createElement('div');
+                div.className = 'exercise-item';
+                div.innerHTML = `
+                    <input type="text" placeholder="Exercise name" value="${exercise.name || ''}" 
+                           onchange="updateExerciseName(${index}, this.value)" 
+                           style="flex: 1; padding: 0.5rem; border: 1px solid rgb(var(--input)); border-radius: var(--radius); background-color: rgb(var(--background)); color: rgb(var(--foreground)); font-size: 0.875rem;">
+                    <input type="number" placeholder="Reps" value="${exercise.targetReps || 10}" min="0" max="9999"
+                           onchange="updateExerciseTargetReps(${index}, this.value)"
+                           style="width: 80px; padding: 0.5rem; border: 1px solid rgb(var(--input)); border-radius: var(--radius); background-color: rgb(var(--background)); color: rgb(var(--foreground)); font-size: 0.875rem; text-align: center;">
+                    <button type="button" onclick="removeExercise(${index})" style="padding: 0.5rem; border: none; background-color: rgb(var(--destructive)); color: rgb(var(--destructive-foreground)); border-radius: var(--radius); cursor: pointer; font-size: 0.875rem; min-width: 32px;">×</button>
+                `;
+                roundsExercisesList.appendChild(div);
+            });
+            if (exercises.length === 0) {
+                addRoundsExercise();
+            }
+        }
+        
+        function renderRepsExercises() {
+            repsExercisesList.innerHTML = '';
+            exercises.forEach((exercise, index) => {
+                const div = document.createElement('div');
+                div.className = 'exercise-item';
+                div.innerHTML = `
+                    <input type="text" placeholder="Exercise name" value="${exercise.name || ''}" 
+                           onchange="updateExerciseName(${index}, this.value)" 
+                           style="flex: 1; padding: 0.5rem; border: 1px solid rgb(var(--input)); border-radius: var(--radius); background-color: rgb(var(--background)); color: rgb(var(--foreground)); font-size: 0.875rem;">
+                    <button type="button" onclick="removeExercise(${index})" style="padding: 0.5rem; border: none; background-color: rgb(var(--destructive)); color: rgb(var(--destructive-foreground)); border-radius: var(--radius); cursor: pointer; font-size: 0.875rem; min-width: 32px;">×</button>
+                `;
+                repsExercisesList.appendChild(div);
+            });
+            if (exercises.length === 0) {
+                addRepsExercise();
+            }
+            if (amrapType === 'reps' && cycleExercises) updateCycleTimeSummary();
+        }
+        
+        window.updateExerciseName = function(index, value) {
+            if (exercises[index]) {
+                exercises[index].name = value;
+            }
+        };
+        
+        window.updateExerciseTargetReps = function(index, value) {
+            if (exercises[index] && amrapType === 'rounds') {
+                exercises[index].targetReps = clampInt(value, 0, 9999);
+            }
+        };
+        
+        function updateRoundsDisplay() {
+            const cleared = totalSeconds === 0 && !timerDone && !isRunning && !isPaused;
+            if (amrapType === 'rounds') {
+                if (cleared && roundsDisplay) {
+                    roundsDisplay.style.display = 'none';
+                    roundsDisplay.textContent = '';
+                } else {
+                    roundsDisplay.style.display = 'block';
+                    const targetRounds = getTargetRounds();
+                    if (targetRounds >= 1) {
+                        const completedDisplay = Math.min(rounds, targetRounds);
+                        roundsDisplay.textContent = `Round ${currentRound} of ${targetRounds} | Completed: ${completedDisplay}`;
+                    } else {
+                        roundsDisplay.textContent = `Round 0 of 0 | Completed: ${rounds}`;
+                    }
+                }
+                if (!timerDone && resultEntry) resultEntry.style.display = 'none';
+            } else if (amrapType === 'reps' && cycleExercises && exercises.length > 0) {
+                roundsDisplay.style.display = 'block';
+                const tCycles = getTargetRounds();
+                const exName = exercises[currentExerciseIndex]?.name || 'Exercise';
+                if (tCycles >= 1) {
+                    roundsDisplay.textContent = `Cycle ${currentCycle} of ${tCycles} | Exercise: ${exName}`;
+                } else {
+                    roundsDisplay.textContent = `Cycle ${currentCycle} | Exercise: ${exName}`;
+                }
+                const hasActiveOrCompletedWorkout = timerDone || cycleResults.length > 0 || totalSeconds > 0 || isRunning || isPaused;
+                if (hasActiveOrCompletedWorkout) {
+                    showResultEntry();
+                } else {
+                    if (resultEntry) {
+                        resultEntry.style.display = 'none';
+                        resultEntry.innerHTML = '';
+                    }
+                    if (roundsDisplay) {
+                        roundsDisplay.style.display = 'none';
+                        roundsDisplay.textContent = '';
+                    }
+                }
+            } else {
+                roundsDisplay.style.display = 'none';
+            }
+        }
+        
+        function updateWorkoutDisplay() {
+            const title = workoutTitleInput.value.trim();
+            const description = workoutDescriptionInput.value.trim();
+            
+            if (title) {
+                document.getElementById('workoutTitleText').textContent = title;
+                document.getElementById('workoutTitleDisplay').style.display = 'block';
+            } else {
+                document.getElementById('workoutTitleDisplay').style.display = 'none';
+            }
+            
+            if (description) {
+                document.getElementById('workoutDescriptionText').textContent = description;
+                document.getElementById('workoutDescriptionDisplay').style.display = 'block';
+            } else {
+                document.getElementById('workoutDescriptionDisplay').style.display = 'none';
+            }
+        }
+        
+        function updateCharCounts() {
+            document.getElementById('workoutTitleCharCount').textContent = workoutTitleInput.value.length;
+            document.getElementById('workoutDescriptionCharCount').textContent = workoutDescriptionInput.value.length;
+            document.getElementById('doneMessageCharCount').textContent = doneMessageInput.value.length;
+        }
+        
+        function calculateFontSize(text) {
+            const computedStyle = window.getComputedStyle(display);
+            const baseSize = parseFloat(computedStyle.fontSize) || 64;
+            const maxWidth = display.offsetWidth || window.innerWidth * 0.9;
+            const charCount = text.length;
+
+            const charWidthRatio = 0.65;
+            const paddingFactor = 0.85;
+
+            const estimatedWidth = charCount * baseSize * charWidthRatio;
+            const maxAllowedWidth = maxWidth * paddingFactor;
+
+            if (estimatedWidth > maxAllowedWidth) {
+                const scaleFactor = maxAllowedWidth / estimatedWidth;
+                const newSize = baseSize * scaleFactor;
+                return Math.max(newSize, baseSize * 0.4);
+            }
+
+            return baseSize;
+        }
+
+        function readDurationFromInputs() {
+            const mins = clampInt(minutesInput.value, 0, 99);
+            const secs = clampInt(secondsInput.value, 0, 59);
+            minutesInput.value = String(mins);
+            secondsInput.value = String(secs);
+            return (mins * 60) + secs;
+        }
+        
+        function readPrepTimeFromInput() {
+            const secs = clampInt(prepTimeInput.value, 0, 300);
+            prepTimeInput.value = String(secs);
+            return secs;
+        }
+        
+        function getTargetRounds() {
+            return clampInt(roundsInput ? roundsInput.value : 0, 0, 999);
+        }
+        
+        function readRestTimeFromInputs() {
+            if (!restBetweenRoundsInput) return 0;
+            const secs = clampInt(restBetweenRoundsInput.value, 0, 600);
+            restBetweenRoundsInput.value = String(secs);
+            return secs;
+        }
+        
+        function buildExportPayload() {
+            const durationSeconds = minutesInput && secondsInput
+                ? (clampInt(minutesInput.value, 0, 99) * 60) + clampInt(secondsInput.value, 0, 59)
+                : totalSeconds;
+            const restBetweenRoundsSeconds = restBetweenRoundsInput
+                ? clampInt(restBetweenRoundsInput.value, 0, 600)
+                : 0;
+            const workout = {
+                title: (workoutTitleInput && workoutTitleInput.value) ? workoutTitleInput.value.trim() : '',
+                description: (workoutDescriptionInput && workoutDescriptionInput.value) ? workoutDescriptionInput.value.trim() : '',
+                amrapType: amrapType,
+                durationSeconds: durationSeconds,
+                prepTimeSeconds: prepTimeInput ? clampInt(prepTimeInput.value, 0, 300) : prepTimeSeconds,
+                doneMessage: (doneMessageInput && doneMessageInput.value) ? doneMessageInput.value.trim() || 'Completed' : 'Completed',
+                targetRounds: getTargetRounds(),
+                restBetweenRoundsSeconds: restBetweenRoundsSeconds,
+                exercises: amrapType === 'rounds'
+                    ? exercises.map(ex => ({ name: ex.name || '', targetReps: Number(ex.targetReps) || 0 }))
+                    : exercises.map(ex => ({ name: ex.name || '' })),
+                cycleExercises: !!cycleExercises,
+                restBetweenExercises: restBetweenExercises || 0,
+                workTimePerExerciseSeconds: amrapType === 'reps' ? (workTimePerExerciseInput ? clampInt(workTimePerExerciseInput.value, 10, 300) : workTimePerExerciseSeconds) : undefined,
+                enableSplits: !!enableSplits
+            };
+            const results = {
+                rounds: rounds,
+                currentRound: currentRound,
+                currentCycle: amrapType === 'reps' && cycleExercises ? currentCycle : undefined,
+                roundsResults: roundsResults
+                    .filter(r => r != null && typeof r === 'object')
+                    .map(r => ({
+                        round: r.round,
+                        exercises: (r.exercises || []).map(e => ({ name: e.name || '', reps: Number(e.reps) || 0 })),
+                        completedAt: r.completedAt || null
+                    })),
+                repsResults: (function() {
+                    if (cycleResults.length > 0) {
+                        const totals = {};
+                        exercises.forEach((ex, idx) => {
+                            totals[ex.name || ''] = cycleResults.reduce((sum, cr) => sum + (Number(cr.exercises?.[idx]?.reps) || 0), 0);
+                        });
+                        return totals;
+                    }
+                    return typeof repsResults === 'object' && repsResults !== null ? { ...repsResults } : {};
+                })(),
+                cycleResults: Array.isArray(cycleResults) ? cycleResults.map(cr => ({
+                    cycle: cr.cycle,
+                    exercises: (cr.exercises || []).map(e => ({ name: e.name || '', reps: Number(e.reps) || 0 })),
+                    completedAt: cr.completedAt || null
+                })) : []
+            };
+            return {
+                format: 'timerist_amrap_enhanced',
+                version: '1.0',
+                exportedAt: new Date().toISOString(),
+                workout: workout,
+                results: results
+            };
+        }
+        
+        function exportWorkoutToJson() {
+            const payload = buildExportPayload();
+            const json = JSON.stringify(payload, null, 2);
+            const now = new Date();
+            const typeLabel = amrapType === 'reps' ? 'Reps' : 'Rounds';
+            const dateStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+            const timeStr = String(now.getHours()).padStart(2, '0') + '-' + String(now.getMinutes()).padStart(2, '0') + '-' + String(now.getSeconds()).padStart(2, '0');
+            const filename = 'timerist_AMRAP_' + typeLabel + '_' + dateStr + '_' + timeStr + '.json';
+            const blob = new Blob([json], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(a.href);
+        }
+        
+        function applyImportedWorkout(data) {
+            if (!data || data.format !== 'timerist_amrap_enhanced') {
+                alert('Invalid AMRAP workout file format.');
+                return;
+            }
+            const w = data.workout || {};
+            const r = data.results || {};
+            if (workoutTitleInput) workoutTitleInput.value = w.title != null ? String(w.title) : '';
+            if (workoutDescriptionInput) workoutDescriptionInput.value = w.description != null ? String(w.description) : '';
+            amrapType = (w.amrapType === 'reps' || w.amrapType === 'rounds') ? w.amrapType : 'rounds';
+            if (amrapTypeRounds) amrapTypeRounds.checked = (amrapType === 'rounds');
+            if (amrapTypeReps) amrapTypeReps.checked = (amrapType === 'reps');
+            const duration = Number(w.durationSeconds) || 0;
+            const mins = Math.floor(duration / 60);
+            const secs = duration % 60;
+            if (minutesInput) minutesInput.value = String(Math.min(99, Math.max(0, mins)));
+            if (secondsInput) secondsInput.value = String(Math.min(59, Math.max(0, secs)));
+            if (prepTimeInput) prepTimeInput.value = String(Math.min(300, Math.max(0, Number(w.prepTimeSeconds) || 0)));
+            if (doneMessageInput) doneMessageInput.value = (w.doneMessage != null ? String(w.doneMessage) : '') || 'Completed';
+            if (roundsInput) roundsInput.value = String(Math.min(999, Math.max(0, Number(w.targetRounds) || 0)));
+            const restRounds = Number(w.restBetweenRoundsSeconds) || 0;
+            if (restBetweenRoundsInput) restBetweenRoundsInput.value = String(Math.min(600, Math.max(0, restRounds)));
+            cycleExercises = !!w.cycleExercises;
+            if (document.getElementById('cycleExercisesToggle')) document.getElementById('cycleExercisesToggle').checked = cycleExercises;
+            if (typeof updateCycleExercisesHelpText === 'function') updateCycleExercisesHelpText();
+            restBetweenExercises = Math.min(300, Math.max(0, Number(w.restBetweenExercises) || 0));
+            if (restBetweenExercisesInput) restBetweenExercisesInput.value = String(restBetweenExercises);
+            workTimePerExerciseSeconds = Math.min(300, Math.max(10, Number(w.workTimePerExerciseSeconds) || 60));
+            if (workTimePerExerciseInput) workTimePerExerciseInput.value = String(workTimePerExerciseSeconds);
+            enableSplits = true;
+            const exList = Array.isArray(w.exercises) ? w.exercises : [];
+            function normName(s) { return (s != null ? String(s) : '').replace(/\bSut-Ups\b/gi, 'Sit-Ups'); }
+            if (amrapType === 'rounds') {
+                exercises = exList.map(ex => ({ name: normName(ex.name), targetReps: Math.min(9999, Math.max(0, Number(ex.targetReps) || 0)) }));
+            } else {
+                exercises = exList.map(ex => ({ name: normName(ex.name) }));
+            }
+            if (exercises.length === 0 && amrapType === 'rounds') exercises.push({ name: '', targetReps: 10 });
+            if (exercises.length === 0 && amrapType === 'reps') exercises.push({ name: '' });
+            rounds = Math.max(0, Number(r.rounds) || 0);
+            currentRound = Math.max(0, Number(r.currentRound) || 0);
+            if (currentRound === 0 && getTargetRounds() >= 1) currentRound = 1;
+            roundsResults = Array.isArray(r.roundsResults) ? r.roundsResults
+                .filter(row => row != null && typeof row === 'object')
+                .map(row => ({
+                    round: Number(row.round) || 0,
+                    exercises: Array.isArray(row.exercises) ? row.exercises.map(e => ({ name: e.name != null ? String(e.name) : '', reps: Math.min(9999, Math.max(0, Number(e.reps) || 0)) })) : [],
+                    completedAt: row.completedAt || null
+                })) : [];
+            while (roundsResults.length <= rounds) {
+                roundsResults.push({ round: roundsResults.length + 1, exercises: exercises.map(ex => ({ name: ex.name || '', reps: 0 })), completedAt: null });
+            }
+            repsResults = (r.repsResults && typeof r.repsResults === 'object') ? { ...r.repsResults } : {};
+            cycleResults = Array.isArray(r.cycleResults) ? r.cycleResults
+                .filter(row => row != null && typeof row === 'object')
+                .map(row => ({
+                    cycle: Number(row.cycle) || 0,
+                    exercises: Array.isArray(row.exercises) ? row.exercises.map(e => ({ name: (e.name != null ? String(e.name) : '').replace(/\bSut-Ups\b/gi, 'Sit-Ups'), reps: Math.min(9999, Math.max(0, Number(e.reps) || 0)) })) : [],
+                    completedAt: row.completedAt || null
+                })) : [];
+            if (r.currentCycle != null) currentCycle = Math.max(1, Number(r.currentCycle) || 1);
+            totalSeconds = duration;
+            currentTime = totalSeconds;
+            prepTimeSeconds = prepTimeInput ? clampInt(prepTimeInput.value, 0, 300) : 30;
+            updateAmrapType();
+            renderRoundsExercises();
+            renderRepsExercises();
+            updateRestBetweenRoundsVisibility();
+            updateRoundsDisplay();
+            updateWorkoutDisplay();
+            updateCharCounts();
+            showResultEntry();
+            updateDisplay();
+        }
+        
+        function importWorkoutFromJson() {
+            const input = document.getElementById('importFileInput');
+            if (input) input.click();
+        }
+        
+        function updateRestBetweenRoundsVisibility() {
+            const targetRounds = getTargetRounds();
+            if (restBetweenRoundsContainer) {
+                if (targetRounds > 1) {
+                    restBetweenRoundsContainer.style.display = 'block';
+                    restBetweenRoundsContainer.style.visibility = 'visible';
+                } else {
+                    restBetweenRoundsContainer.style.display = 'none';
+                    restBetweenRoundsContainer.style.visibility = 'hidden';
+                }
+            }
+        }
+
+        function setInputsDisabled(disabled) {
+            minutesInput.disabled = disabled;
+            secondsInput.disabled = disabled;
+            prepTimeInput.disabled = disabled;
+            if (roundsInput) roundsInput.disabled = disabled;
+            if (restBetweenRoundsInput) restBetweenRoundsInput.disabled = disabled;
+            document.querySelectorAll('#settingsDrawer .time-adjust-btn').forEach(el => { el.disabled = disabled; });
+            if (workTimePerExerciseInput) workTimePerExerciseInput.disabled = disabled;
+            document.querySelectorAll('#roundsExercisesList input, #repsExercisesList input').forEach(input => {
+                input.disabled = disabled;
+            });
+        }
+
+        function updateDisplay() {
+            if (isPrepPhase) {
+                display.textContent = formatTime(currentPrepTime);
+                display.classList.remove('warning', 'danger');
+                display.classList.add('prepare');
+                statusLabel.textContent = 'Prepare';
+            } else if (isRestPeriod) {
+                display.textContent = formatTime(currentRestTime);
+                display.classList.remove('warning', 'danger', 'prepare');
+                const totalRest = amrapType === 'rounds' ? restBetweenRoundsSeconds : restBetweenExercises;
+                if (totalRest > 0) {
+                    const percentRemaining = currentRestTime / totalRest;
+                    if (percentRemaining <= 0.1) display.classList.add('danger');
+                    else if (percentRemaining <= 0.3) display.classList.add('warning');
+                }
+            } else if (!timerDone) {
+                const isRepsCyclingWork = amrapType === 'reps' && cycleExercises && exercises.length > 0 && !isRestPeriod;
+                const showTime = isRepsCyclingWork ? workTimeRemaining : currentTime;
+                display.textContent = formatTime(showTime);
+                display.classList.remove('warning', 'danger', 'prepare');
+                const totalForPercent = isRepsCyclingWork ? workTimePerExerciseSeconds : totalSeconds;
+                if (totalForPercent > 0) {
+                    const percentRemaining = showTime / totalForPercent;
+                    if (percentRemaining <= 0.1) {
+                        display.classList.add('danger');
+                    } else if (percentRemaining <= 0.3) {
+                        display.classList.add('warning');
+                    }
+                }
+            }
+
+            if (isRunning) {
+                document.body.classList.add('timer-running');
+                setInputsDisabled(true);
+                if (isPrepPhase) {
+                    statusLabel.textContent = 'Prepare';
+                } else if (isRestPeriod) {
+                    statusLabel.textContent = 'Rest';
+                } else {
+                    statusLabel.textContent = 'Running';
+                }
+                startPauseBtn.textContent = 'Pause';
+                startPauseBtn.classList.remove('paused');
+                startPauseBtn.setAttribute('aria-label', 'Pause timer');
+                startPauseBtn.style.display = 'inline-block';
+                setupBtn.style.display = 'none';
+                resetBtn.style.display = 'inline-block';
+                clearBtn.style.display = 'inline-block';
+                if (amrapType === 'rounds' && !isPrepPhase && !isRestPeriod) {
+                    completeRoundBtn.style.display = 'inline-block';
+                    completeRoundBtn.disabled = false;
+                } else {
+                    completeRoundBtn.style.display = 'none';
+                    completeRoundBtn.disabled = true;
+                }
+            } else if (isPaused) {
+                document.body.classList.remove('timer-running');
+                setInputsDisabled(true);
+                if (isPrepPhase) {
+                    statusLabel.textContent = 'Prepare (Paused)';
+                } else if (isRestPeriod) {
+                    statusLabel.textContent = 'Rest (Paused)';
+                } else {
+                    statusLabel.textContent = 'Paused';
+                }
+                startPauseBtn.textContent = 'Resume';
+                startPauseBtn.classList.add('paused');
+                startPauseBtn.setAttribute('aria-label', 'Resume timer');
+                startPauseBtn.style.display = 'inline-block';
+                setupBtn.style.display = 'none';
+                resetBtn.style.display = 'inline-block';
+                clearBtn.style.display = 'inline-block';
+                completeRoundBtn.disabled = true;
+            } else {
+                document.body.classList.remove('timer-running');
+                setInputsDisabled(false);
+                
+                if (timerDone) {
+                    statusLabel.textContent = 'Completed';
+                    startPauseBtn.textContent = 'Start';
+                    startPauseBtn.classList.remove('paused');
+                    startPauseBtn.setAttribute('aria-label', 'Start timer');
+                    startPauseBtn.style.display = 'inline-block';
+                    setupBtn.style.display = 'inline-block';
+                    resetBtn.style.display = 'inline-block';
+                    clearBtn.style.display = 'inline-block';
+                    completeRoundBtn.style.display = 'none';
+                } else if (totalSeconds > 0) {
+                    statusLabel.textContent = 'Ready';
+                    startPauseBtn.textContent = 'Start';
+                    startPauseBtn.classList.remove('paused');
+                    startPauseBtn.setAttribute('aria-label', 'Start timer');
+                    startPauseBtn.style.display = 'inline-block';
+                    setupBtn.style.display = 'none';
+                    resetBtn.style.display = 'inline-block';
+                    clearBtn.style.display = 'inline-block';
+                    completeRoundBtn.style.display = 'none';
+                } else {
+                    statusLabel.textContent = 'Set time';
+                    startPauseBtn.style.display = 'none';
+                    setupBtn.style.display = 'inline-block';
+                    resetBtn.style.display = 'none';
+                    clearBtn.style.display = 'inline-block';
+                    completeRoundBtn.style.display = 'none';
+                }
+            }
+            // Reps+cycling list is inside Result Entry only; no separate container
+        }
+
+        function playSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (e) {
+                // ignore
+            }
+        }
+
+        function showDoneMessage() {
+            const message = doneMessageInput.value.trim() || 'Completed';
+            timerDone = true;
+
+            display.textContent = message;
+            display.classList.add('danger');
+            display.classList.remove('warning', 'prepare');
+
+            const fontSize = calculateFontSize(message);
+            display.style.fontSize = `${fontSize}px`;
+            
+            // Always show result entry in splits version
+            showResultEntry();
+        }
+        
+        function formatResultTimestamp(isoString) {
+            try {
+                const d = new Date(isoString);
+                const date = d.toLocaleDateString(undefined, { month: 'numeric', day: 'numeric', year: '2-digit' });
+                const time = d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true });
+                return `${date} ${time}`;
+            } catch (e) {
+                return isoString || '—';
+            }
+        }
+        
+        function syncRoundsResultsFromDOM() {
+            if (amrapType !== 'rounds' || !resultEntry) return;
+            const table = resultEntry.querySelector('.result-table');
+            if (!table) return;
+            const tbody = table.querySelector('tbody');
+            if (!tbody) return;
+            const trs = tbody.querySelectorAll('tr');
+            const numRoundRows = Math.max(0, trs.length - 2);
+            for (let i = 0; i < numRoundRows; i++) {
+                const row = trs[i + 1];
+                const inputs = row.querySelectorAll('input[type="number"]');
+                if (!roundsResults[i]) roundsResults[i] = { round: i + 1, exercises: exercises.map(ex => ({ name: ex.name, reps: ex.targetReps || 0 })), completedAt: null };
+                for (let j = 0; j < exercises.length && j < inputs.length; j++) {
+                    const val = parseInt(inputs[j].value, 10);
+                    if (!isNaN(val)) {
+                        if (!roundsResults[i].exercises[j]) roundsResults[i].exercises[j] = { name: exercises[j].name, reps: 0 };
+                        roundsResults[i].exercises[j].reps = clampInt(val, 0, 9999);
+                    }
+                }
+            }
+            const partialRow = trs[trs.length - 1];
+            if (partialRow && partialRow.classList.contains('partial')) {
+                const partialInputs = partialRow.querySelectorAll('input[type="number"]');
+                if (!roundsResults[rounds]) roundsResults[rounds] = { round: rounds + 1, exercises: [], completedAt: null };
+                for (let j = 0; j < exercises.length && j < partialInputs.length; j++) {
+                    const val = parseInt(partialInputs[j].value, 10);
+                    if (!isNaN(val)) {
+                        if (!roundsResults[rounds].exercises[j]) roundsResults[rounds].exercises[j] = { name: exercises[j].name, reps: 0 };
+                        roundsResults[rounds].exercises[j].reps = clampInt(val, 0, 9999);
+                    }
+                }
+            }
+        }
+        
+        function showResultEntry(skipSync) {
+            resultEntry.style.display = 'block';
+            if (amrapType === 'rounds' && !skipSync) syncRoundsResultsFromDOM();
+            let html = '<h3>Result Entry</h3>';
+            
+            if (amrapType === 'rounds') {
+                html += '<table class="result-table"><thead><tr><th>Round</th>';
+                exercises.forEach(ex => {
+                    html += `<th>${ex.name || 'Exercise'}</th>`;
+                });
+                html += '<th style="text-align: right;">Completed</th></tr></thead><tbody>';
+                
+                // Target row
+                html += '<tr><td><strong>Target</strong></td>';
+                exercises.forEach(ex => {
+                    html += `<td>${ex.targetReps || 0}</td>`;
+                });
+                html += '<td></td></tr>';
+                
+                // Completed rounds (editable for post-workout entry)
+                for (let i = 0; i < rounds; i++) {
+                    const completedAt = roundsResults[i]?.completedAt;
+                    const timeStr = completedAt ? formatResultTimestamp(completedAt) : '—';
+                    html += `<tr><td><strong>Round ${i + 1}</strong></td>`;
+                    exercises.forEach((ex, idx) => {
+                        const result = roundsResults[i]?.exercises?.[idx]?.reps ?? ex.targetReps ?? 0;
+                        html += `<td><input type="number" min="0" value="${result}" onchange="updateRoundReps(${i}, ${idx}, this.value)" style="width: 100%; padding: 0.5rem; border: 1px solid rgb(var(--input)); border-radius: var(--radius); background-color: rgb(var(--background)); color: rgb(var(--foreground)); font-size: 0.875rem; text-align: center;"></td>`;
+                    });
+                    html += `<td class="completed-at" style="text-align: right;">${timeStr}</td></tr>`;
+                }
+                
+                // Partial round
+                html += '<tr class="partial"><td><strong>Partial</strong></td>';
+                exercises.forEach((ex, idx) => {
+                    const partialReps = roundsResults[rounds]?.exercises?.[idx]?.reps || 0;
+                    html += `<td><input type="number" min="0" value="${partialReps}" onchange="updatePartialReps(${idx}, this.value)" style="width: 100%; padding: 0.5rem; border: 1px solid rgb(var(--input)); border-radius: var(--radius); background-color: rgb(var(--background)); color: rgb(var(--foreground)); font-size: 0.875rem; text-align: center;"></td>`;
+                });
+                html += '<td></td></tr>';
+                
+                html += '</tbody></table>';
+                
+                html += '<button type="button" class="control-btn btn-secondary btn-add-round" id="addRoundAfterWorkoutBtn" onclick="addRoundAfterWorkout()">+ Add Round</button>';
+                
+                // Calculate and show summary
+                let summary = calculateRoundsSummary();
+                html += `<div class="result-summary">${summary}</div>`;
+            } else if (amrapType === 'reps' && (cycleExercises || cycleResults.length > 0)) {
+                // AMRAP Reps + cycling: render list and totals inside Result Entry white box
+                ensureCycleResultsHasCurrentCycle();
+                const tCycles = getTargetRounds();
+                const tRounds = getTargetRounds();
+                const cyclesToShow = timerDone
+                    ? cycleResults.length
+                    : (tCycles > 0 ? tCycles : (tRounds > 0 ? tRounds : 1));
+                while (cycleResults.length < cyclesToShow) {
+                    cycleResults.push({
+                        cycle: cycleResults.length + 1,
+                        exercises: exercises.map(ex => ({ name: ex.name || '', reps: 0 })),
+                        completedAt: null
+                    });
+                }
+                html += '<div class="live-rep-entry-container" style="max-height: 40vh; overflow-y: auto; -webkit-overflow-scrolling: touch; margin-top: 0.5rem;">';
+                html += '<div class="live-rep-entry-list">';
+                for (let c = 0; c < cyclesToShow; c++) {
+                    const cr = cycleResults[c] || { cycle: c + 1, exercises: [], completedAt: null };
+                    if (!cr.exercises || cr.exercises.length === 0) {
+                        cr.exercises = exercises.map(ex => ({ name: ex.name || '', reps: 0 }));
+                    }
+                    for (let e = 0; e < exercises.length; e++) {
+                        const ex = exercises[e];
+                        const repVal = Number(cr.exercises?.[e]?.reps) || 0;
+                        const isActive = !timerDone && c === currentCycle - 1 && e === currentExerciseIndex;
+                        const showControls = timerDone || isActive;
+                        html += '<div class="live-rep-entry-row' + (isActive ? ' active' : '') + '" data-cycle="' + (c + 1) + '" data-exercise="' + e + '">';
+                        html += '<span class="label">Cycle ' + (c + 1) + ' - ' + (ex.name || 'Exercise') + '</span>';
+                        html += '<div class="controls">';
+                        if (showControls) {
+                            html += '<button type="button" class="rep-btn" aria-label="Add 5 reps" onclick="incrementReps(' + c + ', ' + e + ', 5)">+5</button>';
+                            html += '<button type="button" class="rep-btn" aria-label="Add 1 rep" onclick="incrementReps(' + c + ', ' + e + ', 1)">+1</button>';
+                            html += '<input type="number" min="0" value="' + repVal + '" class="rep-input" aria-label="Reps for cycle ' + (c + 1) + ' ' + (ex.name || '') + '" onchange="updateCycleRepsInResultEntry(' + c + ', ' + e + ', this.value)">';
+                            html += '<button type="button" class="rep-btn" aria-label="Subtract 1 rep" onclick="incrementReps(' + c + ', ' + e + ', -1)">-1</button>';
+                            html += '<button type="button" class="rep-btn" aria-label="Subtract 5 reps" onclick="incrementReps(' + c + ', ' + e + ', -5)">-5</button>';
+                        }
+                        html += '</div></div>';
+                    }
+                    if (c < cyclesToShow - 1) {
+                        html += '<div class="live-rep-entry-sep" aria-hidden="true"></div>';
+                    }
+                }
+                html += '</div>';
+                /* Totals block: per-exercise and grand total (splits-style, inside same white box) */
+                if (cycleResults.length > 0) {
+                    const totals = calculateTotals();
+                    let grandTotal = 0;
+                    exercises.forEach((ex) => { grandTotal += (totals[ex.name || ''] || 0); });
+                    html += '<div class="result-entry-totals">';
+                    html += '<h4 class="result-entry-totals-title">Totals</h4>';
+                    html += '<ul class="result-entry-totals-list">';
+                    exercises.forEach((ex) => {
+                        const t = totals[ex.name || ''] || 0;
+                        html += '<li>' + (ex.name || 'Exercise') + ': ' + t + '</li>';
+                    });
+                    html += '<li class="result-entry-totals-grand">Grand Total: ' + grandTotal + ' reps</li>';
+                    html += '</ul></div>';
+                }
+                if (timerDone && cycleResults.length > 0) {
+                    html += '<div class="live-rep-entry-footer" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgb(var(--border));">';
+                    html += '<div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">';
+                    html += '<button type="button" class="control-btn btn-secondary" id="resultEntryAddCycleBtn" style="font-size: 0.875rem;">+ Add Cycle</button>';
+                    html += '<button type="button" class="control-btn btn-primary" id="resultEntryDoneBtn" style="font-size: 0.875rem;" aria-label="Save Results">Done</button>';
+                    html += '</div></div>';
+                }
+                html += '</div>';
+            } else {
+                html += '<table class="result-table"><thead><tr><th>Exercise</th><th>Total Reps</th></tr></thead><tbody>';
+                exercises.forEach((ex, idx) => {
+                    const totalReps = repsResults[ex.name] || (cycleResults.length ? cycleResults.reduce((s, cr) => s + (Number(cr.exercises?.[idx]?.reps) || 0), 0) : 0);
+                    html += `<tr><td><strong>${ex.name || 'Exercise'}</strong></td><td><button type="button" class="control-btn time-adjust-btn" aria-label="Decrease reps" onclick="adjustRepsResultByIndex(${idx}, -1)">−</button><input type="number" min="0" value="${totalReps}" onchange="updateRepsResultByIndex(${idx}, this.value)" style="width: 4rem; padding: 0.5rem; border: 1px solid rgb(var(--input)); border-radius: var(--radius); background-color: rgb(var(--background)); color: rgb(var(--foreground)); font-size: 0.875rem; text-align: center; margin: 0 0.25rem;"><button type="button" class="control-btn time-adjust-btn" aria-label="Increase reps" onclick="adjustRepsResultByIndex(${idx}, 1)">+</button></td></tr>`;
+                });
+                html += '</tbody></table>';
+                let grandTotal = Object.values(repsResults).reduce((sum, reps) => sum + (Number(reps) || 0), 0);
+                if (cycleResults.length > 0 && grandTotal === 0) grandTotal = cycleResults.reduce((tot, cr) => tot + (cr.exercises || []).reduce((s, e) => s + (Number(e.reps) || 0), 0), 0);
+                html += `<div class="result-summary">Grand Total: ${grandTotal} reps</div>`;
+            }
+            
+            resultEntry.innerHTML = html;
+            // Attach event listeners for Result Entry buttons (reps+cycling mode)
+            if (amrapType === 'reps' && (cycleExercises || cycleResults.length > 0)) {
+                const addBtn = document.getElementById('resultEntryAddCycleBtn');
+                const doneBtn = document.getElementById('resultEntryDoneBtn');
+                if (addBtn) {
+                    addBtn.addEventListener('click', function() {
+                        cycleResults.push({ cycle: cycleResults.length + 1, exercises: exercises.map(ex => ({ name: ex.name || '', reps: 0 })), completedAt: null });
+                        showResultEntry();
+                    });
+                }
+                if (doneBtn) {
+                    doneBtn.addEventListener('click', function() {
+                        if (resultEntry) resultEntry.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    });
+                }
+            }
+        }
+        
+        window.updateCycleRepsInResultEntry = function(cycleIndex, exerciseIndex, value) {
+            if (cycleIndex < 0 || cycleIndex >= cycleResults.length) return;
+            if (!cycleResults[cycleIndex].exercises) cycleResults[cycleIndex].exercises = exercises.map(ex => ({ name: ex.name || '', reps: 0 }));
+            if (!cycleResults[cycleIndex].exercises[exerciseIndex]) cycleResults[cycleIndex].exercises[exerciseIndex] = { name: exercises[exerciseIndex].name || '', reps: 0 };
+            cycleResults[cycleIndex].exercises[exerciseIndex].reps = clampInt(value, 0, 9999);
+            syncRepsResultsFromCycleResults();
+            showResultEntry();
+        };
+        
+        window.updateRoundReps = function(roundIndex, exerciseIndex, value) {
+            if (roundIndex < 0 || roundIndex >= rounds) return;
+            if (!roundsResults[roundIndex]) {
+                roundsResults[roundIndex] = { round: roundIndex + 1, exercises: exercises.map(ex => ({ name: ex.name, reps: ex.targetReps || 0 })), completedAt: roundsResults[roundIndex]?.completedAt || null };
+            }
+            if (!roundsResults[roundIndex].exercises[exerciseIndex]) {
+                roundsResults[roundIndex].exercises[exerciseIndex] = { name: exercises[exerciseIndex].name, reps: 0 };
+            }
+            roundsResults[roundIndex].exercises[exerciseIndex].reps = clampInt(value, 0, 9999);
+            updateRoundsSummary();
+        };
+        
+        window.updatePartialReps = function(exerciseIndex, value) {
+            if (!roundsResults[rounds]) {
+                roundsResults[rounds] = { round: rounds + 1, exercises: [], completedAt: null };
+            }
+            if (!roundsResults[rounds].exercises[exerciseIndex]) {
+                roundsResults[rounds].exercises[exerciseIndex] = { name: exercises[exerciseIndex].name, reps: 0 };
+            }
+            roundsResults[rounds].exercises[exerciseIndex].reps = clampInt(value, 0, 9999);
+            updateRoundsSummary();
+        };
+        
+        window.addRoundAfterWorkout = function() {
+            const newRound = { round: rounds + 1, exercises: exercises.map(ex => ({ name: ex.name, reps: ex.targetReps || 0 })), completedAt: null };
+            roundsResults.splice(rounds, 0, newRound);
+            if (!roundsResults[rounds + 1]) {
+                roundsResults[rounds + 1] = { round: rounds + 2, exercises: exercises.map(ex => ({ name: ex.name, reps: 0 })), completedAt: null };
+            }
+            rounds++;
+            showResultEntry();
+            updateRoundsDisplay();
+        };
+        
+        window.updateRepsResult = function(exerciseName, value) {
+            repsResults[exerciseName] = clampInt(value, 0, 9999);
+            updateRepsSummary();
+        };
+        
+        window.adjustRepsResult = function(exerciseName, delta) {
+            const current = Number(repsResults[exerciseName]) || 0;
+            repsResults[exerciseName] = Math.max(0, current + delta);
+            showResultEntry();
+        };
+        
+        window.updateRepsResultByIndex = function(exerciseIndex, value) {
+            if (exercises[exerciseIndex]) {
+                repsResults[exercises[exerciseIndex].name || ''] = clampInt(value, 0, 9999);
+                updateRepsSummary();
+            }
+        };
+        
+        window.adjustRepsResultByIndex = function(exerciseIndex, delta) {
+            if (exercises[exerciseIndex]) {
+                const name = exercises[exerciseIndex].name || '';
+                const current = Number(repsResults[name]) || 0;
+                repsResults[name] = Math.max(0, current + delta);
+                showResultEntry();
+            }
+        };
+        
+        window.updateCycleReps = function(cycleIndex, exerciseIndex, value) {
+            if (cycleIndex < 0 || cycleIndex >= cycleResults.length) return;
+            if (!cycleResults[cycleIndex].exercises) cycleResults[cycleIndex].exercises = exercises.map(ex => ({ name: ex.name || '', reps: 0 }));
+            if (!cycleResults[cycleIndex].exercises[exerciseIndex]) cycleResults[cycleIndex].exercises[exerciseIndex] = { name: exercises[exerciseIndex].name || '', reps: 0 };
+            cycleResults[cycleIndex].exercises[exerciseIndex].reps = clampInt(value, 0, 9999);
+            syncRepsResultsFromCycleResults();
+            updateCycleSummary();
+        };
+        
+        window.adjustCycleReps = function(cycleIndex, exerciseIndex, delta) {
+            if (cycleIndex < 0 || cycleIndex >= cycleResults.length) return;
+            if (!cycleResults[cycleIndex].exercises) cycleResults[cycleIndex].exercises = exercises.map(ex => ({ name: ex.name || '', reps: 0 }));
+            const exs = cycleResults[cycleIndex].exercises;
+            if (!exs[exerciseIndex]) exs[exerciseIndex] = { name: exercises[exerciseIndex].name || '', reps: 0 };
+            const current = Number(exs[exerciseIndex].reps) || 0;
+            exs[exerciseIndex].reps = Math.max(0, current + delta);
+            syncRepsResultsFromCycleResults();
+            updateCycleSummary();
+            showResultEntry();
+        };
+        
+        window.addCycleAfterWorkout = function() {
+            cycleResults.push({
+                cycle: cycleResults.length + 1,
+                exercises: exercises.map(ex => ({ name: ex.name || '', reps: 0 })),
+                completedAt: null
+            });
+            showResultEntry();
+        };
+        
+        function syncRepsResultsFromCycleResults() {
+            exercises.forEach((ex, idx) => {
+                const total = cycleResults.reduce((sum, cr) => sum + (Number(cr.exercises?.[idx]?.reps) || 0), 0);
+                repsResults[ex.name || ''] = total;
+            });
+        }
+        
+        function calculateCycleSummary() {
+            if (cycleResults.length === 0) return 'No cycles entered.';
+            const lines = exercises.map((ex, idx) => {
+                const total = cycleResults.reduce((sum, cr) => sum + (Number(cr.exercises?.[idx]?.reps) || 0), 0);
+                return `Total ${ex.name || 'Exercise'}: ${total} (across ${cycleResults.length} cycle${cycleResults.length === 1 ? '' : 's'})`;
+            });
+            return lines.join(' · ');
+        }
+        
+        function updateCycleSummary() {
+            const summaryEl = resultEntry.querySelector('.result-summary');
+            if (summaryEl) summaryEl.textContent = calculateCycleSummary();
+        }
+        
+        function calculateRoundsSummary() {
+            let fullRounds = rounds;
+            let partialText = exercises.map((ex, idx) => {
+                const partialReps = roundsResults[rounds]?.exercises?.[idx]?.reps || 0;
+                return partialReps > 0 ? `${partialReps} ${ex.name}` : null;
+            }).filter(Boolean).join(', ');
+            
+            if (partialText) {
+                return `${fullRounds} full rounds + ${partialText}`;
+            } else {
+                return `${fullRounds} full rounds`;
+            }
+        }
+        
+        function updateRoundsSummary() {
+            const summaryEl = resultEntry.querySelector('.result-summary');
+            if (summaryEl) {
+                summaryEl.textContent = calculateRoundsSummary();
+            }
+        }
+        
+        function updateRepsSummary() {
+            const summaryEl = resultEntry.querySelector('.result-summary');
+            if (summaryEl) {
+                let grandTotal = Object.values(repsResults).reduce((sum, reps) => sum + (Number(reps) || 0), 0);
+                summaryEl.textContent = `Grand Total: ${grandTotal} reps`;
+            }
+        }
+        
+        function addPartialCycleToCycleResults() {
+            cycleResults.push({
+                cycle: currentCycle,
+                exercises: exercises.map(ex => ({ name: ex.name || '', reps: 0 })),
+                completedAt: null
+            });
+        }
+        
+        function ensureCycleResultsHasCurrentCycle() {
+            if (amrapType !== 'reps' || !cycleExercises || exercises.length === 0) return;
+            while (cycleResults.length < currentCycle) {
+                cycleResults.push({
+                    cycle: cycleResults.length + 1,
+                    exercises: exercises.map(ex => ({ name: ex.name || '', reps: 0 })),
+                    completedAt: null
+                });
+            }
+        }
+        
+        function calculateLiveTotals() {
+            const totals = {};
+            exercises.forEach((ex, idx) => {
+                totals[ex.name || ''] = cycleResults.reduce((sum, cr) => sum + (Number(cr.exercises?.[idx]?.reps) || 0), 0);
+            });
+            return totals;
+        }
+        
+        /** Grand totals per exercise (alias for UI/summary). */
+        function calculateTotals() {
+            return calculateLiveTotals();
+        }
+        
+        /** Refresh active cycle/exercise highlight (re-renders live rep list). */
+        function updateActiveCycleHighlight() {
+            renderLiveRepEntries();
+        }
+        
+        function renderLiveRepEntries() {
+            if (amrapType === 'reps' && cycleExercises && exercises.length > 0) {
+                showResultEntry();
+            }
+        }
+        
+        function incrementLiveReps(cycleIdx, exIdx, delta) {
+            if (cycleIdx < 0 || cycleIdx >= cycleResults.length) return;
+            if (!cycleResults[cycleIdx].exercises) cycleResults[cycleIdx].exercises = exercises.map(ex => ({ name: ex.name || '', reps: 0 }));
+            const exs = cycleResults[cycleIdx].exercises;
+            if (!exs[exIdx]) exs[exIdx] = { name: exercises[exIdx].name || '', reps: 0 };
+            const current = Number(exs[exIdx].reps) || 0;
+            exs[exIdx].reps = Math.max(0, current + delta);
+            syncRepsResultsFromCycleResults();
+            renderLiveRepEntries();
+        }
+        
+        /** Public API: adjust reps for a cycle/exercise (e.g. +5, +1, -1, -5). */
+        window.incrementReps = function(cycleIdx, exIdx, delta) {
+            incrementLiveReps(cycleIdx, exIdx, delta);
+        };
+        
+        /** Called when work period ends: enter rest or advance to next exercise/cycle. */
+        function advanceToNextExerciseOrCycle() {
+            if (amrapType !== 'reps' || !cycleExercises || exercises.length === 0) return;
+            workTimeRemaining = 0;
+            if (restBetweenExercises > 0) {
+                isRestPeriod = true;
+                currentRestTime = restBetweenExercises;
+                if (statusLabel) statusLabel.textContent = 'Rest';
+            } else {
+                currentExerciseIndex = (currentExerciseIndex + 1) % exercises.length;
+                if (currentExerciseIndex === 0) {
+                    if (enableSplits) cycleResults.push({ cycle: currentCycle, exercises: exercises.map(ex => ({ name: ex.name || '', reps: 0 })), completedAt: new Date().toISOString() });
+                    currentCycle++;
+                    ensureCycleResultsHasCurrentCycle();
+                    const limit = getTargetRounds();
+                    if (limit > 0 && currentCycle > limit) {
+                        stopTimer();
+                        showDoneMessage();
+                        return;
+                    }
+                }
+                workTimePerExerciseSeconds = getWorkTimePerExerciseSeconds();
+                workTimeRemaining = workTimePerExerciseSeconds;
+                updateRoundsDisplay();
+                renderLiveRepEntries();
+            }
+        }
+
+        function stopTimer() {
+            isRunning = false;
+            isPaused = false;
+            clearInterval(interval);
+            interval = null;
+            updateDisplay();
+        }
+
+        function startTimer() {
+            if (display) {
+                display.style.fontSize = '';
+            }
+            
+            if (totalSeconds <= 0) {
+                totalSeconds = readDurationFromInputs();
+                currentTime = totalSeconds;
+            }
+            
+            prepTimeSeconds = readPrepTimeFromInput();
+            
+            if (currentTime <= 0 && !isPrepPhase && !isRestPeriod) return;
+
+            isRunning = true;
+            isPaused = false;
+            clearInterval(interval);
+            interval = null;
+
+            // Reset on fresh start
+            if (!isPaused && !isPrepPhase && !isRestPeriod) {
+                rounds = 0;
+                currentRound = getTargetRounds() >= 1 ? 1 : 0;
+                isPrepPhase = prepTimeSeconds > 0;
+                currentPrepTime = prepTimeSeconds;
+                isRestPeriod = false;
+                currentRestTime = 0;
+                roundsResults = [];
+                repsResults = {};
+                cycleResults = [];
+                if (amrapType === 'reps' && cycleExercises && exercises.length > 0) {
+                    currentCycle = 1;
+                    currentExerciseIndex = 0;
+                    workTimePerExerciseSeconds = getWorkTimePerExerciseSeconds();
+                    workTimeRemaining = workTimePerExerciseSeconds;
+                }
+                resultEntry.style.display = 'none';
+                timerDone = false;
+                updateRoundsDisplay();
+            }
+
+            interval = setInterval(() => {
+                if (isPrepPhase) {
+                    currentPrepTime--;
+                    if (currentPrepTime <= 0) {
+                        currentPrepTime = 0;
+                        isPrepPhase = false;
+                        if (amrapType === 'reps' && cycleExercises && exercises.length > 0) {
+                            workTimePerExerciseSeconds = getWorkTimePerExerciseSeconds();
+                            workTimeRemaining = workTimePerExerciseSeconds;
+                            ensureCycleResultsHasCurrentCycle();
+                            renderLiveRepEntries();
+                        }
+                        playSound();
+                        updateDisplay();
+                        return;
+                    }
+                } else if (isRestPeriod) {
+                    currentRestTime--;
+                    if (amrapType === 'reps') currentTime--;
+                    if (currentTime <= 0) {
+                        currentTime = 0;
+                        stopTimer();
+                        playSound();
+                        if (amrapType === 'reps' && cycleExercises) addPartialCycleToCycleResults();
+                        showDoneMessage();
+                        return;
+                    }
+                    if (currentRestTime <= 0) {
+                        currentRestTime = 0;
+                        isRestPeriod = false;
+                        if (amrapType === 'rounds') {
+                            currentRound++;
+                            updateRoundsDisplay();
+                            completeRoundBtn.disabled = false;
+                            if (statusLabel) statusLabel.textContent = 'Running';
+                        } else if (cycleExercises && exercises.length > 0) {
+                            currentExerciseIndex = (currentExerciseIndex + 1) % exercises.length;
+                            if (currentExerciseIndex === 0) {
+                                if (enableSplits) cycleResults.push({ cycle: currentCycle, exercises: exercises.map(ex => ({ name: ex.name || '', reps: 0 })), completedAt: new Date().toISOString() });
+                                currentCycle++;
+                                ensureCycleResultsHasCurrentCycle();
+                                const limit = getTargetRounds();
+                                if (limit > 0 && currentCycle > limit) {
+                                    stopTimer();
+                                    showDoneMessage();
+                                    return;
+                                }
+                            }
+                            workTimePerExerciseSeconds = getWorkTimePerExerciseSeconds();
+                            workTimeRemaining = workTimePerExerciseSeconds;
+                            updateRoundsDisplay();
+                            renderLiveRepEntries();
+                        }
+                        playSound();
+                        updateDisplay();
+                        return;
+                    }
+                } else {
+                    currentTime--;
+                    const isRepsCycling = amrapType === 'reps' && cycleExercises && exercises.length > 0;
+                    if (isRepsCycling) workTimeRemaining--;
+                    if (currentTime <= 0) {
+                        currentTime = 0;
+                        stopTimer();
+                        playSound();
+                        if (amrapType === 'reps' && cycleExercises) addPartialCycleToCycleResults();
+                        showDoneMessage();
+                        if (amrapType === 'rounds') completeRoundBtn.disabled = true;
+                        updateDisplay();
+                        return;
+                    }
+                    if (amrapType === 'rounds') {
+                        updateDisplay();
+                        return;
+                    }
+                    if (isRepsCycling && workTimeRemaining <= 0) {
+                        advanceToNextExerciseOrCycle();
+                        playSound();
+                    }
+                }
+                updateDisplay();
+            }, 1000);
+
+            updateDisplay();
+        }
+
+        function pauseTimer() {
+            if (!isRunning) return;
+            isRunning = false;
+            isPaused = true;
+            clearInterval(interval);
+            interval = null;
+            completeRoundBtn.disabled = true;
+            updateDisplay();
+        }
+
+        function toggleStartPause() {
+            if (isRunning) {
+                pauseTimer();
+                return;
+            }
+
+            if (isPaused) {
+                startTimer();
+                return;
+            }
+
+            timerDone = false;
+            if (totalSeconds <= 0) {
+                totalSeconds = readDurationFromInputs();
+            }
+            currentTime = totalSeconds;
+            prepTimeSeconds = readPrepTimeFromInput();
+            isPrepPhase = prepTimeSeconds > 0;
+            currentPrepTime = prepTimeSeconds;
+            startTimer();
+        }
+
+        function resetTimer() {
+            clearInterval(interval);
+            interval = null;
+            isRunning = false;
+            isPaused = false;
+            isPrepPhase = false;
+            isRestPeriod = false;
+            timerDone = false;
+            
+            if (display) {
+                display.style.fontSize = '';
+            }
+            
+            totalSeconds = readDurationFromInputs();
+            currentTime = totalSeconds;
+            prepTimeSeconds = readPrepTimeFromInput();
+            currentPrepTime = prepTimeSeconds;
+            currentRestTime = 0;
+            restBetweenRoundsSeconds = 0;
+            rounds = 0;
+            currentRound = getTargetRounds() >= 1 ? 1 : 0;
+            roundsResults = [];
+            repsResults = {};
+            cycleResults = [];
+            currentCycle = 1;
+            currentExerciseIndex = 0;
+            workTimeRemaining = 0;
+            resultEntry.style.display = 'none';
+            updateRoundsDisplay();
+            completeRoundBtn.disabled = true;
+            updateDisplay();
+        }
+        
+        function clearTimer() {
+            clearInterval(interval);
+            interval = null;
+            isRunning = false;
+            isPaused = false;
+            isPrepPhase = false;
+            isRestPeriod = false;
+            timerDone = false;
+            
+            if (display) {
+                display.textContent = '00:00';
+                display.classList.remove('warning', 'danger', 'prepare');
+                display.style.fontSize = '';
+            }
+            if (roundsDisplay) {
+                roundsDisplay.style.display = 'none';
+                roundsDisplay.textContent = '';
+            }
+            
+            minutesInput.value = '0';
+            secondsInput.value = '0';
+            prepTimeInput.value = '30';
+            if (roundsInput) roundsInput.value = '0';
+            if (restBetweenRoundsInput) restBetweenRoundsInput.value = '0';
+            
+            totalSeconds = 0;
+            currentTime = 0;
+            prepTimeSeconds = 30;
+            currentPrepTime = 0;
+            currentRestTime = 0;
+            restBetweenRoundsSeconds = 0;
+            rounds = 0;
+            currentRound = 0;
+            roundsResults = [];
+            repsResults = {};
+            cycleResults = [];
+            currentCycle = 1;
+            currentExerciseIndex = 0;
+            workTimeRemaining = 0;
+            resultEntry.style.display = 'none';
+            resultEntry.innerHTML = '';
+            updateRestBetweenRoundsVisibility();
+            updateRoundsDisplay();
+            completeRoundBtn.disabled = true;
+            
+            updateDisplay();
+        }
+        
+        function adjustRounds(delta) {
+            if (isRunning || isPaused) return;
+            const current = clampInt(roundsInput.value, 0, 999);
+            const newValue = Math.min(999, Math.max(0, current + delta));
+            roundsInput.value = String(newValue);
+            if (newValue >= 1 && currentRound === 0) currentRound = 1;
+            if (newValue === 0) currentRound = 0;
+            updateRestBetweenRoundsVisibility();
+            updateRoundsDisplay();
+            if (amrapType === 'reps' && cycleExercises) updateCycleTimeSummary();
+        }
+        
+        function adjustRestBetweenRounds(delta) {
+            if (isRunning || isPaused) return;
+            const current = clampInt(restBetweenRoundsInput.value, 0, 600);
+            const newValue = Math.min(600, Math.max(0, current + delta));
+            restBetweenRoundsInput.value = String(newValue);
+            if (amrapType === 'reps' && cycleExercises) updateCycleTimeSummary();
+        }
+        
+        function adjustMinutes(delta) {
+            if (isRunning || isPaused) return;
+            const current = clampInt(minutesInput.value, 0, 99);
+            const newValue = Math.min(99, Math.max(0, current + delta));
+            minutesInput.value = String(newValue);
+            onTimeChange();
+        }
+        
+        function adjustSeconds(delta) {
+            if (isRunning || isPaused) return;
+            const current = clampInt(secondsInput.value, 0, 59);
+            const newValue = Math.min(59, Math.max(0, current + delta));
+            secondsInput.value = String(newValue);
+            onTimeChange();
+        }
+        
+        function adjustPrepTime(delta) {
+            if (isRunning || isPaused) return;
+            const current = clampInt(prepTimeInput.value, 0, 300);
+            const newValue = Math.min(300, Math.max(0, current + delta));
+            prepTimeInput.value = String(newValue);
+        }
+        
+        function adjustRestBetweenExercises(delta) {
+            if (isRunning || isPaused) return;
+            const current = clampInt(restBetweenExercisesInput.value, 0, 300);
+            const newValue = Math.min(300, Math.max(0, current + delta));
+            restBetweenExercisesInput.value = String(newValue);
+            restBetweenExercises = newValue;
+            updateCycleTimeSummary();
+        }
+
+        function onTimeChange() {
+            if (isRunning || isPaused) return;
+            timerDone = false;
+            totalSeconds = readDurationFromInputs();
+            currentTime = totalSeconds;
+            updateCycleTimeSummary();
+            updateDisplay();
+        }
+        
+        // Event listeners
+        startPauseBtn.addEventListener('click', toggleStartPause);
+        resetBtn.addEventListener('click', resetTimer);
+        clearBtn.addEventListener('click', clearTimer);
+        setupBtn.addEventListener('click', toggleDrawer);
+        
+        completeRoundBtn.addEventListener('click', () => {
+            if (interval && isRunning && !isPaused && amrapType === 'rounds' && !isPrepPhase && !isRestPeriod) {
+                rounds++;
+                const ri = rounds - 1;
+                const existing = roundsResults[ri];
+                const exercisesData = exercises.map((ex, idx) => {
+                    const existingReps = existing?.exercises?.[idx]?.reps;
+                    const reps = (existingReps != null && existingReps > 0) ? existingReps : (ex.targetReps || 0);
+                    return { name: ex.name, reps };
+                });
+                roundsResults[ri] = { round: rounds, exercises: exercisesData, completedAt: new Date().toISOString() };
+                const restTimeSeconds = readRestTimeFromInputs();
+                if (restTimeSeconds > 0) {
+                    isRestPeriod = true;
+                    currentRestTime = restTimeSeconds;
+                    restBetweenRoundsSeconds = restTimeSeconds;
+                    completeRoundBtn.disabled = true;
+                    statusLabel.textContent = 'Rest';
+                } else {
+                    currentRound++;
+                }
+                updateRoundsDisplay();
+                showResultEntry(true);
+                playSound();
+                updateDisplay();
+            }
+        });
+        
+        minutesInput.addEventListener('input', onTimeChange);
+        secondsInput.addEventListener('input', onTimeChange);
+        
+        document.getElementById('minutesPlus5Btn').addEventListener('click', () => adjustMinutes(5));
+        document.getElementById('minutesPlus1Btn').addEventListener('click', () => adjustMinutes(1));
+        document.getElementById('minutesMinus1Btn').addEventListener('click', () => adjustMinutes(-1));
+        document.getElementById('minutesMinus5Btn').addEventListener('click', () => adjustMinutes(-5));
+        document.getElementById('secondsPlus5Btn').addEventListener('click', () => adjustSeconds(5));
+        document.getElementById('secondsPlus1Btn').addEventListener('click', () => adjustSeconds(1));
+        document.getElementById('secondsMinus1Btn').addEventListener('click', () => adjustSeconds(-1));
+        document.getElementById('secondsMinus5Btn').addEventListener('click', () => adjustSeconds(-5));
+        document.getElementById('roundsPlus5Btn').addEventListener('click', () => adjustRounds(5));
+        document.getElementById('roundsPlus1Btn').addEventListener('click', () => adjustRounds(1));
+        document.getElementById('roundsMinus1Btn').addEventListener('click', () => adjustRounds(-1));
+        document.getElementById('roundsMinus5Btn').addEventListener('click', () => adjustRounds(-5));
+        document.getElementById('prepTimePlus5Btn').addEventListener('click', () => adjustPrepTime(5));
+        document.getElementById('prepTimePlus1Btn').addEventListener('click', () => adjustPrepTime(1));
+        document.getElementById('prepTimeMinus1Btn').addEventListener('click', () => adjustPrepTime(-1));
+        document.getElementById('prepTimeMinus5Btn').addEventListener('click', () => adjustPrepTime(-5));
+        document.getElementById('restBetweenRoundsPlus5Btn').addEventListener('click', () => adjustRestBetweenRounds(5));
+        document.getElementById('restBetweenRoundsPlus1Btn').addEventListener('click', () => adjustRestBetweenRounds(1));
+        document.getElementById('restBetweenRoundsMinus5Btn').addEventListener('click', () => adjustRestBetweenRounds(-5));
+        document.getElementById('restBetweenRoundsMinus1Btn').addEventListener('click', () => adjustRestBetweenRounds(-1));
+        if (roundsInput) {
+            roundsInput.addEventListener('input', function() {
+                const value = clampInt(this.value, 0, 999);
+                this.value = String(value);
+                if (value >= 1 && currentRound === 0) currentRound = 1;
+                if (value === 0) currentRound = 0;
+                updateRestBetweenRoundsVisibility();
+                updateRoundsDisplay();
+                if (amrapType === 'reps' && cycleExercises) updateCycleTimeSummary();
+            });
+        }
+        if (restBetweenRoundsInput) {
+            restBetweenRoundsInput.addEventListener('input', function() {
+                const v = clampInt(this.value, 0, 600);
+                this.value = String(v);
+                if (amrapType === 'reps' && cycleExercises) updateCycleTimeSummary();
+            });
+        }
+        
+        prepTimeInput.addEventListener('input', function() {
+            const value = clampInt(this.value, 0, 300);
+            this.value = String(value);
+        });
+        
+        doneMessageInput.addEventListener('input', function() {
+            let value = this.value.trim();
+            if (value.length > 14) {
+                value = value.substring(0, 14);
+                this.value = value;
+            }
+            updateCharCounts();
+        });
+        
+        workoutTitleInput.addEventListener('input', function() {
+            updateCharCounts();
+            updateWorkoutDisplay();
+        });
+        
+        workoutDescriptionInput.addEventListener('input', function() {
+            updateCharCounts();
+            updateWorkoutDisplay();
+        });
+        
+        amrapTypeRounds.addEventListener('change', updateAmrapType);
+        amrapTypeReps.addEventListener('change', updateAmrapType);
+        
+        document.getElementById('addRoundsExerciseBtn').addEventListener('click', addRoundsExercise);
+        document.getElementById('addRepsExerciseBtn').addEventListener('click', addRepsExercise);
+        
+        const exportWorkoutBtn = document.getElementById('exportWorkoutBtn');
+        const importWorkoutBtn = document.getElementById('importWorkoutBtn');
+        const importFileInput = document.getElementById('importFileInput');
+        if (exportWorkoutBtn) exportWorkoutBtn.addEventListener('click', exportWorkoutToJson);
+        if (importWorkoutBtn) importWorkoutBtn.addEventListener('click', importWorkoutFromJson);
+        if (importFileInput) {
+            importFileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    try {
+                        const data = JSON.parse(ev.target.result);
+                        applyImportedWorkout(data);
+                    } catch (err) {
+                        alert('Error importing workout: ' + err.message);
+                    }
+                };
+                reader.readAsText(file);
+                e.target.value = '';
+            });
+        }
+        
+        // Splits always enabled - no toggle needed
+        
+        function updateCycleExercisesHelpText() {
+            const el = document.getElementById('cycleExercisesHelpText');
+            if (el) el.textContent = cycleExercises ? 'Rotate through exercises one at a time' : 'Freestyle – any order, any time';
+        }
+        cycleExercisesToggle.addEventListener('change', function() {
+            cycleExercises = this.checked;
+            updateCycleExercisesHelpText();
+            restBetweenExercisesContainer.style.display = cycleExercises ? 'block' : 'none';
+            if (workTimePerExerciseContainer) workTimePerExerciseContainer.style.display = (amrapType === 'reps' && cycleExercises) ? 'block' : 'none';
+            if (cycleTimeSummaryBlock) cycleTimeSummaryBlock.style.display = (amrapType === 'reps' && cycleExercises) ? 'block' : 'none';
+            updateCycleTimeSummary();
+        });
+        updateCycleExercisesHelpText();
+        
+        document.getElementById('restBetweenExercisesPlus5Btn').addEventListener('click', () => adjustRestBetweenExercises(5));
+        document.getElementById('restBetweenExercisesPlus1Btn').addEventListener('click', () => adjustRestBetweenExercises(1));
+        document.getElementById('restBetweenExercisesMinus5Btn').addEventListener('click', () => adjustRestBetweenExercises(-5));
+        document.getElementById('restBetweenExercisesMinus1Btn').addEventListener('click', () => adjustRestBetweenExercises(-1));
+        
+        restBetweenExercisesInput.addEventListener('input', function() {
+            const value = clampInt(this.value, 0, 300);
+            this.value = String(value);
+            restBetweenExercises = value;
+            updateCycleTimeSummary();
+        });
+        
+        if (setRealisticWorkTimeBtn) setRealisticWorkTimeBtn.addEventListener('click', applySuggestedWorkTime);
+        if (setRealisticTotalTimeBtn) setRealisticTotalTimeBtn.addEventListener('click', applySuggestedTotalTime);
+        if (dismissCycleWarningBtn) dismissCycleWarningBtn.addEventListener('click', function() {
+            cycleWarningDismissed = true;
+            if (cycleTimeWarningBanner) cycleTimeWarningBanner.style.display = 'none';
+        });
+        
+        function adjustWorkTimePerExercise(delta) {
+            if (isRunning || isPaused) return;
+            const current = clampInt(workTimePerExerciseInput.value, 10, 300);
+            const newValue = Math.min(300, Math.max(10, current + delta));
+            workTimePerExerciseInput.value = String(newValue);
+            workTimePerExerciseSeconds = newValue;
+            updateCycleTimeSummary();
+        }
+        document.getElementById('workTimePerExercisePlus5Btn').addEventListener('click', () => adjustWorkTimePerExercise(5));
+        document.getElementById('workTimePerExercisePlus1Btn').addEventListener('click', () => adjustWorkTimePerExercise(1));
+        document.getElementById('workTimePerExerciseMinus5Btn').addEventListener('click', () => adjustWorkTimePerExercise(-5));
+        document.getElementById('workTimePerExerciseMinus1Btn').addEventListener('click', () => adjustWorkTimePerExercise(-1));
+        if (workTimePerExerciseInput) workTimePerExerciseInput.addEventListener('input', function() {
+            const value = clampInt(this.value, 10, 300);
+            this.value = String(value);
+            workTimePerExerciseSeconds = value;
+            updateCycleTimeSummary();
+        });
+        // Theme management
+        const themeKey = 'timerist-theme';
+        function getInitialTheme() {
+            const saved = localStorage.getItem(themeKey);
+            if (saved === 'dark' || saved === 'light') return saved;
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+
+        function applyTheme(theme) {
+            document.documentElement.classList.toggle('dark', theme === 'dark');
+            localStorage.setItem(themeKey, theme);
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.contains('dark');
+            applyTheme(isDark ? 'light' : 'dark');
+        }
+
+        function updateThemeIcon() {
+            const icon = document.getElementById('theme-icon');
+            if (!icon) return;
+            const isDark = document.documentElement.classList.contains('dark');
+            icon.textContent = isDark ? '☀️' : '🌙';
+        }
+        
+        // Initialize theme
+        applyTheme(getInitialTheme());
+        updateThemeIcon();
+        document.getElementById('themeToggleBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleTheme();
+            updateThemeIcon();
+        });
+        document.getElementById('themeToggleBtn').addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleTheme();
+            updateThemeIcon();
+        }, { passive: false });
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            const saved = localStorage.getItem(themeKey);
+            if (!saved) {
+                applyTheme(e.matches ? 'dark' : 'light');
+                updateThemeIcon();
+            }
+        });
+
+        // Initialize
+        updateCharCounts();
+        updateWorkoutDisplay();
+        updateAmrapType();
+        renderRoundsExercises();
+        updateRestBetweenRoundsVisibility();
+        totalSeconds = readDurationFromInputs();
+        currentTime = totalSeconds;
+        prepTimeSeconds = readPrepTimeFromInput();
+        currentPrepTime = prepTimeSeconds;
+        updateRoundsDisplay();
+        updateDisplay();
+        
+        document.getElementById('releaseDate').textContent = new Date().toISOString().split('T')[0];
+        
+        const drawerEl = document.getElementById('settingsDrawer');
+        if (drawerEl) {
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                        if (drawerEl.classList.contains('open')) {
+                            updateRestBetweenRoundsVisibility();
+                            updateCycleTimeSummary();
+                        }
+                    }
+                });
+            });
+            observer.observe(drawerEl, { attributes: true, attributeFilter: ['class'] });
+        }
+    </script>
+</body>
+</html>

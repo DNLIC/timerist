@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Timerist Duration Entry Demo – Touch-Friendly Suggestions</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            border: "hsl(var(--border))",
+            input: "hsl(var(--input))",
+            ring: "hsl(var(--ring))",
+            background: "hsl(var(--background))",
+            foreground: "hsl(var(--foreground))",
+            primary: {
+              DEFAULT: "hsl(var(--primary))",
+              foreground: "hsl(var(--primary-foreground))",
+            },
+            secondary: {
+              DEFAULT: "hsl(var(--secondary))",
+              foreground: "hsl(var(--secondary-foreground))",
+            },
+            destructive: {
+              DEFAULT: "hsl(var(--destructive))",
+              foreground: "hsl(var(--destructive-foreground))",
+            },
+            muted: {
+              DEFAULT: "hsl(var(--muted))",
+              foreground: "hsl(var(--muted-foreground))",
+            },
+            accent: {
+              DEFAULT: "hsl(var(--accent))",
+              foreground: "hsl(var(--accent-foreground))",
+            },
+            popover: {
+              DEFAULT: "hsl(var(--popover))",
+              foreground: "hsl(var(--popover-foreground))",
+            },
+            card: {
+              DEFAULT: "hsl(var(--card))",
+              foreground: "hsl(var(--card-foreground))",
+            },
+          },
+          borderRadius: {
+            lg: "var(--radius)",
+            md: "calc(var(--radius) - 2px)",
+            sm: "calc(var(--radius) - 4px)",
+          },
+        },
+      },
+    }
+  </script>
+  
+  <!-- Lucide icons CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  
+  <!-- React + Babel standalone for demo -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <style>
+    :root {
+      --background: 0 0% 100%;
+      --foreground: 222.2 84% 4.9%;
+      --card: 0 0% 100%;
+      --card-foreground: 222.2 84% 4.9%;
+      --popover: 0 0% 100%;
+      --popover-foreground: 222.2 84% 4.9%;
+      --primary: 222.2 47.4% 11.2%;
+      --primary-foreground: 210 40% 98%;
+      --secondary: 210 40% 96.1%;
+      --secondary-foreground: 222.2 47.4% 11.2%;
+      --muted: 210 40% 96.1%;
+      --muted-foreground: 215.4 16.3% 46.9%;
+      --accent: 210 40% 96.1%;
+      --accent-foreground: 222.2 47.4% 11.2%;
+      --destructive: 0 84.2% 60.2%;
+      --destructive-foreground: 210 40% 98%;
+      --border: 214.3 31.8% 91.4%;
+      --input: 214.3 31.8% 91.4%;
+      --ring: 222.2 84% 4.9%;
+      --radius: 0.5rem;
+    }
+    .dark {
+      --background: 222.2 84% 4.9%;
+      --foreground: 210 40% 98%;
+      --card: 222.2 84% 4.9%;
+      --card-foreground: 210 40% 98%;
+      --popover: 222.2 84% 4.9%;
+      --popover-foreground: 210 40% 98%;
+      --primary: 210 40% 98%;
+      --primary-foreground: 222.2 47.4% 11.2%;
+      --secondary: 217.2 32.6% 17.5%;
+      --secondary-foreground: 210 40% 98%;
+      --muted: 217.2 32.6% 17.5%;
+      --muted-foreground: 215 20.2% 65.1%;
+      --accent: 217.2 32.6% 17.5%;
+      --accent-foreground: 210 40% 98%;
+      --destructive: 0 62.8% 30.6%;
+      --destructive-foreground: 210 40% 98%;
+      --border: 217.2 32.6% 17.5%;
+      --input: 217.2 32.6% 17.5%;
+      --ring: 212.7 26.8% 83.9%;
+    }
+    body { font-family: system-ui, sans-serif; }
+    [type="number"] { -moz-appearance: textfield; }
+    [type="number"]::-webkit-inner-spin-button,
+    [type="number"]::-webkit-outer-spin-button { appearance: none; margin: 0; }
+  </style>
+</head>
+<body class="min-h-screen bg-background text-foreground antialiased p-6 space-y-12">
+
+  <header class="text-center">
+    <h1 class="text-3xl font-bold mb-2">Timerist Duration Entry Demo</h1>
+    <p class="text-muted-foreground">Touch-friendly alternatives to rapid +10 / -10 tapping • Test on iPhone/iPad Safari</p>
+  </header>
+
+  <!-- 1. Slider – Primary recommendation for smooth drag-based entry -->
+  <section class="space-y-4 border rounded-lg p-6 bg-card">
+    <h2 class="text-xl font-semibold">1. Large Touch-Friendly Slider</h2>
+    <p class="text-sm text-muted-foreground">Drag or tap track to set minutes (0–120). No rapid tapping needed. Larger thumb/track for easy mobile use.</p>
+    
+    <div id="slider-root"></div>
+  </section>
+
+  <!-- 2. Stepper with +/- buttons + presets -->
+  <section class="space-y-4 border rounded-lg p-6 bg-card">
+    <h2 class="text-xl font-semibold">2. Custom Stepper + Preset Buttons</h2>
+    <p class="text-sm text-muted-foreground">Large +/- buttons with auto-increment on hold possible. Separate +10/+30 presets reduce taps. touch-action: manipulation applied.</p>
+    
+    <div id="stepper-root" class="space-y-6"></div>
+  </section>
+
+  <!-- 3. Bottom Sheet for settings panel (mobile-optimized) -->
+  <section class="space-y-4 border rounded-lg p-6 bg-card">
+    <h2 class="text-xl font-semibold">3. Bottom Sheet (Drawer) for Settings Panel</h2>
+    <p class="text-sm text-muted-foreground">Trigger opens bottom sheet on mobile (easier thumb reach). Contains slider + stepper inside. Side panel on larger screens.</p>
+    
+    <div id="sheet-root"></div>
+  </section>
+
+  <!-- 4. Direct timer face tap → edit (simulated) -->
+  <section class="space-y-4 border rounded-lg p-6 bg-card text-center">
+    <h2 class="text-xl font-semibold">4. Direct Timer Display Tap to Edit</h2>
+    <p class="text-sm text-muted-foreground">Tap large timer text → opens sheet with controls (simulated here).</p>
+    
+    <div class="text-6xl font-mono font-bold py-8 cursor-pointer hover:underline" id="timer-display">25:00</div>
+  </section>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    // ------------------- 1. Slider Demo -------------------
+    function SliderDemo() {
+      const [value, setValue] = useState([25]);
+      return (
+        <div className="space-y-4">
+          <div className="text-4xl font-bold text-center">{value[0]} min</div>
+          <div 
+            className="[&_*]:touch-manipulation"
+            dangerouslySetInnerHTML={{
+              __html: `
+                <div class="relative w-full h-12 flex items-center">
+                  <div class="absolute h-3 w-full bg-muted rounded-full"></div>
+                  <div class="absolute h-3 bg-primary rounded-full" style="width: ${value[0]/1.2}%"></div>
+                  <input 
+                    type="range" min="0" max="120" step="1" value="${value[0]}" 
+                    class="w-full h-12 opacity-0 absolute cursor-pointer appearance-none pointer-events-auto"
+                    onInput={(e) => setValue([parseInt(e.target.value)])}
+                  />
+                  <div class="absolute h-8 w-8 bg-background border-4 border-primary rounded-full shadow-md -translate-x-1/2" style="left: ${value[0]/1.2}%"></div>
+                </div>
+              `
+            }}
+          />
+          <p className="text-xs text-muted-foreground text-center">Custom large slider simulation (use Radix Slider in real shadcn project)</p>
+        </div>
+      );
+    }
+
+    // ------------------- 2. Stepper + Presets -------------------
+    function StepperDemo() {
+      const [minutes, setMinutes] = useState(10);
+
+      const change = (delta) => setMinutes(v => Math.max(0, v + delta));
+
+      const presets = [5, 10, 15, 20, 30, 45, 60];
+
+      return (
+        <div className="space-y-6">
+          <div className="flex items-center justify-center gap-3">
+            <button 
+              className="touch-manipulation rounded-full bg-secondary p-5 text-3xl font-bold min-w-[64px] min-h-[64px] flex items-center justify-center active:bg-muted"
+              onClick={() => change(-10)}
+            >−10</button>
+            <button 
+              className="touch-manipulation rounded-full bg-secondary p-5 text-3xl font-bold min-w-[64px] min-h-[64px] flex items-center justify-center active:bg-muted"
+              onClick={() => change(-1)}
+            >−</button>
+            <div className="text-5xl font-mono font-bold w-32 text-center touch-manipulation">{minutes}</div>
+            <button 
+              className="touch-manipulation rounded-full bg-primary text-primary-foreground p-5 text-3xl font-bold min-w-[64px] min-h-[64px] flex items-center justify-center active:opacity-80"
+              onClick={() => change(1)}
+            >+</button>
+            <button 
+              className="touch-manipulation rounded-full bg-primary text-primary-foreground p-5 text-3xl font-bold min-w-[64px] min-h-[64px] flex items-center justify-center active:opacity-80"
+              onClick={() => change(10)}
+            >+10</button>
+          </div>
+
+          <div className="flex flex-wrap gap-3 justify-center">
+            {presets.map(p => (
+              <button
+                key={p}
+                className="touch-manipulation px-5 py-3 bg-muted rounded-full text-lg font-medium hover:bg-accent active:bg-accent min-h-[48px]"
+                onClick={() => setMinutes(p)}
+              >
+                {p} min
+              </button>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // ------------------- 3. Sheet / Bottom Drawer -------------------
+    function SheetDemo() {
+      const [open, setOpen] = useState(false);
+      const [duration, setDuration] = useState(30);
+
+      return (
+        <div>
+          <button 
+            className="touch-manipulation bg-primary text-primary-foreground px-6 py-4 rounded-lg text-xl font-medium w-full max-w-xs mx-auto block min-h-[56px]"
+            onClick={() => setOpen(true)}
+          >
+            Open Settings Sheet (Duration: {duration} min)
+          </button>
+
+          {open && (
+            <div className="fixed inset-0 bg-black/50 flex items-end z-50 touch-none" onClick={() => setOpen(false)}>
+              <div 
+                className="bg-card w-full rounded-t-2xl p-6 max-h-[80vh] overflow-auto touch-manipulation"
+                onClick={e => e.stopPropagation()}
+              >
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-xl font-semibold">Timer Settings</h3>
+                  <button className="text-muted-foreground text-2xl" onClick={() => setOpen(false)}>×</button>
+                </div>
+                
+                <div className="space-y-8">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Duration (minutes)</label>
+                    <div className="text-5xl font-bold text-center mb-4">{duration}</div>
+                    {/* Simple range simulation */}
+                    <input 
+                      type="range" min="0" max="120" step="5" value={duration}
+                      className="w-full h-3 bg-muted rounded-full appearance-none cursor-pointer touch-manipulation"
+                      onInput={e => setDuration(parseInt(e.target.value))}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Quick Presets</label>
+                    <div className="grid grid-cols-3 gap-3">
+                      {[10,20,30,45,60,90].map(v => (
+                        <button key={v} className="touch-manipulation py-3 bg-muted rounded-lg hover:bg-accent" onClick={() => setDuration(v)}>
+                          {v} min
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // ------------------- 4. Timer Display Tap -------------------
+    document.getElementById('timer-display').addEventListener('click', () => {
+      alert('In real app: Tap opens bottom sheet or inline edit with slider/stepper above.');
+    });
+
+    // Render all sections
+    ReactDOM.render(<SliderDemo />, document.getElementById('slider-root'));
+    ReactDOM.render(<StepperDemo />, document.getElementById('stepper-root'));
+    ReactDOM.render(<SheetDemo />, document.getElementById('sheet-root'));
+
+    lucide.createIcons();
+  </script>
+
+</body>
+</html>

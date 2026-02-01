@@ -264,20 +264,23 @@
         .control-buttons-container {
             display: flex;
             gap: 0.5rem;
+            row-gap: 0.5rem;
             justify-content: center;
             align-items: center;
-            flex-wrap: nowrap;
+            flex-wrap: wrap;
         }
         
         @media (min-width: 390px) {
             .control-buttons-container {
                 gap: 0.75rem;
+                row-gap: 0.75rem;
             }
         }
         
         @media (min-width: 640px) {
             .control-buttons-container {
                 gap: 1rem;
+                row-gap: 1rem;
             }
         }
         
@@ -354,6 +357,19 @@
         
         /* Dark mode Split button hover - lighter gray */
         html.dark #splitBtn:hover:not(:disabled) {
+            background-color: rgb(150, 150, 150);
+            color: rgb(0, 0, 0);
+        }
+        
+        /* Stop button hover - dark gray */
+        #stopBtn:hover:not(:disabled) {
+            background-color: rgb(100, 100, 100);
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Dark mode Stop button hover - lighter gray */
+        html.dark #stopBtn:hover:not(:disabled) {
             background-color: rgb(150, 150, 150);
             color: rgb(0, 0, 0);
         }
@@ -987,6 +1003,7 @@
                     <button class="control-btn btn-primary" id="startBtn" aria-label="Start stopwatch">Start</button>
                     <button class="control-btn btn-primary" id="pauseBtn" style="display: none;" aria-label="Pause stopwatch">Pause</button>
                     <button class="control-btn btn-secondary" id="splitBtn" style="display: none;" aria-label="Record split time">Split</button>
+                    <button class="control-btn btn-secondary" id="stopBtn" style="display: none;" aria-label="Stop stopwatch">Stop</button>
                     <button class="control-btn btn-destructive" id="resetBtn" style="display: none;" aria-label="Reset stopwatch">Reset</button>
                     <button class="control-btn btn-secondary" id="clearBtn" aria-label="Clear timer and content">Clear</button>
                     <button class="control-btn btn-primary" id="setupBtn" aria-label="Set up timer">Set Up</button>
@@ -1184,7 +1201,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.14</p>
+                <p><strong>Version:</strong> v0.15</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -1202,6 +1219,7 @@
         const startBtn = document.getElementById('startBtn');
         const pauseBtn = document.getElementById('pauseBtn');
         const splitBtn = document.getElementById('splitBtn');
+        const stopBtn = document.getElementById('stopBtn');
         const resetBtn = document.getElementById('resetBtn');
         const clearBtn = document.getElementById('clearBtn');
         const setupBtn = document.getElementById('setupBtn');
@@ -1231,12 +1249,14 @@
                 pauseBtn.style.display = 'inline-block';
                 pauseBtn.classList.remove('paused');
                 splitBtn.style.display = 'inline-block';
+                stopBtn.style.display = 'inline-block';
                 resetBtn.style.display = 'inline-block';
             } else if (isPaused) {
                 startBtn.style.display = 'inline-block';
                 startBtn.textContent = 'Resume';
                 pauseBtn.style.display = 'none';
                 splitBtn.style.display = 'inline-block';
+                stopBtn.style.display = 'inline-block';
                 resetBtn.style.display = 'inline-block';
             } else {
                 // Timer is stopped
@@ -1244,6 +1264,7 @@
                 startBtn.textContent = 'Start';
                 pauseBtn.style.display = 'none';
                 splitBtn.style.display = 'none';
+                stopBtn.style.display = 'none';
                 resetBtn.style.display = elapsedTime > 0 || splits.length > 0 ? 'inline-block' : 'none';
             }
         }
@@ -1263,6 +1284,14 @@
         function pauseTimer() {
             isRunning = false;
             isPaused = true;
+            clearInterval(interval);
+            interval = null;
+            updateDisplay();
+        }
+        
+        function stopTimer() {
+            isRunning = false;
+            isPaused = false;
             clearInterval(interval);
             interval = null;
             updateDisplay();
@@ -1371,6 +1400,7 @@
         startBtn.addEventListener('click', togglePlayPause);
         pauseBtn.addEventListener('click', pauseTimer);
         splitBtn.addEventListener('click', recordSplit);
+        stopBtn.addEventListener('click', stopTimer);
         resetBtn.addEventListener('click', resetTimer);
         clearBtn.addEventListener('click', clearTimer);
         setupBtn.addEventListener('click', function() {

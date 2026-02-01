@@ -21,7 +21,8 @@ const htmlFiles = [
   'hiit.html',
   'pyramid.html',
   'custom.html',
-  'mobility.html'
+  'mobility.html',
+  'Component_Demo.html'
 ];
 
 // JSON files to copy from public directory

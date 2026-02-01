@@ -1,0 +1,60 @@
+{
+  "title": "Daily Ankle Stability on Foam Pad",
+  "description": "Physical-therapy protocol to strengthen ankles, Achilles, and improve proprioception/balance. Uses an oval foam balance pad. 5 rounds of slight-knee-bend single-leg balance (30s each leg), followed by 1-minute static holds on each leg.",
+  "completionMessage": "Completed",
+  "roundGroups": [
+    {
+      "id": "anklepad1",
+      "name": "Knee-Bend Balance (30s per leg)",
+      "rounds": 5,
+      "restBetweenRounds": 10,
+      "activities": [
+        {
+          "name": "Right Leg - Slight Knee Bend",
+          "mode": "time",
+          "duration": 30,
+          "repsTarget": 0,
+          "restBetweenActivities": 0,
+          "notes": "Stand on oval foam pad, one leg, knee bent ~30-45°, hold balance. Keep core engaged, slight knee flexion. Do not go too deep.",
+          "audioEnabled": true
+        },
+        {
+          "name": "Left Leg - Slight Knee Bend",
+          "mode": "time",
+          "duration": 30,
+          "repsTarget": 0,
+          "restBetweenActivities": 0,
+          "notes": "Stand on oval foam pad, one leg, knee bent ~30-45°, hold balance. Keep core engaged, slight knee flexion. Do not go too deep.",
+          "audioEnabled": true
+        }
+      ]
+    },
+    {
+      "id": "anklepad2",
+      "name": "Static Single-Leg Balance",
+      "rounds": 1,
+      "restBetweenRounds": 0,
+      "activities": [
+        {
+          "name": "Right Leg - Static Hold",
+          "mode": "time",
+          "duration": 60,
+          "repsTarget": 0,
+          "restBetweenActivities": 0,
+          "notes": "Stand on oval foam pad, one leg, knee straight or very slight bend, hold steady balance for full minute.",
+          "audioEnabled": true
+        },
+        {
+          "name": "Left Leg - Static Hold",
+          "mode": "time",
+          "duration": 60,
+          "repsTarget": 0,
+          "restBetweenActivities": 0,
+          "notes": "Stand on oval foam pad, one leg, knee straight or very slight bend, hold steady balance for full minute.",
+          "audioEnabled": true
+        }
+      ]
+    }
+  ],
+  "exportedAt": "2026-01-31T12:00:00Z"
+}

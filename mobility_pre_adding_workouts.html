@@ -639,26 +639,6 @@
             color: rgb(var(--foreground));
         }
         
-        /* Round group card inputs: theme-aware background so text is visible in dark mode */
-        .round-group-card input,
-        .round-group-card select,
-        .round-group-card textarea {
-            background-color: rgb(var(--card));
-            color: rgb(var(--card-foreground));
-            border: 2px solid rgb(var(--input));
-            border-radius: var(--radius);
-            padding: 0.5rem 0.75rem;
-            font-size: 0.875rem;
-            font-family: inherit;
-        }
-        .round-group-card input:focus,
-        .round-group-card select:focus,
-        .round-group-card textarea:focus {
-            outline: none;
-            border-color: rgb(var(--ring));
-            box-shadow: 0 0 0 2px rgba(var(--ring), 0.2);
-        }
-        
         .btn-add {
             background-color: rgb(var(--primary));
             color: rgb(var(--primary-foreground));
@@ -1000,12 +980,6 @@
                         <option value="custom" selected>Custom</option>
                         <option value="daily-wake-up">Daily Mobility Wake-Up (Wake & Shake)</option>
                         <option value="daily-foot-roll-relief">Daily Foot Roll Relief</option>
-                        <option value="daily-ankle-stability-foam-pad">Daily Ankle Stability on Foam Pad</option>
-                        <option value="worlds-greatest-stretch">World's Greatest Stretch</option>
-                        <option value="90-90-hip-flow">90/90 Hip Flow</option>
-                        <option value="thoracic-mobility-flow">Thoracic Mobility Flow</option>
-                        <option value="shoulder-cars-dislocates">Shoulder CARs & Dislocates</option>
-                        <option value="upper-body-desk-reset">Upper Body Desk Reset</option>
                     </select>
                     <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.5rem;">
                         Select custom design your own workout using the "Create A Workout" section below.
@@ -1051,7 +1025,7 @@
                     <input 
                         type="text" 
                         id="completionMessageInput" 
-                        placeholder="Completed"
+                        placeholder="Enter completion message..."
                         aria-label="Completion message"
                         maxlength="14"
                     >
@@ -1266,278 +1240,6 @@
                         ]
                     }
                 ]
-            },
-            'daily-ankle-stability-foam-pad': {
-                title: 'Daily Ankle Stability on Foam Pad',
-                description: 'Physical-therapy protocol to strengthen ankles, Achilles, and improve proprioception/balance. Uses an oval foam balance pad. 5 rounds of slight-knee-bend single-leg balance (30s each leg), followed by 1-minute static holds on each leg.',
-                roundGroups: [
-                    {
-                        id: 'anklepad1',
-                        name: 'Knee-Bend Balance (30s per leg)',
-                        rounds: 5,
-                        restBetweenRounds: 10,
-                        activities: [
-                            {
-                                name: 'Right Leg - Slight Knee Bend',
-                                mode: 'time',
-                                duration: 30,
-                                repsTarget: 0,
-                                restBetweenActivities: 0,
-                                notes: 'Stand on oval foam pad, one leg, knee bent ~30-45°, hold balance. Keep core engaged, slight knee flexion. Do not go too deep.',
-                                audioEnabled: true
-                            },
-                            {
-                                name: 'Left Leg - Slight Knee Bend',
-                                mode: 'time',
-                                duration: 30,
-                                repsTarget: 0,
-                                restBetweenActivities: 0,
-                                notes: 'Stand on oval foam pad, one leg, knee bent ~30-45°, hold balance. Keep core engaged, slight knee flexion. Do not go too deep.',
-                                audioEnabled: true
-                            }
-                        ]
-                    },
-                    {
-                        id: 'anklepad2',
-                        name: 'Static Single-Leg Balance',
-                        rounds: 1,
-                        restBetweenRounds: 0,
-                        activities: [
-                            {
-                                name: 'Right Leg - Static Hold',
-                                mode: 'time',
-                                duration: 60,
-                                repsTarget: 0,
-                                restBetweenActivities: 0,
-                                notes: 'Stand on oval foam pad, one leg, knee straight or very slight bend, hold steady balance for full minute.',
-                                audioEnabled: true
-                            },
-                            {
-                                name: 'Left Leg - Static Hold',
-                                mode: 'time',
-                                duration: 60,
-                                repsTarget: 0,
-                                restBetweenActivities: 0,
-                                notes: 'Stand on oval foam pad, one leg, knee straight or very slight bend, hold steady balance for full minute.',
-                                audioEnabled: true
-                            }
-                        ]
-                    }
-                ]
-            },
-            'worlds-greatest-stretch': {
-                title: "World's Greatest Stretch",
-                description: "Dynamic full-body flow: hips, hamstrings, thoracic rotation, shoulders. Great pre-workout or daily reset. 1-2 rounds, alternate sides.",
-                roundGroups: [
-                    {
-                        id: 'wgs1',
-                        name: 'Sequence Flow (per side)',
-                        rounds: 2,
-                        restBetweenRounds: 15,
-                        activities: [
-                            {
-                                name: 'Lunge + Hip Flexor Hold',
-                                mode: 'time',
-                                duration: 45,
-                                repsTarget: 0,
-                                restBetweenActivities: 0,
-                                notes: 'Deep lunge, back knee down or up, squeeze glute, hands inside front foot. Breathe deeply.',
-                                audioEnabled: true
-                            },
-                            {
-                                name: 'Thoracic Reach + Rotation',
-                                mode: 'time',
-                                duration: 45,
-                                repsTarget: 0,
-                                restBetweenActivities: 0,
-                                notes: 'From lunge, reach opposite arm overhead, rotate torso open. Keep hips square.',
-                                audioEnabled: true
-                            },
-                            {
-                                name: 'Hamstring Straighten',
-                                mode: 'time',
-                                duration: 30,
-                                repsTarget: 0,
-                                restBetweenActivities: 0,
-                                notes: 'Straighten front leg, hinge forward gently for hamstring stretch. Switch sides after full sequence.',
-                                audioEnabled: true
-                            }
-                        ]
-                    }
-                ]
-            },
-            '90-90-hip-flow': {
-                title: '90/90 Hip Flow',
-                description: 'Deep hip opener for internal/external rotation. Ideal for squat depth, runners, desk sitters. ~10 min total.',
-                roundGroups: [
-                    {
-                        id: '90901',
-                        name: '90/90 Positions (per side)',
-                        rounds: 1,
-                        restBetweenRounds: 0,
-                        activities: [
-                            {
-                                name: '90/90 Forward Lean',
-                                mode: 'time',
-                                duration: 60,
-                                repsTarget: 0,
-                                restBetweenActivities: 30,
-                                notes: 'Front leg 90°, back leg 90°. Lean forward over front shin. Breathe into stretch.',
-                                audioEnabled: true
-                            },
-                            {
-                                name: '90/90 Back Leg Lift',
-                                mode: 'time',
-                                duration: 45,
-                                repsTarget: 0,
-                                restBetweenActivities: 30,
-                                notes: 'Lift back foot/heel off ground, hold. Keep hips square. Switch sides after set.',
-                                audioEnabled: true
-                            },
-                            {
-                                name: '90/90 Passive Hold',
-                                mode: 'time',
-                                duration: 60,
-                                repsTarget: 0,
-                                restBetweenActivities: 0,
-                                notes: 'Sit tall in 90/90, relax into position. Deep breaths. Repeat flow on opposite side.',
-                                audioEnabled: true
-                            }
-                        ]
-                    }
-                ]
-            },
-            'thoracic-mobility-flow': {
-                title: 'Thoracic Mobility Flow',
-                description: 'Improve mid-back rotation & extension. Great for posture, desk workers, shoulder health. ~8-10 min.',
-                roundGroups: [
-                    {
-                        id: 'thor1',
-                        name: 'Thoracic Sequence',
-                        rounds: 2,
-                        restBetweenRounds: 20,
-                        activities: [
-                            {
-                                name: 'Cat-Cow Flow',
-                                mode: 'time',
-                                duration: 60,
-                                repsTarget: 0,
-                                restBetweenActivities: 0,
-                                notes: 'On all fours, alternate arching (cow) and rounding (cat) spine. Move with breath.',
-                                audioEnabled: true
-                            },
-                            {
-                                name: 'Thread the Needle',
-                                mode: 'time',
-                                duration: 45,
-                                repsTarget: 0,
-                                restBetweenActivities: 15,
-                                notes: 'Thread arm under opposite arm, rest shoulder on ground. Rotate mid-back. Switch sides.',
-                                audioEnabled: true
-                            },
-                            {
-                                name: 'Quadruped Rotation',
-                                mode: 'time',
-                                duration: 45,
-                                repsTarget: 0,
-                                restBetweenActivities: 0,
-                                notes: 'Hand behind head, rotate elbow up toward ceiling. Keep hips stable. Switch sides.',
-                                audioEnabled: true
-                            }
-                        ]
-                    }
-                ]
-            },
-            'shoulder-cars-dislocates': {
-                title: 'Shoulder CARs & Dislocates',
-                description: 'Controlled rotations + overhead mobility for shoulder health & range. Warm-up or daily. ~10 min.',
-                roundGroups: [
-                    {
-                        id: 'shoulder1',
-                        name: 'Shoulder Mobility',
-                        rounds: 2,
-                        restBetweenRounds: 15,
-                        activities: [
-                            {
-                                name: 'Shoulder CARs (each arm)',
-                                mode: 'time',
-                                duration: 60,
-                                repsTarget: 0,
-                                restBetweenActivities: 0,
-                                notes: 'Large controlled circles: forward → up → back → down. Slow & full range. Switch arms.',
-                                audioEnabled: true
-                            },
-                            {
-                                name: 'Shoulder Dislocates',
-                                mode: 'time',
-                                duration: 60,
-                                repsTarget: 0,
-                                restBetweenActivities: 30,
-                                notes: 'Use band/stick/broom. Pass overhead to behind back & return. Keep arms straight.',
-                                audioEnabled: true
-                            },
-                            {
-                                name: 'Wall Angels',
-                                mode: 'time',
-                                duration: 45,
-                                repsTarget: 0,
-                                restBetweenActivities: 0,
-                                notes: "Back to wall, slide arms up/down in 'W' to 'Y'. Keep elbows/shoulders in contact.",
-                                audioEnabled: true
-                            }
-                        ]
-                    }
-                ]
-            },
-            'upper-body-desk-reset': {
-                title: 'Upper Body Desk Reset',
-                description: 'Quick neck, shoulder, wrist, thoracic release for desk workers. Reduces tension fast. ~8 min.',
-                roundGroups: [
-                    {
-                        id: 'desk1',
-                        name: 'Desk Flow',
-                        rounds: 1,
-                        restBetweenRounds: 0,
-                        activities: [
-                            {
-                                name: 'Neck Tilts + Chin Tucks',
-                                mode: 'time',
-                                duration: 60,
-                                repsTarget: 0,
-                                restBetweenActivities: 0,
-                                notes: 'Side tilts 20s each, then chin tucks x10 slow. Gentle, no forcing.',
-                                audioEnabled: true
-                            },
-                            {
-                                name: 'Wrist Flexor/Extensor Stretch',
-                                mode: 'time',
-                                duration: 45,
-                                repsTarget: 0,
-                                restBetweenActivities: 15,
-                                notes: 'Palms up then down, gentle pull back. 20-25s each direction. Switch arms.',
-                                audioEnabled: true
-                            },
-                            {
-                                name: 'Shoulder Rolls + Arm Circles',
-                                mode: 'time',
-                                duration: 60,
-                                repsTarget: 0,
-                                restBetweenActivities: 0,
-                                notes: 'Big rolls forward/back, then arm circles both directions. Slow & controlled.',
-                                audioEnabled: true
-                            },
-                            {
-                                name: 'Prayer + Reverse Prayer',
-                                mode: 'time',
-                                duration: 45,
-                                repsTarget: 0,
-                                restBetweenActivities: 0,
-                                notes: 'Hands together front, then behind back if possible. Gentle lift. Breathe.',
-                                audioEnabled: true
-                            }
-                        ]
-                    }
-                ]
             }
         };
         
@@ -1551,7 +1253,7 @@
                     workoutDescriptionInput.value = '';
                 }
                 if (completionMessageInput) {
-                    completionMessageInput.value = 'Completed';
+                    completionMessageInput.value = '';
                 }
                 updateCharCounts();
                 updateWorkoutDisplay();
@@ -1581,7 +1283,7 @@
                 workoutDescriptionInput.value = workout.description || '';
             }
             if (completionMessageInput) {
-                completionMessageInput.value = workout.completionMessage || 'Completed';
+                completionMessageInput.value = workout.completionMessage || '';
             }
             
             // Default missing audioEnabled to true for backward compatibility
@@ -2059,7 +1761,7 @@
                 display.textContent = '00:00';
                 const completionMessage = completionMessageInput && completionMessageInput.value.trim() 
                     ? completionMessageInput.value.trim() 
-                    : 'Completed';
+                    : 'Workout Complete';
                 phaseLabel.textContent = completionMessage;
                 roundInfo.textContent = '';
                 return;
@@ -2068,7 +1770,7 @@
             const phase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
             if (!phase) {
                 display.textContent = '00:00';
-                phaseLabel.textContent = 'Completed';
+                phaseLabel.textContent = 'Complete';
                 roundInfo.textContent = '';
                 return;
             }
@@ -3799,7 +3501,7 @@
         function exportWorkout() {
             const workoutTitle = workoutTitleInput.value.trim() || 'workout';
             const workoutDescription = workoutDescriptionInput ? workoutDescriptionInput.value.trim() : '';
-            const completionMessage = completionMessageInput ? (completionMessageInput.value.trim() || 'Completed') : 'Completed';
+            const completionMessage = completionMessageInput ? completionMessageInput.value.trim() : '';
             const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
             const filename = `${workoutTitle}_${timestamp}.json`;
             
@@ -3850,8 +3552,8 @@
                         if (data.description && workoutDescriptionInput) {
                             workoutDescriptionInput.value = data.description;
                         }
-                        if (completionMessageInput) {
-                            completionMessageInput.value = (data.completionMessage && data.completionMessage.trim()) ? data.completionMessage.trim() : 'Completed';
+                        if (data.completionMessage && completionMessageInput) {
+                            completionMessageInput.value = data.completionMessage;
                         }
                         updateCharCounts();
                         updateWorkoutDisplay();

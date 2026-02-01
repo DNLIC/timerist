@@ -1,0 +1,29 @@
+{
+  "format": "timerist_amrap_enhanced",
+  "version": "1.0",
+  "exportedAt": "2026-01-30T20:00:00.000Z",
+  "workout": {
+    "title": "Test AMRAP Reps (Short)",
+    "description": "Quick test: Reps mode, cycle exercises, ~2 min total.",
+    "amrapType": "reps",
+    "durationSeconds": 105,
+    "prepTimeSeconds": 15,
+    "doneMessage": "Done",
+    "targetRounds": 2,
+    "restBetweenRoundsSeconds": 10,
+    "exercises": [
+      { "name": "Jumping Jacks" },
+      { "name": "Squats" }
+    ],
+    "cycleExercises": true,
+    "restBetweenExercises": 5,
+    "workTimePerExerciseSeconds": 20
+  },
+  "results": {
+    "rounds": 0,
+    "currentRound": 0,
+    "roundsResults": [],
+    "repsResults": {},
+    "cycleResults": []
+  }
+}

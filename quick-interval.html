@@ -522,6 +522,47 @@
             cursor: not-allowed;
         }
 
+        /* Preset workout select dropdown (match mobility.html) */
+        .workout-select {
+            width: 100%;
+            padding: 0.5rem 2.5rem 0.5rem 0.75rem;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: 1px solid rgb(var(--input));
+            background-color: rgb(var(--background));
+            color: rgb(var(--foreground));
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            background-size: 1rem;
+            min-height: 2.5rem;
+        }
+        .workout-select:hover:not(:disabled) {
+            border-color: rgb(var(--ring));
+        }
+        .workout-select:focus {
+            outline: none;
+            border-color: rgb(var(--ring));
+            box-shadow: 0 0 0 2px rgba(var(--ring), 0.2);
+        }
+        .workout-select:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: rgb(var(--muted));
+        }
+        [data-theme="style1"] .workout-select {
+            background-color: rgb(var(--card));
+            border-color: rgb(var(--border));
+        }
+        [data-theme="style1"] .workout-select:focus {
+            border-color: rgb(var(--ring));
+        }
+
         /* Workout title and notes styling (match emom.html) */
         #workoutTitleInput {
             font-family: inherit;
@@ -957,13 +998,14 @@
             }
         }
         
+        /* Preset buttons (Workout + Time): match Set Up button hover - light mode */
         .quick-select-btn:hover:not(:disabled) {
             background-color: rgb(100, 100, 100);
             color: rgb(255, 255, 255);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
-        /* Dark mode hover state - use lighter gray */
+        /* Preset buttons (Workout + Time): match Set Up button hover - dark mode */
         [data-theme="style1"] .quick-select-btn:hover:not(:disabled) {
             background-color: rgb(150, 150, 150);
             color: rgb(0, 0, 0);
@@ -978,12 +1020,16 @@
             font-weight: 700;
         }
         
-        /* Workout Preset card-style buttons: accent hover */
+        /* Workout Presets (bg-card): same rollover as Set Up button - light */
         .quick-select-btn.bg-card:hover:not(:disabled) {
-            background-color: rgb(var(--accent)) !important;
+            background-color: rgb(100, 100, 100) !important;
+            color: rgb(255, 255, 255);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
+        /* Workout Presets (bg-card): same rollover as Set Up button - dark */
         [data-theme="style1"] .quick-select-btn.bg-card:hover:not(:disabled) {
-            color: rgb(var(--accent-foreground));
+            background-color: rgb(150, 150, 150) !important;
+            color: rgb(0, 0, 0);
         }
         
         .timer-running .quick-select-btn:not(.reset-btn):not(.selected) {
@@ -1074,31 +1120,28 @@
                 </div>
                 
                 <!-- Preset Interval Buttons -->
-                <label class="text-sm font-semibold uppercase tracking-wide mb-4 block" style="color: rgb(var(--muted-foreground)); text-align: center; margin-top: 1.5rem;">
-                    Quick Presets
-                </label>
-                <h3 class="text-lg font-semibold text-center mt-6 mb-4" style="color: rgb(var(--foreground));">Workout Presets</h3>
+                <h3 class="text-lg font-semibold text-center mt-4 mb-4" style="color: rgb(var(--foreground));">Workout Presets</h3>
                 <div class="quick-select-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3">
-                    <button type="button" class="quick-select-btn bg-card border border-border hover:bg-accent text-foreground rounded-md px-3 py-2 text-sm font-medium text-center" data-work="20" data-rest="10" data-rounds="8" data-title="Tabata HIIT" data-description="20 seconds high-intensity work, 10 seconds rest, 8 rounds. Classic Tabata protocol for VO2 max and fat burn." aria-label="Tabata: 20 seconds work, 10 seconds rest, 8 rounds">Tabata</button>
-                    <button type="button" class="quick-select-btn bg-card border border-border hover:bg-accent text-foreground rounded-md px-3 py-2 text-sm font-medium text-center" data-work="40" data-rest="20" data-rounds="" data-title="EMOM Circuit" data-description="Every Minute On the Minute: 40 seconds work followed by 20 seconds rest. Repeat for desired rounds." aria-label="EMOM: 40 seconds work, 20 seconds rest">EMOM</button>
-                    <button type="button" class="quick-select-btn bg-card border border-border hover:bg-accent text-foreground rounded-md px-3 py-2 text-sm font-medium text-center" data-work="60" data-rest="75" data-rounds="" data-title="Little Method" data-description="60 seconds work, 75 seconds rest. Popular endurance protocol (often 8–12 rounds)." aria-label="Little Method: 60 seconds work, 75 seconds rest">Little</button>
-                    <button type="button" class="quick-select-btn bg-card border border-border hover:bg-accent text-foreground rounded-md px-3 py-2 text-sm font-medium text-center" data-work="60" data-rest="75" data-rounds="" data-title="Gibala HIIT" data-description="60 seconds work, 75 seconds rest. Research-backed high-intensity interval training." aria-label="Gibala: 60 seconds work, 75 seconds rest">Gibala</button>
-                    <button type="button" class="quick-select-btn bg-card border border-border hover:bg-accent text-foreground rounded-md px-3 py-2 text-sm font-medium text-center" data-work="240" data-rest="180" data-rounds="4" data-title="Norwegian 4x4" data-description="4 minutes work, 3 minutes active recovery, 4 rounds. Proven VO2 max builder." aria-label="Norwegian 4x4: 4 minutes work, 3 minutes rest, 4 rounds">Norwegian 4x4</button>
+                    <button type="button" class="quick-select-btn bg-card border border-border hover:bg-accent text-foreground rounded-md px-3 py-2 text-sm font-medium text-center" data-preset-key="tabata" data-work="20" data-rest="10" data-rounds="1" data-title="Tabata HIIT" data-description="20 seconds high-intensity work, 10 seconds rest, 8 rounds. Classic Tabata protocol for VO2 max and fat burn." aria-label="Tabata: 20 seconds work, 10 seconds rest, 1 round">Tabata</button>
+                    <button type="button" class="quick-select-btn bg-card border border-border hover:bg-accent text-foreground rounded-md px-3 py-2 text-sm font-medium text-center" data-preset-key="emom" data-work="40" data-rest="20" data-rounds="" data-title="EMOM Circuit" data-description="Every Minute On the Minute: 40 seconds work followed by 20 seconds rest. Repeat for desired rounds." aria-label="EMOM: 40 seconds work, 20 seconds rest">EMOM</button>
+                    <button type="button" class="quick-select-btn bg-card border border-border hover:bg-accent text-foreground rounded-md px-3 py-2 text-sm font-medium text-center" data-preset-key="little" data-work="60" data-rest="75" data-rounds="" data-title="Little Method" data-description="60 seconds work, 75 seconds rest. Popular endurance protocol (often 8–12 rounds)." aria-label="Little Method: 60 seconds work, 75 seconds rest">Little</button>
+                    <button type="button" class="quick-select-btn bg-card border border-border hover:bg-accent text-foreground rounded-md px-3 py-2 text-sm font-medium text-center" data-preset-key="gibala" data-work="60" data-rest="75" data-rounds="" data-title="Gibala HIIT" data-description="60 seconds work, 75 seconds rest. Research-backed high-intensity interval training." aria-label="Gibala: 60 seconds work, 75 seconds rest">Gibala</button>
+                    <button type="button" class="quick-select-btn bg-card border border-border hover:bg-accent text-foreground rounded-md px-3 py-2 text-sm font-medium text-center" data-preset-key="norwegian" data-work="240" data-rest="180" data-rounds="1" data-title="Norwegian 4x4" data-description="4 minutes work, 3 minutes active recovery, 4 rounds. Proven VO2 max builder." aria-label="Norwegian 4x4: 4 minutes work, 3 minutes rest, 1 round">Norwegian</button>
                 </div>
                 <h3 class="text-lg font-semibold text-center mt-8 mb-4" style="color: rgb(var(--foreground));">Time Presets</h3>
                 <div class="quick-select-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3">
-                    <button type="button" class="quick-select-btn" data-work="30" data-rest="30" data-title="30/30 Interval" data-description="30 seconds work, 30 seconds rest. Balanced beginner/intermediate HIIT ratio." aria-label="30 seconds work, 30 seconds rest">30/30</button>
-                    <button type="button" class="quick-select-btn" data-work="45" data-rest="15" data-title="45/15 Interval" data-description="45 seconds work, 15 seconds rest. High-intensity, short-recovery HIIT." aria-label="45 seconds work, 15 seconds rest">45/15</button>
-                    <button type="button" class="quick-select-btn" data-work="60" data-rest="30" data-title="60/30 Interval" data-description="1 minute work, 30 seconds rest. Classic moderate-to-high intensity ratio." aria-label="60 seconds work, 30 seconds rest">60/30</button>
-                    <button type="button" class="quick-select-btn" data-work="45" data-rest="45" data-title="45/45 Interval" data-description="45 seconds work, 45 seconds rest. Equal work/rest ratio." aria-label="45 seconds work, 45 seconds rest">45/45</button>
-                    <button type="button" class="quick-select-btn" data-work="60" data-rest="60" data-title="60/60 Interval" data-description="1 minute work, 1 minute rest. Equal work/rest for steady intensity." aria-label="60 seconds work, 60 seconds rest">60/60</button>
-                    <button type="button" class="quick-select-btn" data-work="30" data-rest="60" data-title="30/60 Interval" data-description="30 seconds work, 1 minute rest. Short burst, longer recovery." aria-label="30 seconds work, 60 seconds rest">30/60</button>
-                    <button type="button" class="quick-select-btn" data-work="20" data-rest="10" data-title="20/10 Interval" data-description="20 seconds work, 10 seconds rest. Tabata-style short intervals." aria-label="20 seconds work, 10 seconds rest">20/10</button>
-                    <button type="button" class="quick-select-btn" data-work="40" data-rest="20" data-title="40/20 Interval" data-description="40 seconds work, 20 seconds rest. EMOM-style ratio." aria-label="40 seconds work, 20 seconds rest">40/20</button>
-                    <button type="button" class="quick-select-btn" data-work="90" data-rest="30" data-title="90/30 Interval" data-description="90 seconds work, 30 seconds rest. Longer work, short recovery." aria-label="90 seconds work, 30 seconds rest">90/30</button>
-                    <button type="button" class="quick-select-btn" data-work="120" data-rest="60" data-title="2:00/1:00 Interval" data-description="2 minutes work, 1 minute rest. Aerobic endurance intervals." aria-label="2 minutes work, 1 minute rest">2:00/1:00</button>
-                    <button type="button" class="quick-select-btn" data-work="180" data-rest="60" data-title="3:00/1:00 Interval" data-description="3 minutes work, 1 minute rest. Longer aerobic intervals." aria-label="3 minutes work, 1 minute rest">3:00/1:00</button>
-                    <button type="button" class="quick-select-btn" data-work="60" data-rest="30" data-title="1:00/30 Interval" data-description="1 minute work, 30 seconds rest. Classic moderate-to-high intensity ratio." aria-label="1 minute work, 30 seconds rest">1:00/30</button>
+                    <button type="button" class="quick-select-btn" data-preset-key="30/30" data-work="30" data-rest="30" data-title="30/30 Interval" data-description="30 seconds work, 30 seconds rest. Balanced beginner/intermediate HIIT ratio." aria-label="30 seconds work, 30 seconds rest">30/30</button>
+                    <button type="button" class="quick-select-btn" data-preset-key="45/15" data-work="45" data-rest="15" data-title="45/15 Interval" data-description="45 seconds work, 15 seconds rest. High-intensity, short-recovery HIIT." aria-label="45 seconds work, 15 seconds rest">45/15</button>
+                    <button type="button" class="quick-select-btn" data-preset-key="60/30" data-work="60" data-rest="30" data-title="60/30 Interval" data-description="1 minute work, 30 seconds rest. Classic moderate-to-high intensity ratio." aria-label="60 seconds work, 30 seconds rest">60/30</button>
+                    <button type="button" class="quick-select-btn" data-preset-key="45/45" data-work="45" data-rest="45" data-title="45/45 Interval" data-description="45 seconds work, 45 seconds rest. Equal work/rest ratio." aria-label="45 seconds work, 45 seconds rest">45/45</button>
+                    <button type="button" class="quick-select-btn" data-preset-key="60/60" data-work="60" data-rest="60" data-title="60/60 Interval" data-description="1 minute work, 1 minute rest. Equal work/rest for steady intensity." aria-label="60 seconds work, 60 seconds rest">60/60</button>
+                    <button type="button" class="quick-select-btn" data-preset-key="30/60" data-work="30" data-rest="60" data-title="30/60 Interval" data-description="30 seconds work, 1 minute rest. Short burst, longer recovery." aria-label="30 seconds work, 60 seconds rest">30/60</button>
+                    <button type="button" class="quick-select-btn" data-preset-key="20/10" data-work="20" data-rest="10" data-title="20/10 Interval" data-description="20 seconds work, 10 seconds rest. Tabata-style short intervals." aria-label="20 seconds work, 10 seconds rest">20/10</button>
+                    <button type="button" class="quick-select-btn" data-preset-key="40/20" data-work="40" data-rest="20" data-title="40/20 Interval" data-description="40 seconds work, 20 seconds rest. EMOM-style ratio." aria-label="40 seconds work, 20 seconds rest">40/20</button>
+                    <button type="button" class="quick-select-btn" data-preset-key="90/30" data-work="90" data-rest="30" data-title="90/30 Interval" data-description="90 seconds work, 30 seconds rest. Longer work, short recovery." aria-label="90 seconds work, 30 seconds rest">90/30</button>
+                    <button type="button" class="quick-select-btn" data-preset-key="2:00/1:00" data-work="120" data-rest="60" data-title="2:00/1:00 Interval" data-description="2 minutes work, 1 minute rest. Aerobic endurance intervals." aria-label="2 minutes work, 1 minute rest">2:00/1:00</button>
+                    <button type="button" class="quick-select-btn" data-preset-key="3:00/1:00" data-work="180" data-rest="60" data-title="3:00/1:00 Interval" data-description="3 minutes work, 1 minute rest. Longer aerobic intervals." aria-label="3 minutes work, 1 minute rest">3:00/1:00</button>
+                    <button type="button" class="quick-select-btn" data-preset-key="1:00/30" data-work="60" data-rest="30" data-title="1:00/30 Interval" data-description="1 minute work, 30 seconds rest. Classic moderate-to-high intensity ratio." aria-label="1 minute work, 30 seconds rest">1:00/30</button>
                 </div>
             </div>
         </div>
@@ -1114,6 +1157,45 @@
             <button class="drawer-close" onclick="closeDrawer()" aria-label="Close drawer">×</button>
         </div>
         <div class="drawer-content">
+            <!-- Preset Workout Select (match mobility.html) -->
+            <div class="drawer-section">
+                <h3>Select Workout</h3>
+                <div class="input-group">
+                    <label for="presetSelect">Preset</label>
+                    <select
+                        id="presetSelect"
+                        class="workout-select"
+                        aria-label="Select preset workout"
+                    >
+                        <option value="custom" selected>Custom</option>
+                        <optgroup label="Workout Presets">
+                            <option value="tabata">Tabata</option>
+                            <option value="emom">EMOM</option>
+                            <option value="little">Little</option>
+                            <option value="gibala">Gibala</option>
+                            <option value="norwegian">Norwegian</option>
+                        </optgroup>
+                        <optgroup label="Time Presets">
+                            <option value="30/30">30/30</option>
+                            <option value="45/15">45/15</option>
+                            <option value="60/30">60/30</option>
+                            <option value="45/45">45/45</option>
+                            <option value="60/60">60/60</option>
+                            <option value="30/60">30/60</option>
+                            <option value="20/10">20/10</option>
+                            <option value="40/20">40/20</option>
+                            <option value="90/30">90/30</option>
+                            <option value="2:00/1:00">2:00/1:00</option>
+                            <option value="3:00/1:00">3:00/1:00</option>
+                            <option value="1:00/30">1:00/30</option>
+                        </optgroup>
+                    </select>
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.5rem;">
+                        Choose a preset to fill work, rest, rounds, and title. Presets without fixed rounds default to 1—adjust as needed.
+                    </p>
+                </div>
+            </div>
+
             <!-- Setup Content -->
             <div class="drawer-section">
                 <h3>Setup Content</h3>
@@ -1229,8 +1311,8 @@
                         id="doneMessageInput" 
                         class="custom-time-input"
                         maxlength="14"
-                        value="completed"
-                        placeholder="completed"
+                        value="Completed"
+                        placeholder="Completed"
                         aria-label="Completion message"
                     >
                     <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
@@ -1254,7 +1336,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.16</p>
+                <p><strong>Version:</strong> v0.17</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -1307,6 +1389,53 @@
         const countdownBeforeStartInput = document.getElementById('countdownBeforeStartInput');
         const countdownDecreaseBtn = document.getElementById('countdownDecreaseBtn');
         const countdownIncreaseBtn = document.getElementById('countdownIncreaseBtn');
+        const presetSelect = document.getElementById('presetSelect');
+        
+        // Preset definitions: work (sec), rest (sec), rounds (number or null = user specifies), title, description
+        const QUICK_PRESETS = {
+            tabata:     { work: 20,  rest: 10,  rounds: 8,  title: 'Tabata HIIT',           description: '20 seconds high-intensity work, 10 seconds rest, 8 rounds. Classic Tabata protocol for VO2 max and fat burn.' },
+            emom:       { work: 40,  rest: 20,  rounds: null, title: 'EMOM Circuit',         description: 'Every Minute On the Minute: 40 seconds work followed by 20 seconds rest. Repeat for desired rounds.' },
+            little:     { work: 60,  rest: 75,  rounds: null, title: 'Little Method',        description: '60 seconds work, 75 seconds rest. Popular endurance protocol (often 8–12 rounds).' },
+            gibala:     { work: 60,  rest: 75,  rounds: null, title: 'Gibala HIIT',          description: '60 seconds work, 75 seconds rest. Research-backed high-intensity interval training.' },
+            norwegian:  { work: 240, rest: 180, rounds: 4,   title: 'Norwegian 4x4',        description: '4 minutes work, 3 minutes active recovery, 4 rounds. Proven VO2 max builder.' },
+            '30/30':    { work: 30,  rest: 30,  rounds: null, title: '30/30 Interval',        description: '30 seconds work, 30 seconds rest. Balanced beginner/intermediate HIIT ratio.' },
+            '45/15':    { work: 45,  rest: 15,  rounds: null, title: '45/15 Interval',        description: '45 seconds work, 15 seconds rest. High-intensity, short-recovery HIIT.' },
+            '60/30':    { work: 60,  rest: 30,  rounds: null, title: '60/30 Interval',       description: '1 minute work, 30 seconds rest. Classic moderate-to-high intensity ratio.' },
+            '45/45':    { work: 45,  rest: 45,  rounds: null, title: '45/45 Interval',       description: '45 seconds work, 45 seconds rest. Equal work/rest ratio.' },
+            '60/60':    { work: 60,  rest: 60,  rounds: null, title: '60/60 Interval',       description: '1 minute work, 1 minute rest. Equal work/rest for steady intensity.' },
+            '30/60':    { work: 30,  rest: 60,  rounds: null, title: '30/60 Interval',        description: '30 seconds work, 1 minute rest. Short burst, longer recovery.' },
+            '20/10':    { work: 20,  rest: 10,  rounds: null, title: '20/10 Interval',        description: '20 seconds work, 10 seconds rest. Tabata-style short intervals.' },
+            '40/20':    { work: 40,  rest: 20,  rounds: null, title: '40/20 Interval',        description: '40 seconds work, 20 seconds rest. EMOM-style ratio.' },
+            '90/30':    { work: 90,  rest: 30,  rounds: null, title: '90/30 Interval',        description: '90 seconds work, 30 seconds rest. Longer work, short recovery.' },
+            '2:00/1:00': { work: 120, rest: 60, rounds: null, title: '2:00/1:00 Interval',    description: '2 minutes work, 1 minute rest. Aerobic endurance intervals.' },
+            '3:00/1:00': { work: 180, rest: 60, rounds: null, title: '3:00/1:00 Interval',    description: '3 minutes work, 1 minute rest. Longer aerobic intervals.' },
+            '1:00/30':   { work: 60,  rest: 30, rounds: null, title: '1:00/30 Interval',       description: '1 minute work, 30 seconds rest. Classic moderate-to-high intensity ratio.' }
+        };
+        
+        function loadQuickPreset(key) {
+            if (!key || key === 'custom') return;
+            const preset = QUICK_PRESETS[key];
+            if (!preset) return;
+            // Tabata and Norwegian 4x4 default to 1 round; all other presets use their defined default rounds
+            const defaultOneRound = (key === 'tabata' || key === 'norwegian');
+            const roundsToUse = defaultOneRound ? 1 : (preset.rounds != null ? Math.max(1, Math.min(99, preset.rounds)) : 1);
+            workTimeInput.value = formatTime(preset.work);
+            restTimeInput.value = formatTime(preset.rest);
+            roundsInput.value = roundsToUse;
+            if (roundsInputMain) roundsInputMain.value = roundsToUse;
+            workTime = preset.work;
+            restTime = preset.rest;
+            totalRounds = roundsToUse;
+            if (workoutTitleInput) workoutTitleInput.value = preset.title;
+            if (workoutDescriptionInput) workoutDescriptionInput.value = preset.description || '';
+            presetButtons.forEach(b => b.classList.remove('selected'));
+            const btn = document.querySelector('.quick-select-btn[data-preset-key="' + key + '"]');
+            if (btn) btn.classList.add('selected');
+            updateWorkoutCharCounts();
+            updateWorkoutDisplay();
+            resetTimer();
+            updateDisplay();
+        }
         
         // Get/save countdown before start (default 10)
         function getCountdownBeforeStart() {
@@ -1729,13 +1858,13 @@
         // Get completion message from localStorage or use default
         function getDoneMessage() {
             const saved = localStorage.getItem('quick-interval-doneMessage');
-            return saved || 'completed';
+            return saved || 'Completed';
         }
         
         // Save completion message to localStorage
         function saveDoneMessage(message) {
             const v = (message || '').trim();
-            localStorage.setItem('quick-interval-doneMessage', v ? v : 'completed');
+            localStorage.setItem('quick-interval-doneMessage', v ? v : 'Completed');
         }
         
         // Show completion message on display
@@ -1962,11 +2091,13 @@
                 
                 const workSeconds = parseInt(this.getAttribute('data-work'), 10);
                 const restSeconds = parseInt(this.getAttribute('data-rest'), 10);
+                const presetKey = this.getAttribute('data-preset-key');
+                const defaultOneRound = (presetKey === 'tabata' || presetKey === 'norwegian');
                 const presetRounds = this.getAttribute('data-rounds');
-                // When data-rounds is set (e.g. Tabata=8, Norwegian=4) use it; when "" or missing default to 1 so user can adjust
-                const selectedRounds = (presetRounds != null && presetRounds !== '')
+                // Tabata and Norwegian 4x4 default to 1 round; others use data-rounds when set, else 1
+                const selectedRounds = defaultOneRound ? 1 : ((presetRounds != null && presetRounds !== '')
                     ? parseInt(presetRounds, 10)
-                    : 1;
+                    : 1);
                 const roundsToUse = Math.max(1, Math.min(99, selectedRounds));
                 
                 // Update work and rest time inputs
@@ -2001,8 +2132,19 @@
                 // Reset timer with new values
                 resetTimer();
                 updateDisplay();
+                
+                // Sync Settings drawer dropdown to this preset
+                if (presetSelect && presetKey) presetSelect.value = presetKey;
             });
         });
+        
+        // Preset dropdown: fill presets when selection changes (match mobility.html)
+        if (presetSelect) {
+            presetSelect.addEventListener('change', function() {
+                if (isRunning) return;
+                loadQuickPreset(this.value);
+            });
+        }
 
         // Workout title and notes event listeners
         if (workoutTitleInput) {

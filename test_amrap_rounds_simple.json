@@ -1,0 +1,26 @@
+{
+  "format": "timerist_amrap_enhanced",
+  "version": "1.0",
+  "exportedAt": "2026-01-30T20:00:00.000Z",
+  "workout": {
+    "title": "AMRAP Rounds (Simple Circuit)",
+    "description": "Single circuit: prep then work for full duration. No multiple rounds or rest between rounds.",
+    "amrapType": "rounds",
+    "durationSeconds": 90,
+    "prepTimeSeconds": 15,
+    "doneMessage": "Done",
+    "targetRounds": 0,
+    "restBetweenRoundsSeconds": 0,
+    "exercises": [
+      { "name": "Jumping Jacks", "targetReps": 5 },
+      { "name": "Squats", "targetReps": 5 }
+    ]
+  },
+  "results": {
+    "rounds": 0,
+    "currentRound": 0,
+    "roundsResults": [],
+    "repsResults": {},
+    "cycleResults": []
+  }
+}
