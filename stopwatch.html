@@ -160,6 +160,10 @@
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
             user-select: none;
+            width: 100%;
+            min-width: 0;
+            overflow: hidden;
+            box-sizing: border-box;
         }
         .timer-display-large {
             font-size: 4rem;
@@ -170,8 +174,28 @@
             color: rgb(var(--primary));
             transition: color 0.3s ease;
             margin-bottom: 0.5rem;
+            word-break: keep-all;
+            overflow-wrap: normal;
+            display: block;
+            max-width: 100%;
         }
-        @media (min-width: 390px) { .timer-display-large { font-size: 5rem; } }
+        /* HH:MM:SS is wider than MM:SS – scale down on narrow viewports (e.g. iPhone 13 portrait 390px) */
+        @media (max-width: 430px) {
+            .timer-display-large { font-size: 2.75rem; letter-spacing: -0.03em; }
+            .timer-display-block { padding: 1rem 0.75rem; }
+        }
+        @media (min-width: 391px) and (max-width: 430px) {
+            .timer-display-large { font-size: 3rem; }
+        }
+        @media (min-width: 431px) {
+            .timer-display-large { font-size: 4rem; }
+        }
+        @media (min-width: 640px) {
+            .timer-display-large { font-size: 5rem; }
+        }
+        @media (min-width: 768px) {
+            .timer-display-large { font-size: 6rem; }
+        }
         .control-btn {
             min-height: 56px;
             min-width: 56px;

@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <title>EMOM Splits - Timerist | As Many Rounds as Possible with Splits for Rep Tracking</title>
     <meta name="description" content="As Many Rounds as Possible with Splits for Rep Tracking">
-    <link rel="stylesheet" href="styles/timerist-design-system.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @keyframes bounce {
@@ -92,6 +91,7 @@
             margin: 0 auto;
             overflow-x: hidden;
             position: relative;
+            padding-bottom: env(safe-area-inset-bottom, 1rem);
         }
         
         .timer-container {
@@ -195,9 +195,14 @@
             }
         }
         
-        /* EMOM: Hide phase label */
         .phase-label {
-            display: none;
+            font-size: 1.25rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+            color: rgb(var(--primary));
+            transition: color 0.3s;
         }
         
         .round-info {
@@ -225,177 +230,38 @@
         }
         
         .control-btn {
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
+            min-height: 56px;
+            min-width: 56px;
+            padding: 0.75rem 1.25rem;
+            border-radius: 1rem;
+            font-size: 1rem;
             font-weight: 500;
             transition: all 0.2s;
             cursor: pointer;
             border: none;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            font-family: inherit;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
             white-space: nowrap;
             flex-shrink: 1;
         }
-        
         @media (max-width: 390px) {
-            .control-btn {
-                padding: 0.4rem 0.75rem;
-                font-size: 0.75rem;
-            }
+            .control-buttons-container { gap: 0.5rem; flex-wrap: nowrap; }
+            .control-btn { min-width: 0; flex: 1 1 0; padding: 0.625rem 0.5rem; font-size: 0.875rem; min-height: 48px; border-radius: 0.75rem; }
         }
-        
-        .control-buttons-container {
-            display: flex;
-            gap: 0.5rem;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: nowrap;
-        }
-        
-        @media (min-width: 390px) {
-            .control-buttons-container {
-                gap: 0.75rem;
-            }
-        }
-        
-        @media (min-width: 640px) {
-            .control-buttons-container {
-                gap: 1rem;
-            }
-        }
-        
-        .control-btn.btn-primary {
-            background-color: rgb(var(--primary));
-            color: rgb(var(--primary-foreground));
-        }
-        
-        .control-btn.btn-primary:hover:not(:disabled) {
-            background-color: rgba(var(--primary), 0.9);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        
-        /* Set Up button hover - dark gray like quick countdown timer */
-        #setupBtn:hover:not(:disabled) {
-            background-color: rgb(100, 100, 100);
-            color: rgb(255, 255, 255);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        
-        /* Dark mode Set Up button hover - lighter gray */
-        [data-theme="style1"] #setupBtn:hover:not(:disabled) {
-            background-color: rgb(150, 150, 150);
-            color: rgb(0, 0, 0);
-        }
-        
-        /* Paused state - dark gray background with white text (daylight mode) */
-        /* Higher specificity to override hover/active states on mobile */
-        .control-btn.btn-primary.paused,
-        .control-btn.btn-primary.paused:hover,
-        .control-btn.btn-primary.paused:active,
-        .control-btn.btn-primary.paused:focus {
-            background-color: rgb(100, 100, 100) !important;
-            color: rgb(255, 255, 255) !important;
-        }
-        
-        /* Dark mode paused state - lighter gray */
-        [data-theme="style1"] .control-btn.btn-primary.paused,
-        [data-theme="style1"] .control-btn.btn-primary.paused:hover,
-        [data-theme="style1"] .control-btn.btn-primary.paused:active,
-        [data-theme="style1"] .control-btn.btn-primary.paused:focus {
-            background-color: rgb(150, 150, 150) !important;
-            color: rgb(0, 0, 0) !important;
-        }
-        
-        .control-btn.btn-secondary {
-            background-color: rgb(var(--secondary));
-            color: rgb(var(--secondary-foreground));
-        }
-        
-        .control-btn.btn-secondary:hover:not(:disabled) {
-            background-color: rgba(var(--secondary), 0.9);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        
-        /* Clear button hover - dark gray like quick countdown timer */
-        #clearBtn:hover:not(:disabled) {
-            background-color: rgb(100, 100, 100);
-            color: rgb(255, 255, 255);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        
-        /* Dark mode Clear button hover - lighter gray */
-        [data-theme="style1"] #clearBtn:hover:not(:disabled) {
-            background-color: rgb(150, 150, 150);
-            color: rgb(0, 0, 0);
-        }
-        
-        /* Round Completed button hover - dark gray like Clear button */
-        #minuteCompletedBtn:hover:not(:disabled) {
-            background-color: rgb(100, 100, 100);
-            color: rgb(255, 255, 255);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        
-        /* Dark mode Round Completed button hover - lighter gray */
-        [data-theme="style1"] #minuteCompletedBtn:hover:not(:disabled) {
-            background-color: rgb(150, 150, 150);
-            color: rgb(0, 0, 0);
-        }
-        
-        /* Start button hover - dark gray like Set Up button */
-        #startBtn:hover:not(:disabled) {
-            background-color: rgb(100, 100, 100);
-            color: rgb(255, 255, 255);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        
-        /* Dark mode Start button hover - lighter gray */
-        [data-theme="style1"] #startBtn:hover:not(:disabled) {
-            background-color: rgb(150, 150, 150);
-            color: rgb(0, 0, 0);
-        }
-        
-        /* Pause button hover - dark gray (when not paused) */
-        #pauseBtn:hover:not(:disabled):not(.paused) {
-            background-color: rgb(100, 100, 100);
-            color: rgb(255, 255, 255);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        
-        /* Dark mode Pause button hover - lighter gray (when not paused) */
-        [data-theme="style1"] #pauseBtn:hover:not(:disabled):not(.paused) {
-            background-color: rgb(150, 150, 150);
-            color: rgb(0, 0, 0);
-        }
-        
-        .control-btn.btn-destructive {
-            background-color: rgb(var(--destructive));
-            color: rgb(var(--destructive-foreground));
-        }
-        
-        .control-btn.btn-destructive:hover:not(:disabled) {
-            background-color: rgba(var(--destructive), 0.9);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        
-        /* Reset button hover - dark gray like Set Up button */
-        #resetBtn:hover:not(:disabled) {
-            background-color: rgb(100, 100, 100);
-            color: rgb(255, 255, 255);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        
-        /* Dark mode Reset button hover - lighter gray */
-        [data-theme="style1"] #resetBtn:hover:not(:disabled) {
-            background-color: rgb(150, 150, 150);
-            color: rgb(0, 0, 0);
-        }
-        
-        .control-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+        .control-buttons-container { display: flex; gap: 0.75rem; justify-content: center; align-items: center; flex-wrap: wrap; }
+        .control-btn.btn-primary { background: rgb(var(--primary)); color: rgb(var(--primary-foreground)); }
+        .control-btn.btn-primary:hover:not(:disabled) { filter: brightness(1.05); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .control-btn.btn-primary.paused, .control-btn.btn-primary.paused:hover { background: rgb(100,100,100) !important; color: #fff !important; }
+        [data-theme="style1"] .control-btn.btn-primary.paused, [data-theme="style1"] .control-btn.btn-primary.paused:hover { background: rgb(150,150,150) !important; color: #000 !important; }
+        .control-btn.btn-secondary { background: rgb(var(--secondary)); color: rgb(var(--secondary-foreground)); }
+        .control-btn.btn-secondary:hover:not(:disabled) { filter: brightness(1.05); }
+        .control-btn.btn-destructive { background: rgb(var(--destructive)); color: rgb(var(--destructive-foreground)); }
+        .control-btn.btn-destructive:hover:not(:disabled) { filter: brightness(1.05); }
+        #setupBtn:hover:not(:disabled), #clearBtn:hover:not(:disabled), #minuteCompletedBtn:hover:not(:disabled), #startBtn:hover:not(:disabled), #pauseBtn:hover:not(:disabled):not(.paused), #resetBtn:hover:not(:disabled) { background: rgb(100,100,100) !important; color: #fff !important; }
+        [data-theme="style1"] #setupBtn:hover:not(:disabled), [data-theme="style1"] #clearBtn:hover:not(:disabled), [data-theme="style1"] #minuteCompletedBtn:hover:not(:disabled), [data-theme="style1"] #startBtn:hover:not(:disabled), [data-theme="style1"] #pauseBtn:hover:not(:disabled):not(.paused), [data-theme="style1"] #resetBtn:hover:not(:disabled) { background: rgb(150,150,150) !important; color: #000 !important; }
+        .control-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         
         .hamburger-menu {
             background: transparent;
@@ -418,92 +284,76 @@
             opacity: 0.7;
         }
         
-        .settings-drawer {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 100%;
-            max-width: 400px;
-            height: 100vh;
-            background: rgb(var(--card));
-            border-left: 1px solid rgb(var(--border));
-            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
-            transition: right 0.3s ease;
-            z-index: 1002;
-            overflow-y: auto;
+        /* Bottom sheet (ShadCN-style) */
+        .sheet-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); opacity: 0; visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s; z-index: 1001;
         }
-        
-        .settings-drawer.open {
-            right: 0;
+        .sheet-overlay.open { opacity: 1; visibility: visible; }
+        .bottom-sheet {
+            position: fixed; left: 0; right: 0; bottom: 0; width: 100%; max-width: 100%; max-height: 85vh;
+            background: rgb(var(--card)); border-radius: 1.5rem 1.5rem 0 0; box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+            z-index: 1002; transform: translateY(100%); transition: transform 0.3s ease; overflow: hidden;
+            display: flex; flex-direction: column; padding-bottom: env(safe-area-inset-bottom, 0); box-sizing: border-box;
         }
-        
-        .drawer-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
-            z-index: 1001;
+        .bottom-sheet.open { transform: translateY(0); }
+        .sheet-grabber { width: 40px; height: 4px; background: rgb(var(--muted-foreground)); border-radius: 2px; margin: 0.75rem auto; opacity: 0.5; flex-shrink: 0; }
+        .sheet-header {
+            padding: 0 1.5rem 1rem; padding-left: max(1.5rem, env(safe-area-inset-left)); padding-right: max(1.5rem, env(safe-area-inset-right));
+            border-bottom: 1px solid rgb(var(--border)); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
         }
-        
-        .drawer-overlay.open {
-            opacity: 1;
-            visibility: visible;
+        .sheet-content {
+            overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch;
+            padding: 1rem 1.5rem 2rem; padding-left: max(1.5rem, env(safe-area-inset-left)); padding-right: max(1.5rem, env(safe-area-inset-right));
+            flex: 1; width: 100%; box-sizing: border-box; min-width: 0;
         }
-        
-        .drawer-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid rgb(var(--border));
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .sheet-section { margin-bottom: 1.5rem; }
+        .sheet-section h3 { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: rgb(var(--muted-foreground)); margin-bottom: 0.75rem; }
+        .input-group { margin-bottom: 1.25rem; }
+        .input-group label { display: block; margin-bottom: 0.5rem; font-size: 0.75rem; font-weight: 600; color: rgb(var(--muted-foreground)); text-transform: uppercase; letter-spacing: 0.05em; }
+        .custom-time-input, .shadcn-input, .shadcn-textarea {
+            width: 100%; padding: 0.875rem 1rem; border: 2px solid rgb(var(--input)); border-radius: 0.75rem;
+            background: rgb(var(--background)); color: rgb(var(--foreground)); font-size: 16px; min-height: 52px; font-family: inherit; transition: border-color 0.2s, box-shadow 0.2s;
         }
-        
-        .drawer-content {
-            padding: 1.5rem;
-        }
-        
-        .drawer-section {
-            margin-bottom: 2rem;
-        }
-        
-        .drawer-section h3 {
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: rgb(var(--foreground));
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        
-        .drawer-section p {
-            color: rgb(var(--muted-foreground));
-            line-height: 1.6;
-            margin-bottom: 0.75rem;
-            font-size: 0.875rem;
-        }
-        
+        .shadcn-textarea { min-height: 100px; resize: vertical; }
+        .custom-time-input:focus, .shadcn-input:focus, .shadcn-textarea:focus { outline: none; border-color: rgb(var(--ring)); box-shadow: 0 0 0 3px rgba(var(--ring), 0.2); }
+        .custom-time-input { text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; }
+        textarea.shadcn-input, textarea.shadcn-textarea { text-align: left; font-weight: 400; }
         .drawer-close {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 1.5rem;
-            color: rgb(var(--foreground));
-            padding: 0.25rem;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: var(--radius);
+            min-width: 48px; min-height: 48px; border: none; background: transparent; color: rgb(var(--foreground)); font-size: 1.5rem;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 0.75rem; touch-action: manipulation;
         }
-        
-        .drawer-close:hover {
-            opacity: 0.7;
+        .drawer-close:hover { background: rgb(var(--accent)); }
+        .sheet-header-actions { display: flex; align-items: center; gap: 0.375rem; flex-shrink: 0; }
+        .header-clear-btn {
+            min-width: 48px; min-height: 48px; padding: 0.5rem; border: none; border-radius: 0.75rem; background: transparent;
+            color: rgb(var(--destructive)); cursor: pointer; display: flex; align-items: center; justify-content: center;
+            -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+        }
+        .header-clear-btn:hover { background: rgba(var(--destructive), 0.15); }
+        .header-clear-btn:focus { outline: 2px solid rgb(var(--ring)); outline-offset: 2px; }
+        .header-clear-btn svg { width: 22px; height: 22px; }
+        .btn-clear-all-settings {
+            width: 100%; min-height: 52px; padding: 0.875rem 1rem; border-radius: 0.75rem; font-size: 1rem; font-weight: 600;
+            border: none; background: rgb(var(--destructive)); color: rgb(var(--destructive-foreground)); cursor: pointer;
+            -webkit-tap-highlight-color: transparent; touch-action: manipulation; font-family: inherit;
+        }
+        .btn-clear-all-settings:hover { filter: brightness(1.1); }
+        .btn-clear-all-settings:active { filter: brightness(0.95); }
+        .stepper-btn, .rounds-adjust-btn {
+            min-width: 56px; min-height: 56px; padding: 0.5rem; border: 2px solid rgb(var(--border)); border-radius: 0.75rem;
+            background: rgb(var(--card)); color: rgb(var(--foreground)); font-size: 1.25rem; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; font-family: inherit; -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+        }
+        .rounds-stepper { display: flex; align-items: center; gap: 0.75rem; justify-content: center; }
+        .rounds-stepper .stepper-btn, .rounds-stepper .rounds-adjust-btn { min-width: 56px; min-height: 56px; }
+        .rounds-stepper .custom-time-input { flex: 0 1 auto; width: 80px; max-width: 100px; text-align: center; }
+        .stepper-btn:hover:not(:disabled), .rounds-adjust-btn:hover:not(:disabled) { background: rgb(var(--accent)); }
+        .stepper-btn:disabled, .rounds-adjust-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        @media (max-width: 390px) {
+            .rounds-stepper { gap: 0.5rem; }
+            .rounds-stepper .custom-time-input { width: 60px; max-width: 80px; }
+            .rounds-stepper .stepper-btn, .rounds-stepper .rounds-adjust-btn { min-width: 48px; min-height: 48px; font-size: 1rem; }
         }
         
         .custom-time-input {
@@ -695,20 +545,13 @@
             }
         }
         
-        .timer-running .custom-time-input:not(:disabled),
-        .timer-running .rounds-adjust-btn:not(:disabled),
-        .timer-running .time-adjust-btn:not(:disabled),
-        .timer-running #roundsInputMain:not(:disabled),
-        .timer-running #roundsDecreaseBtnMain:not(:disabled),
-        .timer-running #roundsIncreaseBtnMain:not(:disabled),
-        .timer-running #repsInput:not(:disabled),
-        .timer-running #repsDecrease5Btn:not(:disabled),
-        .timer-running #repsDecrease1Btn:not(:disabled),
-        .timer-running #repsIncrease1Btn:not(:disabled),
-        .timer-running #repsIncrease5Btn:not(:disabled) {
-            opacity: 0.5;
-            cursor: not-allowed;
-            pointer-events: none;
+        .timer-running .custom-time-input:not(:disabled), .timer-running .stepper-btn:not(:disabled), .timer-running .rounds-adjust-btn:not(:disabled),
+        .timer-running #roundsInputMain:not(:disabled), .timer-running #roundsDecreaseBtnMain:not(:disabled), .timer-running #roundsIncreaseBtnMain:not(:disabled),
+        .timer-running #repsInputMain:not(:disabled), .timer-running #repsDecrease5BtnMain:not(:disabled), .timer-running #repsDecrease1BtnMain:not(:disabled),
+        .timer-running #repsIncrease1BtnMain:not(:disabled), .timer-running #repsIncrease5BtnMain:not(:disabled),
+        .timer-running #repsInput:not(:disabled), .timer-running #repsDecrease5Btn:not(:disabled), .timer-running #repsDecrease1Btn:not(:disabled),
+        .timer-running #repsIncrease1Btn:not(:disabled), .timer-running #repsIncrease5Btn:not(:disabled) {
+            opacity: 0.5; cursor: not-allowed; pointer-events: none;
         }
         
         .header-top {
@@ -818,44 +661,17 @@
             }
         }
         
-        .header-top .mode-toggle-btn {
-            position: relative;
-            top: auto;
-            right: auto;
-            width: 44px;
-            height: 44px;
-            flex-shrink: 0;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgb(var(--foreground));
-            font-size: 1.5rem;
-            transition: opacity 0.2s;
-            border-radius: var(--radius);
-            min-width: 44px;
+        .header-top .mode-toggle-btn,
+        .header-top .hamburger-menu {
+            position: relative; top: auto; right: auto; width: 44px; height: 44px; flex-shrink: 0;
+            background: transparent; border: none; cursor: pointer; padding: 0.5rem;
+            display: flex; align-items: center; justify-content: center;
+            color: rgb(var(--foreground)); font-size: 1.5rem; transition: opacity 0.2s; border-radius: 0.75rem; min-width: 44px;
+            -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none;
         }
-        
-        .header-top .mode-toggle-btn:hover,
-        .header-top .mode-toggle-btn:active {
-            opacity: 0.7;
-            background-color: rgba(var(--accent), 0.5);
-        }
-        
-        .header-top .mode-toggle-btn:focus {
-            outline: 2px solid rgb(var(--ring));
-            outline-offset: 2px;
-        }
-        
-        .header-top .mode-toggle-btn {
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-            user-select: none;
-            -webkit-user-select: none;
-        }
+        .header-top .mode-toggle-btn:hover, .header-top .mode-toggle-btn:active,
+        .header-top .hamburger-menu:hover, .header-top .hamburger-menu:active { opacity: 0.7; background-color: rgba(var(--accent), 0.5); }
+        .header-top .mode-toggle-btn:focus, .header-top .hamburger-menu:focus { outline: 2px solid rgb(var(--ring)); outline-offset: 2px; }
         
         #timerist-logo {
             display: block;
@@ -892,58 +708,30 @@
             stroke: #fafafa !important;
         }
         
-        .splits-display {
-            padding: 1.5rem;
-            background-color: rgb(var(--card));
-            border: 1px solid rgb(var(--border));
-            border-radius: var(--radius);
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            margin-top: 1rem;
+        /* Splits section - ShadCN data entry style */
+        .splits-display .sheet-section-title {
+            font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+            color: rgb(var(--muted-foreground)); margin-bottom: 1rem; display: block;
         }
-        
-        .splits-display h3 {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: rgb(var(--foreground));
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-        
-        .splits-display ul {
-            list-style: none;
-            padding: 0;
-            margin: 0 0 1rem 0;
-        }
-        
-        .splits-display li {
-            padding: 0.5rem;
-            font-size: 1rem;
-            color: rgb(var(--foreground));
-            border-bottom: 1px solid rgb(var(--border));
+        .splits-list { list-style: none; padding: 0; margin: 0; }
+        .splits-list li {
+            display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+            padding: 0.75rem 0; border-bottom: 1px solid rgb(var(--border));
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-weight: 600;
-            letter-spacing: -0.01em;
         }
-        
-        .splits-display li:last-child {
-            border-bottom: none;
+        .splits-list li:last-child { border-bottom: none; }
+        .splits-list .split-info {
+            flex: 1; min-width: 0; font-size: 0.875rem; color: rgb(var(--foreground)); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
-        
-        /* Rep adjustment controls in splits */
-        .splits-display li button {
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
+        .splits-list .split-stepper {
+            display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0;
         }
-        
+        .splits-list .split-stepper .rounds-adjust-btn { min-width: 48px; min-height: 48px; font-size: 1.125rem; }
+        .splits-list .split-stepper .split-reps-value { min-width: 2rem; text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .splits-list li button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
         @media (max-width: 390px) {
-            .splits-display li {
-                flex-wrap: wrap;
-            }
-            
-            .splits-display li > div:first-child {
-                width: 100%;
-                margin-bottom: 0.5rem;
-            }
+            .splits-list li { flex-wrap: wrap; }
+            .splits-list .split-info { width: 100%; margin-bottom: 0.5rem; }
         }
         
     </style>
@@ -974,25 +762,22 @@
                 <button class="mode-toggle-btn mode-toggle" id="themeToggleBtn" aria-label="Toggle dark mode">
                     <span id="theme-icon">🌙</span>
                 </button>
-                <button class="hamburger-menu" onclick="toggleDrawer()" aria-label="Open Timer Setup menu">
-                    ☰
-                </button>
+                <button type="button" class="hamburger-menu" id="menuBtn" aria-label="Open Timer Setup">☰</button>
             </div>
         </div>
         
         <div class="timer-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
-            <!-- Timer Display -->
-            <div class="timer-display-block bg-card border border-border rounded-lg shadow-lg text-center">
+            <!-- Timer Display (tap to open setup) -->
+            <div class="timer-display-block bg-[rgb(var(--card))] border border-[rgb(var(--border))] rounded-2xl shadow-lg text-center" id="timerDisplayBlock" style="cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation;">
                 <!-- Workout Title -->
                 <div id="workoutTitleDisplay" style="display: none; text-align: center; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid rgb(var(--border));">
                     <h2 id="workoutTitleText" style="font-size: 1.25rem; font-weight: 600; color: rgb(var(--foreground)); margin: 0; word-wrap: break-word;"></h2>
                 </div>
                 
-                <!-- EMOM: Phase label hidden via CSS -->
-                <div class="phase-label" id="phaseLabel" style="display: none;">Work</div>
+                <div class="phase-label" id="phaseLabel"></div>
                 <div class="timer-display-large" id="display">01:00</div>
                 <div class="round-info">
-                    Round <span id="round">1</span> of <span id="totalRounds">5</span>
+                    Round <span id="round">1</span> of <span id="totalRounds">5</span> | <span id="targetRepsDisplay">0</span> Per Min
                 </div>
                 <!-- Workout Notes -->
                 <div id="workoutDescriptionDisplay" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgb(var(--border));">
@@ -1001,177 +786,100 @@
             </div>
             
             <!-- Control Buttons -->
-            <div class="p-6 bg-card border border-border rounded-lg shadow-lg">
+            <div class="p-4 rounded-2xl bg-[rgb(var(--card))] border border-[rgb(var(--border))] shadow-lg">
                 <div class="control-buttons-container">
+                    <button class="control-btn btn-secondary" id="minuteCompletedBtn" style="display: none;" aria-label="Round completed" disabled>Round Completed</button>
                     <button class="control-btn btn-primary" id="startBtn" aria-label="Start timer">Start</button>
                     <button class="control-btn btn-primary" id="pauseBtn" style="display: none;" aria-label="Pause timer">Pause</button>
                     <button class="control-btn btn-destructive" id="resetBtn" style="display: none;" aria-label="Reset timer">Reset</button>
                     <button class="control-btn btn-secondary" id="clearBtn" aria-label="Clear timer">Clear</button>
                     <button class="control-btn btn-primary" id="setupBtn" style="display: none;" aria-label="Set up timer">Set Up</button>
-                    <button class="control-btn btn-secondary" id="minuteCompletedBtn" style="display: none;" aria-label="Round completed" disabled>Round Completed</button>
                 </div>
             </div>
             
-            <!-- Splits Display -->
-            <div id="splits" class="splits-display" aria-live="polite">
-                <h3>Splits</h3>
-                <ul id="splits-list"></ul>
+            <!-- Splits Display (ShadCN data entry style) -->
+            <div id="splits" class="splits-display p-4 rounded-2xl bg-[rgb(var(--card))] border border-[rgb(var(--border))] shadow-lg" aria-live="polite">
+                <h3 class="sheet-section-title">Splits</h3>
+                <ul id="splits-list" class="splits-list"></ul>
             </div>
         </div>
     </div>
     
-    <!-- Drawer Overlay -->
-    <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
-    
-    <!-- Settings Drawer -->
-    <div class="settings-drawer" id="settingsDrawer">
-        <div class="drawer-header">
-            <h2 style="font-size: 1rem; font-weight: 600; color: rgb(var(--foreground)); text-transform: uppercase; letter-spacing: 0.05em;">Timer Setup</h2>
-            <button class="drawer-close" onclick="closeDrawer()" aria-label="Close drawer">×</button>
+    <div class="sheet-overlay" id="drawerOverlay" aria-hidden="true"></div>
+    <div class="bottom-sheet" id="settingsDrawer" role="dialog" aria-label="Timer setup">
+        <div class="sheet-grabber" aria-hidden="true"></div>
+        <div class="sheet-header">
+            <h2 class="text-base font-semibold uppercase tracking-wide text-[rgb(var(--foreground))]">Timer Setup</h2>
+            <div class="sheet-header-actions">
+                <button type="button" class="header-clear-btn" id="headerClearBtn" aria-label="Clear settings to defaults" title="Clear settings to defaults">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                </button>
+                <button type="button" class="drawer-close" id="drawerCloseBtn" aria-label="Close">×</button>
+            </div>
         </div>
-        <div class="drawer-content">
-            <!-- Setup Content -->
-            <div class="drawer-section">
+        <div class="sheet-content">
+            <div class="sheet-section">
                 <h3>Setup Content</h3>
-                
-                <!-- Workout Title -->
                 <div class="input-group">
                     <label for="workoutTitleInput">Workout Title</label>
-                    <input 
-                        type="text" 
-                        id="workoutTitleInput" 
-                        class="custom-time-input"
-                        placeholder="Enter workout title"
-                        aria-label="Workout title"
-                        maxlength="40"
-                        style="font-family: inherit;"
-                    >
-                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
-                        <span id="workoutTitleCharCount">0</span>/40
-                    </p>
+                    <input type="text" id="workoutTitleInput" class="shadcn-input" placeholder="Enter workout title" aria-label="Workout title" maxlength="40">
+                    <p class="text-xs text-[rgb(var(--muted-foreground))] mt-1 text-right"><span id="workoutTitleCharCount">0</span>/40</p>
                 </div>
-                
-                <!-- Workout Notes -->
                 <div class="input-group">
                     <label for="workoutDescriptionInput">Workout Notes</label>
-                    <textarea 
-                        id="workoutDescriptionInput" 
-                        class="custom-time-input"
-                        placeholder="Enter workout notes..."
-                        aria-label="Workout notes"
-                        rows="4"
-                        maxlength="200"
-                        style="resize: vertical; min-height: 80px; font-family: inherit; line-height: 1.5;"
-                    ></textarea>
-                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
-                        <span id="workoutDescriptionCharCount">0</span>/200
-                    </p>
+                    <textarea id="workoutDescriptionInput" class="shadcn-textarea" placeholder="Enter workout notes..." aria-label="Workout notes" rows="4" maxlength="200"></textarea>
+                    <p class="text-xs text-[rgb(var(--muted-foreground))] mt-1 text-right"><span id="workoutDescriptionCharCount">0</span>/200</p>
                 </div>
-                
-                <!-- EMOM: Work Time is fixed at 60 seconds, hidden/disabled -->
                 <div class="input-group" style="display: none;">
                     <label for="workTimeInput">Work Time (MM:SS)</label>
-                    <div class="time-input-group">
-                        <button class="time-adjust-btn" id="workDecreaseBtn" type="button" aria-label="Decrease work time by 10 seconds" disabled>−10</button>
-                        <input 
-                            type="text" 
-                            id="workTimeInput" 
-                            class="custom-time-input" 
-                            value="01:00"
-                            pattern="[0-9]{2}:[0-9]{2}"
-                            placeholder="MM:SS"
-                            aria-label="Work time"
-                            disabled
-                        >
-                        <button class="time-adjust-btn" id="workIncreaseBtn" type="button" aria-label="Increase work time by 10 seconds" disabled>+10</button>
+                    <div class="rounds-stepper">
+                        <button type="button" class="stepper-btn" id="workDecreaseBtn" aria-label="Decrease work time" disabled>−10</button>
+                        <input type="text" id="workTimeInput" class="custom-time-input" value="01:00" disabled aria-label="Work time">
+                        <button type="button" class="stepper-btn" id="workIncreaseBtn" aria-label="Increase work time" disabled>+10</button>
                     </div>
                 </div>
-                
-                <!-- EMOM: Rest Time is 0, hidden -->
                 <div class="input-group" style="display: none;">
                     <label for="restTimeInput">Rest Time (MM:SS)</label>
-                    <div class="time-input-group">
-                        <button class="time-adjust-btn" id="restDecreaseBtn" type="button" aria-label="Decrease rest time by 10 seconds" disabled>−10</button>
-                        <input 
-                            type="text" 
-                            id="restTimeInput" 
-                            class="custom-time-input" 
-                            value="00:00"
-                            pattern="[0-9]{2}:[0-9]{2}"
-                            placeholder="MM:SS"
-                            aria-label="Rest time"
-                            disabled
-                        >
-                        <button class="time-adjust-btn" id="restIncreaseBtn" type="button" aria-label="Increase rest time by 10 seconds" disabled>+10</button>
+                    <div class="rounds-stepper">
+                        <button type="button" class="stepper-btn" id="restDecreaseBtn" aria-label="Decrease rest time" disabled>−10</button>
+                        <input type="text" id="restTimeInput" class="custom-time-input" value="00:00" disabled aria-label="Rest time">
+                        <button type="button" class="stepper-btn" id="restIncreaseBtn" aria-label="Increase rest time" disabled>+10</button>
                     </div>
                 </div>
-                
-                <!-- Number of Rounds -->
                 <div class="input-group">
                     <label for="roundsInput">Total Rounds</label>
-                    <div class="rounds-input-group">
-                        <button class="rounds-adjust-btn" id="roundsDecreaseBtn" type="button" aria-label="Decrease rounds">−</button>
-                        <input 
-                            type="text" 
-                            id="roundsInput" 
-                            value="5"
-                            aria-label="Number of rounds"
-                        >
-                        <button class="rounds-adjust-btn" id="roundsIncreaseBtn" type="button" aria-label="Increase rounds">+</button>
+                    <div class="rounds-stepper">
+                        <button type="button" class="stepper-btn rounds-adjust-btn" id="roundsDecreaseBtn" aria-label="Decrease rounds">−</button>
+                        <input type="text" id="roundsInput" class="custom-time-input" value="5" aria-label="Number of rounds">
+                        <button type="button" class="stepper-btn rounds-adjust-btn" id="roundsIncreaseBtn" aria-label="Increase rounds">+</button>
                     </div>
                 </div>
-                
-                <!-- Target Reps -->
                 <div class="input-group">
                     <label for="repsInput">Target Reps</label>
-                    <div class="rounds-input-group">
-                        <button class="rounds-adjust-btn" id="repsDecrease5Btn" type="button" aria-label="Decrease reps by 5">−5</button>
-                        <button class="rounds-adjust-btn" id="repsDecrease1Btn" type="button" aria-label="Decrease reps by 1">−1</button>
-                        <input 
-                            type="text" 
-                            id="repsInput" 
-                            value="0"
-                            aria-label="Target number of reps"
-                        >
-                        <button class="rounds-adjust-btn" id="repsIncrease1Btn" type="button" aria-label="Increase reps by 1">+1</button>
-                        <button class="rounds-adjust-btn" id="repsIncrease5Btn" type="button" aria-label="Increase reps by 5">+5</button>
+                    <div class="rounds-stepper">
+                        <button type="button" class="stepper-btn rounds-adjust-btn" id="repsDecrease5Btn" aria-label="Decrease reps by 5">−5</button>
+                        <button type="button" class="stepper-btn rounds-adjust-btn" id="repsDecrease1Btn" aria-label="Decrease reps by 1">−1</button>
+                        <input type="text" id="repsInput" class="custom-time-input" value="0" aria-label="Target number of reps">
+                        <button type="button" class="stepper-btn rounds-adjust-btn" id="repsIncrease1Btn" aria-label="Increase reps by 1">+1</button>
+                        <button type="button" class="stepper-btn rounds-adjust-btn" id="repsIncrease5Btn" aria-label="Increase reps by 5">+5</button>
                     </div>
                 </div>
-                
-                <!-- Completion Message -->
                 <div class="input-group">
-                    <label for="doneMessageInput">COMPLETION MESSAGE (14 CHARACTERS MAX)</label>
-                    <input 
-                        type="text" 
-                        id="doneMessageInput" 
-                        class="custom-time-input"
-                        maxlength="14"
-                        value="Completed"
-                        placeholder="Completed"
-                        aria-label="Completion message"
-                    >
-                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
-                        <span id="doneMessageCharCount">0</span>/14
-                    </p>
+                    <label for="doneMessageInput">Completion Message (14 chars max)</label>
+                    <input type="text" id="doneMessageInput" class="shadcn-input" maxlength="14" value="Completed" placeholder="Completed" aria-label="Completion message">
+                    <p class="text-xs text-[rgb(var(--muted-foreground))] mt-1 text-right"><span id="doneMessageCharCount">0</span>/14</p>
                 </div>
             </div>
-            
-            <!-- About This Timer -->
-            <div class="drawer-section">
-                <h3>About This Timer</h3>
-                <p>
-                    Every Minute On the Minute with Splits.
-                </p>
-                <p style="margin-top: 0.75rem;">
-                    <strong>Keywords:</strong> EMOM timer, every minute on the minute, EMOM workout, interval timer, fitness timer, workout timer, exercise timer, HIIT timer, time-based training.
-                </p>
+            <div class="sheet-section">
+                <button type="button" id="clearAllSettingsBtn" class="btn-clear-all-settings" aria-label="Clear all settings">Clear All Settings</button>
             </div>
-            
-            <!-- General Info -->
-            <div class="drawer-section">
-                <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.14</p>
-                <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
+            <div class="sheet-section">
+                <h3>About This Timer</h3>
+                <p class="text-sm text-[rgb(var(--muted-foreground))] leading-relaxed">Every Minute On the Minute with Splits. Record rep goals per round and timestamps.</p>
+                <p class="text-sm text-[rgb(var(--muted-foreground))] mt-2"><strong>Keywords:</strong> EMOM timer, every minute on the minute, EMOM workout, interval timer, fitness timer, workout timer, exercise timer, HIIT timer, time-based training.</p>
+            </div>
+            <div class="sheet-section">
+                <p class="text-sm text-[rgb(var(--muted-foreground))]"><strong>Version:</strong> v0.14 · <span id="releaseDate">—</span></p>
             </div>
         </div>
     </div>
@@ -1194,7 +902,7 @@
         const phaseLabel = document.getElementById('phaseLabel');
         const roundDisplay = document.getElementById('round');
         const totalRoundsDisplay = document.getElementById('totalRounds');
-        const statusMessage = document.getElementById('statusMessage');
+        const targetRepsDisplay = document.getElementById('targetRepsDisplay');
         const startBtn = document.getElementById('startBtn');
         const pauseBtn = document.getElementById('pauseBtn');
         const resetBtn = document.getElementById('resetBtn');
@@ -1212,6 +920,11 @@
         const roundsInputMain = document.getElementById('roundsInputMain');
         const roundsDecreaseBtnMain = document.getElementById('roundsDecreaseBtnMain');
         const roundsIncreaseBtnMain = document.getElementById('roundsIncreaseBtnMain');
+        const repsInputMain = document.getElementById('repsInputMain');
+        const repsDecrease5BtnMain = document.getElementById('repsDecrease5BtnMain');
+        const repsDecrease1BtnMain = document.getElementById('repsDecrease1BtnMain');
+        const repsIncrease1BtnMain = document.getElementById('repsIncrease1BtnMain');
+        const repsIncrease5BtnMain = document.getElementById('repsIncrease5BtnMain');
         const workoutTitleInput = document.getElementById('workoutTitleInput');
         const workoutDescriptionInput = document.getElementById('workoutDescriptionInput');
         const workoutTitleDisplay = document.getElementById('workoutTitleDisplay');
@@ -1304,6 +1017,11 @@
             if (repsDecrease1Btn) repsDecrease1Btn.disabled = true;
             if (repsIncrease1Btn) repsIncrease1Btn.disabled = true;
             if (repsIncrease5Btn) repsIncrease5Btn.disabled = true;
+            if (repsInputMain) repsInputMain.disabled = true;
+            if (repsDecrease5BtnMain) repsDecrease5BtnMain.disabled = true;
+            if (repsDecrease1BtnMain) repsDecrease1BtnMain.disabled = true;
+            if (repsIncrease1BtnMain) repsIncrease1BtnMain.disabled = true;
+            if (repsIncrease5BtnMain) repsIncrease5BtnMain.disabled = true;
         }
         
         // Enable inputs when timer is stopped
@@ -1319,6 +1037,11 @@
             if (repsDecrease1Btn) repsDecrease1Btn.disabled = false;
             if (repsIncrease1Btn) repsIncrease1Btn.disabled = false;
             if (repsIncrease5Btn) repsIncrease5Btn.disabled = false;
+            if (repsInputMain) repsInputMain.disabled = false;
+            if (repsDecrease5BtnMain) repsDecrease5BtnMain.disabled = false;
+            if (repsDecrease1BtnMain) repsDecrease1BtnMain.disabled = false;
+            if (repsIncrease1BtnMain) repsIncrease1BtnMain.disabled = false;
+            if (repsIncrease5BtnMain) repsIncrease5BtnMain.disabled = false;
         }
         
         // Check if timer has valid data to proceed
@@ -1329,19 +1052,12 @@
         // Update display with color coding
         function updateDisplay() {
             display.textContent = formatTime(currentTime);
-            // EMOM: Phase label is hidden, but keep it for compatibility
-            phaseLabel.textContent = 'Work';
+            // EMOM: Show "Minute X of Y" above the timer (updates each minute)
+            phaseLabel.textContent = 'Minute ' + currentRound + ' of ' + totalRounds;
             roundDisplay.textContent = currentRound;
             totalRoundsDisplay.textContent = totalRounds;
             
-            // Update status message with target reps per minute
-            if (statusMessage) {
-                if (targetReps > 0) {
-                    statusMessage.textContent = `${targetReps} Per Min.`;
-                } else {
-                    statusMessage.textContent = '';
-                }
-            }
+            if (targetRepsDisplay) targetRepsDisplay.textContent = targetReps;
             
             // Color coding: normal -> warning (last 30%) -> danger (last 10%)
             display.classList.remove('warning', 'danger');
@@ -1701,7 +1417,7 @@
             updateSplitsDisplay();
         }
         
-        // Update splits display
+        // Update splits display (ShadCN data entry style)
         function updateSplitsDisplay() {
             if (!splitsList) return;
             
@@ -1709,76 +1425,54 @@
             
             if (splits.length === 0) {
                 const emptyItem = document.createElement('li');
+                emptyItem.className = 'text-sm text-[rgb(var(--muted-foreground))] font-normal py-2';
                 emptyItem.textContent = 'No splits recorded yet';
-                emptyItem.style.color = 'rgb(var(--muted-foreground))';
-                emptyItem.style.fontWeight = '400';
                 splitsList.appendChild(emptyItem);
                 return;
             }
             
-            splits.forEach((split, index) => {
-                const li = document.createElement('li');
-                li.style.display = 'flex';
-                li.style.alignItems = 'center';
-                li.style.justifyContent = 'space-between';
-                li.style.gap = '0.75rem';
-                li.style.padding = '0.75rem 0.5rem';
-                
-                // Left side: split info
-                const infoDiv = document.createElement('div');
-                infoDiv.style.flex = '1';
-                infoDiv.style.minWidth = '0';
-                // Format: "minute 1 | 0 reps | 20 seconds | 01/24/2026, 14:30:45"
+            splits.forEach((split) => {
                 const actualReps = split.actualReps !== undefined ? split.actualReps : 0;
-                infoDiv.textContent = `minute ${split.minute} | ${actualReps} reps | ${split.secondsElapsed} seconds | ${split.timestamp || 'N/A'}`;
+                const li = document.createElement('li');
+                
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'split-info';
+                infoDiv.textContent = `Minute ${split.minute} - ${split.secondsElapsed}s · ${split.timestamp || 'N/A'}`;
                 li.appendChild(infoDiv);
                 
-                // Right side: rep adjustment controls
-                const controlsDiv = document.createElement('div');
-                controlsDiv.style.display = 'flex';
-                controlsDiv.style.alignItems = 'center';
-                controlsDiv.style.gap = '0.5rem';
-                controlsDiv.style.flexShrink = '0';
+                const stepperDiv = document.createElement('div');
+                stepperDiv.className = 'split-stepper';
                 
-                // Decrease button
                 const decreaseBtn = document.createElement('button');
+                decreaseBtn.type = 'button';
                 decreaseBtn.textContent = '−';
                 decreaseBtn.className = 'rounds-adjust-btn';
-                decreaseBtn.style.width = '36px';
-                decreaseBtn.style.height = '36px';
-                decreaseBtn.style.fontSize = '1.25rem';
                 decreaseBtn.setAttribute('aria-label', `Decrease reps for minute ${split.minute}`);
                 decreaseBtn.addEventListener('click', function() {
                     if (split.actualReps === undefined) split.actualReps = 0;
                     split.actualReps = Math.max(0, split.actualReps - 1);
                     updateSplitsDisplay();
                 });
-                controlsDiv.appendChild(decreaseBtn);
+                stepperDiv.appendChild(decreaseBtn);
                 
-                // Reps display/input
-                const repsDisplay = document.createElement('span');
-                repsDisplay.textContent = actualReps;
-                repsDisplay.style.minWidth = '30px';
-                repsDisplay.style.textAlign = 'center';
-                repsDisplay.style.fontWeight = '600';
-                controlsDiv.appendChild(repsDisplay);
+                const repsSpan = document.createElement('span');
+                repsSpan.className = 'split-reps-value';
+                repsSpan.textContent = actualReps;
+                stepperDiv.appendChild(repsSpan);
                 
-                // Increase button
                 const increaseBtn = document.createElement('button');
+                increaseBtn.type = 'button';
                 increaseBtn.textContent = '+';
                 increaseBtn.className = 'rounds-adjust-btn';
-                increaseBtn.style.width = '36px';
-                increaseBtn.style.height = '36px';
-                increaseBtn.style.fontSize = '1.25rem';
                 increaseBtn.setAttribute('aria-label', `Increase reps for minute ${split.minute}`);
                 increaseBtn.addEventListener('click', function() {
                     if (split.actualReps === undefined) split.actualReps = 0;
                     split.actualReps = (split.actualReps || 0) + 1;
                     updateSplitsDisplay();
                 });
-                controlsDiv.appendChild(increaseBtn);
+                stepperDiv.appendChild(increaseBtn);
                 
-                li.appendChild(controlsDiv);
+                li.appendChild(stepperDiv);
                 splitsList.appendChild(li);
             });
         }
@@ -1932,7 +1626,51 @@
             });
         }
         
-        // Reps adjustment buttons
+        // Main page reps adjustment buttons
+        if (repsDecrease5BtnMain && repsDecrease1BtnMain && repsIncrease1BtnMain && repsIncrease5BtnMain && repsInputMain) {
+            repsDecrease5BtnMain.addEventListener('click', function() {
+                if (isRunning) return;
+                let reps = parseInt(repsInputMain.value) || 0;
+                reps = Math.max(0, reps - 5);
+                repsInputMain.value = reps;
+                targetReps = reps;
+                if (repsInput) repsInput.value = reps;
+            });
+            repsDecrease1BtnMain.addEventListener('click', function() {
+                if (isRunning) return;
+                let reps = parseInt(repsInputMain.value) || 0;
+                reps = Math.max(0, reps - 1);
+                repsInputMain.value = reps;
+                targetReps = reps;
+                if (repsInput) repsInput.value = reps;
+            });
+            repsIncrease1BtnMain.addEventListener('click', function() {
+                if (isRunning) return;
+                let reps = parseInt(repsInputMain.value) || 0;
+                reps = reps + 1;
+                repsInputMain.value = reps;
+                targetReps = reps;
+                if (repsInput) repsInput.value = reps;
+            });
+            repsIncrease5BtnMain.addEventListener('click', function() {
+                if (isRunning) return;
+                let reps = parseInt(repsInputMain.value) || 0;
+                reps = reps + 5;
+                repsInputMain.value = reps;
+                targetReps = reps;
+                if (repsInput) repsInput.value = reps;
+            });
+            repsInputMain.addEventListener('input', function() {
+                if (!isRunning) {
+                    const value = parseInt(this.value) || 0;
+                    targetReps = Math.max(0, value);
+                    this.value = targetReps;
+                    if (repsInput) repsInput.value = targetReps;
+                }
+            });
+        }
+        
+        // Reps adjustment buttons (drawer)
         if (repsDecrease5Btn) {
             repsDecrease5Btn.addEventListener('click', function() {
                 if (isRunning) return;
@@ -1940,10 +1678,10 @@
                 reps = Math.max(0, reps - 5);
                 repsInput.value = reps;
                 targetReps = reps;
+                if (repsInputMain) repsInputMain.value = reps;
                 updateDisplay();
             });
         }
-        
         if (repsDecrease1Btn) {
             repsDecrease1Btn.addEventListener('click', function() {
                 if (isRunning) return;
@@ -1951,10 +1689,10 @@
                 reps = Math.max(0, reps - 1);
                 repsInput.value = reps;
                 targetReps = reps;
+                if (repsInputMain) repsInputMain.value = reps;
                 updateDisplay();
             });
         }
-        
         if (repsIncrease1Btn) {
             repsIncrease1Btn.addEventListener('click', function() {
                 if (isRunning) return;
@@ -1962,10 +1700,10 @@
                 reps = reps + 1;
                 repsInput.value = reps;
                 targetReps = reps;
+                if (repsInputMain) repsInputMain.value = reps;
                 updateDisplay();
             });
         }
-        
         if (repsIncrease5Btn) {
             repsIncrease5Btn.addEventListener('click', function() {
                 if (isRunning) return;
@@ -1973,17 +1711,17 @@
                 reps = reps + 5;
                 repsInput.value = reps;
                 targetReps = reps;
+                if (repsInputMain) repsInputMain.value = reps;
                 updateDisplay();
             });
         }
-        
-        // Reps input validation
         if (repsInput) {
             repsInput.addEventListener('input', function() {
                 if (!isRunning) {
                     const value = parseInt(this.value) || 0;
                     targetReps = Math.max(0, value);
                     this.value = targetReps;
+                    if (repsInputMain) repsInputMain.value = targetReps;
                     updateDisplay();
                 }
             });
@@ -2036,19 +1774,62 @@
             });
         }
         
-        // Drawer Functions
+        // Sheet (bottom sheet) open/close
         function toggleDrawer() {
-            const drawer = document.getElementById('settingsDrawer');
+            const sheet = document.getElementById('settingsDrawer');
             const overlay = document.getElementById('drawerOverlay');
-            drawer.classList.toggle('open');
+            sheet.classList.toggle('open');
             overlay.classList.toggle('open');
         }
         
+        function openDrawer() {
+            document.getElementById('settingsDrawer').classList.add('open');
+            document.getElementById('drawerOverlay').classList.add('open');
+        }
+        
         function closeDrawer() {
-            const drawer = document.getElementById('settingsDrawer');
-            const overlay = document.getElementById('drawerOverlay');
-            drawer.classList.remove('open');
-            overlay.classList.remove('open');
+            document.getElementById('settingsDrawer').classList.remove('open');
+            document.getElementById('drawerOverlay').classList.remove('open');
+        }
+        
+        if (document.getElementById('menuBtn')) {
+            document.getElementById('menuBtn').addEventListener('click', toggleDrawer);
+        }
+        if (document.getElementById('drawerCloseBtn')) {
+            document.getElementById('drawerCloseBtn').addEventListener('click', closeDrawer);
+        }
+        if (document.getElementById('drawerOverlay')) {
+            document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
+        }
+        if (document.getElementById('timerDisplayBlock')) {
+            document.getElementById('timerDisplayBlock').addEventListener('click', openDrawer);
+        }
+        
+        // Clear all settings (with confirm)
+        function clearAllSettingsWithConfirm() {
+            if (!confirm('Clear timer and reset all settings to defaults?')) return;
+            roundsInput.value = '5';
+            if (roundsInputMain) roundsInputMain.value = '5';
+            if (repsInput) repsInput.value = '0';
+            if (repsInputMain) repsInputMain.value = '0';
+            if (workoutTitleInput) workoutTitleInput.value = '';
+            if (workoutDescriptionInput) workoutDescriptionInput.value = '';
+            if (doneMessageInput) { doneMessageInput.value = 'Completed'; setDoneMessage('Completed'); }
+            if (workoutTitleCharCount) workoutTitleCharCount.textContent = '0';
+            if (workoutDescriptionCharCount) workoutDescriptionCharCount.textContent = '0';
+            if (doneMessageCharCount) doneMessageCharCount.textContent = '9';
+            totalRounds = 5;
+            targetReps = 0;
+            updateCharCounts();
+            updateWorkoutDisplay();
+            resetTimer();
+            closeDrawer();
+        }
+        if (document.getElementById('headerClearBtn')) {
+            document.getElementById('headerClearBtn').addEventListener('click', clearAllSettingsWithConfirm);
+        }
+        if (document.getElementById('clearAllSettingsBtn')) {
+            document.getElementById('clearAllSettingsBtn').addEventListener('click', clearAllSettingsWithConfirm);
         }
         
         // Initialize
@@ -2078,6 +1859,10 @@
             const repsValue = parseInt(repsInput.value) || 0;
             targetReps = repsValue;
             repsInput.value = targetReps;
+        }
+        if (repsInputMain) {
+            const repsMainValue = parseInt(repsInputMain.value) || 0;
+            if (repsMainValue !== targetReps) repsInputMain.value = targetReps;
         }
         
         // Initialize completion message
