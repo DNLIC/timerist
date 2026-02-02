@@ -20,22 +20,25 @@
 4. **Quick Countdown**
    - https://timerist-4ecd9.web.app/quick-countdown.html
 
-5. **Tabata Timer**
+5. **Quick Interval iPhone (shadcn)** — mobile testing
+   - https://timerist-4ecd9.web.app/quick-interval-iphone-shadcn.html
+
+6. **Tabata Timer**
    - https://timerist-4ecd9.web.app/tabata.html
 
-6. **Interval Timer**
+7. **Interval Timer**
    - https://timerist-4ecd9.web.app/interval.html
 
-7. **Countdown Timer**
+8. **Countdown Timer**
    - https://timerist-4ecd9.web.app/countdown.html
 
-8. **Stopwatch**
+9. **Stopwatch**
    - https://timerist-4ecd9.web.app/stopwatch.html
 
-9. **EMOM Timer**
-   - https://timerist-4ecd9.web.app/emom.html
+10. **EMOM Timer**
+    - https://timerist-4ecd9.web.app/emom.html
 
-10. **Custom Timer**
+11. **Custom Timer**
     - https://timerist-4ecd9.web.app/custom.html
 
 ## Quick Copy List (All Links)
@@ -45,6 +48,7 @@ https://timerist-4ecd9.web.app/
 https://timerist-4ecd9.web.app/timer-example
 https://timerist-4ecd9.web.app/index.html
 https://timerist-4ecd9.web.app/quick-countdown.html
+https://timerist-4ecd9.web.app/quick-interval-iphone-shadcn.html
 https://timerist-4ecd9.web.app/tabata.html
 https://timerist-4ecd9.web.app/interval.html
 https://timerist-4ecd9.web.app/countdown.html

@@ -2,22 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <title>Quick Countdown - Timerist | HIIT Timer, Quick Rest Timer, Workout Countdown</title>
     <meta name="description" content="Quick Countdown timer for short rests, holds, or bursts in HIIT, CrossFit, or circuit training. Tap a preset to start instantly—no setup required.">
-    <link rel="stylesheet" href="styles/timerist-design-system.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-        
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
         :root {
             --background: 245 247 250;
             --foreground: 51 51 51;
@@ -38,7 +32,6 @@
             --ring: 74 144 226;
             --radius: 0.5rem;
         }
-        
         [data-theme="style1"] {
             --background: 0 0 0;
             --foreground: 255 255 255;
@@ -58,11 +51,11 @@
             --input: 51 51 51;
             --ring: 255 0 0;
         }
-        
+        * { box-sizing: border-box; }
         body {
             background: rgb(var(--background));
             color: rgb(var(--foreground));
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             min-height: 100vh;
             display: flex;
             align-items: flex-start;
@@ -72,11 +65,6 @@
             overflow-x: hidden;
             box-sizing: border-box;
         }
-        
-        * {
-            box-sizing: border-box;
-        }
-        
         .container {
             min-height: 100vh;
             display: flex;
@@ -89,533 +77,20 @@
             margin: 0 auto;
             overflow-x: hidden;
             position: relative;
+            padding-bottom: env(safe-area-inset-bottom, 1rem);
         }
-        
         .timer-container {
             max-width: 1000px;
             margin: 0 auto;
             overflow-x: hidden;
-            margin-top: clamp(5rem, 8vw, 6rem);
             width: 100%;
-        }
-        
-        /* iPad vertical (portrait) - position timer below header */
-        @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
-            .timer-container {
-                margin-top: clamp(4rem, 6vw, 5rem);
-            }
-        }
-        
-        /* iPad horizontal (landscape) - position timer below header */
-        @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
-            .timer-container {
-                margin-top: clamp(4.5rem, 7vw, 5.5rem);
-            }
-        }
-        
-        /* Desktop - position timer below header */
-        @media (min-width: 1025px) {
-            .timer-container {
-                margin-top: clamp(4rem, 6vw, 5rem);
-            }
-        }
-        
-        .bg-card { background-color: rgb(var(--card)); }
-        .text-foreground { color: rgb(var(--foreground)); }
-        .text-muted-foreground { color: rgb(var(--muted-foreground)); }
-        .bg-primary { background-color: rgb(var(--primary)); }
-        .text-primary-foreground { color: rgb(var(--primary-foreground)); }
-        .bg-secondary { background-color: rgb(var(--secondary)); }
-        .text-secondary-foreground { color: rgb(var(--secondary-foreground)); }
-        .bg-destructive { background-color: rgb(var(--destructive)); }
-        .text-destructive-foreground { color: rgb(var(--destructive-foreground)); }
-        .border-border { border-color: rgb(var(--border)); }
-        .hover\:bg-primary\/90:hover { background-color: rgba(var(--primary), 0.9); }
-        .hover\:bg-secondary\/90:hover { background-color: rgba(var(--secondary), 0.9); }
-        
-        .timer-display-large {
-            font-size: 4rem; /* Smaller for mobile */
-            font-weight: 700; /* font-bold */
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* font-mono */
-            font-variant-numeric: tabular-nums;
-            line-height: 1;
-            color: rgb(var(--primary));
-            transition: color 0.3s ease;
-            margin-bottom: 1rem; /* mb-4 */
-            word-break: keep-all;
-            overflow-wrap: normal;
-        }
-        
-        @media (min-width: 390px) {
-            .timer-display-large {
-                font-size: 5rem;
-            }
-        }
-        
-        @media (min-width: 768px) {
-            .timer-display-large {
-                font-size: 8rem; /* md:text-9xl */
-            }
-        }
-        
-        .timer-display-large.warning {
-            color: #f59e0b;
-        }
-        
-        .timer-display-large.danger {
-            color: rgb(var(--destructive));
-        }
-        
-        .timer-display-block {
-            padding: 1.5rem;
-            overflow: hidden;
-            box-sizing: border-box;
-        }
-        
-        @media (min-width: 640px) {
-            .timer-display-block {
-                padding: 2rem;
-            }
-        }
-        
-        @media (min-width: 768px) {
-            .timer-display-block {
-                padding: 2rem;
-            }
-        }
-        
-        .quick-select-btn {
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-size: 1.125rem;
-            font-weight: 500;
-            line-height: 1.2;
-            height: 2.5rem;
+            margin-top: clamp(4rem, 8vw, 5rem);
             display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            cursor: pointer;
-            border: none;
-            background-color: rgb(var(--primary));
-            color: rgb(var(--primary-foreground));
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            min-width: 0;
-            width: 100%;
+            flex-direction: column;
+            gap: 1.5rem;
         }
-        
-        @media (min-width: 640px) {
-            .quick-select-btn {
-                min-width: 100px;
-                font-size: 1.25rem;
-                height: 2.5rem;
-            }
-        }
-        
-        .quick-select-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.5rem;
-        }
-        
-        @media (min-width: 480px) {
-            .quick-select-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-        }
-        
-        @media (min-width: 640px) {
-            .quick-select-grid {
-                grid-template-columns: repeat(5, 1fr);
-            }
-        }
-        
-        @media (orientation: landscape) and (max-height: 500px) {
-            .quick-select-grid {
-                grid-template-columns: repeat(5, 1fr);
-            }
-        }
-        
-        /* iPhone Horizontal - Tighten Up Vertical Space */
-        @media (orientation: landscape) and (max-height: 500px) {
-            /* Increase space between header and timer box to prevent overlap */
-            .timer-container {
-                margin-top: clamp(3.5rem, 6vw, 4.25rem) !important;
-                gap: 0.5rem !important;
-            }
-            
-            /* Reduce top and bottom padding on timer display block */
-            .timer-display-block {
-                padding-top: 0.75rem !important;
-                padding-bottom: 0.75rem !important;
-                padding-left: 1rem !important;
-                padding-right: 1rem !important;
-            }
-            
-            .timer-display-large {
-                margin-bottom: 0.5rem !important;
-            }
-            
-            /* Reduce padding on control buttons and quick-select containers */
-            .p-6 {
-                padding-top: 0.75rem !important;
-                padding-bottom: 0.75rem !important;
-                padding-left: 1rem !important;
-                padding-right: 1rem !important;
-            }
-            
-            /* Reduce spacing between timer display elements */
-            #workoutTitleDisplay {
-                padding-bottom: 0.5rem !important;
-                margin-bottom: 0.5rem !important;
-            }
-            
-            #workoutDescriptionDisplay {
-                margin-top: 0.5rem !important;
-                padding-top: 0.5rem !important;
-            }
-        }
-        
-        .quick-select-btn:hover:not(:disabled) {
-            background-color: rgb(100, 100, 100);
-            color: rgb(255, 255, 255);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        
-        /* Dark mode hover state - use lighter gray */
-        [data-theme="style1"] .quick-select-btn:hover:not(:disabled) {
-            background-color: rgb(150, 150, 150);
-            color: rgb(0, 0, 0);
-        }
-        
-        .quick-select-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .quick-select-btn.selected {
-            font-weight: 700;
-        }
-        
-        .adjust-btn {
-            padding: 0.5rem 1rem;
-            border-radius: 0.375rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-            letter-spacing: 0.025em;
-            text-transform: uppercase;
-            transition: opacity 0.2s;
-            cursor: pointer;
-            border: none;
-            background-color: rgb(var(--secondary));
-            color: rgb(var(--secondary-foreground));
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-        
-        .adjust-btn:hover:not(:disabled) {
-            opacity: 0.9;
-        }
-        
-        .adjust-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .control-btn {
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            transition: all 0.2s;
-            cursor: pointer;
-            border: none;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            white-space: nowrap;
-            flex-shrink: 1;
-        }
-        
-        @media (max-width: 390px) {
-            .control-btn {
-                padding: 0.4rem 0.75rem;
-                font-size: 0.75rem;
-            }
-        }
-        
-        .control-buttons-container {
-            display: flex;
-            gap: 0.5rem;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: nowrap;
-        }
-        
-        @media (min-width: 390px) {
-            .control-buttons-container {
-                gap: 0.75rem;
-            }
-        }
-        
-        @media (min-width: 640px) {
-            .control-buttons-container {
-                gap: 1rem;
-            }
-        }
-        
-        .control-btn.btn-primary {
-            background-color: rgb(var(--primary));
-            color: rgb(var(--primary-foreground));
-        }
-        
-        .control-btn.btn-primary:hover:not(:disabled) {
-            background-color: rgb(100, 100, 100);
-            color: rgb(255, 255, 255);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        
-        /* Dark mode primary button hover - lighter gray */
-        [data-theme="style1"] .control-btn.btn-primary:hover:not(:disabled) {
-            background-color: rgb(150, 150, 150);
-            color: rgb(0, 0, 0);
-        }
-        
-        /* Paused state - dark gray background with white text (daylight mode) */
-        /* Higher specificity to override hover/active states on mobile */
-        .control-btn.btn-primary.paused,
-        .control-btn.btn-primary.paused:hover,
-        .control-btn.btn-primary.paused:active,
-        .control-btn.btn-primary.paused:focus {
-            background-color: rgb(100, 100, 100) !important;
-            color: rgb(255, 255, 255) !important;
-        }
-        
-        /* Dark mode paused state - lighter gray */
-        [data-theme="style1"] .control-btn.btn-primary.paused,
-        [data-theme="style1"] .control-btn.btn-primary.paused:hover,
-        [data-theme="style1"] .control-btn.btn-primary.paused:active,
-        [data-theme="style1"] .control-btn.btn-primary.paused:focus {
-            background-color: rgb(150, 150, 150) !important;
-            color: rgb(0, 0, 0) !important;
-        }
-        
-        .control-btn.btn-secondary {
-            background-color: rgb(var(--secondary));
-            color: rgb(var(--secondary-foreground));
-        }
-        
-        .control-btn.btn-secondary:hover:not(:disabled) {
-            background-color: rgb(100, 100, 100);
-            color: rgb(255, 255, 255);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        
-        /* Dark mode secondary button hover - lighter gray */
-        [data-theme="style1"] .control-btn.btn-secondary:hover:not(:disabled) {
-            background-color: rgb(150, 150, 150);
-            color: rgb(0, 0, 0);
-        }
-        
-        .control-btn.btn-destructive {
-            background-color: rgb(var(--destructive));
-            color: rgb(var(--destructive-foreground));
-        }
-        
-        .control-btn.btn-destructive:hover:not(:disabled) {
-            background-color: rgb(100, 100, 100);
-            color: rgb(255, 255, 255);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        
-        /* Dark mode destructive button hover - lighter gray */
-        [data-theme="style1"] .control-btn.btn-destructive:hover:not(:disabled) {
-            background-color: rgb(150, 150, 150);
-            color: rgb(0, 0, 0);
-        }
-        
-        .control-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .hamburger-menu {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgb(var(--foreground));
-            font-size: 1.5rem;
-            transition: opacity 0.2s;
-            width: 44px;
-            height: 44px;
-            border-radius: var(--radius);
-            flex-shrink: 0;
-        }
-        
-        .hamburger-menu:hover {
-            opacity: 0.7;
-        }
-        
-        .settings-drawer {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 100%;
-            max-width: 400px;
-            height: 100vh;
-            background: rgb(var(--card));
-            border-left: 1px solid rgb(var(--border));
-            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
-            transition: right 0.3s ease;
-            z-index: 1002;
-            overflow-y: auto;
-        }
-        
-        .settings-drawer.open {
-            right: 0;
-        }
-        
-        .drawer-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
-            z-index: 1001;
-        }
-        
-        .drawer-overlay.open {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .drawer-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid rgb(var(--border));
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .drawer-content {
-            padding: 1.5rem;
-        }
-        
-        .drawer-section {
-            margin-bottom: 2rem;
-        }
-        
-        .drawer-section h3 {
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: rgb(var(--foreground));
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        
-        .drawer-section p {
-            color: rgb(var(--muted-foreground));
-            line-height: 1.6;
-            margin-bottom: 0.75rem;
-            font-size: 0.875rem;
-        }
-        
-        .drawer-close {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 1.5rem;
-            color: rgb(var(--foreground));
-            padding: 0.25rem;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: var(--radius);
-        }
-        
-        .drawer-close:hover {
-            opacity: 0.7;
-        }
-        
-        .custom-time-input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid rgb(var(--input));
-            border-radius: var(--radius);
-            background-color: rgb(var(--background));
-            color: rgb(var(--foreground));
-            font-size: 1.125rem;
-            font-weight: 600;
-            font-family: 'Courier New', monospace;
-            text-align: center;
-            min-height: 48px;
-        }
-        
-        .custom-time-input:focus {
-            outline: none;
-            border-color: rgb(var(--ring));
-            box-shadow: 0 0 0 2px rgba(var(--ring), 0.2);
-        }
-        
-        /* Textarea specific styling */
-        textarea.custom-time-input {
-            font-family: inherit;
-            text-align: left;
-            font-weight: 400;
-            line-height: 1.5;
-            resize: vertical;
-        }
-        
-        /* Workout title and description styling */
-        #workoutTitleInput {
-            font-family: inherit;
-            text-align: left;
-            font-weight: 500;
-        }
-        
-        #workoutDescriptionInput {
-            font-family: inherit;
-            text-align: left;
-            font-weight: 400;
-            line-height: 1.5;
-        }
-        
-        .input-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .input-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: rgb(var(--muted-foreground));
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        
-        .timer-running .quick-select-btn:not(.reset-btn):not(.selected) {
-            opacity: 0.5;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-        
-        .timer-running .adjust-btn {
-            opacity: 0.5;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-        
+        @media (min-width: 640px) { .container { padding: 2rem; } }
+        @media (min-width: 768px) { .container { padding: 2rem 3rem; } }
         .header-top {
             position: absolute;
             top: clamp(1rem, 3vw, 2rem);
@@ -632,7 +107,6 @@
             gap: 0.5rem;
             min-width: 0;
         }
-        
         .header-top > div:first-child {
             display: flex;
             align-items: center;
@@ -641,175 +115,178 @@
             flex-shrink: 1;
             overflow: hidden;
         }
-        
-        /* iPhone 13 mini and similar small screens - make header more compact */
         @media (max-width: 390px) {
-            .header-top {
-                padding: 0 0.75rem;
-            }
-            
-            .header-top > div:first-child {
-                gap: 0.5rem;
-            }
-            
-            /* Hide separator and "timerist.com" text on very small screens */
-            .header-top .separator,
-            .header-top > div:first-child > a:nth-of-type(2) {
-                display: none;
-            }
-            
-            /* Make "Quick Countdown" text smaller */
-            .header-top > div:first-child > span:last-of-type {
-                font-size: 0.875rem !important;
-            }
-            
-            /* Ensure logo doesn't shrink too much */
-            #timerist-logo {
-                width: 36px !important;
-                height: 36px !important;
-                flex-shrink: 0;
-            }
+            .header-top { padding: 0 0.75rem; }
+            .header-top > div:first-child { gap: 0.5rem; }
+            .header-top .separator, .header-top > div:first-child > a:nth-of-type(2) { display: none; }
+            .header-top > div:first-child > span:last-of-type { font-size: 0.875rem !important; }
+            #timerist-logo { width: 36px !important; height: 36px !important; flex-shrink: 0; }
         }
-        
-        /* Slightly larger screens (iPhone 13, 14, etc.) - show more but keep compact */
         @media (min-width: 391px) and (max-width: 428px) {
-            .header-top {
-                padding: 0 1rem;
-            }
-            
-            /* Hide separator but keep timerist.com text */
-            .header-top .separator {
-                display: none;
-            }
-            
-            /* Make text smaller */
-            .header-top > div:first-child > span {
-                font-size: 0.875rem !important;
-            }
+            .header-top { padding: 0 1rem; }
+            .header-top .separator { display: none; }
+            .header-top > div:first-child > span { font-size: 0.875rem !important; }
         }
-        
-        @media (min-width: 640px) {
-            .container {
-                padding: 2rem;
-            }
-        }
-        
-        @media (min-width: 768px) {
-            .container {
-                padding: 2rem 3rem;
-            }
-        }
-        
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            flex-shrink: 0;
-            min-width: fit-content;
-        }
-        
-        /* Ensure both buttons are always visible on small screens */
+        .header-actions { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; min-width: fit-content; }
         @media (max-width: 428px) {
-            .header-actions {
-                gap: 0.375rem;
-            }
-            
-            .header-actions .mode-toggle-btn,
-            .header-actions .hamburger-menu {
-                width: 40px;
-                height: 40px;
-                padding: 0.375rem;
-                font-size: 1.25rem;
-            }
+            .header-actions { gap: 0.375rem; }
+            .header-actions .mode-toggle-btn, .header-actions .hamburger-menu { width: 40px; height: 40px; padding: 0.375rem; font-size: 1.25rem; }
         }
-        
-        .header-top .mode-toggle-btn {
-            position: relative;
-            top: auto;
-            right: auto;
-            width: 44px;
-            height: 44px;
-            flex-shrink: 0;
-            background: transparent;
-            border: none;
+        .header-top .mode-toggle-btn, .header-top .hamburger-menu {
+            position: relative; top: auto; right: auto;
+            width: 44px; height: 44px; flex-shrink: 0;
+            background: transparent; border: none; cursor: pointer; padding: 0.5rem;
+            display: flex; align-items: center; justify-content: center;
+            color: rgb(var(--foreground)); font-size: 1.5rem; transition: opacity 0.2s;
+            border-radius: var(--radius); min-width: 44px;
+            -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none;
+        }
+        .header-top .mode-toggle-btn:hover, .header-top .mode-toggle-btn:active,
+        .header-top .hamburger-menu:hover, .header-top .hamburger-menu:active { opacity: 0.7; background-color: rgba(var(--accent), 0.5); }
+        .header-top .mode-toggle-btn:focus, .header-top .hamburger-menu:focus { outline: 2px solid rgb(var(--ring)); outline-offset: 2px; }
+        #timerist-logo { display: block; width: 40px; height: 40px; color: #0a0a0a; }
+        .header-top a { transition: opacity 0.2s ease; }
+        .header-top a:hover { opacity: 0.7; }
+        #timerist-logo circle, #timerist-logo line { stroke: #0a0a0a; stroke-width: 2.5; }
+        [data-theme="style1"] #timerist-logo { color: #fafafa; }
+        [data-theme="style1"] #timerist-logo circle, [data-theme="style1"] #timerist-logo line { stroke: #fafafa; }
+        html[data-theme="style1"] #timerist-logo .logo-circle, html[data-theme="style1"] #timerist-logo .logo-line { stroke: #fafafa !important; }
+        .timer-display-block {
+            background: rgb(var(--card));
+            border: 1px solid rgb(var(--border));
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            padding: 1.5rem;
+            text-align: center;
             cursor: pointer;
-            padding: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgb(var(--foreground));
-            font-size: 1.5rem;
-            transition: opacity 0.2s;
-            border-radius: var(--radius);
-            min-width: 44px;
-        }
-        
-        .header-top .mode-toggle-btn:hover,
-        .header-top .mode-toggle-btn:active {
-            opacity: 0.7;
-            background-color: rgba(var(--accent), 0.5);
-        }
-        
-        .header-top .mode-toggle-btn:focus {
-            outline: 2px solid rgb(var(--ring));
-            outline-offset: 2px;
-        }
-        
-        .header-top .mode-toggle-btn {
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
             user-select: none;
-            -webkit-user-select: none;
         }
-        
-        #timerist-logo {
-            display: block;
-            width: 40px;
-            height: 40px;
-            color: #0a0a0a;
+        .timer-display-large {
+            font-size: 4rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
+            letter-spacing: -0.02em;
+            color: rgb(var(--primary));
+            transition: color 0.3s ease;
+            margin-bottom: 0.5rem;
         }
-        
-        .header-top a {
-            transition: opacity 0.2s ease;
+        @media (min-width: 390px) { .timer-display-large { font-size: 5rem; } }
+        .timer-display-large.warning { color: #f59e0b; }
+        .timer-display-large.danger { color: rgb(var(--destructive)); }
+        .timer-display-large.done-message { white-space: nowrap; letter-spacing: -0.01em; font-variant-numeric: normal; }
+        .control-btn {
+            min-height: 56px;
+            min-width: 56px;
+            padding: 0.75rem 1.25rem;
+            border-radius: 1rem;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
-        
-        .header-top a:hover {
-            opacity: 0.7;
+        .control-buttons-container { display: flex; gap: 0.75rem; justify-content: center; align-items: center; flex-wrap: wrap; }
+        @media (max-width: 390px) {
+            .control-buttons-container { gap: 0.5rem; flex-wrap: nowrap; }
+            .control-btn { min-width: 0; flex: 1 1 0; padding: 0.625rem 0.5rem; font-size: 0.875rem; min-height: 48px; border-radius: 0.75rem; }
         }
-        
-        #timerist-logo circle,
-        #timerist-logo line {
-            stroke: #0a0a0a;
-            stroke-width: 2.5;
+        .control-btn.btn-primary { background: rgb(var(--primary)); color: rgb(var(--primary-foreground)); }
+        .control-btn.btn-primary:hover:not(:disabled) { filter: brightness(1.05); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .control-btn.btn-primary.paused, .control-btn.btn-primary.paused:hover { background: rgb(100,100,100) !important; color: #fff !important; }
+        [data-theme="style1"] .control-btn.btn-primary.paused, [data-theme="style1"] .control-btn.btn-primary.paused:hover { background: rgb(150,150,150) !important; color: #000 !important; }
+        .control-btn.btn-secondary { background: rgb(var(--secondary)); color: rgb(var(--secondary-foreground)); }
+        .control-btn.btn-secondary:hover:not(:disabled) { filter: brightness(1.05); }
+        .control-btn.btn-destructive { background: rgb(var(--destructive)); color: rgb(var(--destructive-foreground)); }
+        .control-btn.btn-destructive:hover:not(:disabled) { filter: brightness(1.05); }
+        #clearBtn:hover:not(:disabled), #resumeBtn:hover:not(:disabled):not(.paused), #resetBtn:hover:not(:disabled) { background: rgb(100,100,100) !important; color: #fff !important; }
+        [data-theme="style1"] #clearBtn:hover:not(:disabled), [data-theme="style1"] #resumeBtn:hover:not(:disabled):not(.paused), [data-theme="style1"] #resetBtn:hover:not(:disabled) { background: rgb(150,150,150) !important; color: #000 !important; }
+        .control-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        /* Bottom Sheet */
+        .sheet-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); opacity: 0; visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s; z-index: 1001;
         }
-        
-        [data-theme="style1"] #timerist-logo {
-            color: #fafafa;
+        .sheet-overlay.open { opacity: 1; visibility: visible; }
+        .bottom-sheet {
+            position: fixed; left: 0; right: 0; bottom: 0; width: 100%; max-width: 100%; max-height: 85vh;
+            background: rgb(var(--card)); border-radius: 1.5rem 1.5rem 0 0; box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+            z-index: 1002; transform: translateY(100%); transition: transform 0.3s ease; overflow: hidden;
+            display: flex; flex-direction: column; padding-bottom: env(safe-area-inset-bottom, 0); box-sizing: border-box;
         }
-        
-        [data-theme="style1"] #timerist-logo circle,
-        [data-theme="style1"] #timerist-logo line {
-            stroke: #fafafa;
+        .bottom-sheet.open { transform: translateY(0); }
+        .sheet-grabber { width: 40px; height: 4px; background: rgb(var(--muted-foreground)); border-radius: 2px; margin: 0.75rem auto; opacity: 0.5; flex-shrink: 0; }
+        .sheet-header {
+            padding: 0 1.5rem 1rem; padding-left: max(1.5rem, env(safe-area-inset-left)); padding-right: max(1.5rem, env(safe-area-inset-right));
+            border-bottom: 1px solid rgb(var(--border)); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
         }
-        
-        html[data-theme="style1"] #timerist-logo .logo-circle,
-        html[data-theme="style1"] #timerist-logo .logo-line {
-            stroke: #fafafa !important;
+        .sheet-content {
+            overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch;
+            padding: 1rem 1.5rem 2rem; padding-left: max(1.5rem, env(safe-area-inset-left)); padding-right: max(1.5rem, env(safe-area-inset-right));
+            flex: 1; width: 100%; box-sizing: border-box; min-width: 0;
         }
+        .sheet-section { margin-bottom: 1.5rem; }
+        .sheet-section h3 { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: rgb(var(--muted-foreground)); margin-bottom: 0.75rem; }
+        .input-group { margin-bottom: 1.25rem; }
+        .input-group label { display: block; margin-bottom: 0.5rem; font-size: 0.75rem; font-weight: 600; color: rgb(var(--muted-foreground)); text-transform: uppercase; letter-spacing: 0.05em; }
+        .custom-time-input, .shadcn-input, .shadcn-textarea {
+            width: 100%; padding: 0.875rem 1rem; border: 2px solid rgb(var(--input)); border-radius: 0.75rem;
+            background: rgb(var(--background)); color: rgb(var(--foreground)); font-size: 16px; min-height: 52px; font-family: inherit; transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .shadcn-textarea { min-height: 100px; resize: vertical; }
+        .custom-time-input:focus, .shadcn-input:focus, .shadcn-textarea:focus { outline: none; border-color: rgb(var(--ring)); box-shadow: 0 0 0 3px rgba(var(--ring), 0.2); }
+        .custom-time-input { text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; }
+        textarea.shadcn-input, textarea.shadcn-textarea { text-align: left; font-weight: 400; }
+        .drawer-close {
+            min-width: 48px; min-height: 48px; border: none; background: transparent; color: rgb(var(--foreground)); font-size: 1.5rem;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 0.75rem; touch-action: manipulation;
+        }
+        .drawer-close:hover { background: rgb(var(--accent)); }
+        .sheet-header-actions { display: flex; align-items: center; gap: 0.375rem; flex-shrink: 0; }
+        .header-clear-btn {
+            min-width: 48px; min-height: 48px; padding: 0.5rem; border: none; border-radius: 0.75rem; background: transparent;
+            color: rgb(var(--destructive)); cursor: pointer; display: flex; align-items: center; justify-content: center;
+            -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+        }
+        .header-clear-btn:hover { background: rgba(var(--destructive), 0.15); }
+        .header-clear-btn:focus { outline: 2px solid rgb(var(--ring)); outline-offset: 2px; }
+        .header-clear-btn svg { width: 22px; height: 22px; }
+        .btn-clear-all-settings {
+            width: 100%; min-height: 52px; padding: 0.875rem 1rem; border-radius: 0.75rem; font-size: 1rem; font-weight: 600;
+            border: none; background: rgb(var(--destructive)); color: rgb(var(--destructive-foreground)); cursor: pointer;
+            -webkit-tap-highlight-color: transparent; touch-action: manipulation; font-family: inherit;
+        }
+        .btn-clear-all-settings:hover { filter: brightness(1.1); }
+        .btn-clear-all-settings:active { filter: brightness(0.95); }
+        /* Quick-select preset chips (countdown time presets) */
+        .quick-select-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
+        @media (max-width: 410px) { .quick-select-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        .quick-select-btn {
+            min-height: 48px; min-width: 0; padding: 0.75rem 0.5rem; border-radius: 9999px; font-size: 1.125rem; font-weight: 500;
+            border: 2px solid rgb(var(--border)); background: rgb(var(--card)); color: rgb(var(--foreground)); cursor: pointer; transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent; touch-action: manipulation; font-family: inherit;
+        }
+        .quick-select-btn:hover:not(:disabled) { background: rgb(var(--accent)); }
+        .quick-select-btn.selected { background: rgb(var(--primary)); color: rgb(var(--primary-foreground)); border-color: rgb(var(--primary)); font-weight: 600; box-shadow: 0 2px 8px rgba(var(--primary), 0.3); }
+        .quick-select-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .timer-running .quick-select-btn:not(.selected) { opacity: 0.5; pointer-events: none; }
+        .header-actions button { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+        #workoutTitleDisplay { display: none; text-align: center; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid rgb(var(--border)); }
+        #workoutDescriptionDisplay { display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgb(var(--border)); }
     </style>
 </head>
-<body>
+<body class="font-sans">
     <div class="container">
         <div class="header-top">
             <div style="display: flex; align-items: center; gap: 0.75rem;">
                 <a href="index.html" style="display: flex; align-items: center; text-decoration: none; cursor: pointer;">
-                    <svg
-                        width="40"
-                        height="40"
-                        viewBox="0 0 40 40"
-                        xmlns="http://www.w3.org/2000/svg"
-                        id="timerist-logo"
-                    >
+                    <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" id="timerist-logo">
                         <circle cx="20" cy="20" r="15" fill="none" stroke="#0a0a0a" stroke-width="2.5" class="logo-circle"/>
                         <line x1="20" y1="20" x2="20" y2="8" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
                         <line x1="20" y1="20" x2="30" y2="20" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
@@ -819,47 +296,33 @@
                 <span class="separator" style="color: rgb(var(--muted-foreground));">|</span>
                 <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">Quick Countdown</span>
             </div>
-            
             <div class="header-actions">
-                <button class="mode-toggle-btn mode-toggle" id="themeToggleBtn" aria-label="Toggle dark mode">
-                    <span id="theme-icon">🌙</span>
-                </button>
-                <button class="hamburger-menu" onclick="toggleDrawer()" aria-label="Open Timer Setup menu">
-                    ☰
-                </button>
+                <button class="mode-toggle-btn mode-toggle" id="themeToggleBtn" aria-label="Toggle dark mode"><span id="theme-icon">🌙</span></button>
+                <button class="hamburger-menu" id="menuBtn" aria-label="Open Timer Setup">☰</button>
             </div>
         </div>
-        
-        <div class="timer-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
-            <!-- Timer Display -->
-            <div class="timer-display-block bg-card border border-border rounded-lg shadow-lg text-center">
-                <!-- Workout Title -->
-                <div id="workoutTitleDisplay" style="display: none; text-align: center; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid rgb(var(--border));">
-                    <h2 id="workoutTitleText" style="font-size: 1.25rem; font-weight: 600; color: rgb(var(--foreground)); margin: 0; word-wrap: break-word;"></h2>
+
+        <div class="timer-container">
+            <div class="timer-display-block" id="timerDisplayBlock">
+                <div id="workoutTitleDisplay">
+                    <h2 id="workoutTitleText" class="text-lg font-semibold text-[rgb(var(--foreground))] m-0 break-words"></h2>
                 </div>
-                
                 <div class="timer-display-large" id="display">00:00</div>
-                
-                <!-- Workout Notes -->
-                <div id="workoutDescriptionDisplay" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgb(var(--border));">
-                    <p id="workoutDescriptionText" style="font-size: 0.875rem; color: rgb(var(--muted-foreground)); line-height: 1.6; margin: 0; text-align: left; white-space: pre-wrap; word-wrap: break-word;"></p>
+                <div id="workoutDescriptionDisplay">
+                    <p id="workoutDescriptionText" class="text-sm text-[rgb(var(--muted-foreground))] leading-relaxed m-0 text-left whitespace-pre-wrap break-words"></p>
                 </div>
             </div>
-            
-            <!-- Control Buttons and Adjust Time -->
-            <div class="p-6 bg-card border border-border rounded-lg shadow-lg">
+
+            <div class="p-4 rounded-2xl bg-[rgb(var(--card))] border border-[rgb(var(--border))] shadow-lg">
                 <div class="control-buttons-container">
                     <button class="control-btn btn-primary" id="resumeBtn" style="display: none;" aria-label="Resume timer">Resume</button>
                     <button class="control-btn btn-destructive" id="resetBtn" style="display: none;" aria-label="Reset timer">Reset</button>
                     <button class="control-btn btn-secondary" id="clearBtn" aria-label="Clear timer">Clear</button>
                 </div>
             </div>
-            
-            <!-- Quick-Select Button Grid -->
-            <div class="p-6 bg-card border border-border rounded-lg shadow-lg">
-                <label class="text-sm font-semibold uppercase tracking-wide mb-4 block" style="color: rgb(var(--muted-foreground)); text-align: center;">
-                    Tap to start instantly
-                </label>
+
+            <div class="p-4 rounded-2xl bg-[rgb(var(--card))] border border-[rgb(var(--border))] shadow-lg">
+                <p class="text-xs font-semibold uppercase tracking-wide text-center text-[rgb(var(--muted-foreground))] mb-3">Tap to start instantly</p>
                 <div class="quick-select-grid">
                     <button class="quick-select-btn" data-seconds="15">00:15</button>
                     <button class="quick-select-btn" data-seconds="30">00:30</button>
@@ -892,90 +355,48 @@
             </div>
         </div>
     </div>
-    
-    <!-- Drawer Overlay -->
-    <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
-    
-    <!-- Settings Drawer -->
-    <div class="settings-drawer" id="settingsDrawer">
-        <div class="drawer-header">
-            <h2 style="font-size: 1rem; font-weight: 600; color: rgb(var(--foreground)); text-transform: uppercase; letter-spacing: 0.05em;">Timer Setup</h2>
-            <button class="drawer-close" onclick="closeDrawer()" aria-label="Close drawer">×</button>
+
+    <div class="sheet-overlay" id="drawerOverlay" aria-hidden="true"></div>
+    <div class="bottom-sheet" id="settingsDrawer" role="dialog" aria-label="Timer setup">
+        <div class="sheet-grabber" aria-hidden="true"></div>
+        <div class="sheet-header">
+            <h2 class="text-base font-semibold uppercase tracking-wide text-[rgb(var(--foreground))]">Timer Setup</h2>
+            <div class="sheet-header-actions">
+                <button type="button" class="header-clear-btn" id="headerClearBtn" aria-label="Clear settings to defaults" title="Clear settings to defaults">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                </button>
+                <button type="button" class="drawer-close" id="drawerCloseBtn" aria-label="Close">×</button>
+            </div>
         </div>
-        <div class="drawer-content">
-            <!-- Setup Content -->
-            <div class="drawer-section">
+        <div class="sheet-content">
+            <div class="sheet-section">
                 <h3>Setup Content</h3>
-                
-                <!-- Workout Title -->
                 <div class="input-group">
                     <label for="workoutTitleInput">Workout Title</label>
-                    <input 
-                        type="text" 
-                        id="workoutTitleInput" 
-                        class="custom-time-input"
-                        placeholder="Enter workout title"
-                        aria-label="Workout title"
-                        maxlength="40"
-                        style="font-family: inherit;"
-                    >
-                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
-                        <span id="workoutTitleCharCount">0</span>/40
-                    </p>
+                    <input type="text" id="workoutTitleInput" class="shadcn-input" placeholder="Enter workout title" aria-label="Workout title" maxlength="40">
+                    <p class="text-xs text-[rgb(var(--muted-foreground))] mt-1 text-right"><span id="workoutTitleCharCount">0</span>/40</p>
                 </div>
-                
-                <!-- Workout Notes -->
                 <div class="input-group">
                     <label for="workoutDescriptionInput">Workout Notes</label>
-                    <textarea 
-                        id="workoutDescriptionInput" 
-                        class="custom-time-input"
-                        placeholder="Enter workout notes..."
-                        aria-label="Workout notes"
-                        rows="4"
-                        maxlength="200"
-                        style="resize: vertical; min-height: 80px; font-family: inherit; line-height: 1.5;"
-                    ></textarea>
-                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
-                        <span id="workoutDescriptionCharCount">0</span>/200
-                    </p>
+                    <textarea id="workoutDescriptionInput" class="shadcn-textarea" placeholder="Enter workout notes..." aria-label="Workout notes" rows="4" maxlength="200"></textarea>
+                    <p class="text-xs text-[rgb(var(--muted-foreground))] mt-1 text-right"><span id="workoutDescriptionCharCount">0</span>/200</p>
                 </div>
-                
-                <!-- Completion Message -->
                 <div class="input-group">
-                    <label for="doneMessageInput">COMPLETION MESSAGE (14 CHARACTERS MAX)</label>
-                    <input 
-                        type="text" 
-                        id="doneMessageInput" 
-                        class="custom-time-input" 
-                        maxlength="14"
-                        value="Completed"
-                        placeholder="Completed"
-                        aria-label="Custom completion message"
-                    >
-                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
-                        <span id="doneMessageCharCount">0</span>/14
-                    </p>
+                    <label for="doneMessageInput">Completion Message (14 chars max)</label>
+                    <input type="text" id="doneMessageInput" class="shadcn-input" maxlength="14" value="Completed" placeholder="Completed" aria-label="Completion message">
+                    <p class="text-xs text-[rgb(var(--muted-foreground))] mt-1 text-right"><span id="doneMessageCharCount">0</span>/14</p>
                 </div>
             </div>
-            
-            <!-- About This Timer -->
-            <div class="drawer-section">
-                <h3>About This Timer</h3>
-                <p>
-                    Quick Countdown is perfect for short rests, holds, or bursts in HIIT, CrossFit, or circuit training. 
-                    Tap a preset to start instantly—no setup required.
-                </p>
-                <p style="margin-top: 0.75rem;">
-                    <strong>Keywords:</strong> HIIT timer, quick rest timer, workout countdown, fitness interval tool, CrossFit timer, circuit training timer.
-                </p>
+            <div class="sheet-section">
+                <button type="button" id="clearAllSettingsBtn" class="btn-clear-all-settings" aria-label="Clear all settings">Clear All Settings</button>
             </div>
-            
-            <!-- General Info -->
-            <div class="drawer-section">
-                <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.17</p>
-                <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
+            <div class="sheet-section">
+                <h3>About This Timer</h3>
+                <p class="text-sm text-[rgb(var(--muted-foreground))] leading-relaxed">Quick Countdown is perfect for short rests, holds, or bursts in HIIT, CrossFit, or circuit training. Tap a preset to start instantly—no setup required.</p>
+                <p class="text-sm text-[rgb(var(--muted-foreground))] mt-2"><strong>Keywords:</strong> HIIT timer, quick rest timer, workout countdown, fitness interval tool, CrossFit timer, circuit training timer.</p>
+            </div>
+            <div class="sheet-section">
+                <p class="text-sm text-[rgb(var(--muted-foreground))]"><strong>Version:</strong> v0.17 · <span id="releaseDate">—</span></p>
             </div>
         </div>
     </div>
@@ -1127,6 +548,7 @@
             clearInterval(interval);
             interval = null;
             updateDisplay();
+            updateWorkoutDisplay();
         }
         
         // Resume timer
@@ -1164,8 +586,8 @@
             interval = null;
             showingCompletionMessage = false;
             currentTime = totalSeconds;
-            // Restore normal font size
             display.style.fontSize = '';
+            display.classList.remove('done-message');
             updateDisplay();
             
             // Maintain selected button state based on current totalSeconds
@@ -1187,9 +609,10 @@
             showingCompletionMessage = false;
             currentTime = 0;
             totalSeconds = 0;
-            // Restore normal font size
             display.style.fontSize = '';
+            display.classList.remove('done-message');
             updateDisplay();
+            updateWorkoutDisplay();
             
             // Clear selected button state
             quickSelectButtons.forEach(btn => {
@@ -1206,9 +629,10 @@
             showingCompletionMessage = false;
             clearInterval(interval);
             interval = null;
-            // Restore normal font size
             display.style.fontSize = '';
+            display.classList.remove('done-message');
             updateDisplay();
+            updateWorkoutDisplay();
             
             // Update selected button state
             quickSelectButtons.forEach(btn => {
@@ -1261,19 +685,11 @@
         // Show completion message with auto-resizing font
         function showDoneMessage() {
             const message = getDoneMessage();
-            
-            // Set flag to prevent updateDisplay from overriding
             showingCompletionMessage = true;
-            
-            // Set the message
             display.textContent = message;
-            display.classList.add('danger');
-            
-            // Calculate and apply font size
+            display.classList.add('danger', 'done-message');
             const fontSize = calculateFontSize(message);
             display.style.fontSize = `${fontSize}px`;
-            
-            // Update button visibility to show reset button
             resumeBtn.style.display = 'none';
             resumeBtn.classList.remove('paused');
             resetBtn.style.display = 'inline-block';
@@ -1282,7 +698,6 @@
         // Event Listeners
         resumeBtn.addEventListener('click', togglePlayPause);
         resetBtn.addEventListener('click', resetTimer);
-        clearBtn.addEventListener('click', clearTimer);
         
         // Quick-select button listeners (auto-start)
         quickSelectButtons.forEach(btn => {
@@ -1292,20 +707,22 @@
             });
         });
         
-        // Update workout title and description display
+        // Update workout title and description display. When timer is idle, show default "Quick Countdown" if no custom title.
+        // When timer is running/paused or has a countdown set, show only the workout title if any (no default name).
+        const DEFAULT_TIMER_NAME = 'Quick Countdown';
         function updateWorkoutDisplay() {
             const title = workoutTitleInput ? workoutTitleInput.value.trim() : '';
             const description = workoutDescriptionInput ? workoutDescriptionInput.value.trim() : '';
-            
-            // Update title display
-            if (title && workoutTitleText && workoutTitleDisplay) {
-                workoutTitleText.textContent = title;
-                workoutTitleDisplay.style.display = 'block';
-            } else if (workoutTitleDisplay) {
-                workoutTitleDisplay.style.display = 'none';
+            const timerActive = isRunning || isPaused || totalSeconds > 0;
+            if (workoutTitleText && workoutTitleDisplay) {
+                if (timerActive) {
+                    workoutTitleText.textContent = title;
+                    workoutTitleDisplay.style.display = title ? 'block' : 'none';
+                } else {
+                    workoutTitleText.textContent = title || DEFAULT_TIMER_NAME;
+                    workoutTitleDisplay.style.display = 'block';
+                }
             }
-            
-            // Update description display
             if (description && workoutDescriptionText && workoutDescriptionDisplay) {
                 workoutDescriptionText.textContent = description;
                 workoutDescriptionDisplay.style.display = 'block';
@@ -1409,20 +826,74 @@
             });
         }
         
-        // Drawer Functions
+        // Bottom sheet (drawer) functions
         function toggleDrawer() {
-            const drawer = document.getElementById('settingsDrawer');
-            const overlay = document.getElementById('drawerOverlay');
-            drawer.classList.toggle('open');
-            overlay.classList.toggle('open');
+            document.getElementById('settingsDrawer').classList.toggle('open');
+            document.getElementById('drawerOverlay').classList.toggle('open');
         }
-        
         function closeDrawer() {
-            const drawer = document.getElementById('settingsDrawer');
-            const overlay = document.getElementById('drawerOverlay');
-            drawer.classList.remove('open');
-            overlay.classList.remove('open');
+            document.getElementById('settingsDrawer').classList.remove('open');
+            document.getElementById('drawerOverlay').classList.remove('open');
         }
+        document.getElementById('menuBtn').addEventListener('click', toggleDrawer);
+        document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
+        document.getElementById('drawerCloseBtn').addEventListener('click', closeDrawer);
+
+        // Double-tap on timer block opens bottom sheet (like quick-interval)
+        (function() {
+            var timerBlock = document.getElementById('timerDisplayBlock');
+            var lastTap = 0;
+            var doubleTapDelay = 400;
+            function openSheetOnDoubleTap() {
+                var now = Date.now();
+                if (now - lastTap <= doubleTapDelay) {
+                    lastTap = 0;
+                    toggleDrawer();
+                } else {
+                    lastTap = now;
+                }
+            }
+            if (timerBlock) {
+                timerBlock.addEventListener('dblclick', function() { toggleDrawer(); });
+                timerBlock.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    openSheetOnDoubleTap();
+                }, { passive: false });
+            }
+        })();
+
+        // Reset settings panel to defaults (no confirm; used by clearAll)
+        function clearSettingsToDefaults() {
+            if (workoutTitleInput) {
+                workoutTitleInput.value = '';
+                saveWorkoutTitle('');
+            }
+            if (workoutDescriptionInput) {
+                workoutDescriptionInput.value = '';
+                saveWorkoutNotes('');
+            }
+            if (doneMessageInput) {
+                doneMessageInput.value = 'Completed';
+                saveDoneMessage('Completed');
+            }
+            updateCharCounts();
+            updateWorkoutDisplay();
+        }
+
+        // Main-page Clear: no confirmation. Settings-panel buttons (trash + Clear All Settings): ask for confirmation.
+        function clearAllNoConfirm() {
+            clearTimer();
+            clearSettingsToDefaults();
+        }
+        function clearAllWithConfirm() {
+            if (!confirm('Clear timer and reset all settings to defaults?')) return;
+            clearAllNoConfirm();
+        }
+        clearBtn.addEventListener('click', clearAllNoConfirm);
+        var headerClearBtn = document.getElementById('headerClearBtn');
+        if (headerClearBtn) headerClearBtn.addEventListener('click', clearAllWithConfirm);
+        var clearAllSettingsBtn = document.getElementById('clearAllSettingsBtn');
+        if (clearAllSettingsBtn) clearAllSettingsBtn.addEventListener('click', clearAllWithConfirm);
         
         // Initialize
         updateDisplay();
@@ -1436,93 +907,21 @@
     </script>
     <script src="scripts/dark-mode-toggle.js"></script>
     <script>
-        // Ensure theme toggle button works on mobile (iOS/Android)
         document.addEventListener('DOMContentLoaded', function() {
-            const themeToggleBtn = document.getElementById('themeToggleBtn');
-            if (themeToggleBtn) {
-                // Add both click and touchstart for maximum compatibility
-                themeToggleBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (window.toggleTheme) {
-                        window.toggleTheme();
-                    }
-                });
-                
-                // Also add touchstart for better mobile support
-                themeToggleBtn.addEventListener('touchstart', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (window.toggleTheme) {
-                        window.toggleTheme();
-                    }
-                }, { passive: false });
+            var themeBtn = document.getElementById('themeToggleBtn');
+            if (themeBtn) {
+                themeBtn.addEventListener('click', function(e) { e.preventDefault(); if (window.toggleTheme) window.toggleTheme(); });
+                themeBtn.addEventListener('touchstart', function(e) { e.preventDefault(); if (window.toggleTheme) window.toggleTheme(); }, { passive: false });
             }
         });
-        
-        // Logo color update for dark mode
-        function updateLogoColors() {
-            const logo = document.getElementById('timerist-logo');
-            if (!logo) return;
-            
-            const isDark = document.documentElement.getAttribute('data-theme') === 'style1';
-            const lightColor = '#0a0a0a';
-            const darkColor = '#fafafa';
-            const color = isDark ? darkColor : lightColor;
-            
-            const circles = logo.querySelectorAll('.logo-circle');
-            const lines = logo.querySelectorAll('.logo-line');
-            
-            circles.forEach(el => el.setAttribute('stroke', color));
-            lines.forEach(el => el.setAttribute('stroke', color));
-        }
-        
-        // Theme icon update
         function updateThemeIcon() {
-            const icon = document.getElementById('theme-icon');
-            if (!icon) return;
-            const isDark = document.documentElement.getAttribute('data-theme') === 'style1';
-            icon.textContent = isDark ? '☀️' : '🌙';
+            var icon = document.getElementById('theme-icon');
+            if (icon) icon.textContent = document.documentElement.getAttribute('data-theme') === 'style1' ? '☀️' : '🌙';
         }
-        
-        // Clear custom colors when theme changes (cleanup any leftover custom styles)
-        function clearCustomBackground() {
-            // Clear any leftover custom style elements from previous color picker feature
-            const styleIds = ['custom-bg-style', 'custom-timer-style', 'custom-button-style'];
-            styleIds.forEach(id => {
-                const style = document.getElementById(id);
-                if (style) style.remove();
-            });
-            // Clear localStorage for any leftover custom colors
-            localStorage.removeItem('quickCountdown-bgColor');
-            localStorage.removeItem('quickCountdown-timerColor');
-            localStorage.removeItem('quickCountdown-buttonColor');
-            localStorage.removeItem('quickCountdown-progressColor');
-        }
-        
-        // Watch for theme changes
-        const themeObserver = new MutationObserver(() => {
-            updateLogoColors();
-            updateThemeIcon();
-            clearCustomBackground();
-        });
-        themeObserver.observe(document.documentElement, {
-            attributes: true,
-            attributeFilter: ['data-theme', 'class']
-        });
-        
-        // Override toggleTheme to update logo, icon, and clear custom colors
-        const originalToggle = window.toggleTheme;
-        window.toggleTheme = function() {
-            originalToggle();
-            setTimeout(() => {
-                updateLogoColors();
-                updateThemeIcon();
-                clearCustomBackground();
-            }, 10);
-        };
-        
-        updateLogoColors();
+        var themeObserver = new MutationObserver(updateThemeIcon);
+        themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+        var orig = window.toggleTheme;
+        if (orig) window.toggleTheme = function() { orig(); setTimeout(updateThemeIcon, 10); };
         updateThemeIcon();
     </script>
 </body>

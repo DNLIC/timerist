@@ -6,6 +6,7 @@ const htmlFiles = [
   'index.html',
   'quick-countdown.html',
   'quick-interval.html',
+  'quick-interval-iphone-shadcn.html',
   'quick-hiit.html',
   'tabata.html',
   'interval.html',
