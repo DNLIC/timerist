@@ -62,7 +62,7 @@
             --radius: 0.5rem;
         }
         
-        html.dark {
+        [data-theme="style1"] {
             --background: 0 0 0;
             --foreground: 255 255 255;
             --card: 26 26 26;
@@ -228,6 +228,10 @@
             padding: 1.5rem;
             overflow: hidden;
             box-sizing: border-box;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
         }
         
         @media (min-width: 640px) {
@@ -299,7 +303,7 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
-        html.dark #startPauseBtn:hover:not(:disabled):not(.paused) {
+        [data-theme="style1"] #startPauseBtn:hover:not(:disabled):not(.paused) {
             background-color: rgb(150, 150, 150);
             color: rgb(0, 0, 0);
         }
@@ -312,10 +316,10 @@
             color: rgb(255, 255, 255) !important;
         }
         
-        html.dark .control-btn.btn-primary.paused,
-        html.dark .control-btn.btn-primary.paused:hover,
-        html.dark .control-btn.btn-primary.paused:active,
-        html.dark .control-btn.btn-primary.paused:focus {
+        [data-theme="style1"] .control-btn.btn-primary.paused,
+        [data-theme="style1"] .control-btn.btn-primary.paused:hover,
+        [data-theme="style1"] .control-btn.btn-primary.paused:active,
+        [data-theme="style1"] .control-btn.btn-primary.paused:focus {
             background-color: rgb(150, 150, 150) !important;
             color: rgb(0, 0, 0) !important;
         }
@@ -336,7 +340,7 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
-        html.dark #setupBtn:hover:not(:disabled) {
+        [data-theme="style1"] #setupBtn:hover:not(:disabled) {
             background-color: rgb(150, 150, 150);
             color: rgb(0, 0, 0);
         }
@@ -347,7 +351,7 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
-        html.dark #clearBtn:hover:not(:disabled) {
+        [data-theme="style1"] #clearBtn:hover:not(:disabled) {
             background-color: rgb(150, 150, 150);
             color: rgb(0, 0, 0);
         }
@@ -368,7 +372,7 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
-        html.dark #resetBtn:hover:not(:disabled) {
+        [data-theme="style1"] #resetBtn:hover:not(:disabled) {
             background-color: rgb(150, 150, 150);
             color: rgb(0, 0, 0);
         }
@@ -379,7 +383,7 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
-        html.dark #complete-round:hover:not(:disabled) {
+        [data-theme="style1"] #complete-round:hover:not(:disabled) {
             background-color: rgb(150, 150, 150);
             color: rgb(0, 0, 0);
         }
@@ -391,7 +395,7 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
-        html.dark #exportWorkoutBtn:hover:not(:disabled) {
+        [data-theme="style1"] #exportWorkoutBtn:hover:not(:disabled) {
             background-color: rgb(150, 150, 150);
             color: rgb(0, 0, 0);
         }
@@ -403,7 +407,7 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
-        html.dark #importWorkoutBtn:hover:not(:disabled) {
+        [data-theme="style1"] #importWorkoutBtn:hover:not(:disabled) {
             background-color: rgb(150, 150, 150);
             color: rgb(0, 0, 0);
         }
@@ -419,12 +423,9 @@
         
         .live-rep-entry-container {
             border-radius: var(--radius);
-            background-color: #fff;
+            background-color: rgb(var(--card));
             border: 1px solid rgb(var(--border));
             padding: 0.5rem;
-        }
-        html.dark .live-rep-entry-container {
-            background-color: rgb(var(--card));
         }
         
         .live-rep-entry-list {
@@ -621,93 +622,227 @@
             opacity: 0.7;
         }
         
-        .settings-drawer {
+        /* Sheet overlay + bottom sheet (shadcn pass) */
+        .sheet-overlay {
             position: fixed;
-            top: 0;
-            right: -100%;
-            width: 100%;
-            max-width: 400px;
-            height: 100vh;
-            background: rgb(var(--card));
-            border-left: 1px solid rgb(var(--border));
-            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
-            transition: right 0.3s ease;
-            z-index: 1002;
-            overflow-y: auto;
-        }
-        
-        .settings-drawer.open {
-            right: 0;
-        }
-        
-        .drawer-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            inset: 0;
             background: rgba(0, 0, 0, 0.5);
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.3s, visibility 0.3s;
             z-index: 1001;
         }
-        
-        .drawer-overlay.open {
+        .sheet-overlay.open {
             opacity: 1;
             visibility: visible;
         }
-        
-        .drawer-header {
-            padding: 1.5rem;
+        .bottom-sheet {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            max-width: 100%;
+            max-height: 85vh;
+            background: rgb(var(--card));
+            border-radius: 1.5rem 1.5rem 0 0;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+            z-index: 1002;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: env(safe-area-inset-bottom, 0);
+            box-sizing: border-box;
+        }
+        .bottom-sheet.open {
+            transform: translateY(0);
+        }
+        .sheet-grabber {
+            width: 40px;
+            height: 4px;
+            background: rgb(var(--muted-foreground));
+            border-radius: 2px;
+            margin: 0.75rem auto;
+            opacity: 0.5;
+            flex-shrink: 0;
+        }
+        .sheet-header {
+            padding: 0 1.5rem 1rem;
+            padding-left: max(1.5rem, env(safe-area-inset-left));
+            padding-right: max(1.5rem, env(safe-area-inset-right));
             border-bottom: 1px solid rgb(var(--border));
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
         }
-        
-        .drawer-content {
-            padding: 1.5rem;
+        .sheet-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            flex-shrink: 0;
         }
-        
-        .drawer-section {
-            margin-bottom: 2rem;
+        .header-clear-btn {
+            min-width: 48px;
+            min-height: 48px;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 0.75rem;
+            background: transparent;
+            color: rgb(var(--destructive));
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
-        
-        .drawer-section h3 {
-            font-size: 0.875rem;
+        .header-clear-btn:hover {
+            background: rgba(var(--destructive), 0.15);
+        }
+        .header-clear-btn svg {
+            width: 22px;
+            height: 22px;
+        }
+        .sheet-content {
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            padding: 1rem 1.5rem 2rem;
+            padding-left: max(1.5rem, env(safe-area-inset-left));
+            padding-right: max(1.5rem, env(safe-area-inset-right));
+            flex: 1;
+            width: 100%;
+            box-sizing: border-box;
+            min-width: 0;
+        }
+        .sheet-section {
+            margin-bottom: 1.5rem;
+        }
+        .sheet-section h3 {
+            font-size: 0.75rem;
             font-weight: 600;
-            margin-bottom: 1rem;
-            color: rgb(var(--foreground));
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            color: rgb(var(--muted-foreground));
+            margin-bottom: 0.75rem;
         }
-        
-        .drawer-section p {
+        .sheet-section p {
             color: rgb(var(--muted-foreground));
             line-height: 1.6;
             margin-bottom: 0.75rem;
             font-size: 0.875rem;
         }
-        
         .drawer-close {
-            background: transparent;
+            min-width: 48px;
+            min-height: 48px;
             border: none;
-            cursor: pointer;
-            font-size: 1.5rem;
+            background: transparent;
             color: rgb(var(--foreground));
-            padding: 0.25rem;
-            width: 32px;
-            height: 32px;
+            font-size: 1.5rem;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: var(--radius);
+            border-radius: 0.75rem;
+            touch-action: manipulation;
         }
-        
         .drawer-close:hover {
-            opacity: 0.7;
+            background: rgb(var(--accent));
         }
+        .input-group {
+            margin-bottom: 1.25rem;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: rgb(var(--muted-foreground));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .shadcn-input,
+        .shadcn-textarea {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid rgb(var(--input));
+            border-radius: 0.75rem;
+            background: rgb(var(--background));
+            color: rgb(var(--foreground));
+            font-size: 16px;
+            min-height: 52px;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .shadcn-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .shadcn-input:focus,
+        .shadcn-textarea:focus {
+            outline: none;
+            border-color: rgb(var(--ring));
+            box-shadow: 0 0 0 3px rgba(var(--ring), 0.2);
+        }
+        textarea.shadcn-textarea {
+            text-align: left;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+        .time-slider-wrap { margin-bottom: 0.5rem; }
+        .time-slider-wrap input[type="range"] {
+            width: 100%;
+            height: 52px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+        }
+        .time-slider-wrap input[type="range"]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 16px;
+            border-radius: 8px;
+            background: rgb(var(--input));
+            cursor: pointer;
+        }
+        .time-slider-wrap input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 40px;
+            height: 40px;
+            margin-top: -12px;
+            border-radius: 50%;
+            background: rgb(var(--primary));
+            border: 3px solid rgb(var(--card));
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+        .time-slider-wrap input[type="range"]::-moz-range-track {
+            width: 100%;
+            height: 16px;
+            border-radius: 8px;
+            background: rgb(var(--input));
+            cursor: pointer;
+        }
+        .time-slider-wrap input[type="range"]::-moz-range-thumb {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgb(var(--primary));
+            border: 3px solid rgb(var(--card));
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+        .time-stepper-row { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.5rem; }
+        .time-stepper-row .custom-time-input { flex: 1; min-width: 0; }
+        .stepper-btn {
+            min-width: 56px; min-height: 56px; padding: 0.5rem; border: 2px solid rgb(var(--border)); border-radius: 1rem;
+            background: rgb(var(--card)); color: rgb(var(--foreground)); font-size: 1rem; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0; -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+        }
+        .stepper-btn:hover:not(:disabled) { background: rgb(var(--accent)); }
+        .stepper-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         
         .custom-time-input {
             width: 100%;
@@ -978,17 +1113,17 @@
             stroke-width: 2.5;
         }
         
-        html.dark #timerist-logo {
+        [data-theme="style1"] #timerist-logo {
             color: #fafafa;
         }
         
-        html.dark #timerist-logo circle,
-        html.dark #timerist-logo line {
+        [data-theme="style1"] #timerist-logo circle,
+        [data-theme="style1"] #timerist-logo line {
             stroke: #fafafa;
         }
         
-        html.dark #timerist-logo .logo-circle,
-        html.dark #timerist-logo .logo-line {
+        [data-theme="style1"] #timerist-logo .logo-circle,
+        [data-theme="style1"] #timerist-logo .logo-line {
             stroke: #fafafa !important;
         }
         
@@ -1079,13 +1214,10 @@
         .result-entry {
             margin-top: 1rem;
             padding: 1.5rem;
-            background-color: #fff;
+            background-color: rgb(var(--card));
             border: 1px solid rgb(var(--border));
             border-radius: var(--radius);
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-        }
-        html.dark .result-entry {
-            background-color: rgb(var(--card));
         }
         
         .result-entry h3 {
@@ -1196,56 +1328,40 @@
 </head>
 <body class="font-sans">
     <div class="container">
-        <div class="header-top">
-            <div style="display: flex; align-items: center; gap: 0.75rem;">
-                <a href="index.html" style="display: flex; align-items: center; text-decoration: none; cursor: pointer;">
-                    <svg
-                        width="40"
-                        height="40"
-                        viewBox="0 0 40 40"
-                        xmlns="http://www.w3.org/2000/svg"
-                        id="timerist-logo"
-                    >
-                        <circle cx="20" cy="20" r="15" fill="none" stroke="#0a0a0a" stroke-width="2.5" class="logo-circle"/>
-                        <line x1="20" y1="20" x2="20" y2="8" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
-                        <line x1="20" y1="20" x2="30" y2="20" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
+        <header class="header-top flex items-center justify-between w-full shrink-0">
+            <div class="flex items-center gap-2 min-w-0 shrink" style="gap: 0.75rem;">
+                <a href="index.html" class="flex items-center no-underline cursor-pointer" aria-label="Timerist home">
+                    <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" id="timerist-logo">
+                        <circle cx="20" cy="20" r="15" fill="none" stroke="currentColor" stroke-width="2.5" class="logo-circle"/>
+                        <line x1="20" y1="20" x2="20" y2="8" stroke="currentColor" stroke-width="2.5" class="logo-line"/>
+                        <line x1="20" y1="20" x2="30" y2="20" stroke="currentColor" stroke-width="2.5" class="logo-line"/>
                     </svg>
                 </a>
-                <a href="index.html" style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground)); text-decoration: none; cursor: pointer;">timerist.com</a>
-                <span class="separator" style="color: rgb(var(--muted-foreground));">|</span>
-                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">AMRAP Splits</span>
+                <a href="index.html" class="text-[rgb(var(--foreground))] font-semibold no-underline cursor-pointer" style="font-size: clamp(1rem, 3vw, 1.5rem);">timerist.com</a>
+                <span class="separator text-[rgb(var(--muted-foreground))]">|</span>
+                <span class="text-[rgb(var(--foreground))] font-semibold" style="font-size: clamp(1rem, 3vw, 1.5rem);">AMRAP Splits</span>
             </div>
-            
-            <div class="header-actions">
-                <button class="mode-toggle-btn mode-toggle" id="themeToggleBtn" aria-label="Toggle dark mode">
-                    <span id="theme-icon">🌙</span>
-                </button>
-                <button class="hamburger-menu" onclick="toggleDrawer()" aria-label="Open Timer Setup menu">
-                    ☰
-                </button>
+            <div class="header-actions flex items-center gap-2 shrink-0">
+                <button type="button" class="mode-toggle-btn p-2 rounded-xl text-[rgb(var(--foreground))] text-xl" id="themeToggleBtn" aria-label="Toggle dark mode"><span id="theme-icon">🌙</span></button>
+                <button type="button" class="hamburger-menu p-2 rounded-xl text-[rgb(var(--foreground))] text-xl" id="menuBtn" aria-label="Open setup">☰</button>
             </div>
-        </div>
+        </header>
         
         <div class="timer-container" style="display: flex; flex-direction: column; gap: 1rem;">
-            <!-- Timer Display -->
-            <div class="timer-display-block bg-card border border-border rounded-lg shadow-lg text-center">
-                <!-- Workout Title -->
-                <div id="workoutTitleDisplay" style="display: none; text-align: center; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid rgb(var(--border));">
-                    <h2 id="workoutTitleText" style="font-size: 1.25rem; font-weight: 600; color: rgb(var(--foreground)); margin: 0; word-wrap: break-word;"></h2>
+            <!-- Timer Display (double-click to open setup) -->
+            <div id="timerDisplayBlock" class="timer-display-block p-4 rounded-2xl bg-[rgb(var(--card))] border border-[rgb(var(--border))] shadow-lg text-center" aria-label="Double-tap to open timer setup">
+                <div id="workoutTitleDisplay" class="hidden text-center pb-4 mb-4 border-b border-[rgb(var(--border))]">
+                    <h2 id="workoutTitleText" class="text-lg font-semibold text-[rgb(var(--foreground))] m-0 break-words"></h2>
                 </div>
-                
-                <div class="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-2" id="statusLabel">Ready</div>
+                <div class="text-sm font-semibold uppercase tracking-wide text-[rgb(var(--muted-foreground))] mb-2" id="statusLabel">Ready</div>
                 <div class="timer-display-large" id="display">00:00</div>
-                <div id="rounds" class="rounds-display" aria-live="polite" style="font-size: 2rem; font-weight: 600; color: rgb(var(--foreground)); margin-top: 1rem; display: none;"></div>
-                
-                <!-- Workout Notes -->
-                <div id="workoutDescriptionDisplay" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgb(var(--border));">
-                    <p id="workoutDescriptionText" style="font-size: 0.875rem; color: rgb(var(--muted-foreground)); line-height: 1.6; margin: 0; text-align: left; white-space: pre-wrap; word-wrap: break-word;"></p>
+                <div id="rounds" class="rounds-display text-2xl font-semibold text-[rgb(var(--foreground))] mt-4 hidden" aria-live="polite"></div>
+                <div id="workoutDescriptionDisplay" class="hidden mt-4 pt-4 border-t border-[rgb(var(--border))]">
+                    <p id="workoutDescriptionText" class="text-sm text-[rgb(var(--muted-foreground))] leading-relaxed m-0 text-left whitespace-pre-wrap break-words"></p>
                 </div>
             </div>
-            
             <!-- Controls -->
-            <div class="p-6 bg-card border border-border rounded-lg shadow-lg">
+            <div class="p-4 rounded-2xl bg-[rgb(var(--card))] border border-[rgb(var(--border))] shadow-lg">
                 <div class="control-buttons-container">
                     <button class="control-btn btn-primary" id="startPauseBtn" style="display: none;" aria-label="Start timer">Start</button>
                     <button class="control-btn btn-primary" id="setupBtn" style="display: none;" aria-label="Set up timer">Set Up</button>
@@ -1254,26 +1370,28 @@
                     <button class="control-btn btn-primary" id="complete-round" disabled aria-label="Round completed" style="display: none;">Round Completed</button>
                 </div>
             </div>
-            
-            <!-- Result Entry (reps+cycling: list inside this white box; rounds/timer end: table or summary) -->
+            <!-- Result Entry (AMRAP-Reps splits area below buttons) -->
             <div id="resultEntry" class="result-entry" style="display: none;"></div>
         </div>
     </div>
     
-    <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
-    <div class="settings-drawer" id="settingsDrawer">
-        <div class="drawer-header">
-            <h2 style="font-size: 1rem; font-weight: 600; color: rgb(var(--foreground)); text-transform: uppercase; letter-spacing: 0.05em;">Timer Setup</h2>
-            <button class="drawer-close" onclick="closeDrawer()" aria-label="Close drawer">×</button>
+    <div class="sheet-overlay" id="drawerOverlay" aria-hidden="true"></div>
+    <div class="bottom-sheet" id="settingsDrawer" role="dialog" aria-label="Timer setup">
+        <div class="sheet-grabber" aria-hidden="true"></div>
+        <div class="sheet-header">
+            <h2 class="text-base font-semibold uppercase tracking-wide text-[rgb(var(--foreground))]">Timer Setup</h2>
+            <div class="sheet-header-actions">
+                <button type="button" class="header-clear-btn" id="headerClearBtn" aria-label="Clear settings to defaults" title="Clear settings to defaults">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                </button>
+                <button type="button" class="drawer-close" id="drawerCloseBtn" aria-label="Close">×</button>
+            </div>
         </div>
-        <div class="drawer-content">
-            <!-- Setup Content -->
-            <div class="drawer-section">
+        <div class="sheet-content">
+            <div class="sheet-section">
                 <h3>Setup Content</h3>
-                
-                <!-- AMRAP Type Selection -->
                 <div class="radio-group">
-                    <label class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block" style="margin-bottom: 0.5rem;">AMRAP Type</label>
+                    <label class="input-group label block text-[rgb(var(--muted-foreground))]" style="margin-bottom: 0.5rem;">AMRAP Type</label>
                     <div class="radio-option">
                         <input type="radio" id="amrapTypeRounds" name="amrapType" value="rounds" checked>
                         <label for="amrapTypeRounds">AMRAP - Rounds (circuit)</label>
@@ -1283,81 +1401,42 @@
                         <label for="amrapTypeReps">AMRAP - Reps (max total reps)</label>
                     </div>
                 </div>
-                
-                <!-- Workout Title -->
-                <div class="space-y-2" style="margin-bottom: 1.5rem;">
-                    <label for="workoutTitleInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Workout Title</label>
-                    <input 
-                        type="text" 
-                        id="workoutTitleInput" 
-                        class="custom-time-input"
-                        placeholder="Enter workout title"
-                        aria-label="Workout title"
-                        maxlength="40"
-                        style="font-family: inherit; text-align: left; font-weight: 500;"
-                    >
-                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
-                        <span id="workoutTitleCharCount">0</span>/40
-                    </p>
+                <div class="input-group">
+                    <label for="workoutTitleInput">Workout Title</label>
+                    <input type="text" id="workoutTitleInput" class="shadcn-input" placeholder="Enter workout title" aria-label="Workout title" maxlength="40">
+                    <p class="text-xs text-[rgb(var(--muted-foreground))] mt-1 text-right"><span id="workoutTitleCharCount">0</span>/40</p>
+                </div>
+                <div class="input-group">
+                    <label for="workoutDescriptionInput">Workout Description / Notes</label>
+                    <textarea id="workoutDescriptionInput" class="shadcn-textarea" placeholder="Enter workout notes..." aria-label="Workout notes" rows="4" maxlength="200"></textarea>
+                    <p class="text-xs text-[rgb(var(--muted-foreground))] mt-1 text-right"><span id="workoutDescriptionCharCount">0</span>/200</p>
                 </div>
                 
-                <!-- Workout Notes -->
-                <div class="space-y-2" style="margin-bottom: 1.5rem;">
-                    <label for="workoutDescriptionInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Workout Description / Notes</label>
-                    <textarea 
-                        id="workoutDescriptionInput" 
-                        class="custom-time-input"
-                        placeholder="Enter workout notes..."
-                        aria-label="Workout notes"
-                        rows="4"
-                        maxlength="200"
-                        style="resize: vertical; min-height: 80px; font-family: inherit; line-height: 1.5; text-align: left; font-weight: 400;"
-                    ></textarea>
-                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
-                        <span id="workoutDescriptionCharCount">0</span>/200
-                    </p>
-                </div>
-                
-                <!-- Total AMRAP Time (stacked for mobile) -->
-                <div class="space-y-2" style="margin-bottom: 1.5rem;">
-                    <label class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Total AMRAP Time</label>
-                    <div style="display: flex; flex-direction: column; gap: 1rem;">
-                        <div>
-                            <label for="minutesInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block" style="margin-bottom: 0.5rem;">Minutes</label>
-                            <div class="time-input-row">
-                                <button class="time-adjust-btn" id="minutesPlus5Btn" type="button" aria-label="Add 5 minutes">+5</button>
-                                <button class="time-adjust-btn" id="minutesPlus1Btn" type="button" aria-label="Add 1 minute">+1</button>
-                                <input type="number" id="minutesInputDrawer" class="custom-time-input" min="0" max="99" inputmode="numeric" value="0" aria-label="Minutes">
-                                <button class="time-adjust-btn" id="minutesMinus5Btn" type="button" aria-label="Subtract 5 minutes">−5</button>
-                                <button class="time-adjust-btn" id="minutesMinus1Btn" type="button" aria-label="Subtract 1 minute">−1</button>
-                            </div>
-                        </div>
-                        <div>
-                            <label for="secondsInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block" style="margin-bottom: 0.5rem;">Seconds</label>
-                            <div class="time-input-row">
-                                <button class="time-adjust-btn" id="secondsPlus5Btn" type="button" aria-label="Add 5 seconds">+5</button>
-                                <button class="time-adjust-btn" id="secondsPlus1Btn" type="button" aria-label="Add 1 second">+1</button>
-                                <input type="number" id="secondsInputDrawer" class="custom-time-input" min="0" max="59" inputmode="numeric" value="0" aria-label="Seconds">
-                                <button class="time-adjust-btn" id="secondsMinus5Btn" type="button" aria-label="Subtract 5 seconds">−5</button>
-                                <button class="time-adjust-btn" id="secondsMinus1Btn" type="button" aria-label="Subtract 1 second">−1</button>
-                            </div>
-                        </div>
+                <div class="sheet-section">
+                    <h3>Total AMRAP Time (MM:SS)</h3>
+                    <div class="time-slider-wrap">
+                        <input type="range" id="amrapTimeSlider" min="0" max="6000" step="5" value="0" aria-label="Total AMRAP time seconds">
+                    </div>
+                    <div class="time-stepper-row">
+                        <button type="button" class="stepper-btn" id="amrapTimeDecreaseBtn" aria-label="Decrease AMRAP time 10s">−10</button>
+                        <input type="text" id="amrapTimeInput" class="custom-time-input" value="00:00" placeholder="MM:SS" aria-label="Total AMRAP time">
+                        <button type="button" class="stepper-btn" id="amrapTimeIncreaseBtn" aria-label="Increase AMRAP time 10s">+10</button>
                     </div>
                 </div>
                 
-                <!-- Workout PREP Countdown (seconds) -->
-                <div class="space-y-2" style="margin-bottom: 1.5rem;">
-                    <label for="prepTimeInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Workout PREP Countdown (SECONDS)</label>
-                    <div class="time-input-row">
-                        <button class="time-adjust-btn" id="prepTimePlus5Btn" type="button" aria-label="Add 5 seconds">+5</button>
-                        <button class="time-adjust-btn" id="prepTimePlus1Btn" type="button" aria-label="Add 1 second">+1</button>
-                        <input type="number" id="prepTimeInput" class="custom-time-input" min="0" max="300" inputmode="numeric" value="30" aria-label="Prep time">
-                        <button class="time-adjust-btn" id="prepTimeMinus5Btn" type="button" aria-label="Subtract 5 seconds">−5</button>
-                        <button class="time-adjust-btn" id="prepTimeMinus1Btn" type="button" aria-label="Subtract 1 second">−1</button>
+                <div class="sheet-section">
+                    <h3>Workout PREP Countdown (MM:SS)</h3>
+                    <div class="time-slider-wrap">
+                        <input type="range" id="prepTimeSlider" min="0" max="300" step="5" value="30" aria-label="Prep countdown seconds">
+                    </div>
+                    <div class="time-stepper-row">
+                        <button type="button" class="stepper-btn" id="prepTimeDecreaseBtn" aria-label="Decrease prep time 10s">−10</button>
+                        <input type="text" id="prepTimeInput" class="custom-time-input" value="00:30" placeholder="MM:SS" aria-label="Prep countdown">
+                        <button type="button" class="stepper-btn" id="prepTimeIncreaseBtn" aria-label="Increase prep time 10s">+10</button>
                     </div>
                 </div>
                 
-                <!-- Number of Rounds / Rest Between Rounds (Reps mode only: cycles and rest between cycles) -->
+                <!-- Number of Rounds / Rest Between Rounds (Reps mode only) -->
                 <div id="repsOnlyRoundsOptions" style="display: none;">
                     <div class="space-y-2" style="margin-bottom: 1.5rem;">
                         <label for="roundsInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Number of Rounds</label>
@@ -1381,16 +1460,11 @@
                     </div>
                 </div>
                 
-                <!-- Completion Message -->
-                <div class="space-y-2" style="margin-bottom: 1.5rem;">
-                    <label for="doneMessageInputDrawer" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">Completion Message (14 characters max)</label>
-                    <input type="text" id="doneMessageInputDrawer" class="custom-time-input" maxlength="14" value="Completed" placeholder="Completed" aria-label="Completion message">
-                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
-                        <span id="doneMessageCharCount">9</span>/14
-                    </p>
+                <div class="input-group">
+                    <label for="doneMessageInputDrawer">Completion Message (14 characters max)</label>
+                    <input type="text" id="doneMessageInputDrawer" class="shadcn-input" maxlength="14" value="Completed" placeholder="Completed" aria-label="Completion message">
+                    <p class="text-xs text-[rgb(var(--muted-foreground))] mt-1 text-right"><span id="doneMessageCharCount">9</span>/14</p>
                 </div>
-                
-                <!-- Splits / Result Entry always enabled in splits version -->
                 
                 <!-- Rounds Mode Fields -->
                 <div id="roundsModeFields">
@@ -1405,33 +1479,36 @@
                     <div id="repsExercisesList"></div>
                     <button type="button" id="addRepsExerciseBtn" class="control-btn btn-secondary" style="width: 100%; margin-top: 0.75rem;">+ Add Exercise</button>
                     
-                    <div class="toggle-switch" style="margin-top: 1.5rem; margin-bottom: 0;">
-                        <input type="checkbox" id="cycleExercisesToggle">
-                        <label for="cycleExercisesToggle">Cycle through exercises</label>
+                    <div class="sheet-section">
+                        <div class="toggle-switch flex items-center gap-3 mt-4 mb-0">
+                            <input type="checkbox" id="cycleExercisesToggle" class="shrink-0" aria-describedby="cycleExercisesHelpText">
+                            <label for="cycleExercisesToggle" class="text-sm font-medium text-[rgb(var(--foreground))] cursor-pointer">Cycle through exercises</label>
+                        </div>
+                        <p id="cycleExercisesHelpText" class="text-xs text-[rgb(var(--muted-foreground))] mt-1 mb-0">Rotate through exercises one at a time</p>
                     </div>
-                    <p id="cycleExercisesHelpText" class="text-muted-foreground" style="margin-top: 0.25rem; margin-bottom: 0; margin-left: 0; font-size: inherit; font-weight: 500;">Freestyle – any order, any time</p>
                     
-                    <div id="workTimePerExerciseContainer" style="display: none; margin-top: 1rem;">
-                        <label for="workTimePerExerciseInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">WORK TIME PER EXERCISE (AMRAP - REPS)</label>
-                        <div class="time-input-row">
-                            <button class="time-adjust-btn" id="workTimePerExercisePlus5Btn" type="button" aria-label="Add 5 seconds">+5</button>
-                            <button class="time-adjust-btn" id="workTimePerExercisePlus1Btn" type="button" aria-label="Add 1 second">+1</button>
-                            <input type="number" id="workTimePerExerciseInput" class="custom-time-input" min="10" max="300" inputmode="numeric" value="60" aria-label="Work time per exercise seconds">
-                            <button class="time-adjust-btn" id="workTimePerExerciseMinus5Btn" type="button" aria-label="Subtract 5 seconds">−5</button>
-                            <button class="time-adjust-btn" id="workTimePerExerciseMinus1Btn" type="button" aria-label="Subtract 1 second">−1</button>
+                    <div id="workTimePerExerciseContainer" class="sheet-section" style="display: none;">
+                        <h3>Work time per exercise (AMRAP – Reps)</h3>
+                        <div class="time-slider-wrap">
+                            <input type="range" id="workTimePerExerciseSlider" min="10" max="300" step="5" value="60" aria-label="Work time per exercise seconds">
+                        </div>
+                        <div class="time-stepper-row">
+                            <button type="button" class="stepper-btn" id="workTimePerExerciseDecreaseBtn" aria-label="Decrease work time per exercise 10s">−10</button>
+                            <input type="text" id="workTimePerExerciseInput" class="custom-time-input" value="01:00" placeholder="MM:SS" aria-label="Work time per exercise">
+                            <button type="button" class="stepper-btn" id="workTimePerExerciseIncreaseBtn" aria-label="Increase work time per exercise 10s">+10</button>
                         </div>
                     </div>
-                    <div id="restBetweenExercisesContainer" style="display: none; margin-top: 1rem;">
-                        <label for="restBetweenExercisesInput" class="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">REST BETWEEN EXERCISES (SECONDS)</label>
-                        <div class="time-input-row">
-                            <button class="time-adjust-btn" id="restBetweenExercisesPlus5Btn" type="button" aria-label="Add 5 seconds">+5</button>
-                            <button class="time-adjust-btn" id="restBetweenExercisesPlus1Btn" type="button" aria-label="Add 1 second">+1</button>
-                            <input type="number" id="restBetweenExercisesInput" class="custom-time-input" min="0" max="300" inputmode="numeric" value="0" aria-label="Rest between exercises">
-                            <button class="time-adjust-btn" id="restBetweenExercisesMinus5Btn" type="button" aria-label="Subtract 5 seconds">−5</button>
-                            <button class="time-adjust-btn" id="restBetweenExercisesMinus1Btn" type="button" aria-label="Subtract 1 second">−1</button>
+                    <div id="restBetweenExercisesContainer" class="sheet-section" style="display: none;">
+                        <h3>Rest between exercises (MM:SS)</h3>
+                        <div class="time-slider-wrap">
+                            <input type="range" id="restBetweenExercisesSlider" min="0" max="300" step="5" value="0" aria-label="Rest between exercises seconds">
+                        </div>
+                        <div class="time-stepper-row">
+                            <button type="button" class="stepper-btn" id="restBetweenExercisesDecreaseBtn" aria-label="Decrease rest between exercises 10s">−10</button>
+                            <input type="text" id="restBetweenExercisesInput" class="custom-time-input" value="00:00" placeholder="MM:SS" aria-label="Rest between exercises">
+                            <button type="button" class="stepper-btn" id="restBetweenExercisesIncreaseBtn" aria-label="Increase rest between exercises 10s">+10</button>
                         </div>
                     </div>
-                    <!-- Cycle time summary, warning, and auto-suggest (visible when cycleExercises = true) -->
                     <div id="cycleTimeSummaryBlock" style="display: none; margin-top: 1.25rem; padding: 0.75rem; border-radius: var(--radius); border: 1px solid rgb(var(--border)); background-color: rgb(var(--accent));" aria-live="polite">
                         <p id="cycleTimeSummaryText" class="text-sm font-medium" style="color: rgb(var(--foreground)); margin: 0 0 0.5rem 0;">Estimated time per full cycle: —</p>
                         <div id="cycleTimeWarningBanner" style="display: none; padding: 0.5rem 0.75rem; border-radius: var(--radius); background-color: rgb(var(--destructive)); color: rgb(var(--destructive-foreground)); font-size: 0.875rem; font-weight: 500; margin-bottom: 0.75rem;" role="alert">
@@ -1447,8 +1524,7 @@
                 </div>
             </div>
     
-            <!-- Export / Import -->
-            <div class="drawer-section">
+            <div class="sheet-section">
                 <h3>Export / Import</h3>
                 <div style="display: flex; gap: 0.5rem;">
                     <button type="button" id="exportWorkoutBtn" class="control-btn btn-primary" style="flex: 1;">Export AMRAP</button>
@@ -1457,16 +1533,14 @@
                 <input type="file" id="importFileInput" accept=".json" style="display: none;">
             </div>
     
-            <!-- About This Timer -->
-            <div class="drawer-section">
+            <div class="sheet-section">
                 <h3>About This Timer</h3>
                 <p>
-                    Enhanced AMRAP timer supports two modes: Rounds (circuit style) tracks full rounds + partial progress. Reps mode can use timed cycles: work time per exercise, rest between exercises, and per-cycle result entry (Cycle 1, Cycle 2, …) with grand totals.
+                    Enhanced AMRAP Splits: Rounds (circuit) or Reps (max total). Result entry and reps tracking in the splits area below the buttons.
                 </p>
             </div>
 
-            <!-- General Info -->
-            <div class="drawer-section">
+            <div class="sheet-section">
                 <h3>General Info</h3>
                 <p><strong>Version:</strong> v1.0</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2026-01-28</span></p>
@@ -1520,9 +1594,10 @@
         const roundsDisplay = document.getElementById('rounds');
         const resultEntry = document.getElementById('resultEntry');
         
-        const minutesInput = document.getElementById('minutesInputDrawer');
-        const secondsInput = document.getElementById('secondsInputDrawer');
+        const amrapTimeInput = document.getElementById('amrapTimeInput');
+        const amrapTimeSlider = document.getElementById('amrapTimeSlider');
         const prepTimeInput = document.getElementById('prepTimeInput');
+        const prepTimeSlider = document.getElementById('prepTimeSlider');
         const doneMessageInput = document.getElementById('doneMessageInputDrawer');
         const workoutTitleInput = document.getElementById('workoutTitleInput');
         const workoutDescriptionInput = document.getElementById('workoutDescriptionInput');
@@ -1538,6 +1613,8 @@
         const restBetweenExercisesInput = document.getElementById('restBetweenExercisesInput');
         const workTimePerExerciseContainer = document.getElementById('workTimePerExerciseContainer');
         const workTimePerExerciseInput = document.getElementById('workTimePerExerciseInput');
+        const workTimePerExerciseSlider = document.getElementById('workTimePerExerciseSlider');
+        const restBetweenExercisesSlider = document.getElementById('restBetweenExercisesSlider');
         const cycleTimeSummaryBlock = document.getElementById('cycleTimeSummaryBlock');
         const cycleTimeSummaryText = document.getElementById('cycleTimeSummaryText');
         const cycleTimeWarningBanner = document.getElementById('cycleTimeWarningBanner');
@@ -1558,16 +1635,45 @@
         }
 
         function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
+            const s = Math.max(0, Math.floor(Number(seconds)));
+            const mins = Math.floor(s / 60);
+            const secs = s % 60;
             return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function parseTime(timeString) {
+            const str = String(timeString || '').trim();
+            const parts = str.split(':');
+            if (parts.length !== 2) return 0;
+            const mins = parseInt(parts[0], 10) || 0;
+            const secs = parseInt(parts[1], 10) || 0;
+            return (mins * 60) + secs;
+        }
+
+        function validateTimeInput(input, maxSeconds) {
+            if (!input) return 0;
+            let value = input.value.replace(/[^0-9:]/g, '');
+            if (value.length === 1 && /[0-9]/.test(value)) value = '00:0' + value;
+            else if (value.length === 2 && /[0-9]{2}/.test(value)) value = '00:' + value;
+            else if (value.length === 3 && /[0-9]:[0-9]/.test(value)) value = '0' + value;
+            else if (value.length === 4 && /[0-9]{2}[0-9]{2}/.test(value)) value = value.substring(0, 2) + ':' + value.substring(2);
+            if (value.match(/^[0-9]{1,2}:[0-9]{1,2}$/)) {
+                const p = value.split(':');
+                value = p[0].padStart(2, '0') + ':' + p[1].padStart(2, '0');
+            }
+            let sec = parseTime(value);
+            if (maxSeconds != null) sec = Math.min(maxSeconds, Math.max(0, sec));
+            input.value = formatTime(sec);
+            return sec;
         }
         
         function getWorkTimePerExerciseSeconds() {
             if (!workTimePerExerciseInput) return workTimePerExerciseSeconds;
-            const v = clampInt(workTimePerExerciseInput.value, 10, 300);
-            workTimePerExerciseInput.value = String(v);
-            return v;
+            let sec = parseTime(workTimePerExerciseInput.value);
+            sec = Math.min(300, Math.max(10, sec));
+            workTimePerExerciseInput.value = formatTime(sec);
+            if (workTimePerExerciseSlider) workTimePerExerciseSlider.value = String(sec);
+            return sec;
         }
         
         function updateAmrapType() {
@@ -1595,7 +1701,7 @@
             const n = amrapType === 'reps' ? exercises.length : 0;
             if (n === 0) return 0;
             const work = getWorkTimePerExerciseSeconds();
-            const rest = Math.min(300, Math.max(0, Number(restBetweenExercisesInput?.value) || restBetweenExercises || 0));
+            const rest = restBetweenExercisesInput ? Math.min(300, Math.max(0, parseTime(restBetweenExercisesInput.value))) : restBetweenExercises;
             return n * work + (n - 1) * rest;
         }
         
@@ -1623,7 +1729,7 @@
                 return;
             }
             const work = getWorkTimePerExerciseSeconds();
-            const rest = Math.min(300, Math.max(0, Number(restBetweenExercisesInput?.value) || restBetweenExercises || 0));
+            const rest = restBetweenExercisesInput ? Math.min(300, Math.max(0, parseTime(restBetweenExercisesInput.value))) : restBetweenExercises;
             const cycleSeconds = n * work + (n - 1) * rest;
             const timeNeededForRounds = getTimeNeededForRounds(cycleSeconds);
             const workPart = n + ' × ' + work + 's work';
@@ -1659,7 +1765,7 @@
             const n = exercises.length;
             if (n === 0) return null;
             const totalSeconds = readDurationFromInputs();
-            const rest = Math.min(300, Math.max(0, Number(restBetweenExercisesInput?.value) || restBetweenExercises || 0));
+            const rest = restBetweenExercisesInput ? Math.min(300, Math.max(0, parseTime(restBetweenExercisesInput.value))) : restBetweenExercises;
             const numCycles = getTargetRounds() > 0 ? getTargetRounds() : 4;
             const restBetweenRounds = getRestBetweenRoundsSeconds();
             const numerator = totalSeconds - (n - 1) * rest * numCycles - (numCycles - 1) * restBetweenRounds;
@@ -1674,7 +1780,7 @@
             const n = exercises.length;
             if (n === 0) return null;
             const work = getWorkTimePerExerciseSeconds();
-            const rest = Math.min(300, Math.max(0, Number(restBetweenExercisesInput?.value) || restBetweenExercises || 0));
+            const rest = restBetweenExercisesInput ? Math.min(300, Math.max(0, parseTime(restBetweenExercisesInput.value))) : restBetweenExercises;
             const cycleSeconds = n * work + (n - 1) * rest;
             const bufferSeconds = 60;
             const numCycles = getTargetRounds() > 0 ? getTargetRounds() : 3;
@@ -1690,10 +1796,9 @@
         function applySuggestedWorkTime() {
             const suggested = calculateSuggestedWorkTime();
             if (suggested == null) return;
-            if (workTimePerExerciseInput) {
-                workTimePerExerciseInput.value = String(suggested);
-                workTimePerExerciseSeconds = suggested;
-            }
+            if (workTimePerExerciseInput) workTimePerExerciseInput.value = formatTime(suggested);
+            if (workTimePerExerciseSlider) workTimePerExerciseSlider.value = String(suggested);
+            workTimePerExerciseSeconds = suggested;
             updateCycleTimeSummary();
             showCycleToast('Work time updated to ' + suggested + 's');
         }
@@ -1701,10 +1806,9 @@
         function applySuggestedTotalTime() {
             const suggested = calculateSuggestedTotalTime();
             if (suggested == null) return;
-            const mins = Math.floor(suggested / 60);
-            const secs = suggested % 60;
-            if (minutesInput) minutesInput.value = String(Math.min(99, mins));
-            if (secondsInput) secondsInput.value = String(Math.min(59, secs));
+            const sec = Math.min(6000, Math.max(0, suggested));
+            if (amrapTimeInput) amrapTimeInput.value = formatTime(sec);
+            if (amrapTimeSlider) amrapTimeSlider.value = String(sec);
             onTimeChange();
             updateCycleTimeSummary();
             showCycleToast('Total time updated to ' + formatTime(suggested));
@@ -1875,17 +1979,17 @@
         }
 
         function readDurationFromInputs() {
-            const mins = clampInt(minutesInput.value, 0, 99);
-            const secs = clampInt(secondsInput.value, 0, 59);
-            minutesInput.value = String(mins);
-            secondsInput.value = String(secs);
-            return (mins * 60) + secs;
+            if (!amrapTimeInput) return totalSeconds;
+            const sec = validateTimeInput(amrapTimeInput, 6000);
+            if (amrapTimeSlider) amrapTimeSlider.value = String(sec);
+            return sec;
         }
         
         function readPrepTimeFromInput() {
-            const secs = clampInt(prepTimeInput.value, 0, 300);
-            prepTimeInput.value = String(secs);
-            return secs;
+            if (!prepTimeInput) return prepTimeSeconds;
+            const sec = validateTimeInput(prepTimeInput, 300);
+            if (prepTimeSlider) prepTimeSlider.value = String(sec);
+            return sec;
         }
         
         function getTargetRounds() {
@@ -1900,9 +2004,7 @@
         }
         
         function buildExportPayload() {
-            const durationSeconds = minutesInput && secondsInput
-                ? (clampInt(minutesInput.value, 0, 99) * 60) + clampInt(secondsInput.value, 0, 59)
-                : totalSeconds;
+            const durationSeconds = amrapTimeInput ? Math.min(6000, Math.max(0, parseTime(amrapTimeInput.value))) : totalSeconds;
             const restBetweenRoundsSeconds = restBetweenRoundsInput
                 ? clampInt(restBetweenRoundsInput.value, 0, 600)
                 : 0;
@@ -1911,7 +2013,7 @@
                 description: (workoutDescriptionInput && workoutDescriptionInput.value) ? workoutDescriptionInput.value.trim() : '',
                 amrapType: amrapType,
                 durationSeconds: durationSeconds,
-                prepTimeSeconds: prepTimeInput ? clampInt(prepTimeInput.value, 0, 300) : prepTimeSeconds,
+                prepTimeSeconds: prepTimeInput ? Math.min(300, Math.max(0, parseTime(prepTimeInput.value))) : prepTimeSeconds,
                 doneMessage: (doneMessageInput && doneMessageInput.value) ? doneMessageInput.value.trim() || 'Completed' : 'Completed',
                 targetRounds: getTargetRounds(),
                 restBetweenRoundsSeconds: restBetweenRoundsSeconds,
@@ -1920,7 +2022,7 @@
                     : exercises.map(ex => ({ name: ex.name || '' })),
                 cycleExercises: !!cycleExercises,
                 restBetweenExercises: restBetweenExercises || 0,
-                workTimePerExerciseSeconds: amrapType === 'reps' ? (workTimePerExerciseInput ? clampInt(workTimePerExerciseInput.value, 10, 300) : workTimePerExerciseSeconds) : undefined,
+                workTimePerExerciseSeconds: amrapType === 'reps' ? (workTimePerExerciseInput ? Math.min(300, Math.max(10, parseTime(workTimePerExerciseInput.value))) : workTimePerExerciseSeconds) : undefined,
                 enableSplits: !!enableSplits
             };
             const results = {
@@ -1987,12 +2089,12 @@
             amrapType = (w.amrapType === 'reps' || w.amrapType === 'rounds') ? w.amrapType : 'rounds';
             if (amrapTypeRounds) amrapTypeRounds.checked = (amrapType === 'rounds');
             if (amrapTypeReps) amrapTypeReps.checked = (amrapType === 'reps');
-            const duration = Number(w.durationSeconds) || 0;
-            const mins = Math.floor(duration / 60);
-            const secs = duration % 60;
-            if (minutesInput) minutesInput.value = String(Math.min(99, Math.max(0, mins)));
-            if (secondsInput) secondsInput.value = String(Math.min(59, Math.max(0, secs)));
-            if (prepTimeInput) prepTimeInput.value = String(Math.min(300, Math.max(0, Number(w.prepTimeSeconds) || 0)));
+            const duration = Math.min(6000, Math.max(0, Number(w.durationSeconds) || 0));
+            if (amrapTimeInput) amrapTimeInput.value = formatTime(duration);
+            if (amrapTimeSlider) amrapTimeSlider.value = String(duration);
+            const prepSecs = Math.min(300, Math.max(0, Number(w.prepTimeSeconds) || 0));
+            if (prepTimeInput) prepTimeInput.value = formatTime(prepSecs);
+            if (prepTimeSlider) prepTimeSlider.value = String(prepSecs);
             if (doneMessageInput) doneMessageInput.value = (w.doneMessage != null ? String(w.doneMessage) : '') || 'Completed';
             if (roundsInput) roundsInput.value = String(Math.min(999, Math.max(0, Number(w.targetRounds) || 0)));
             const restRounds = Number(w.restBetweenRoundsSeconds) || 0;
@@ -2001,9 +2103,11 @@
             if (document.getElementById('cycleExercisesToggle')) document.getElementById('cycleExercisesToggle').checked = cycleExercises;
             if (typeof updateCycleExercisesHelpText === 'function') updateCycleExercisesHelpText();
             restBetweenExercises = Math.min(300, Math.max(0, Number(w.restBetweenExercises) || 0));
-            if (restBetweenExercisesInput) restBetweenExercisesInput.value = String(restBetweenExercises);
+            if (restBetweenExercisesInput) restBetweenExercisesInput.value = formatTime(restBetweenExercises);
+            if (restBetweenExercisesSlider) restBetweenExercisesSlider.value = String(restBetweenExercises);
             workTimePerExerciseSeconds = Math.min(300, Math.max(10, Number(w.workTimePerExerciseSeconds) || 60));
-            if (workTimePerExerciseInput) workTimePerExerciseInput.value = String(workTimePerExerciseSeconds);
+            if (workTimePerExerciseInput) workTimePerExerciseInput.value = formatTime(workTimePerExerciseSeconds);
+            if (workTimePerExerciseSlider) workTimePerExerciseSlider.value = String(workTimePerExerciseSeconds);
             enableSplits = true;
             const exList = Array.isArray(w.exercises) ? w.exercises : [];
             function normName(s) { return (s != null ? String(s) : '').replace(/\bSut-Ups\b/gi, 'Sit-Ups'); }
@@ -2038,7 +2142,7 @@
             if (r.currentCycle != null) currentCycle = Math.max(1, Number(r.currentCycle) || 1);
             totalSeconds = duration;
             currentTime = totalSeconds;
-            prepTimeSeconds = prepTimeInput ? clampInt(prepTimeInput.value, 0, 300) : 30;
+            prepTimeSeconds = prepTimeInput ? Math.min(300, Math.max(0, parseTime(prepTimeInput.value))) : 30;
             updateAmrapType();
             renderRoundsExercises();
             renderRepsExercises();
@@ -2070,9 +2174,10 @@
         }
 
         function setInputsDisabled(disabled) {
-            minutesInput.disabled = disabled;
-            secondsInput.disabled = disabled;
-            prepTimeInput.disabled = disabled;
+            if (amrapTimeInput) amrapTimeInput.disabled = disabled;
+            if (amrapTimeSlider) amrapTimeSlider.disabled = disabled;
+            if (prepTimeInput) prepTimeInput.disabled = disabled;
+            if (prepTimeSlider) prepTimeSlider.disabled = disabled;
             if (roundsInput) roundsInput.disabled = disabled;
             if (restBetweenRoundsInput) restBetweenRoundsInput.disabled = disabled;
             document.querySelectorAll('#settingsDrawer .time-adjust-btn').forEach(el => { el.disabled = disabled; });
@@ -2889,9 +2994,10 @@
                 roundsDisplay.textContent = '';
             }
             
-            minutesInput.value = '0';
-            secondsInput.value = '0';
-            prepTimeInput.value = '30';
+            if (amrapTimeInput) amrapTimeInput.value = '00:00';
+            if (amrapTimeSlider) amrapTimeSlider.value = '0';
+            if (prepTimeInput) prepTimeInput.value = '00:30';
+            if (prepTimeSlider) prepTimeSlider.value = '30';
             if (roundsInput) roundsInput.value = '0';
             if (restBetweenRoundsInput) restBetweenRoundsInput.value = '0';
             
@@ -2938,34 +3044,29 @@
             if (amrapType === 'reps' && cycleExercises) updateCycleTimeSummary();
         }
         
-        function adjustMinutes(delta) {
+        function adjustAmrapTime(delta) {
             if (isRunning || isPaused) return;
-            const current = clampInt(minutesInput.value, 0, 99);
-            const newValue = Math.min(99, Math.max(0, current + delta));
-            minutesInput.value = String(newValue);
-            onTimeChange();
-        }
-        
-        function adjustSeconds(delta) {
-            if (isRunning || isPaused) return;
-            const current = clampInt(secondsInput.value, 0, 59);
-            const newValue = Math.min(59, Math.max(0, current + delta));
-            secondsInput.value = String(newValue);
+            const current = amrapTimeInput ? parseTime(amrapTimeInput.value) : 0;
+            const newSec = Math.min(6000, Math.max(0, current + delta));
+            if (amrapTimeInput) amrapTimeInput.value = formatTime(newSec);
+            if (amrapTimeSlider) amrapTimeSlider.value = String(newSec);
             onTimeChange();
         }
         
         function adjustPrepTime(delta) {
             if (isRunning || isPaused) return;
-            const current = clampInt(prepTimeInput.value, 0, 300);
+            const current = prepTimeInput ? parseTime(prepTimeInput.value) : 30;
             const newValue = Math.min(300, Math.max(0, current + delta));
-            prepTimeInput.value = String(newValue);
+            if (prepTimeInput) prepTimeInput.value = formatTime(newValue);
+            if (prepTimeSlider) prepTimeSlider.value = String(newValue);
         }
         
         function adjustRestBetweenExercises(delta) {
             if (isRunning || isPaused) return;
-            const current = clampInt(restBetweenExercisesInput.value, 0, 300);
+            const current = restBetweenExercisesInput ? parseTime(restBetweenExercisesInput.value) : 0;
             const newValue = Math.min(300, Math.max(0, current + delta));
-            restBetweenExercisesInput.value = String(newValue);
+            if (restBetweenExercisesInput) restBetweenExercisesInput.value = formatTime(newValue);
+            if (restBetweenExercisesSlider) restBetweenExercisesSlider.value = String(newValue);
             restBetweenExercises = newValue;
             updateCycleTimeSummary();
         }
@@ -2984,6 +3085,27 @@
         resetBtn.addEventListener('click', resetTimer);
         clearBtn.addEventListener('click', clearTimer);
         setupBtn.addEventListener('click', toggleDrawer);
+        const menuBtn = document.getElementById('menuBtn');
+        if (menuBtn) menuBtn.addEventListener('click', toggleDrawer);
+        const timerDisplayBlock = document.getElementById('timerDisplayBlock');
+        if (timerDisplayBlock) {
+            timerDisplayBlock.addEventListener('dblclick', function(e) {
+                e.preventDefault();
+                toggleDrawer();
+            });
+        }
+        const drawerCloseBtn = document.getElementById('drawerCloseBtn');
+        if (drawerCloseBtn) drawerCloseBtn.addEventListener('click', closeDrawer);
+        const drawerOverlayEl = document.getElementById('drawerOverlay');
+        if (drawerOverlayEl) drawerOverlayEl.addEventListener('click', closeDrawer);
+        const headerClearBtn = document.getElementById('headerClearBtn');
+        if (headerClearBtn) {
+            headerClearBtn.addEventListener('click', function() {
+                if (confirm('Clear all timer settings? Time, prep countdown, rounds, and state will be reset to defaults.')) {
+                    clearTimer();
+                }
+            });
+        }
         
         // Round Completed: count the circuit and log to roundsResults (Rounds mode has no rest/target in settings).
         completeRoundBtn.addEventListener('click', () => {
@@ -3004,25 +3126,33 @@
             }
         });
         
-        minutesInput.addEventListener('input', onTimeChange);
-        secondsInput.addEventListener('input', onTimeChange);
+        if (amrapTimeInput) amrapTimeInput.addEventListener('input', onTimeChange);
+        if (amrapTimeSlider) amrapTimeSlider.addEventListener('input', function() {
+            if (isRunning || isPaused) return;
+            const sec = Math.min(6000, Math.max(0, parseInt(this.value, 10) || 0));
+            if (amrapTimeInput) amrapTimeInput.value = formatTime(sec);
+            this.value = String(sec);
+            onTimeChange();
+        });
+        const amrapTimeDecreaseBtn = document.getElementById('amrapTimeDecreaseBtn');
+        const amrapTimeIncreaseBtn = document.getElementById('amrapTimeIncreaseBtn');
+        if (amrapTimeDecreaseBtn) amrapTimeDecreaseBtn.addEventListener('click', () => adjustAmrapTime(-10));
+        if (amrapTimeIncreaseBtn) amrapTimeIncreaseBtn.addEventListener('click', () => adjustAmrapTime(10));
         
-        document.getElementById('minutesPlus5Btn').addEventListener('click', () => adjustMinutes(5));
-        document.getElementById('minutesPlus1Btn').addEventListener('click', () => adjustMinutes(1));
-        document.getElementById('minutesMinus1Btn').addEventListener('click', () => adjustMinutes(-1));
-        document.getElementById('minutesMinus5Btn').addEventListener('click', () => adjustMinutes(-5));
-        document.getElementById('secondsPlus5Btn').addEventListener('click', () => adjustSeconds(5));
-        document.getElementById('secondsPlus1Btn').addEventListener('click', () => adjustSeconds(1));
-        document.getElementById('secondsMinus1Btn').addEventListener('click', () => adjustSeconds(-1));
-        document.getElementById('secondsMinus5Btn').addEventListener('click', () => adjustSeconds(-5));
         document.getElementById('roundsPlus5Btn').addEventListener('click', () => adjustRounds(5));
         document.getElementById('roundsPlus1Btn').addEventListener('click', () => adjustRounds(1));
         document.getElementById('roundsMinus1Btn').addEventListener('click', () => adjustRounds(-1));
         document.getElementById('roundsMinus5Btn').addEventListener('click', () => adjustRounds(-5));
-        document.getElementById('prepTimePlus5Btn').addEventListener('click', () => adjustPrepTime(5));
-        document.getElementById('prepTimePlus1Btn').addEventListener('click', () => adjustPrepTime(1));
-        document.getElementById('prepTimeMinus1Btn').addEventListener('click', () => adjustPrepTime(-1));
-        document.getElementById('prepTimeMinus5Btn').addEventListener('click', () => adjustPrepTime(-5));
+        if (prepTimeSlider) prepTimeSlider.addEventListener('input', function() {
+            if (isRunning || isPaused) return;
+            const sec = Math.min(300, Math.max(0, parseInt(this.value, 10) || 0));
+            if (prepTimeInput) prepTimeInput.value = formatTime(sec);
+            this.value = String(sec);
+        });
+        const prepTimeDecreaseBtn = document.getElementById('prepTimeDecreaseBtn');
+        const prepTimeIncreaseBtn = document.getElementById('prepTimeIncreaseBtn');
+        if (prepTimeDecreaseBtn) prepTimeDecreaseBtn.addEventListener('click', () => adjustPrepTime(-10));
+        if (prepTimeIncreaseBtn) prepTimeIncreaseBtn.addEventListener('click', () => adjustPrepTime(10));
         document.getElementById('restBetweenRoundsPlus5Btn').addEventListener('click', () => adjustRestBetweenRounds(5));
         document.getElementById('restBetweenRoundsPlus1Btn').addEventListener('click', () => adjustRestBetweenRounds(1));
         document.getElementById('restBetweenRoundsMinus5Btn').addEventListener('click', () => adjustRestBetweenRounds(-5));
@@ -3046,9 +3176,9 @@
             });
         }
         
-        prepTimeInput.addEventListener('input', function() {
-            const value = clampInt(this.value, 0, 300);
-            this.value = String(value);
+        if (prepTimeInput) prepTimeInput.addEventListener('input', function() {
+            validateTimeInput(this, 300);
+            if (prepTimeSlider) prepTimeSlider.value = String(parseTime(this.value));
         });
         
         doneMessageInput.addEventListener('input', function() {
@@ -3115,15 +3245,22 @@
         });
         updateCycleExercisesHelpText();
         
-        document.getElementById('restBetweenExercisesPlus5Btn').addEventListener('click', () => adjustRestBetweenExercises(5));
-        document.getElementById('restBetweenExercisesPlus1Btn').addEventListener('click', () => adjustRestBetweenExercises(1));
-        document.getElementById('restBetweenExercisesMinus5Btn').addEventListener('click', () => adjustRestBetweenExercises(-5));
-        document.getElementById('restBetweenExercisesMinus1Btn').addEventListener('click', () => adjustRestBetweenExercises(-1));
-        
-        restBetweenExercisesInput.addEventListener('input', function() {
-            const value = clampInt(this.value, 0, 300);
-            this.value = String(value);
-            restBetweenExercises = value;
+        const restBetweenExercisesDecreaseBtn = document.getElementById('restBetweenExercisesDecreaseBtn');
+        const restBetweenExercisesIncreaseBtn = document.getElementById('restBetweenExercisesIncreaseBtn');
+        if (restBetweenExercisesDecreaseBtn) restBetweenExercisesDecreaseBtn.addEventListener('click', () => adjustRestBetweenExercises(-10));
+        if (restBetweenExercisesIncreaseBtn) restBetweenExercisesIncreaseBtn.addEventListener('click', () => adjustRestBetweenExercises(10));
+        if (restBetweenExercisesSlider) restBetweenExercisesSlider.addEventListener('input', function() {
+            if (isRunning || isPaused) return;
+            const sec = Math.min(300, Math.max(0, parseInt(this.value, 10) || 0));
+            if (restBetweenExercisesInput) restBetweenExercisesInput.value = formatTime(sec);
+            this.value = String(sec);
+            restBetweenExercises = sec;
+            updateCycleTimeSummary();
+        });
+        if (restBetweenExercisesInput) restBetweenExercisesInput.addEventListener('input', function() {
+            const sec = validateTimeInput(this, 300);
+            if (restBetweenExercisesSlider) restBetweenExercisesSlider.value = String(sec);
+            restBetweenExercises = sec;
             updateCycleTimeSummary();
         });
         
@@ -3136,20 +3273,31 @@
         
         function adjustWorkTimePerExercise(delta) {
             if (isRunning || isPaused) return;
-            const current = clampInt(workTimePerExerciseInput.value, 10, 300);
-            const newValue = Math.min(300, Math.max(10, current + delta));
-            workTimePerExerciseInput.value = String(newValue);
-            workTimePerExerciseSeconds = newValue;
+            const current = workTimePerExerciseInput ? parseTime(workTimePerExerciseInput.value) : 60;
+            const newSec = Math.min(300, Math.max(10, current + delta));
+            if (workTimePerExerciseInput) workTimePerExerciseInput.value = formatTime(newSec);
+            if (workTimePerExerciseSlider) workTimePerExerciseSlider.value = String(newSec);
+            workTimePerExerciseSeconds = newSec;
             updateCycleTimeSummary();
         }
-        document.getElementById('workTimePerExercisePlus5Btn').addEventListener('click', () => adjustWorkTimePerExercise(5));
-        document.getElementById('workTimePerExercisePlus1Btn').addEventListener('click', () => adjustWorkTimePerExercise(1));
-        document.getElementById('workTimePerExerciseMinus5Btn').addEventListener('click', () => adjustWorkTimePerExercise(-5));
-        document.getElementById('workTimePerExerciseMinus1Btn').addEventListener('click', () => adjustWorkTimePerExercise(-1));
+        const workTimePerExerciseDecreaseBtn = document.getElementById('workTimePerExerciseDecreaseBtn');
+        const workTimePerExerciseIncreaseBtn = document.getElementById('workTimePerExerciseIncreaseBtn');
+        if (workTimePerExerciseDecreaseBtn) workTimePerExerciseDecreaseBtn.addEventListener('click', () => adjustWorkTimePerExercise(-10));
+        if (workTimePerExerciseIncreaseBtn) workTimePerExerciseIncreaseBtn.addEventListener('click', () => adjustWorkTimePerExercise(10));
+        if (workTimePerExerciseSlider) workTimePerExerciseSlider.addEventListener('input', function() {
+            if (isRunning || isPaused) return;
+            const sec = Math.min(300, Math.max(10, parseInt(this.value, 10) || 60));
+            if (workTimePerExerciseInput) workTimePerExerciseInput.value = formatTime(sec);
+            this.value = String(sec);
+            workTimePerExerciseSeconds = sec;
+            updateCycleTimeSummary();
+        });
         if (workTimePerExerciseInput) workTimePerExerciseInput.addEventListener('input', function() {
-            const value = clampInt(this.value, 10, 300);
-            this.value = String(value);
-            workTimePerExerciseSeconds = value;
+            let sec = parseTime(this.value);
+            sec = Math.min(300, Math.max(10, sec));
+            this.value = formatTime(sec);
+            if (workTimePerExerciseSlider) workTimePerExerciseSlider.value = String(sec);
+            workTimePerExerciseSeconds = sec;
             updateCycleTimeSummary();
         });
         // Theme management
@@ -3160,37 +3308,56 @@
             return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
 
+        const darkThemeValue = 'style1';
         function applyTheme(theme) {
-            document.documentElement.classList.toggle('dark', theme === 'dark');
+            const root = document.documentElement;
+            if (theme === 'dark') {
+                root.setAttribute('data-theme', darkThemeValue);
+            } else {
+                root.removeAttribute('data-theme');
+            }
             localStorage.setItem(themeKey, theme);
         }
 
         function toggleTheme() {
-            const isDark = document.documentElement.classList.contains('dark');
+            const isDark = document.documentElement.getAttribute('data-theme') === darkThemeValue;
             applyTheme(isDark ? 'light' : 'dark');
         }
 
         function updateThemeIcon() {
             const icon = document.getElementById('theme-icon');
             if (!icon) return;
-            const isDark = document.documentElement.classList.contains('dark');
+            const isDark = document.documentElement.getAttribute('data-theme') === darkThemeValue;
             icon.textContent = isDark ? '☀️' : '🌙';
+        }
+
+        function updateLogoColors() {
+            const logo = document.getElementById('timerist-logo');
+            if (!logo) return;
+            const isDark = document.documentElement.getAttribute('data-theme') === darkThemeValue;
+            const color = isDark ? '#fafafa' : '#0a0a0a';
+            logo.querySelectorAll('.logo-circle, .logo-line').forEach(function(el) { el.setAttribute('stroke', color); });
         }
         
         // Initialize theme
         applyTheme(getInitialTheme());
         updateThemeIcon();
+        updateLogoColors();
+        const themeObserver = new MutationObserver(function() { updateLogoColors(); updateThemeIcon(); });
+        themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
         document.getElementById('themeToggleBtn').addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
             toggleTheme();
             updateThemeIcon();
+            updateLogoColors();
         });
         document.getElementById('themeToggleBtn').addEventListener('touchstart', function(e) {
             e.preventDefault();
             e.stopPropagation();
             toggleTheme();
             updateThemeIcon();
+            updateLogoColors();
         }, { passive: false });
 
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {

@@ -729,7 +729,7 @@
             user-select: none;
         }
         .header-top {
-            position: fixed;
+            position: absolute;
             top: clamp(1rem, 3vw, 2rem);
             left: 0;
             right: 0;
@@ -739,12 +739,8 @@
             padding: 0 clamp(1rem, 3vw, 2rem);
             z-index: 10;
             width: 100%;
-            max-width: 28rem;
+            max-width: 1200px;
             margin: 0 auto;
-            left: 50%;
-            transform: translateX(-50%);
-            border-bottom: 1px solid rgb(var(--border));
-            background: rgb(var(--background));
             gap: 0.5rem;
             min-width: 0;
         }
@@ -979,7 +975,7 @@
 </head>
 <body class="font-sans">
     <div class="container">
-        <header class="header-top">
+        <div class="header-top">
             <div style="display: flex; align-items: center; gap: 0.75rem;">
                 <a href="index.html" style="display: flex; align-items: center; text-decoration: none; cursor: pointer;">
                     <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" id="timerist-logo">
@@ -993,10 +989,12 @@
                 <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">HIIT</span>
             </div>
             <div class="header-actions">
-                <button type="button" class="mode-toggle-btn p-2 rounded-xl text-[rgb(var(--foreground))] text-xl" id="themeToggleBtn" aria-label="Toggle dark mode"><span id="theme-icon">🌙</span></button>
-                <button type="button" class="hamburger-menu p-2 rounded-xl text-[rgb(var(--foreground))] text-xl" id="menuBtn" aria-label="Open setup">☰</button>
+                <button class="mode-toggle-btn mode-toggle" id="themeToggleBtn" aria-label="Toggle dark mode">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button type="button" class="hamburger-menu" id="menuBtn" aria-label="Open setup">☰</button>
             </div>
-        </header>
+        </div>
         
         <div class="timer-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
             <div class="timer-display-block bg-card border border-border rounded-xl shadow-lg text-center p-4" id="timerDisplayBlock">
@@ -1810,7 +1808,9 @@
             return (Number.isFinite(v) && v >= 0 && v <= 60) ? v : 10;
         }
         function updateDisplay() {
-            if (currentPhase === 'prep') {
+            if (!isRunning) {
+                display.textContent = '00:00';
+            } else if (currentPhase === 'prep') {
                 display.textContent = String(currentTime);
             } else {
                 display.textContent = formatTime(currentTime);

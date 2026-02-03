@@ -18,13 +18,32 @@ This document captures the styling and interface changes applied when transformi
 | Viewport | `width=device-width, initial-scale=1.0` | Add `maximum-scale=1.0, user-scalable=no` for consistent mobile zoom |
 | Container | `max-width: 1200px`, flexible | `max-width: 28rem` (mobile-first), `padding-bottom: env(safe-area-inset-bottom, 1rem)` |
 | Layout | Side drawer (right slide), main + rounds + presets on page | **Bottom sheet** only; no presets/rounds on main page (all in sheet) |
-| Header | Absolute `.header-top`, wide | **Fixed** header, `max-w-md mx-auto`, border-bottom, safe-area aware |
+| Header | Absolute `.header-top`, wide | **Keep left-justified** — do not change to fixed/centered (see §1.1) |
 
 **Checklist:**
 - [ ] Viewport meta includes `maximum-scale=1.0, user-scalable=no` (optional per product)
 - [ ] Container uses `env(safe-area-inset-bottom)` for notched devices
 - [ ] Settings panel is a **bottom sheet** (slides up from bottom), not a side drawer (unless page is desktop-first)
-- [ ] Header is fixed with border-bottom and constrained width
+- [ ] **Header format:** Main page header remains **left-justified** per §1.1; do not inadvertently center it.
+
+### 1.1 Main page header: left-justified (do not change)
+
+**Reference files:** `interval.html`, `countdown.html` — use these as the source of truth for header layout.
+
+The main page header (`.header-top`) must stay **left-justified**: logo and page title on the left, theme/setup buttons on the right. Do **not** convert it to a fixed, narrow, centered strip (e.g. `position: fixed` + `max-width: 28rem` + `margin: 0 auto`), which centers the header and breaks the expected layout.
+
+**Required header pattern:**
+- `position: absolute` (not fixed)
+- `top: clamp(1rem, 3vw, 2rem)`; `left: 0`; `right: 0`
+- `padding: 0 clamp(1rem, 3vw, 2rem)`
+- `max-width: 1200px` (match container), `width: 100%`, `margin: 0 auto`
+- `display: flex`; `justify-content: space-between`; `align-items: center`
+- No background or border-bottom on the header bar (content flows underneath)
+- `.header-top > div:first-child`: flex, left-aligned (logo + link + separator + page name)
+- Media queries: at 390px use `padding: 0 0.75rem`; at 391px–428px use `padding: 0 1rem`; hide separator/site link on small screens as in interval/countdown
+
+**Checklist (every shadcn design pass):**
+- [ ] After any layout/header change, verify the main page header matches **interval.html** / **countdown.html**: left-justified, absolute, full content width (1200px max), not a narrow centered strip.
 
 ---
 
@@ -139,9 +158,12 @@ This document captures the styling and interface changes applied when transformi
 2. A **slider** for coarse adjustment (e.g. 0–600s work, 0–300s rest, 0–3600s countdown; step 5; 52px height, ~40px thumb).
 3. A **time-stepper row**: **−10** button | **MM:SS** text input | **+10** button. The −10/+10 adjust by 10 seconds; the central input displays and accepts MM:SS (e.g. `00:00`, `1:30`). Slider and input stay in sync (parse/format MM:SS in script).
 
+**Thick sliders (use in Shadcn design pass wherever there is a time entry):** Use thick slider styling—not the browser default thin track. Apply: **Wrapper** `.time-slider-wrap`; **Track** 16px height, border-radius 8px, background `rgb(var(--input))` via `::-webkit-slider-runnable-track` and `::-moz-range-track`; range input `-webkit-appearance: none; appearance: none; background: transparent; height: 52px`; **Thumb** 40×40px circle, primary fill, 3px card border, shadow (`::-webkit-slider-thumb` with `margin-top: -12px`, and `::-moz-range-thumb`). Reference: `amrap.html` for the full `.time-slider-wrap` block.
+
 **Checklist:**
 - [ ] All main inputs: at least **16px** font-size, **52px** min-height where applicable, 2px border, 0.75rem radius, focus ring 3px.
 - [ ] **Time entry:** One **MM:SS** control per duration (slider + −10 / MM:SS input / +10). **Do not** use separate “Minutes” and “Seconds” inputs.
+- [ ] **Use thick sliders** for every time-entry slider: 16px track, 40px thumb, custom track/thumb CSS. Do not use default thin range inputs. See **Thick sliders** note below.
 - [ ] Work/rest: add sliders + stepper row; stepper buttons 56px+, rounded.
 - [ ] Rounds: large stepper (64–72px), same visual language.
 - [ ] Countdown: use class to hide number input spinners.
@@ -288,6 +310,8 @@ Use this list and the checklists above when doing the **shadcn design pass** on 
 | — | .time-slider-wrap, .time-stepper-row, .rounds-stepper |
 | — | .header-clear-btn, .btn-clear-all-settings |
 
+**Header (do not change):** Main page `.header-top` must stay **left-justified** (position absolute, max-width 1200px, padding clamp(1rem, 3vw, 2rem)). Reference: **interval.html**, **countdown.html**. Do not use fixed + narrow max-width (e.g. 28rem) which centers the header.
+
 ---
 
-*Document version: 1.3. Section 5 “Modified” message: apply only to timers with presets; clarifies when to append “Modified: Xs work, Ys rest, Z round(s)” so participants see parameter changes. Section 14: table indicating which pages have presets and when Section 5 applies. v1.2: Time data entry: single MM:SS control per duration. v1.1: quick-countdown pass. Use with quick-interval.html, interval.html, and quick-countdown.html as references.*
+*Document version: 1.4. Section 1.1: Main page header must remain left-justified; reference interval.html and countdown.html; checklist to verify header format after any layout change. v1.3: Section 5 “Modified” message; Section 14 presets table. v1.2: Time data entry: single MM:SS control per duration. v1.1: quick-countdown pass. Use interval.html, countdown.html, quick-interval.html, and quick-countdown.html as references.*

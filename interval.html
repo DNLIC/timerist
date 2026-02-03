@@ -525,7 +525,7 @@
                 </a>
                 <a href="index.html" style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground)); text-decoration: none; cursor: pointer;">timerist.com</a>
                 <span class="separator" style="color: rgb(var(--muted-foreground));">|</span>
-                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">Quick Interval</span>
+                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">Interval</span>
             </div>
             <div class="header-actions">
                 <button class="mode-toggle-btn mode-toggle" id="themeToggleBtn" aria-label="Toggle dark mode"><span id="theme-icon">🌙</span></button>
@@ -675,6 +675,9 @@
             </div>
             <div class="sheet-section">
                 <h3>Countdown Before Start (seconds)</h3>
+                <div class="time-slider-wrap">
+                    <input type="range" id="countdownBeforeStartSlider" min="0" max="60" step="1" value="10" aria-label="Countdown before start seconds">
+                </div>
                 <div class="rounds-stepper">
                     <button type="button" class="stepper-btn rounds-adjust-btn" id="countdownDecreaseBtn" aria-label="Decrease countdown">−</button>
                     <input type="number" id="countdownBeforeStartInput" class="custom-time-input countdown-input-no-spinners" value="10" min="0" max="60" aria-label="Countdown before start">
@@ -772,6 +775,7 @@
         var countdownBeforeStartInput = document.getElementById('countdownBeforeStartInput');
         var countdownDecreaseBtn = document.getElementById('countdownDecreaseBtn');
         var countdownIncreaseBtn = document.getElementById('countdownIncreaseBtn');
+        var countdownBeforeStartSlider = document.getElementById('countdownBeforeStartSlider');
         var presetSelect = document.getElementById('presetSelect');
         var workTimeSlider = document.getElementById('workTimeSlider');
         var restTimeSlider = document.getElementById('restTimeSlider');
@@ -842,6 +846,7 @@
         function saveCountdownBeforeStart(seconds) {
             var s = Math.max(0, Math.min(60, seconds));
             if (countdownBeforeStartInput) countdownBeforeStartInput.value = s;
+            if (countdownBeforeStartSlider) countdownBeforeStartSlider.value = s;
             try { localStorage.setItem('quick-interval-countdownBeforeStart', String(s)); } catch (e) {}
         }
 
@@ -884,6 +889,7 @@
         function syncSlidersFromInputs() {
             if (workTimeSlider) workTimeSlider.value = Math.min(600, parseTime(workTimeInput && workTimeInput.value));
             if (restTimeSlider) restTimeSlider.value = Math.min(300, parseTime(restTimeInput && restTimeInput.value));
+            if (countdownBeforeStartSlider) countdownBeforeStartSlider.value = getCountdownBeforeStart();
         }
         function syncInputsFromSliders() {
             if (workTimeSlider) {
@@ -901,6 +907,7 @@
             [workTimeInput, restTimeInput, roundsInput].forEach(function(el) { if (el) el.disabled = true; });
             [roundsDecreaseBtn, roundsIncreaseBtn, workDecreaseBtn, workIncreaseBtn, restDecreaseBtn, restIncreaseBtn].forEach(function(el) { if (el) el.disabled = true; });
             if (countdownBeforeStartInput) countdownBeforeStartInput.disabled = true;
+            if (countdownBeforeStartSlider) countdownBeforeStartSlider.disabled = true;
             if (countdownDecreaseBtn) countdownDecreaseBtn.disabled = true;
             if (countdownIncreaseBtn) countdownIncreaseBtn.disabled = true;
         }
@@ -908,6 +915,7 @@
             [workTimeInput, restTimeInput, roundsInput].forEach(function(el) { if (el) el.disabled = false; });
             [roundsDecreaseBtn, roundsIncreaseBtn, workDecreaseBtn, workIncreaseBtn, restDecreaseBtn, restIncreaseBtn].forEach(function(el) { if (el) el.disabled = false; });
             if (countdownBeforeStartInput) countdownBeforeStartInput.disabled = false;
+            if (countdownBeforeStartSlider) countdownBeforeStartSlider.disabled = false;
             if (countdownDecreaseBtn) countdownDecreaseBtn.disabled = false;
             if (countdownIncreaseBtn) countdownIncreaseBtn.disabled = false;
         }
@@ -1394,6 +1402,13 @@
             else countdownBeforeStartInput.value = 10;
             countdownBeforeStartInput.addEventListener('input', function() { var v = parseInt(this.value, 10); if (Number.isFinite(v)) saveCountdownBeforeStart(v); });
             countdownBeforeStartInput.addEventListener('change', function() { saveCountdownBeforeStart(getCountdownBeforeStart()); });
+        }
+        if (countdownBeforeStartSlider) {
+            countdownBeforeStartSlider.addEventListener('input', function() {
+                if (isRunning) return;
+                var sec = parseInt(this.value, 10);
+                saveCountdownBeforeStart(sec);
+            });
         }
         if (countdownDecreaseBtn) countdownDecreaseBtn.addEventListener('click', function() { if (!isRunning) saveCountdownBeforeStart(getCountdownBeforeStart() - 1); });
         if (countdownIncreaseBtn) countdownIncreaseBtn.addEventListener('click', function() { if (!isRunning) saveCountdownBeforeStart(getCountdownBeforeStart() + 1); });

@@ -453,26 +453,8 @@
             opacity: 0.7;
         }
         
-        .settings-drawer {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 100%;
-            max-width: 400px;
-            height: 100vh;
-            background: rgb(var(--card));
-            border-left: 1px solid rgb(var(--border));
-            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
-            transition: right 0.3s ease;
-            z-index: 1002;
-            overflow-y: auto;
-        }
-        
-        .settings-drawer.open {
-            right: 0;
-        }
-        
-        .drawer-overlay {
+        /* Bottom sheet (shadcn design pass) – slides up from bottom, not side drawer */
+        .sheet-overlay {
             position: fixed;
             top: 0;
             left: 0;
@@ -481,32 +463,69 @@
             background: rgba(0, 0, 0, 0.5);
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
             z-index: 1001;
         }
         
-        .drawer-overlay.open {
+        .sheet-overlay.open {
             opacity: 1;
             visibility: visible;
         }
         
-        .drawer-header {
-            padding: 1.5rem;
+        .bottom-sheet {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            max-height: 85vh;
+            background: rgb(var(--card));
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+            z-index: 1002;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .bottom-sheet.open {
+            transform: translateY(0);
+        }
+        
+        .sheet-grabber {
+            flex-shrink: 0;
+            width: 40px;
+            height: 4px;
+            margin: 0.75rem auto 0;
+            background: rgb(var(--muted-foreground));
+            border-radius: 9999px;
+            opacity: 0.6;
+        }
+        
+        .sheet-header {
+            flex-shrink: 0;
+            padding: 1rem 1.5rem;
             border-bottom: 1px solid rgb(var(--border));
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         
-        .drawer-content {
+        .sheet-content {
+            flex: 1;
             padding: 1.5rem;
+            overflow-y: auto;
+            padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
         }
         
-        .drawer-section {
+        .sheet-section {
             margin-bottom: 2rem;
         }
         
-        .drawer-section h3 {
+        .sheet-section h3 {
             font-size: 0.875rem;
             font-weight: 600;
             margin-bottom: 1rem;
@@ -515,7 +534,7 @@
             letter-spacing: 0.05em;
         }
         
-        .drawer-section p {
+        .sheet-section p {
             color: rgb(var(--muted-foreground));
             line-height: 1.6;
             margin-bottom: 0.75rem;
@@ -677,6 +696,119 @@
             flex: 1;
         }
         
+        /* Thick slider + stepper row (shadcn design pass) – warm-up / cool-down */
+        .time-slider-wrap { margin-top: 0.5rem; margin-bottom: 0.25rem; }
+        .time-slider-wrap input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 52px;
+            background: rgb(var(--accent));
+            border-radius: 1rem;
+            outline: none;
+            touch-action: manipulation;
+        }
+        .time-slider-wrap input[type="range"]::-webkit-slider-runnable-track {
+            height: 52px;
+            border-radius: 1rem;
+            background: rgb(var(--accent));
+        }
+        .time-slider-wrap input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgb(var(--primary));
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            margin-top: 6px;
+        }
+        .time-slider-wrap input[type="range"]::-moz-range-track {
+            height: 52px;
+            border-radius: 1rem;
+            background: rgb(var(--accent));
+        }
+        .time-slider-wrap input[type="range"]::-moz-range-thumb {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgb(var(--primary));
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .time-stepper-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .time-stepper-row .stepper-btn {
+            min-width: 56px;
+            min-height: 56px;
+            font-size: 1rem;
+            font-weight: 700;
+            border: 2px solid rgb(var(--border));
+            border-radius: 1rem;
+            background: rgb(var(--card));
+            color: rgb(var(--foreground));
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        .time-stepper-row .stepper-btn:hover:not(:disabled) {
+            background: rgb(var(--accent));
+        }
+        .time-stepper-row .stepper-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .time-stepper-row .custom-time-input {
+            flex: 1;
+        }
+        
+        /* Seconds stepper row: −5 −1 input +1 +5 (thick stepper buttons) */
+        .seconds-stepper-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .seconds-stepper-row .stepper-btn {
+            min-width: 56px;
+            min-height: 56px;
+            font-size: 1rem;
+            font-weight: 700;
+            border: 2px solid rgb(var(--border));
+            border-radius: 1rem;
+            background: rgb(var(--card));
+            color: rgb(var(--foreground));
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        .seconds-stepper-row .stepper-btn:hover:not(:disabled) {
+            background: rgb(var(--accent));
+        }
+        .seconds-stepper-row .stepper-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .seconds-stepper-row .custom-time-input {
+            flex: 0 1 auto;
+            width: 80px;
+            max-width: 100px;
+        }
+        
         @media (max-width: 390px) {
             .time-adjust-btn {
                 width: 40px;
@@ -708,6 +840,9 @@
         .timer-running .custom-time-input:not(:disabled),
         .timer-running .rounds-adjust-btn:not(:disabled),
         .timer-running .time-adjust-btn:not(:disabled),
+        .timer-running .time-slider-wrap input[type="range"],
+        .timer-running .time-stepper-row .stepper-btn:not(:disabled),
+        .timer-running .seconds-stepper-row .stepper-btn:not(:disabled),
         .timer-running #workoutTitleInput:not(:disabled),
         .timer-running #workoutDescriptionInput:not(:disabled),
         .timer-running #doneMessageInput:not(:disabled) {
@@ -931,14 +1066,14 @@
         </div>
         
         <div class="timer-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
-            <!-- Timer Display -->
-            <div class="timer-display-block bg-card border border-border rounded-lg shadow-lg text-center">
+            <!-- Timer Display (double-tap to open setup sheet) -->
+            <div class="timer-display-block bg-card border border-border rounded-lg shadow-lg text-center" id="timerDisplayBlock">
                 <!-- Workout Title -->
                 <div id="workoutTitleDisplay" style="display: none; text-align: center; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid rgb(var(--border));">
                     <h2 id="workoutTitleText" style="font-size: 1.25rem; font-weight: 600; color: rgb(var(--foreground)); margin: 0; word-wrap: break-word;"></h2>
                 </div>
                 
-                <div class="phase-label" id="phaseLabel">Work</div>
+                <div class="phase-label" id="phaseLabel">Pyramid Timer</div>
                 <div class="timer-display-large" id="display">00:00</div>
                 <div class="round-info">
                     <span id="pyramidInfo">Level 1 of 9</span>
@@ -963,18 +1098,19 @@
         </div>
     </div>
     
-    <!-- Drawer Overlay -->
-    <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+    <!-- Sheet overlay (tap to close) -->
+    <div class="sheet-overlay" id="drawerOverlay" aria-hidden="true"></div>
     
-    <!-- Settings Drawer -->
-    <div class="settings-drawer" id="settingsDrawer">
-        <div class="drawer-header">
+    <!-- Bottom sheet (Timer Setup – slides up from bottom) -->
+    <div class="bottom-sheet" id="settingsDrawer" role="dialog" aria-label="Timer setup">
+        <div class="sheet-grabber" aria-hidden="true"></div>
+        <div class="sheet-header">
             <h2 style="font-size: 1rem; font-weight: 600; color: rgb(var(--foreground)); text-transform: uppercase; letter-spacing: 0.05em;">Timer Setup</h2>
-            <button class="drawer-close" onclick="closeDrawer()" aria-label="Close drawer">×</button>
+            <button class="drawer-close" id="drawerCloseBtn" type="button" aria-label="Close">×</button>
         </div>
-        <div class="drawer-content">
+        <div class="sheet-content">
             <!-- Setup Content -->
-            <div class="drawer-section">
+            <div class="sheet-section">
                 <h3>Setup Content</h3>
                 
                 <!-- Workout Title -->
@@ -1030,87 +1166,64 @@
             </div>
             
             <!-- Pyramid Configuration -->
-            <div class="drawer-section">
+            <div class="sheet-section">
                 <h3>Pyramid Configuration</h3>
                 
-                <!-- Starting Work Time (seconds) -->
+                <!-- Starting Work Time (seconds) – thick slider + −5/−1/+1/+5 -->
                 <div class="input-group">
                     <label for="startTimeInput">Starting Work Time (seconds)</label>
-                    <div class="rounds-input-group" style="gap: 0.5rem; flex-wrap: wrap;">
-                        <button class="rounds-adjust-btn" id="startTimeDecrease5Btn" type="button" aria-label="Decrease starting time by 5">−5</button>
-                        <button class="rounds-adjust-btn" id="startTimeDecrease1Btn" type="button" aria-label="Decrease starting time by 1">−1</button>
-                        <input 
-                            type="text" 
-                            id="startTimeInput" 
-                            class="custom-time-input" 
-                            value="10"
-                            pattern="[0-9]+"
-                            placeholder="10"
-                            aria-label="Starting work time in seconds"
-                            style="width: 100px; flex: 0 0 auto;"
-                        >
-                        <button class="rounds-adjust-btn" id="startTimeIncrease1Btn" type="button" aria-label="Increase starting time by 1">+1</button>
-                        <button class="rounds-adjust-btn" id="startTimeIncrease5Btn" type="button" aria-label="Increase starting time by 5">+5</button>
+                    <div class="time-slider-wrap">
+                        <input type="range" id="startTimeSlider" min="1" max="120" step="1" value="10" aria-label="Starting work time seconds">
+                    </div>
+                    <div class="seconds-stepper-row">
+                        <button type="button" class="stepper-btn" id="startTimeDecrease5Btn" aria-label="Decrease starting time by 5">−5</button>
+                        <button type="button" class="stepper-btn" id="startTimeDecrease1Btn" aria-label="Decrease starting time by 1">−1</button>
+                        <input type="text" id="startTimeInput" class="custom-time-input" value="10" pattern="[0-9]+" placeholder="10" aria-label="Starting work time in seconds">
+                        <button type="button" class="stepper-btn" id="startTimeIncrease1Btn" aria-label="Increase starting time by 1">+1</button>
+                        <button type="button" class="stepper-btn" id="startTimeIncrease5Btn" aria-label="Increase starting time by 5">+5</button>
                     </div>
                 </div>
                 
-                <!-- Increment Step (seconds) -->
+                <!-- Increment Step (seconds) – thick slider + −5/−1/+1/+5 -->
                 <div class="input-group">
                     <label for="incrementInput">Increment Step (seconds)</label>
-                    <div class="rounds-input-group" style="gap: 0.5rem; flex-wrap: wrap;">
-                        <button class="rounds-adjust-btn" id="incrementDecrease5Btn" type="button" aria-label="Decrease increment by 5">−5</button>
-                        <button class="rounds-adjust-btn" id="incrementDecrease1Btn" type="button" aria-label="Decrease increment by 1">−1</button>
-                        <input 
-                            type="text" 
-                            id="incrementInput" 
-                            class="custom-time-input" 
-                            value="10"
-                            pattern="[0-9]+"
-                            placeholder="10"
-                            aria-label="Increment step in seconds"
-                            style="width: 100px; flex: 0 0 auto;"
-                        >
-                        <button class="rounds-adjust-btn" id="incrementIncrease1Btn" type="button" aria-label="Increase increment by 1">+1</button>
-                        <button class="rounds-adjust-btn" id="incrementIncrease5Btn" type="button" aria-label="Increase increment by 5">+5</button>
+                    <div class="time-slider-wrap">
+                        <input type="range" id="incrementSlider" min="1" max="60" step="1" value="10" aria-label="Increment step seconds">
+                    </div>
+                    <div class="seconds-stepper-row">
+                        <button type="button" class="stepper-btn" id="incrementDecrease5Btn" aria-label="Decrease increment by 5">−5</button>
+                        <button type="button" class="stepper-btn" id="incrementDecrease1Btn" aria-label="Decrease increment by 1">−1</button>
+                        <input type="text" id="incrementInput" class="custom-time-input" value="10" pattern="[0-9]+" placeholder="10" aria-label="Increment step in seconds">
+                        <button type="button" class="stepper-btn" id="incrementIncrease1Btn" aria-label="Increase increment by 1">+1</button>
+                        <button type="button" class="stepper-btn" id="incrementIncrease5Btn" aria-label="Increase increment by 5">+5</button>
                     </div>
                 </div>
                 
-                <!-- Peak Work Time (seconds) -->
+                <!-- Peak Work Time (seconds) – thick slider + −5/−1/+1/+5 -->
                 <div class="input-group">
                     <label for="peakTimeInput">Peak Work Time (seconds)</label>
-                    <div class="rounds-input-group" style="gap: 0.5rem; flex-wrap: wrap;">
-                        <button class="rounds-adjust-btn" id="peakTimeDecrease5Btn" type="button" aria-label="Decrease peak time by 5">−5</button>
-                        <button class="rounds-adjust-btn" id="peakTimeDecrease1Btn" type="button" aria-label="Decrease peak time by 1">−1</button>
-                        <input 
-                            type="text" 
-                            id="peakTimeInput" 
-                            class="custom-time-input" 
-                            value="50"
-                            pattern="[0-9]+"
-                            placeholder="50"
-                            aria-label="Peak work time in seconds"
-                            style="width: 100px; flex: 0 0 auto;"
-                        >
-                        <button class="rounds-adjust-btn" id="peakTimeIncrease1Btn" type="button" aria-label="Increase peak time by 1">+1</button>
-                        <button class="rounds-adjust-btn" id="peakTimeIncrease5Btn" type="button" aria-label="Increase peak time by 5">+5</button>
+                    <div class="time-slider-wrap">
+                        <input type="range" id="peakTimeSlider" min="10" max="300" step="5" value="50" aria-label="Peak work time seconds">
+                    </div>
+                    <div class="seconds-stepper-row">
+                        <button type="button" class="stepper-btn" id="peakTimeDecrease5Btn" aria-label="Decrease peak time by 5">−5</button>
+                        <button type="button" class="stepper-btn" id="peakTimeDecrease1Btn" aria-label="Decrease peak time by 1">−1</button>
+                        <input type="text" id="peakTimeInput" class="custom-time-input" value="50" pattern="[0-9]+" placeholder="50" aria-label="Peak work time in seconds">
+                        <button type="button" class="stepper-btn" id="peakTimeIncrease1Btn" aria-label="Increase peak time by 1">+1</button>
+                        <button type="button" class="stepper-btn" id="peakTimeIncrease5Btn" aria-label="Increase peak time by 5">+5</button>
                     </div>
                 </div>
                 
-                <!-- Rest Time -->
+                <!-- Rest Time (MM:SS) – thick slider + −10/+10 -->
                 <div class="input-group">
                     <label for="restTimeInput">Rest Time (MM:SS)</label>
-                    <div class="time-input-group">
-                        <button class="time-adjust-btn" id="restDecreaseBtn" type="button" aria-label="Decrease rest time by 10 seconds">−10</button>
-                        <input 
-                            type="text" 
-                            id="restTimeInput" 
-                            class="custom-time-input" 
-                            value="00:15"
-                            pattern="[0-9]{2}:[0-9]{2}"
-                            placeholder="MM:SS"
-                            aria-label="Rest time"
-                        >
-                        <button class="time-adjust-btn" id="restIncreaseBtn" type="button" aria-label="Increase rest time by 10 seconds">+10</button>
+                    <div class="time-slider-wrap">
+                        <input type="range" id="restTimeSlider" min="0" max="600" step="5" value="15" aria-label="Rest time seconds">
+                    </div>
+                    <div class="time-stepper-row">
+                        <button type="button" class="stepper-btn" id="restDecreaseBtn" aria-label="Decrease rest time by 10 seconds">−10</button>
+                        <input type="text" id="restTimeInput" class="custom-time-input" value="00:15" pattern="[0-9]{2}:[0-9]{2}" placeholder="MM:SS" aria-label="Rest time">
+                        <button type="button" class="stepper-btn" id="restIncreaseBtn" aria-label="Increase rest time by 10 seconds">+10</button>
                     </div>
                 </div>
                 
@@ -1129,39 +1242,29 @@
                     </div>
                 </div>
                 
-                <!-- Optional: Warm-up -->
+                <!-- Optional: Warm-up (thick slider + −10/+10 stepper) -->
                 <div class="input-group">
                     <label for="warmupInput">Warm-up Time (MM:SS) - Optional</label>
-                    <div class="time-input-group">
-                        <button class="time-adjust-btn" id="warmupDecreaseBtn" type="button" aria-label="Decrease warm-up by 10 seconds">−10</button>
-                        <input 
-                            type="text" 
-                            id="warmupInput" 
-                            class="custom-time-input" 
-                            value="00:30"
-                            pattern="[0-9]{2}:[0-9]{2}"
-                            placeholder="MM:SS"
-                            aria-label="Warm-up time (optional)"
-                        >
-                        <button class="time-adjust-btn" id="warmupIncreaseBtn" type="button" aria-label="Increase warm-up by 10 seconds">+10</button>
+                    <div class="time-slider-wrap">
+                        <input type="range" id="warmupSlider" min="0" max="600" step="5" value="30" aria-label="Warm-up time seconds">
+                    </div>
+                    <div class="time-stepper-row">
+                        <button type="button" class="stepper-btn" id="warmupDecreaseBtn" aria-label="Decrease warm-up by 10 seconds">−10</button>
+                        <input type="text" id="warmupInput" class="custom-time-input" value="00:30" pattern="[0-9]{2}:[0-9]{2}" placeholder="MM:SS" aria-label="Warm-up time (optional)">
+                        <button type="button" class="stepper-btn" id="warmupIncreaseBtn" aria-label="Increase warm-up by 10 seconds">+10</button>
                     </div>
                 </div>
                 
-                <!-- Optional: Cool-down -->
+                <!-- Optional: Cool-down (thick slider + −10/+10 stepper) -->
                 <div class="input-group">
                     <label for="cooldownInput">Cool-down Time (MM:SS) - Optional</label>
-                    <div class="time-input-group">
-                        <button class="time-adjust-btn" id="cooldownDecreaseBtn" type="button" aria-label="Decrease cool-down by 10 seconds">−10</button>
-                        <input 
-                            type="text" 
-                            id="cooldownInput" 
-                            class="custom-time-input" 
-                            value="01:00"
-                            pattern="[0-9]{2}:[0-9]{2}"
-                            placeholder="MM:SS"
-                            aria-label="Cool-down time (optional)"
-                        >
-                        <button class="time-adjust-btn" id="cooldownIncreaseBtn" type="button" aria-label="Increase cool-down by 10 seconds">+10</button>
+                    <div class="time-slider-wrap">
+                        <input type="range" id="cooldownSlider" min="0" max="600" step="5" value="60" aria-label="Cool-down time seconds">
+                    </div>
+                    <div class="time-stepper-row">
+                        <button type="button" class="stepper-btn" id="cooldownDecreaseBtn" aria-label="Decrease cool-down by 10 seconds">−10</button>
+                        <input type="text" id="cooldownInput" class="custom-time-input" value="01:00" pattern="[0-9]{2}:[0-9]{2}" placeholder="MM:SS" aria-label="Cool-down time (optional)">
+                        <button type="button" class="stepper-btn" id="cooldownIncreaseBtn" aria-label="Increase cool-down by 10 seconds">+10</button>
                     </div>
                 </div>
                 
@@ -1186,7 +1289,7 @@
             </div>
             
             <!-- Export/Import -->
-            <div class="drawer-section">
+            <div class="sheet-section">
                 <h3>Export / Import</h3>
                 <div style="display: flex; gap: 0.5rem;">
                     <button class="control-btn btn-primary" id="exportBtn" style="flex: 1;">Export JSON</button>
@@ -1196,7 +1299,7 @@
             </div>
             
             <!-- About This Timer -->
-            <div class="drawer-section">
+            <div class="sheet-section">
                 <h3>About This Timer</h3>
                 <p>
                     Pyramid timer creates an ascending-then-descending sequence of work intervals. 
@@ -1209,9 +1312,9 @@
             </div>
             
             <!-- General Info -->
-            <div class="drawer-section">
+            <div class="sheet-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.14</p>
+                <p><strong>Version:</strong> v0.15</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -1291,6 +1394,12 @@
         const warmupIncreaseBtn = document.getElementById('warmupIncreaseBtn');
         const cooldownDecreaseBtn = document.getElementById('cooldownDecreaseBtn');
         const cooldownIncreaseBtn = document.getElementById('cooldownIncreaseBtn');
+        const warmupSlider = document.getElementById('warmupSlider');
+        const cooldownSlider = document.getElementById('cooldownSlider');
+        const startTimeSlider = document.getElementById('startTimeSlider');
+        const incrementSlider = document.getElementById('incrementSlider');
+        const peakTimeSlider = document.getElementById('peakTimeSlider');
+        const restTimeSlider = document.getElementById('restTimeSlider');
         
         // Parse MM:SS format to seconds
         function parseTime(timeString) {
@@ -1593,8 +1702,8 @@
                     pyramidInfo.textContent = 'Workout finished';
                 }
             } else {
-                // Timer is ready (not running) - show pattern summary
-                phaseLabel.textContent = 'Ready';
+                // Timer is ready (not running) - show timer name and pattern summary
+                phaseLabel.textContent = 'Pyramid Timer';
                 phaseLabel.classList.remove('rest');
                 phaseLabel.style.color = 'rgb(var(--primary))';
                 
@@ -1805,7 +1914,8 @@
             }
             
             updateEstimatedTime();
-            // Update display (this will enable inputs and show Start, Clear, Set Up buttons)
+            syncPyramidSlidersFromInputs();
+            syncWarmupCooldownSlidersFromInputs();
             updateDisplay();
         }
         
@@ -1855,10 +1965,60 @@
                 numPyramids = value;
             }
             
+            syncPyramidSlidersFromInputs();
             updateEstimatedTime();
             if (!isRunning) {
                 resetTimer();
                 updateDisplay();
+            }
+        }
+        
+        // Sync warm-up / cool-down sliders from MM:SS inputs (after −10/+10 or typing)
+        function syncWarmupCooldownSlidersFromInputs() {
+            if (warmupSlider) warmupSlider.value = Math.min(600, parseTime(warmupInput && warmupInput.value));
+            if (cooldownSlider) cooldownSlider.value = Math.min(600, parseTime(cooldownInput && cooldownInput.value));
+        }
+        
+        // Sync start/increment/peak/rest sliders from inputs (after −5/−1/+1/+5 or typing)
+        function syncPyramidSlidersFromInputs() {
+            if (startTimeSlider) startTimeSlider.value = Math.max(1, Math.min(120, parseInt(startTimeInput && startTimeInput.value, 10) || 10));
+            if (incrementSlider) incrementSlider.value = Math.max(1, Math.min(60, parseInt(incrementInput && incrementInput.value, 10) || 10));
+            if (peakTimeSlider) peakTimeSlider.value = Math.max(10, Math.min(300, parseInt(peakTimeInput && peakTimeInput.value, 10) || 50));
+            if (restTimeSlider) restTimeSlider.value = Math.min(600, parseTime(restTimeInput && restTimeInput.value));
+        }
+        
+        // Sync one pyramid control from its slider (called on slider input)
+        function syncPyramidInputFromSlider(sliderId) {
+            if (isRunning) return;
+            if (sliderId === 'startTime') {
+                startTime = parseInt(startTimeSlider.value, 10);
+                startTimeInput.value = startTime;
+            } else if (sliderId === 'increment') {
+                increment = parseInt(incrementSlider.value, 10);
+                incrementInput.value = increment;
+            } else if (sliderId === 'peakTime') {
+                peakTime = parseInt(peakTimeSlider.value, 10);
+                peakTimeInput.value = peakTime;
+            } else if (sliderId === 'restTime') {
+                restTime = parseInt(restTimeSlider.value, 10);
+                restTimeInput.value = formatTime(restTime);
+            }
+            updateEstimatedTime();
+            resetTimer();
+            updateDisplay();
+        }
+        
+        // Sync warm-up / cool-down inputs and state from sliders
+        function syncWarmupCooldownInputsFromSliders() {
+            if (warmupSlider) {
+                const sec = parseInt(warmupSlider.value, 10);
+                warmupInput.value = formatTime(sec);
+                warmupTime = sec;
+            }
+            if (cooldownSlider) {
+                const sec = parseInt(cooldownSlider.value, 10);
+                cooldownInput.value = formatTime(sec);
+                cooldownTime = sec;
             }
         }
         
@@ -1879,6 +2039,8 @@
                 cooldownTime = newSeconds;
             }
             
+            syncWarmupCooldownSlidersFromInputs();
+            if (input === restTimeInput) syncPyramidSlidersFromInputs();
             updateEstimatedTime();
             // Reset timer to reflect new time
             if (!isRunning) {
@@ -1931,15 +2093,43 @@
         // Time input adjustment buttons
         restDecreaseBtn.addEventListener('click', () => adjustTime(restTimeInput, false));
         restIncreaseBtn.addEventListener('click', () => adjustTime(restTimeInput, true));
+        
+        // Thick sliders: start / increment / peak / rest – sync on slider move
+        if (startTimeSlider) startTimeSlider.addEventListener('input', () => syncPyramidInputFromSlider('startTime'));
+        if (incrementSlider) incrementSlider.addEventListener('input', () => syncPyramidInputFromSlider('increment'));
+        if (peakTimeSlider) peakTimeSlider.addEventListener('input', () => syncPyramidInputFromSlider('peakTime'));
+        if (restTimeSlider) restTimeSlider.addEventListener('input', () => syncPyramidInputFromSlider('restTime'));
+        
         warmupDecreaseBtn.addEventListener('click', () => adjustTime(warmupInput, false));
         warmupIncreaseBtn.addEventListener('click', () => adjustTime(warmupInput, true));
         cooldownDecreaseBtn.addEventListener('click', () => adjustTime(cooldownInput, false));
         cooldownIncreaseBtn.addEventListener('click', () => adjustTime(cooldownInput, true));
         
+        // Thick sliders: sync MM:SS and state when slider moves
+        if (warmupSlider) {
+            warmupSlider.addEventListener('input', function() {
+                if (isRunning) return;
+                syncWarmupCooldownInputsFromSliders();
+                updateEstimatedTime();
+                resetTimer();
+                updateDisplay();
+            });
+        }
+        if (cooldownSlider) {
+            cooldownSlider.addEventListener('input', function() {
+                if (isRunning) return;
+                syncWarmupCooldownInputsFromSliders();
+                updateEstimatedTime();
+                resetTimer();
+                updateDisplay();
+            });
+        }
+        
         // Input validation and updates
         startTimeInput.addEventListener('input', function() {
             if (!isRunning) {
                 startTime = parseInt(this.value) || 10;
+                syncPyramidSlidersFromInputs();
                 updateEstimatedTime();
                 resetTimer();
                 updateDisplay();
@@ -1949,6 +2139,7 @@
         incrementInput.addEventListener('input', function() {
             if (!isRunning) {
                 increment = parseInt(this.value) || 10;
+                syncPyramidSlidersFromInputs();
                 updateEstimatedTime();
                 resetTimer();
                 updateDisplay();
@@ -1958,6 +2149,7 @@
         peakTimeInput.addEventListener('input', function() {
             if (!isRunning) {
                 peakTime = parseInt(this.value) || 50;
+                syncPyramidSlidersFromInputs();
                 updateEstimatedTime();
                 resetTimer();
                 updateDisplay();
@@ -1968,6 +2160,7 @@
             validateTimeInput(this);
             if (!isRunning) {
                 restTime = parseTime(this.value);
+                syncPyramidSlidersFromInputs();
                 updateEstimatedTime();
                 resetTimer();
                 updateDisplay();
@@ -1987,6 +2180,7 @@
             validateTimeInput(this);
             if (!isRunning) {
                 warmupTime = parseTime(this.value);
+                syncWarmupCooldownSlidersFromInputs();
                 updateEstimatedTime();
                 resetTimer();
                 updateDisplay();
@@ -1997,26 +2191,51 @@
             validateTimeInput(this);
             if (!isRunning) {
                 cooldownTime = parseTime(this.value);
+                syncWarmupCooldownSlidersFromInputs();
                 updateEstimatedTime();
                 resetTimer();
                 updateDisplay();
             }
         });
         
-        // Drawer Functions
-        function toggleDrawer() {
-            const drawer = document.getElementById('settingsDrawer');
-            const overlay = document.getElementById('drawerOverlay');
-            drawer.classList.toggle('open');
-            overlay.classList.toggle('open');
+        // Bottom sheet (shadcn design pass) – open/close/toggle
+        function openSheet() {
+            document.getElementById('settingsDrawer').classList.add('open');
+            document.getElementById('drawerOverlay').classList.add('open');
+            if (document.getElementById('drawerOverlay')) document.getElementById('drawerOverlay').setAttribute('aria-hidden', 'false');
         }
         
         function closeDrawer() {
-            const drawer = document.getElementById('settingsDrawer');
-            const overlay = document.getElementById('drawerOverlay');
-            drawer.classList.remove('open');
-            overlay.classList.remove('open');
+            document.getElementById('settingsDrawer').classList.remove('open');
+            document.getElementById('drawerOverlay').classList.remove('open');
+            if (document.getElementById('drawerOverlay')) document.getElementById('drawerOverlay').setAttribute('aria-hidden', 'true');
         }
+        
+        function toggleDrawer() {
+            const drawer = document.getElementById('settingsDrawer');
+            if (drawer && drawer.classList.contains('open')) closeDrawer();
+            else openSheet();
+        }
+        
+        // Double-click (or double-tap on mobile) on timer panel opens setup sheet
+        const timerDisplayBlock = document.getElementById('timerDisplayBlock');
+        if (timerDisplayBlock) {
+            timerDisplayBlock.addEventListener('dblclick', openSheet);
+            var lastTap = 0;
+            timerDisplayBlock.addEventListener('touchend', function(e) {
+                var now = Date.now();
+                if (now - lastTap < 400) {
+                    e.preventDefault();
+                    openSheet();
+                    lastTap = 0;
+                } else {
+                    lastTap = now;
+                }
+            }, { passive: false });
+        }
+        document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
+        const drawerCloseBtn = document.getElementById('drawerCloseBtn');
+        if (drawerCloseBtn) drawerCloseBtn.addEventListener('click', closeDrawer);
         
         // Initialize - load default settings and generate sequence
         startTime = parseInt(startTimeInput.value) || 10;
@@ -2040,6 +2259,8 @@
         }
         
         updateEstimatedTime();
+        syncPyramidSlidersFromInputs();
+        syncWarmupCooldownSlidersFromInputs();
         updateDisplay();
         
         // Update workout title and description display
@@ -2259,6 +2480,8 @@
                         updateCharCounts();
                         updateWorkoutDisplay();
                         updateEstimatedTime();
+                        syncPyramidSlidersFromInputs();
+                        syncWarmupCooldownSlidersFromInputs();
                         resetTimer();
                         updateDisplay();
                         
