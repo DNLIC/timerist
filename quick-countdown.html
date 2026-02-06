@@ -31,6 +31,7 @@
             --input: 225 232 237;
             --ring: 74 144 226;
             --radius: 0.5rem;
+            --selected-chip: 65 65 65;
         }
         [data-theme="style1"] {
             --background: 0 0 0;
@@ -50,6 +51,7 @@
             --border: 51 51 51;
             --input: 51 51 51;
             --ring: 255 0 0;
+            --selected-chip: 55 55 55;
         }
         * { box-sizing: border-box; }
         body {
@@ -273,9 +275,9 @@
             -webkit-tap-highlight-color: transparent; touch-action: manipulation; font-family: inherit;
         }
         .quick-select-btn:hover:not(:disabled) { background: rgb(var(--accent)); }
-        .quick-select-btn.selected { background: rgb(var(--primary)); color: rgb(var(--primary-foreground)); border-color: rgb(var(--primary)); font-weight: 600; box-shadow: 0 2px 8px rgba(var(--primary), 0.3); }
+        .quick-select-btn.selected { background: rgb(var(--selected-chip)); color: rgb(255 255 255); border-color: rgb(var(--selected-chip)); font-weight: 600; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25); }
         .quick-select-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .timer-running .quick-select-btn:not(.selected) { opacity: 0.5; pointer-events: none; }
+        .timer-running .quick-select-btn:not(.selected) { opacity: 0.6; }
         .header-actions button { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
         #workoutTitleDisplay { display: none; text-align: center; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid rgb(var(--border)); }
         #workoutDescriptionDisplay { display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgb(var(--border)); }
@@ -322,7 +324,7 @@
             </div>
 
             <div class="p-4 rounded-2xl bg-[rgb(var(--card))] border border-[rgb(var(--border))] shadow-lg">
-                <p class="text-xs font-semibold uppercase tracking-wide text-center text-[rgb(var(--muted-foreground))] mb-3">Tap to start instantly</p>
+                <p class="text-xs font-semibold uppercase tracking-wide text-center text-[rgb(var(--muted-foreground))] mb-3">1 Tap to Start · 2 Tap to Override</p>
                 <div class="quick-select-grid">
                     <button class="quick-select-btn" data-seconds="15">00:15</button>
                     <button class="quick-select-btn" data-seconds="30">00:30</button>
@@ -699,11 +701,41 @@
         resumeBtn.addEventListener('click', togglePlayPause);
         resetBtn.addEventListener('click', resetTimer);
         
-        // Quick-select button listeners (auto-start)
+        // Quick-select: single tap = start (or after completion clear + start); second tap within 400ms = override (end current, start this preset)
+        // Any two taps within 400ms count as "override" so the newly tapped button gets dark gray (selected) immediately
+        let quickSelectTapTimeout = null;
+        let lastQuickSelectTapTime = 0;
+        const DOUBLE_TAP_MS = 400;
+        
         quickSelectButtons.forEach(btn => {
             btn.addEventListener('click', function() {
                 const seconds = parseInt(this.getAttribute('data-seconds'));
-                setTimeAndStart(seconds);
+                const now = Date.now();
+                const isOverride = (now - lastQuickSelectTapTime) < DOUBLE_TAP_MS;
+                
+                if (isOverride) {
+                    lastQuickSelectTapTime = 0;
+                    if (quickSelectTapTimeout) { clearTimeout(quickSelectTapTimeout); quickSelectTapTimeout = null; }
+                    // End current timer regardless of phase (running, paused, or showing completion)
+                    stopTimer();
+                    isPaused = false;
+                    showingCompletionMessage = false;
+                    clearInterval(interval);
+                    interval = null;
+                    setTimeAndStart(seconds);  // updates selected state (dark gray) to this button immediately
+                    return;
+                }
+                
+                lastQuickSelectTapTime = now;
+                if (quickSelectTapTimeout) clearTimeout(quickSelectTapTimeout);
+                quickSelectTapTimeout = setTimeout(() => {
+                    quickSelectTapTimeout = null;
+                    lastQuickSelectTapTime = 0;
+                    // Single tap: when running or paused, do nothing (user must tap again quickly to override)
+                    if (isRunning || isPaused) return;
+                    // Single tap when idle or after completion: clear completion state if any and start this preset
+                    setTimeAndStart(seconds);
+                }, DOUBLE_TAP_MS);
             });
         });
         

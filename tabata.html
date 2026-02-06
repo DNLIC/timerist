@@ -1581,24 +1581,23 @@
             display.textContent = formatTime(currentTime);
             // Reset color to primary (will be overridden by warning/danger classes if needed)
             display.style.color = '';
-            // Restore phase label visibility
+            // Restore phase label visibility; only show Work/Rest when workout is actually running or paused
             phaseLabel.style.display = 'block';
-            if (hasValidTimerData()) {
+            if ((isRunning || isPaused) && hasValidTimerData()) {
                 phaseLabel.textContent = isWorkPhase ? 'Work' : 'Rest';
+                if (isWorkPhase) {
+                    phaseLabel.classList.remove('rest');
+                    phaseLabel.style.color = 'rgb(var(--primary))';
+                } else {
+                    phaseLabel.classList.add('rest');
+                    phaseLabel.style.color = 'rgb(var(--secondary))';
+                }
             } else {
-                phaseLabel.textContent = TIMER_NAME;
+                phaseLabel.textContent = '';
+                phaseLabel.classList.remove('rest');
             }
             roundDisplay.textContent = currentRound;
             totalRoundsDisplay.textContent = totalRounds;
-            
-            // Update phase label color
-            if (isWorkPhase) {
-                phaseLabel.classList.remove('rest');
-                phaseLabel.style.color = 'rgb(var(--primary))';
-            } else {
-                phaseLabel.classList.add('rest');
-                phaseLabel.style.color = 'rgb(var(--secondary))';
-            }
             
             // Color coding: normal -> warning (last 30%) -> danger (last 10%)
             display.classList.remove('warning', 'danger');
@@ -1661,18 +1660,15 @@
             }
         }
 
-        // Update workout title and notes display (match EMOM)
+        // Update workout title and notes display (title in workout area on load, match countdown model)
+        const DEFAULT_TIMER_NAME = 'Tabata';
         function updateWorkoutDisplay() {
             const title = workoutTitleInput ? workoutTitleInput.value.trim() : '';
             const description = workoutDescriptionInput ? workoutDescriptionInput.value.trim() : '';
             
             if (workoutTitleDisplay && workoutTitleText) {
-                if (title) {
-                    workoutTitleText.textContent = title;
-                    workoutTitleDisplay.style.display = 'block';
-                } else {
-                    workoutTitleDisplay.style.display = 'none';
-                }
+                workoutTitleText.textContent = title || DEFAULT_TIMER_NAME;
+                workoutTitleDisplay.style.display = 'block';
             }
             
             if (workoutDescriptionDisplay && workoutDescriptionText) {

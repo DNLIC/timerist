@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Quick Interval Timer - Timerist (Touch-Optimized)</title>
+    <meta name="description" content="...">
+    <!-- fonts, tailwind, existing styles kept -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- ... existing <style> block remains, with additions below ... -->
+    <style>
+        /* Existing styles + additions */
+        body { touch-action: manipulation; }
+        button, input[type="range"], .quick-select-btn, .control-btn { touch-action: manipulation; }
+        input[type="range"] { height: 48px; accent-color: rgb(var(--primary)); }
+        input[type="range"]::-webkit-slider-thumb { height: 32px; width: 32px; border-radius: 9999px; background: white; border: 4px solid rgb(var(--primary)); box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+        input[type="range"]::-moz-range-thumb { height: 32px; width: 32px; border-radius: 9999px; background: white; border: 4px solid rgb(var(--primary)); box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+
+        .bottom-sheet {
+            position: fixed;
+            left: 0; right: 0; bottom: 0;
+            background: rgb(var(--card));
+            border-top-left-radius: 1.5rem;
+            border-top-right-radius: 1.5rem;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+            z-index: 1002;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding-bottom: env(safe-area-inset-bottom, 20px);
+        }
+        .bottom-sheet.open { transform: translateY(0); }
+        .sheet-grabber { width: 40px; height: 5px; background: rgb(var(--muted)); border-radius: 999px; margin: 12px auto; }
+        .value-display { font-size: 3.5rem; font-weight: 700; font-family: monospace; text-align: center; margin: 1rem 0; line-height: 1; }
+        .time-stepper-btn { min-width: 56px; min-height: 56px; font-size: 1.75rem; padding: 0.75rem; border-radius: 9999px; }
+        .preset-chip { min-height: 52px; padding: 0.75rem 1rem; border-radius: 9999px; font-size: 1rem; }
+
+        @media (max-width: 390px) {
+            .value-display { font-size: 2.75rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header, timer display (now clickable), controls, presets grid remain similar but with touch-manipulation and larger targets -->
+
+    <div id="display" class="timer-display-large cursor-pointer active:opacity-75" onclick="toggleBottomSheet()">00:00</div>
+
+    <!-- Bottom Sheet -->
+    <div class="bottom-sheet" id="settingsDrawer">
+        <div class="sheet-grabber"></div>
+        <div class="px-6 pb-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-semibold">Timer Setup</h2>
+                <button onclick="toggleBottomSheet()" class="text-3xl">×</button>
+            </div>
+
+            <!-- Work Time -->
+            <div class="mb-10">
+                <div class="flex justify-between items-baseline">
+                    <label class="font-medium">Work Time</label>
+                    <span id="workValueDisplay" class="value-display text-primary">00:00</span>
+                </div>
+                <input type="range" id="workSlider" min="0" max="300" step="5" class="w-full" oninput="syncWorkFromSlider()">
+                <div class="flex gap-4 mt-4 justify-center">
+                    <button onclick="adjustWork(-10)" class="time-stepper-btn bg-secondary text-secondary-foreground">−10s</button>
+                    <button onclick="adjustWork(10)" class="time-stepper-btn bg-primary text-primary-foreground">+10s</button>
+                </div>
+            </div>
+
+            <!-- Rest Time (identical structure) -->
+            <div class="mb-10">
+                <div class="flex justify-between items-baseline">
+                    <label class="font-medium">Rest Time</label>
+                    <span id="restValueDisplay" class="value-display text-secondary">00:00</span>
+                </div>
+                <input type="range" id="restSlider" min="0" max="300" step="5" class="w-full" oninput="syncRestFromSlider()">
+                <div class="flex gap-4 mt-4 justify-center">
+                    <button onclick="adjustRest(-10)" class="time-stepper-btn bg-secondary text-secondary-foreground">−10s</button>
+                    <button onclick="adjustRest(10)" class="time-stepper-btn bg-primary text-primary-foreground">+10s</button>
+                </div>
+            </div>
+
+            <!-- Rounds Stepper -->
+            <div class="mb-10">
+                <label class="font-medium block mb-3">Rounds</label>
+                <div class="flex items-center justify-center gap-8">
+                    <button onclick="adjustRounds(-1)" class="time-stepper-btn bg-muted text-4xl">−</button>
+                    <input type="text" id="roundsInputSheet" value="1" class="w-24 text-center text-5xl font-bold font-mono" readonly>
+                    <button onclick="adjustRounds(1)" class="time-stepper-btn bg-muted text-4xl">+</button>
+                </div>
+            </div>
+
+            <!-- Quick Presets in Sheet -->
+            <div>
+                <label class="font-medium block mb-3">Quick Presets</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <!-- Example chips – repeat for common ones -->
+                    <button onclick="loadPreset('tabata')" class="preset-chip bg-card border">Tabata</button>
+                    <!-- ... more ... -->
+                </div>
+            </div>
+
+            <!-- Title & Notes (kept) -->
+            <!-- ... existing title/notes fields ... -->
+        </div>
+    </div>
+
+    <div class="drawer-overlay" id="drawerOverlay" onclick="toggleBottomSheet()"></div>
+
+    <!-- Existing timer logic, preset buttons, etc. updated with new sync functions -->
+    <script>
+        // New sync functions (example)
+        function syncWorkFromSlider() {
+            const secs = parseInt(document.getElementById('workSlider').value);
+            workTimeInput.value = formatTime(secs);
+            workTime = secs;
+            document.getElementById('workValueDisplay').textContent = formatTime(secs);
+            resetTimer();
+            updateDisplay();
+        }
+
+        function adjustWork(delta) {
+            let secs = parseTime(workTimeInput.value);
+            secs = Math.max(0, secs + delta);
+            workTimeInput.value = formatTime(secs);
+            document.getElementById('workSlider').value = secs;
+            workTime = secs;
+            document.getElementById('workValueDisplay').textContent = formatTime(secs);
+            resetTimer();
+            updateDisplay();
+        }
+
+        // Similar for rest/rounds
+
+        function toggleBottomSheet() {
+            const sheet = document.getElementById('settingsDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+            sheet.classList.toggle('open');
+            overlay.classList.toggle('open');
+            // Sync current values to controls on open
+            if (sheet.classList.contains('open')) {
+                document.getElementById('workSlider').value = workTime;
+                document.getElementById('workValueDisplay').textContent = formatTime(workTime);
+                // repeat for rest, rounds
+            }
+        }
+
+        // ... rest of existing script with minor updates for new IDs ...
+    </script>
+</body>
+</html>

@@ -1361,7 +1361,7 @@
 
             <div class="sheet-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v1.04</p>
+                <p><strong>Version:</strong> v1.05</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2026-01-28</span></p>
             </div>
         </div>
@@ -1729,15 +1729,16 @@
             }
         }
         
+        const DEFAULT_TIMER_NAME = 'AMRAP';
         function updateWorkoutDisplay() {
             const title = workoutTitleInput.value.trim();
             const description = workoutDescriptionInput.value.trim();
             
-            if (title) {
-                document.getElementById('workoutTitleText').textContent = title;
-                document.getElementById('workoutTitleDisplay').style.display = 'block';
-            } else {
-                document.getElementById('workoutTitleDisplay').style.display = 'none';
+            const titleEl = document.getElementById('workoutTitleText');
+            const titleBlock = document.getElementById('workoutTitleDisplay');
+            if (titleEl && titleBlock) {
+                titleEl.textContent = title || DEFAULT_TIMER_NAME;
+                titleBlock.style.display = 'block';
             }
             
             if (description) {
@@ -2032,7 +2033,7 @@
                     clearBtn.style.display = 'inline-block';
                     completeRoundBtn.style.display = 'none';
                 } else {
-                    statusLabel.textContent = 'Set time';
+                    statusLabel.textContent = '';
                     startPauseBtn.style.display = 'none';
                     setupBtn.style.display = 'inline-block';
                     resetBtn.style.display = 'none';

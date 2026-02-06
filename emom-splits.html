@@ -777,7 +777,7 @@
                 <div class="phase-label" id="phaseLabel"></div>
                 <div class="timer-display-large" id="display">01:00</div>
                 <div class="round-info">
-                    Round <span id="round">1</span> of <span id="totalRounds">5</span> | <span id="targetRepsDisplay">0</span> Per Min
+                    Round <span id="round">0</span> of <span id="totalRounds">0</span> | <span id="targetRepsDisplay">0</span> Per Min
                 </div>
                 <!-- Workout Notes -->
                 <div id="workoutDescriptionDisplay" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgb(var(--border));">
@@ -850,7 +850,7 @@
                     <label for="roundsInput">Total Rounds</label>
                     <div class="rounds-stepper">
                         <button type="button" class="stepper-btn rounds-adjust-btn" id="roundsDecreaseBtn" aria-label="Decrease rounds">−</button>
-                        <input type="text" id="roundsInput" class="custom-time-input" value="5" aria-label="Number of rounds">
+                        <input type="text" id="roundsInput" class="custom-time-input" value="0" aria-label="Number of rounds">
                         <button type="button" class="stepper-btn rounds-adjust-btn" id="roundsIncreaseBtn" aria-label="Increase rounds">+</button>
                     </div>
                 </div>
@@ -890,10 +890,10 @@
         let interval = null;
         let isRunning = false;
         let isPaused = false;
-        let currentRound = 1;
+        let currentRound = 0;
         let workTime = 60; // EMOM: Fixed at 60 seconds
         let restTime = 0; // EMOM: No rest phase
-        let totalRounds = 5;
+        let totalRounds = 0;
         let targetReps = 0; // Target quantity of reps for 8 minutes
         let splits = []; // Array to store split records
         let lastRecordedMinute = 0; // Track the last minute that was recorded to prevent duplicate recordings
@@ -1052,8 +1052,12 @@
         // Update display with color coding
         function updateDisplay() {
             display.textContent = formatTime(currentTime);
-            // EMOM: Show "Minute X of Y" above the timer (updates each minute)
-            phaseLabel.textContent = 'Minute ' + currentRound + ' of ' + totalRounds;
+            // EMOM: Show "Minute X of Y" above the timer only after workout is programmed (totalRounds > 0)
+            if (totalRounds > 0) {
+                phaseLabel.textContent = 'Minute ' + currentRound + ' of ' + totalRounds;
+            } else {
+                phaseLabel.textContent = '';
+            }
             roundDisplay.textContent = currentRound;
             totalRoundsDisplay.textContent = totalRounds;
             
@@ -1281,16 +1285,16 @@
             
             // EMOM: Get current values from inputs (prefer main input, fallback to drawer input)
             const roundsValue = roundsInputMain ? parseInt(roundsInputMain.value) : parseInt(roundsInput.value);
-            totalRounds = isNaN(roundsValue) ? 5 : roundsValue;
+            totalRounds = isNaN(roundsValue) ? 0 : roundsValue;
             // Sync both inputs
             if (roundsInputMain) roundsInputMain.value = totalRounds;
             roundsInput.value = totalRounds;
             workTime = 60; // EMOM: Fixed at 60 seconds
             restTime = 0; // EMOM: No rest phase
             
-            // Reset to round 1, 60 seconds
+            // Reset to round 1 when rounds set, else 0 of 0
             currentTime = 60;
-            currentRound = 1;
+            currentRound = totalRounds > 0 ? 1 : 0;
             
             // Clear splits and reset recorded minute tracking
             splits = [];
@@ -1324,7 +1328,7 @@
             restTime = 0; // EMOM: No rest phase
             totalRounds = 0;
             currentTime = 60; // EMOM: Start at 60 seconds
-            currentRound = 1;
+            currentRound = 0;
             
             // Clear splits and reset recorded minute tracking
             splits = [];
@@ -1727,17 +1731,16 @@
             });
         }
         
-        // Update workout title and description display
+        // Update workout title and description display (title in workout area, default name on load)
+        const DEFAULT_TIMER_NAME = 'EMOM Splits';
         function updateWorkoutDisplay() {
             const title = workoutTitleInput.value.trim();
             const description = workoutDescriptionInput.value.trim();
             
-            // Update title display
-            if (title) {
-                workoutTitleText.textContent = title;
+            // Update title display: show default timer name when no custom title (match countdown model)
+            if (workoutTitleText && workoutTitleDisplay) {
+                workoutTitleText.textContent = title || DEFAULT_TIMER_NAME;
                 workoutTitleDisplay.style.display = 'block';
-            } else {
-                workoutTitleDisplay.style.display = 'none';
             }
             
             // Update description display
@@ -1808,8 +1811,8 @@
         // Clear all settings (with confirm)
         function clearAllSettingsWithConfirm() {
             if (!confirm('Clear timer and reset all settings to defaults?')) return;
-            roundsInput.value = '5';
-            if (roundsInputMain) roundsInputMain.value = '5';
+            roundsInput.value = '0';
+            if (roundsInputMain) roundsInputMain.value = '0';
             if (repsInput) repsInput.value = '0';
             if (repsInputMain) repsInputMain.value = '0';
             if (workoutTitleInput) workoutTitleInput.value = '';
@@ -1818,7 +1821,7 @@
             if (workoutTitleCharCount) workoutTitleCharCount.textContent = '0';
             if (workoutDescriptionCharCount) workoutDescriptionCharCount.textContent = '0';
             if (doneMessageCharCount) doneMessageCharCount.textContent = '9';
-            totalRounds = 5;
+            totalRounds = 0;
             targetReps = 0;
             updateCharCounts();
             updateWorkoutDisplay();
@@ -1835,22 +1838,22 @@
         // Initialize
         workTime = 60; // EMOM: Fixed at 60 seconds
         restTime = 0; // EMOM: No rest phase
-        totalRounds = parseInt(roundsInput.value) || 5;
+        totalRounds = parseInt(roundsInput.value) || 0;
         currentTime = 60; // EMOM: Start at 60 seconds
-        currentRound = 1;
+        currentRound = totalRounds > 0 ? 1 : 0;
         
         // Initialize main rounds input
         if (roundsInputMain) {
             const inputValue = parseInt(roundsInputMain.value);
-            if (isNaN(inputValue) || inputValue === 0) {
-                // If input is empty or 0, set to default of 5
-                roundsInputMain.value = 5;
-                roundsInput.value = 5;
-                totalRounds = 5;
+            if (isNaN(inputValue)) {
+                roundsInputMain.value = 0;
+                roundsInput.value = 0;
+                totalRounds = 0;
+                currentRound = 0;
             } else {
-                // Use the value from the input
                 totalRounds = inputValue;
                 roundsInput.value = inputValue;
+                currentRound = totalRounds > 0 ? 1 : 0;
             }
         }
         

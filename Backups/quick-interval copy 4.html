@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <title>Quick Interval Timer - Timerist | Quick HIIT Interval Timer, Preset Work Rest Timer</title>
     <meta name="description" content="Quick interval timer with preset intervals for HIIT, circuit training, or cardio sessions. Tap a preset to start instantly—no setup required.">
+    <link rel="stylesheet" href="styles/timerist-design-system.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @keyframes bounce {
@@ -88,7 +89,6 @@
             width: 100%;
             max-width: 1200px;
             padding: 1rem;
-            padding-bottom: env(safe-area-inset-bottom, 1rem);
             margin: 0 auto;
             overflow-x: hidden;
             position: relative;
@@ -98,11 +98,8 @@
             max-width: 1000px;
             margin: 0 auto;
             overflow-x: hidden;
+            margin-top: clamp(5rem, 8vw, 6rem);
             width: 100%;
-            margin-top: clamp(4rem, 8vw, 5rem);
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
         }
         
         /* iPad vertical (portrait) - position timer below header */
@@ -182,18 +179,9 @@
         }
         
         .timer-display-block {
-            background: rgb(var(--card));
-            border: 1px solid rgb(var(--border));
-            border-radius: 1rem;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
             padding: 1.5rem;
             overflow: hidden;
             box-sizing: border-box;
-            text-align: center;
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-            user-select: none;
         }
         
         @media (min-width: 640px) {
@@ -241,46 +229,43 @@
         }
         
         .control-btn {
-            min-height: 56px;
-            min-width: 56px;
-            padding: 0.75rem 1.25rem;
-            border-radius: 1rem;
-            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
             font-weight: 500;
             transition: all 0.2s;
             cursor: pointer;
             border: none;
-            font-family: inherit;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
             white-space: nowrap;
             flex-shrink: 1;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
         }
         
         @media (max-width: 390px) {
             .control-btn {
-                min-width: 0;
-                flex: 1 1 0;
-                padding: 0.625rem 0.5rem;
-                font-size: 0.875rem;
-                min-height: 48px;
-                border-radius: 0.75rem;
+                padding: 0.4rem 0.75rem;
+                font-size: 0.75rem;
             }
         }
         
         .control-buttons-container {
             display: flex;
-            gap: 0.75rem;
+            gap: 0.5rem;
             justify-content: center;
             align-items: center;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
         }
         
-        @media (max-width: 390px) {
+        @media (min-width: 390px) {
             .control-buttons-container {
-                gap: 0.5rem;
-                flex-wrap: nowrap;
+                gap: 0.75rem;
+            }
+        }
+        
+        @media (min-width: 640px) {
+            .control-buttons-container {
+                gap: 1rem;
             }
         }
         
@@ -424,109 +409,118 @@
             opacity: 0.7;
         }
         
-        /* Bottom Sheet */
-        .sheet-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.5); opacity: 0; visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s; z-index: 1001;
+        .settings-drawer {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            background: rgb(var(--card));
+            border-left: 1px solid rgb(var(--border));
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            z-index: 1002;
+            overflow-y: auto;
         }
-        .sheet-overlay.open { opacity: 1; visibility: visible; }
-        .bottom-sheet {
-            position: fixed; left: 0; right: 0; bottom: 0; width: 100%; max-width: 100%; max-height: 85vh;
-            background: rgb(var(--card)); border-radius: 1.5rem 1.5rem 0 0; box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
-            z-index: 1002; transform: translateY(100%); transition: transform 0.3s ease; overflow: hidden;
-            display: flex; flex-direction: column; padding-bottom: env(safe-area-inset-bottom, 0); box-sizing: border-box;
-        }
-        .bottom-sheet.open { transform: translateY(0); }
-        .sheet-grabber { width: 40px; height: 4px; background: rgb(var(--muted-foreground)); border-radius: 2px; margin: 0.75rem auto; opacity: 0.5; flex-shrink: 0; }
-        .sheet-header {
-            padding: 0 1.5rem 1rem; padding-left: max(1.5rem, env(safe-area-inset-left)); padding-right: max(1.5rem, env(safe-area-inset-right));
-            border-bottom: 1px solid rgb(var(--border)); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
-        }
-        .sheet-content {
-            overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch;
-            padding: 1rem 1.5rem 2rem; padding-left: max(1.5rem, env(safe-area-inset-left)); padding-right: max(1.5rem, env(safe-area-inset-right));
-            flex: 1; width: 100%; box-sizing: border-box; min-width: 0;
-        }
-        .sheet-section { margin-bottom: 1.5rem; }
-        .sheet-section h3 { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: rgb(var(--muted-foreground)); margin-bottom: 0.75rem; }
-        .sheet-header-actions { display: flex; align-items: center; gap: 0.375rem; flex-shrink: 0; }
-        .drawer-close {
-            min-width: 48px; min-height: 48px; border: none; background: transparent; color: rgb(var(--foreground)); font-size: 1.5rem;
-            cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 0.75rem; touch-action: manipulation;
-        }
-        .drawer-close:hover { background: rgb(var(--accent)); }
-        .header-clear-btn {
-            min-width: 48px; min-height: 48px; padding: 0.5rem; border: none; border-radius: 0.75rem; background: transparent;
-            color: rgb(var(--destructive)); cursor: pointer; display: flex; align-items: center; justify-content: center;
-            -webkit-tap-highlight-color: transparent; touch-action: manipulation;
-        }
-        .header-clear-btn:hover { background: rgba(var(--destructive), 0.15); }
-        .header-clear-btn svg { width: 22px; height: 22px; }
-        .btn-clear-all-settings {
-            width: 100%; min-height: 52px; padding: 0.875rem 1rem; border-radius: 0.75rem; font-size: 1rem; font-weight: 600;
-            border: none; background: rgb(var(--destructive)); color: rgb(var(--destructive-foreground)); cursor: pointer;
-            -webkit-tap-highlight-color: transparent; touch-action: manipulation; font-family: inherit;
-        }
-        .btn-clear-all-settings:hover { filter: brightness(1.1); }
-        .btn-clear-all-settings:active { filter: brightness(0.95); }
         
-        .custom-time-input, .shadcn-input, .shadcn-textarea {
-            width: 100%; padding: 0.875rem 1rem; border: 2px solid rgb(var(--input)); border-radius: 0.75rem;
-            background: rgb(var(--background)); color: rgb(var(--foreground)); font-size: 16px; min-height: 52px; font-family: inherit; transition: border-color 0.2s, box-shadow 0.2s;
+        .settings-drawer.open {
+            right: 0;
         }
-        .shadcn-textarea { min-height: 100px; resize: vertical; }
-        .custom-time-input:focus, .shadcn-input:focus, .shadcn-textarea:focus { outline: none; border-color: rgb(var(--ring)); box-shadow: 0 0 0 3px rgba(var(--ring), 0.2); }
-        .custom-time-input { text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; }
-        textarea.shadcn-input, textarea.shadcn-textarea { text-align: left; font-weight: 400; }
-        .custom-time-input:disabled, .shadcn-input:disabled, .shadcn-textarea:disabled {
+        
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 1001;
+        }
+        
+        .drawer-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .drawer-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgb(var(--border));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .drawer-content {
+            padding: 1.5rem;
+        }
+        
+        .drawer-section {
+            margin-bottom: 2rem;
+        }
+        
+        .drawer-section h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: rgb(var(--foreground));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .drawer-section p {
+            color: rgb(var(--muted-foreground));
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        .drawer-close {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: rgb(var(--foreground));
+            padding: 0.25rem;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius);
+        }
+        
+        .drawer-close:hover {
+            opacity: 0.7;
+        }
+        
+        .custom-time-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid rgb(var(--input));
+            border-radius: var(--radius);
+            background-color: rgb(var(--background));
+            color: rgb(var(--foreground));
+            font-size: 1.125rem;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            min-height: 48px;
+        }
+        
+        .custom-time-input:focus {
+            outline: none;
+            border-color: rgb(var(--ring));
+            box-shadow: 0 0 0 2px rgba(var(--ring), 0.2);
+        }
+        
+        .custom-time-input:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
-        .countdown-input-no-spinners { -moz-appearance: textfield; }
-        .countdown-input-no-spinners::-webkit-outer-spin-button, .countdown-input-no-spinners::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        .time-slider-wrap { margin-bottom: 0.5rem; }
-        /* Thick sliders: all range inputs on the page */
-        input[type="range"] { width: 100%; height: 52px; accent-color: rgb(var(--primary)); }
-        input[type="range"]::-webkit-slider-thumb { width: 40px; height: 40px; border-radius: 50%; background: rgb(var(--primary)); border: 3px solid rgb(var(--card)); box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer; }
-        input[type="range"]::-moz-range-thumb { width: 40px; height: 40px; border-radius: 50%; background: rgb(var(--primary)); border: 3px solid rgb(var(--card)); box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer; }
-        .time-stepper-row { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.5rem; }
-        .time-stepper-row .custom-time-input { flex: 1; min-width: 0; }
-        .stepper-btn {
-            min-width: 56px; min-height: 56px; padding: 0.5rem; border: 2px solid rgb(var(--border)); border-radius: 1rem;
-            background: rgb(var(--card)); color: rgb(var(--foreground)); font-size: 1rem; font-weight: 700; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; flex-shrink: 0; -webkit-tap-highlight-color: transparent; touch-action: manipulation;
-        }
-        .stepper-btn:hover:not(:disabled) { background: rgb(var(--accent)); }
-        .stepper-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .rounds-stepper { display: flex; align-items: center; gap: 0.75rem; }
-        .rounds-stepper .stepper-btn { min-width: 64px; min-height: 64px; font-size: 1.25rem; }
-        .rounds-stepper .custom-time-input { flex: 0 1 auto; width: 80px; text-align: center; }
-        .preset-grid-workout { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
-        .preset-grid-time { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
-        @media (max-width: 380px) { .preset-grid-time { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-        .preset-chip {
-            min-height: 48px; padding: 0.75rem 0.5rem; border-radius: 9999px; font-size: 1rem; font-weight: 500;
-            border: 2px solid rgb(var(--border)); background: rgb(var(--card)); color: rgb(var(--foreground)); cursor: pointer; transition: all 0.2s;
-            -webkit-tap-highlight-color: transparent; touch-action: manipulation; font-family: inherit;
-        }
-        .preset-chip:hover:not(:disabled) { background: rgb(var(--accent)); }
-        .preset-chip.selected { background: rgb(var(--primary)); color: rgb(var(--primary-foreground)); border-color: rgb(var(--primary)); font-weight: 600; box-shadow: 0 2px 8px rgba(var(--primary), 0.3); }
-        .preset-chip:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .workout-select {
-            width: 100%; padding: 0.875rem 2.5rem 0.875rem 1rem; border-radius: 0.75rem; font-size: 16px; font-weight: 500;
-            border: 2px solid rgb(var(--input)); background-color: rgb(var(--background)); color: rgb(var(--foreground));
-            cursor: pointer; transition: all 0.2s; font-family: inherit; appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-            background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1.25rem; min-height: 52px;
-        }
-        [data-theme="style1"] .workout-select {
-            background-color: rgb(var(--card)); border-color: rgb(var(--border));
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-        }
-        .workout-select:hover:not(:disabled) { border-color: rgb(var(--ring)); }
-        .workout-select:focus { outline: none; border-color: rgb(var(--ring)); box-shadow: 0 0 0 3px rgba(var(--ring), 0.2); }
-        .workout-select:disabled { opacity: 0.5; cursor: not-allowed; }
 
         /* Workout title and notes styling (match emom.html) */
         #workoutTitleInput {
@@ -556,24 +550,137 @@
             letter-spacing: 0.05em;
         }
         
+        .rounds-input-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        
+        .rounds-adjust-btn {
+            width: 44px;
+            height: 44px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            border: 2px solid rgb(var(--border));
+            border-radius: var(--radius);
+            background-color: rgb(var(--card));
+            color: rgb(var(--foreground));
+            cursor: pointer;
+            transition: opacity 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        
+        .rounds-adjust-btn:hover:not(:disabled) {
+            opacity: 0.7;
+        }
+        
+        .rounds-adjust-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .rounds-input-group input {
+            flex: 0 1 auto;
+            width: 80px;
+            max-width: 100px;
+            text-align: center;
+            font-size: 1.125rem;
+            font-weight: 600;
+            background-color: rgb(var(--background));
+            border: 2px solid rgb(var(--input));
+            border-radius: var(--radius);
+            padding: 0.75rem;
+            color: rgb(var(--foreground));
+            min-height: 48px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .rounds-input-group input:focus {
+            outline: none;
+            border-color: rgb(var(--ring));
+            box-shadow: 0 0 0 2px rgba(var(--ring), 0.2);
+        }
+        
+        .rounds-input-group input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .time-input-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        
+        .time-adjust-btn {
+            width: 44px;
+            height: 44px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            border: 2px solid rgb(var(--border));
+            border-radius: var(--radius);
+            background-color: rgb(var(--card));
+            color: rgb(var(--foreground));
+            cursor: pointer;
+            transition: opacity 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        
+        .time-adjust-btn:hover:not(:disabled) {
+            opacity: 0.7;
+        }
+        
+        .time-adjust-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .time-input-group input {
+            flex: 1;
+        }
+        
+        @media (max-width: 390px) {
+            .time-adjust-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 0.75rem;
+            }
+            
+            .time-input-group {
+                gap: 0.5rem;
+            }
+            
+            .rounds-input-group {
+                gap: 0.5rem;
+            }
+            
+            .rounds-input-group input {
+                width: 60px;
+                max-width: 80px;
+                padding: 0.5rem;
+            }
+            
+            .rounds-adjust-btn {
+                width: 40px;
+                height: 40px;
+            }
+        }
+        
         .timer-running .custom-time-input:not(:disabled),
-        .timer-running .stepper-btn:not(:disabled) {
+        .timer-running .rounds-adjust-btn:not(:disabled),
+        .timer-running .time-adjust-btn:not(:disabled) {
             opacity: 0.5;
             cursor: not-allowed;
             pointer-events: none;
         }
-        #workoutTitleDisplay { display: none; text-align: center; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid rgb(var(--border)); }
-        #workoutTitleDisplay:not(.empty) { display: block; }
-        #workoutDescriptionDisplay { display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgb(var(--border)); }
-        #workoutDescriptionDisplay:not(.empty) { display: block; }
-        /* Main page: Rounds + Presets (quick setup) */
-        .main-page-setup .main-rounds-wrap { margin-bottom: 0.75rem; }
-        .main-page-setup .main-rounds-wrap label { display: block; margin-bottom: 0.5rem; font-size: 0.75rem; font-weight: 600; color: rgb(var(--muted-foreground)); text-transform: uppercase; letter-spacing: 0.05em; text-align: center; }
-        .main-page-setup .main-rounds-stepper { justify-content: center; }
-        .main-page-setup .main-rounds-stepper .custom-time-input { max-width: 90px; }
-        .main-preset-heading { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: rgb(var(--muted-foreground)); margin-top: 1.25rem; margin-bottom: 0.75rem; }
-        .main-page-setup .main-preset-heading:first-of-type { margin-top: 0; }
-        .main-page-setup .preset-chip { font-size: 1rem; }
 
         /* Smartphone landscape spacing fix (tighten vertical space) */
         @media (orientation: landscape) and (max-height: 500px) {
@@ -620,11 +727,11 @@
             top: clamp(1rem, 3vw, 2rem);
             left: 0;
             right: 0;
-            z-index: 10;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 0 clamp(1rem, 3vw, 2rem);
+            z-index: 10;
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
@@ -722,8 +829,7 @@
             }
         }
         
-        .header-top .mode-toggle-btn,
-        .header-top .hamburger-menu {
+        .header-top .mode-toggle-btn {
             position: relative;
             top: auto;
             right: auto;
@@ -745,21 +851,17 @@
         }
         
         .header-top .mode-toggle-btn:hover,
-        .header-top .mode-toggle-btn:active,
-        .header-top .hamburger-menu:hover,
-        .header-top .hamburger-menu:active {
+        .header-top .mode-toggle-btn:active {
             opacity: 0.7;
             background-color: rgba(var(--accent), 0.5);
         }
         
-        .header-top .mode-toggle-btn:focus,
-        .header-top .hamburger-menu:focus {
+        .header-top .mode-toggle-btn:focus {
             outline: 2px solid rgb(var(--ring));
             outline-offset: 2px;
         }
         
-        .header-top .mode-toggle-btn,
-        .header-top .hamburger-menu {
+        .header-top .mode-toggle-btn {
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
             user-select: none;
@@ -855,14 +957,13 @@
             }
         }
         
-        /* Preset buttons (Workout + Time): match Set Up button hover - light mode */
         .quick-select-btn:hover:not(:disabled) {
             background-color: rgb(100, 100, 100);
             color: rgb(255, 255, 255);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
-        /* Preset buttons (Workout + Time): match Set Up button hover - dark mode */
+        /* Dark mode hover state - use lighter gray */
         [data-theme="style1"] .quick-select-btn:hover:not(:disabled) {
             background-color: rgb(150, 150, 150);
             color: rgb(0, 0, 0);
@@ -875,18 +976,6 @@
         
         .quick-select-btn.selected {
             font-weight: 700;
-        }
-        
-        /* Workout Presets (bg-card): same rollover as Set Up button - light */
-        .quick-select-btn.bg-card:hover:not(:disabled) {
-            background-color: rgb(100, 100, 100) !important;
-            color: rgb(255, 255, 255);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        /* Workout Presets (bg-card): same rollover as Set Up button - dark */
-        [data-theme="style1"] .quick-select-btn.bg-card:hover:not(:disabled) {
-            background-color: rgb(150, 150, 150) !important;
-            color: rgb(0, 0, 0);
         }
         
         .timer-running .quick-select-btn:not(.reset-btn):not(.selected) {
@@ -915,247 +1004,245 @@
                 </a>
                 <a href="index.html" style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground)); text-decoration: none; cursor: pointer;">timerist.com</a>
                 <span class="separator" style="color: rgb(var(--muted-foreground));">|</span>
-                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">Preset Intervals</span>
+                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">Quick Interval</span>
             </div>
+            
             <div class="header-actions">
                 <button class="mode-toggle-btn mode-toggle" id="themeToggleBtn" aria-label="Toggle dark mode">
                     <span id="theme-icon">🌙</span>
                 </button>
-                <button type="button" class="hamburger-menu" id="menuBtn" aria-label="Open Timer Setup">☰</button>
+                <button class="hamburger-menu" onclick="toggleDrawer()" aria-label="Open Timer Setup menu">
+                    ☰
+                </button>
             </div>
         </div>
         
-        <div class="timer-container">
-            <div class="timer-display-block" id="timerDisplayBlock">
-                <div id="workoutTitleDisplay" class="empty">
-                    <h2 id="workoutTitleText" class="text-lg font-semibold text-[rgb(var(--foreground))] m-0 break-words"></h2>
+        <div class="timer-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <!-- Timer Display -->
+            <div class="timer-display-block bg-card border border-border rounded-lg shadow-lg text-center">
+                <!-- Workout Title -->
+                <div id="workoutTitleDisplay" style="display: none; text-align: center; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid rgb(var(--border));">
+                    <h2 id="workoutTitleText" style="font-size: 1.25rem; font-weight: 600; color: rgb(var(--foreground)); margin: 0; word-wrap: break-word;"></h2>
                 </div>
-                <div class="phase-label" id="phaseLabel"></div>
+
+                <div class="phase-label" id="phaseLabel">Work</div>
                 <div class="timer-display-large" id="display">00:00</div>
-                <div class="round-info">Round <span id="round">0</span> of <span id="totalRounds">0</span></div>
-                <div id="workoutDescriptionDisplay" class="empty">
-                    <p id="workoutDescriptionText" class="text-sm text-[rgb(var(--muted-foreground))] leading-relaxed m-0 text-left whitespace-pre-wrap break-words"></p>
+                <div class="round-info">
+                    Round <span id="round">1</span> of <span id="totalRounds">0</span>
+                </div>
+
+                <!-- Workout Notes -->
+                <div id="workoutDescriptionDisplay" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgb(var(--border));">
+                    <p id="workoutDescriptionText" style="font-size: 0.875rem; color: rgb(var(--muted-foreground)); line-height: 1.6; margin: 0; text-align: left; white-space: pre-wrap; word-wrap: break-word;"></p>
                 </div>
             </div>
             
-            <div class="p-4 rounded-2xl bg-[rgb(var(--card))] border border-[rgb(var(--border))] shadow-lg">
+            <!-- Control Buttons -->
+            <div class="p-6 bg-card border border-border rounded-lg shadow-lg">
                 <div class="control-buttons-container">
                     <button class="control-btn btn-primary" id="startBtn" aria-label="Start timer">Start</button>
-                    <button class="control-btn btn-primary" id="pauseBtn" style="display:none;" aria-label="Pause timer">Pause</button>
-                    <button class="control-btn btn-destructive" id="resetBtn" style="display:none;" aria-label="Reset timer">Reset</button>
+                    <button class="control-btn btn-primary" id="pauseBtn" style="display: none;" aria-label="Pause timer">Pause</button>
+                    <button class="control-btn btn-destructive" id="resetBtn" style="display: none;" aria-label="Reset timer">Reset</button>
                     <button class="control-btn btn-secondary" id="clearBtn" aria-label="Clear timer">Clear</button>
-                    <button class="control-btn btn-primary" id="setupBtn" style="display:none;" aria-label="Set up timer">Set Up</button>
+                    <button class="control-btn btn-primary" id="setupBtn" style="display: none;" aria-label="Set up timer">Set Up</button>
                 </div>
             </div>
             
-            <!-- Rounds + Presets on main page (quick setup: tap preset, set rounds, go) -->
-            <div class="p-4 rounded-2xl bg-[rgb(var(--card))] border border-[rgb(var(--border))] shadow-lg main-page-setup">
-                <div class="input-group main-rounds-wrap">
-                    <label for="roundsInputMain" class="text-center block">Rounds</label>
-                    <div class="rounds-stepper main-rounds-stepper">
-                        <button type="button" class="stepper-btn rounds-adjust-btn" id="roundsDecreaseBtnMain" aria-label="Decrease rounds">−</button>
-                        <input type="text" id="roundsInputMain" class="custom-time-input" value="0" aria-label="Number of rounds">
-                        <button type="button" class="stepper-btn rounds-adjust-btn" id="roundsIncreaseBtnMain" aria-label="Increase rounds">+</button>
+            <!-- Rounds Input and Preset Intervals -->
+            <div class="p-6 bg-card border border-border rounded-lg shadow-lg">
+                <!-- Rounds Input -->
+                <div class="input-group">
+                    <label for="roundsInputMain" style="text-align: center;">Rounds</label>
+                    <div class="rounds-input-group" style="justify-content: center;">
+                        <button class="rounds-adjust-btn" id="roundsDecreaseBtnMain" type="button" aria-label="Decrease rounds">−</button>
+                        <input 
+                            type="text" 
+                            id="roundsInputMain" 
+                            value="1"
+                            aria-label="Number of rounds"
+                        >
+                        <button class="rounds-adjust-btn" id="roundsIncreaseBtnMain" type="button" aria-label="Increase rounds">+</button>
                     </div>
                 </div>
-                <h3 class="main-preset-heading">Workout Presets</h3>
-                <div class="preset-grid-workout main-preset-grid">
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="tabata" data-work="20" data-rest="10" data-rounds="8" data-title="Tabata HIIT" data-description="20 seconds high-intensity work, 10 seconds rest, 8 rounds. Classic Tabata protocol for VO2 max and fat burn.">Tabata</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="emom" data-work="60" data-rest="0" data-rounds="" data-title="EMOM" data-description="A set number of reps of a movement/s performed every minute on the minute.">EMOM</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="little" data-work="60" data-rest="75" data-rounds="" data-title="Little Method" data-description="60 seconds work, 75 seconds rest. Popular endurance protocol.">Little</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="gibala" data-work="60" data-rest="75" data-rounds="" data-title="Gibala HIIT" data-description="60 seconds work, 75 seconds rest. Research-backed high-intensity interval training.">Gibala</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="norwegian" data-work="240" data-rest="180" data-rounds="4" data-title="Norwegian 4x4" data-description="4 minutes work, 3 minutes active recovery, 4 rounds.">Norwegian</button>
-                </div>
-                <h3 class="main-preset-heading">Time Presets</h3>
-                <div class="preset-grid-time main-preset-grid">
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="30/30" data-work="30" data-rest="30" data-title="30/30 Interval" data-description="30 seconds work, 30 seconds rest.">30/30</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="45/15" data-work="45" data-rest="15" data-title="45/15 Interval" data-description="45 seconds work, 15 seconds rest.">45/15</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="60/30" data-work="60" data-rest="30" data-title="60/30 Interval" data-description="1 minute work, 30 seconds rest.">60/30</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="45/45" data-work="45" data-rest="45" data-title="45/45 Interval" data-description="45 seconds work, 45 seconds rest.">45/45</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="60/60" data-work="60" data-rest="60" data-title="60/60 Interval" data-description="1 minute work, 1 minute rest.">60/60</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="30/60" data-work="30" data-rest="60" data-title="30/60 Interval" data-description="30 seconds work, 1 minute rest.">30/60</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="20/10" data-work="20" data-rest="10" data-title="20/10 Interval" data-description="20 seconds work, 10 seconds rest.">20/10</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="40/20" data-work="40" data-rest="20" data-title="40/20 Interval" data-description="40 seconds work, 20 seconds rest.">40/20</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="90/30" data-work="90" data-rest="30" data-title="90/30 Interval" data-description="90 seconds work, 30 seconds rest.">90/30</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="2:00/1:00" data-work="120" data-rest="60" data-title="2:00/1:00 Interval" data-description="2 minutes work, 1 minute rest.">2:00/1:00</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="3:00/1:00" data-work="180" data-rest="60" data-title="3:00/1:00 Interval" data-description="3 minutes work, 1 minute rest.">3:00/1:00</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="1:00/30" data-work="60" data-rest="30" data-title="1:00/30 Interval" data-description="1 minute work, 30 seconds rest.">1:00/30</button>
+                
+                <!-- Preset Interval Buttons -->
+                <label class="text-sm font-semibold uppercase tracking-wide mb-4 block" style="color: rgb(var(--muted-foreground)); text-align: center; margin-top: 1.5rem;">
+                    Quick Presets
+                </label>
+                <div class="quick-select-grid">
+                    <button class="quick-select-btn" data-work="30" data-rest="30" aria-label="30 seconds work, 30 seconds rest">30/30</button>
+                    <button class="quick-select-btn" data-work="45" data-rest="15" aria-label="45 seconds work, 15 seconds rest">45/15</button>
+                    <button class="quick-select-btn" data-work="60" data-rest="30" aria-label="60 seconds work, 30 seconds rest">60/30</button>
+                    <button class="quick-select-btn" data-work="45" data-rest="45" aria-label="45 seconds work, 45 seconds rest">45/45</button>
+                    <button class="quick-select-btn" data-work="60" data-rest="60" aria-label="60 seconds work, 60 seconds rest">60/60</button>
+                    <button class="quick-select-btn" data-work="30" data-rest="60" aria-label="30 seconds work, 60 seconds rest">30/60</button>
+                    <button class="quick-select-btn" data-work="20" data-rest="10" aria-label="20 seconds work, 10 seconds rest">20/10</button>
+                    <button class="quick-select-btn" data-work="40" data-rest="20" aria-label="40 seconds work, 20 seconds rest">40/20</button>
+                    <button class="quick-select-btn" data-work="90" data-rest="30" aria-label="90 seconds work, 30 seconds rest">90/30</button>
+                    <button class="quick-select-btn" data-work="120" data-rest="60" aria-label="2 minutes work, 1 minute rest">2:00/1:00</button>
+                    <button class="quick-select-btn" data-work="180" data-rest="60" aria-label="3 minutes work, 1 minute rest">3:00/1:00</button>
+                    <button class="quick-select-btn" data-work="60" data-rest="30" aria-label="1 minute work, 30 seconds rest">1:00/30</button>
                 </div>
             </div>
         </div>
     </div>
     
-    <div class="sheet-overlay" id="drawerOverlay" aria-hidden="true"></div>
-    <div class="bottom-sheet" id="settingsDrawer" role="dialog" aria-label="Timer setup">
-        <div class="sheet-grabber" aria-hidden="true"></div>
-        <div class="sheet-header">
-            <h2 class="text-base font-semibold uppercase tracking-wide text-[rgb(var(--foreground))]">Timer Setup</h2>
-            <div class="sheet-header-actions">
-                <button type="button" class="header-clear-btn" id="headerClearBtn" aria-label="Clear settings to defaults" title="Clear settings to defaults">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-                </button>
-                <button type="button" class="drawer-close" id="drawerCloseBtn" aria-label="Close">×</button>
-            </div>
+    <!-- Drawer Overlay -->
+    <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+    
+    <!-- Settings Drawer -->
+    <div class="settings-drawer" id="settingsDrawer">
+        <div class="drawer-header">
+            <h2 style="font-size: 1rem; font-weight: 600; color: rgb(var(--foreground)); text-transform: uppercase; letter-spacing: 0.05em;">Timer Setup</h2>
+            <button class="drawer-close" onclick="closeDrawer()" aria-label="Close drawer">×</button>
         </div>
-        <div class="sheet-content">
-            <div class="sheet-section">
-                <div class="input-group">
-                    <label for="presetSelect">Select a Workout</label>
-                    <select id="presetSelect" class="workout-select" aria-label="Select a workout">
-                        <option value="custom" selected>Custom</option>
-                        <optgroup label="Workout Presets">
-                            <option value="tabata">Tabata</option>
-                            <option value="emom">EMOM</option>
-                            <option value="little">Little</option>
-                            <option value="gibala">Gibala</option>
-                            <option value="norwegian">Norwegian</option>
-                        </optgroup>
-                        <optgroup label="Time Presets">
-                            <option value="30/30">30/30</option>
-                            <option value="45/15">45/15</option>
-                            <option value="60/30">60/30</option>
-                            <option value="45/45">45/45</option>
-                            <option value="60/60">60/60</option>
-                            <option value="30/60">30/60</option>
-                            <option value="20/10">20/10</option>
-                            <option value="40/20">40/20</option>
-                            <option value="90/30">90/30</option>
-                            <option value="2:00/1:00">2:00/1:00</option>
-                            <option value="3:00/1:00">3:00/1:00</option>
-                            <option value="1:00/30">1:00/30</option>
-                        </optgroup>
-                    </select>
-                    <p class="text-xs text-[rgb(var(--muted-foreground))] mt-1">Choose a preset to fill work, rest, rounds, and title.</p>
-                </div>
-            </div>
-            <div class="sheet-section">
-                <h3>Workout Presets</h3>
-                <div class="preset-grid-workout">
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="tabata" data-work="20" data-rest="10" data-rounds="8" data-title="Tabata HIIT" data-description="20 seconds high-intensity work, 10 seconds rest, 8 rounds. Classic Tabata protocol for VO2 max and fat burn.">Tabata</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="emom" data-work="60" data-rest="0" data-rounds="" data-title="EMOM" data-description="A set number of reps of a movement/s performed every minute on the minute.">EMOM</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="little" data-work="60" data-rest="75" data-rounds="" data-title="Little Method" data-description="60 seconds work, 75 seconds rest. Popular endurance protocol.">Little</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="gibala" data-work="60" data-rest="75" data-rounds="" data-title="Gibala HIIT" data-description="60 seconds work, 75 seconds rest. Research-backed high-intensity interval training.">Gibala</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="norwegian" data-work="240" data-rest="180" data-rounds="4" data-title="Norwegian 4x4" data-description="4 minutes work, 3 minutes active recovery, 4 rounds.">Norwegian</button>
-                </div>
-            </div>
-            <div class="sheet-section">
-                <h3>Time Presets</h3>
-                <div class="preset-grid-time">
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="30/30" data-work="30" data-rest="30" data-title="30/30 Interval" data-description="30 seconds work, 30 seconds rest.">30/30</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="45/15" data-work="45" data-rest="15" data-title="45/15 Interval" data-description="45 seconds work, 15 seconds rest.">45/15</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="60/30" data-work="60" data-rest="30" data-title="60/30 Interval" data-description="1 minute work, 30 seconds rest.">60/30</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="45/45" data-work="45" data-rest="45" data-title="45/45 Interval" data-description="45 seconds work, 45 seconds rest.">45/45</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="60/60" data-work="60" data-rest="60" data-title="60/60 Interval" data-description="1 minute work, 1 minute rest.">60/60</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="30/60" data-work="30" data-rest="60" data-title="30/60 Interval" data-description="30 seconds work, 1 minute rest.">30/60</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="20/10" data-work="20" data-rest="10" data-title="20/10 Interval" data-description="20 seconds work, 10 seconds rest.">20/10</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="40/20" data-work="40" data-rest="20" data-title="40/20 Interval" data-description="40 seconds work, 20 seconds rest.">40/20</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="90/30" data-work="90" data-rest="30" data-title="90/30 Interval" data-description="90 seconds work, 30 seconds rest.">90/30</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="2:00/1:00" data-work="120" data-rest="60" data-title="2:00/1:00 Interval" data-description="2 minutes work, 1 minute rest.">2:00/1:00</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="3:00/1:00" data-work="180" data-rest="60" data-title="3:00/1:00 Interval" data-description="3 minutes work, 1 minute rest.">3:00/1:00</button>
-                    <button type="button" class="preset-chip quick-select-btn" data-preset-key="1:00/30" data-work="60" data-rest="30" data-title="1:00/30 Interval" data-description="1 minute work, 30 seconds rest.">1:00/30</button>
-                </div>
-            </div>
-            <div class="sheet-section">
+        <div class="drawer-content">
+            <!-- Setup Content -->
+            <div class="drawer-section">
+                <h3>Setup Content</h3>
+
+                <!-- Workout Title -->
                 <div class="input-group">
                     <label for="workoutTitleInput">Workout Title</label>
-                    <input type="text" id="workoutTitleInput" class="shadcn-input" placeholder="Enter workout title" aria-label="Workout title" maxlength="40">
-                    <p class="text-xs text-[rgb(var(--muted-foreground))] mt-1 text-right"><span id="workoutTitleCharCount">0</span>/40</p>
+                    <input
+                        type="text"
+                        id="workoutTitleInput"
+                        class="custom-time-input"
+                        placeholder="Enter workout title"
+                        aria-label="Workout title"
+                        maxlength="40"
+                        style="font-family: inherit;"
+                    >
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="workoutTitleCharCount">0</span>/40
+                    </p>
                 </div>
+
+                <!-- Workout Notes -->
                 <div class="input-group">
                     <label for="workoutDescriptionInput">Workout Notes</label>
-                    <textarea id="workoutDescriptionInput" class="shadcn-textarea" placeholder="Enter workout notes..." aria-label="Workout notes" rows="4" maxlength="200"></textarea>
-                    <p class="text-xs text-[rgb(var(--muted-foreground))] mt-1 text-right"><span id="workoutDescriptionCharCount">0</span>/200</p>
+                    <textarea
+                        id="workoutDescriptionInput"
+                        class="custom-time-input"
+                        placeholder="Enter workout notes..."
+                        aria-label="Workout notes"
+                        rows="4"
+                        maxlength="200"
+                        style="resize: vertical; min-height: 80px; font-family: inherit; line-height: 1.5;"
+                    ></textarea>
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="workoutDescriptionCharCount">0</span>/200
+                    </p>
+                </div>
+                
+                <!-- Work Time -->
+                <div class="input-group">
+                    <label for="workTimeInput">Work Time (MM:SS)</label>
+                    <div class="time-input-group">
+                        <button class="time-adjust-btn" id="workDecreaseBtn" type="button" aria-label="Decrease work time by 10 seconds">−10</button>
+                        <input 
+                            type="text" 
+                            id="workTimeInput" 
+                            class="custom-time-input" 
+                            value="00:00"
+                            pattern="[0-9]{2}:[0-9]{2}"
+                            placeholder="MM:SS"
+                            aria-label="Work time"
+                        >
+                        <button class="time-adjust-btn" id="workIncreaseBtn" type="button" aria-label="Increase work time by 10 seconds">+10</button>
+                    </div>
+                </div>
+                
+                <!-- Rest Time -->
+                <div class="input-group">
+                    <label for="restTimeInput">Rest Time (MM:SS)</label>
+                    <div class="time-input-group">
+                        <button class="time-adjust-btn" id="restDecreaseBtn" type="button" aria-label="Decrease rest time by 10 seconds">−10</button>
+                        <input 
+                            type="text" 
+                            id="restTimeInput" 
+                            class="custom-time-input" 
+                            value="00:00"
+                            pattern="[0-9]{2}:[0-9]{2}"
+                            placeholder="MM:SS"
+                            aria-label="Rest time"
+                        >
+                        <button class="time-adjust-btn" id="restIncreaseBtn" type="button" aria-label="Increase rest time by 10 seconds">+10</button>
+                    </div>
+                </div>
+                
+                <!-- Number of Rounds -->
+                <div class="input-group">
+                    <label for="roundsInput">Number of Rounds</label>
+                    <div class="rounds-input-group">
+                        <button class="rounds-adjust-btn" id="roundsDecreaseBtn" type="button" aria-label="Decrease rounds">−</button>
+                        <input 
+                            type="text" 
+                            id="roundsInput" 
+                            value="0"
+                            aria-label="Number of rounds"
+                        >
+                        <button class="rounds-adjust-btn" id="roundsIncreaseBtn" type="button" aria-label="Increase rounds">+</button>
+                    </div>
+                </div>
+                
+                <!-- Countdown before start (for presets) -->
+                <div class="input-group">
+                    <label for="countdownBeforeStartInput">COUNTDOWN BEFORE START (SECONDS)</label>
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-bottom: 0.5rem;">Runs before each preset workout when you tap Start. Set to 0 to start immediately.</p>
+                    <div class="rounds-input-group">
+                        <button class="rounds-adjust-btn" id="countdownDecreaseBtn" type="button" aria-label="Decrease countdown">−</button>
+                        <input 
+                            type="number" 
+                            id="countdownBeforeStartInput" 
+                            value="10"
+                            min="0"
+                            max="60"
+                            aria-label="Countdown before start (seconds)"
+                        >
+                        <button class="rounds-adjust-btn" id="countdownIncreaseBtn" type="button" aria-label="Increase countdown">+</button>
+                    </div>
+                </div>
+                
+                <!-- Completion Message -->
+                <div class="input-group">
+                    <label for="doneMessageInput">COMPLETION MESSAGE (14 CHARACTERS MAX)</label>
+                    <input 
+                        type="text" 
+                        id="doneMessageInput" 
+                        class="custom-time-input"
+                        maxlength="14"
+                        value="completed"
+                        placeholder="completed"
+                        aria-label="Completion message"
+                    >
+                    <p style="font-size: 0.75rem; color: rgb(var(--muted-foreground)); margin-top: 0.25rem; text-align: right;">
+                        <span id="doneMessageCharCount">0</span>/14
+                    </p>
                 </div>
             </div>
-            <div class="sheet-section">
-                <h3>Work Time (MM:SS)</h3>
-                <div class="time-slider-wrap">
-                    <input type="range" id="workTimeSlider" min="0" max="600" step="5" value="0" aria-label="Work time seconds">
-                </div>
-                <div class="time-stepper-row">
-                    <button type="button" class="stepper-btn" id="workDecreaseBtn" aria-label="Decrease work time 10s">−10</button>
-                    <input type="text" id="workTimeInput" class="custom-time-input" value="00:00" placeholder="MM:SS" aria-label="Work time">
-                    <button type="button" class="stepper-btn" id="workIncreaseBtn" aria-label="Increase work time 10s">+10</button>
-                </div>
-            </div>
-            <div class="sheet-section">
-                <h3>Rest Time (MM:SS)</h3>
-                <div class="time-slider-wrap">
-                    <input type="range" id="restTimeSlider" min="0" max="300" step="5" value="0" aria-label="Rest time seconds">
-                </div>
-                <div class="time-stepper-row">
-                    <button type="button" class="stepper-btn" id="restDecreaseBtn" aria-label="Decrease rest time 10s">−10</button>
-                    <input type="text" id="restTimeInput" class="custom-time-input" value="00:00" placeholder="MM:SS" aria-label="Rest time">
-                    <button type="button" class="stepper-btn" id="restIncreaseBtn" aria-label="Increase rest time 10s">+10</button>
-                </div>
-            </div>
-            <div class="sheet-section">
-                <h3>Rounds</h3>
-                <div class="rounds-stepper">
-                    <button type="button" class="stepper-btn rounds-adjust-btn" id="roundsDecreaseBtn" aria-label="Decrease rounds">−</button>
-                    <input type="text" id="roundsInput" class="custom-time-input" value="0" aria-label="Number of rounds">
-                    <button type="button" class="stepper-btn rounds-adjust-btn" id="roundsIncreaseBtn" aria-label="Increase rounds">+</button>
-                </div>
-            </div>
-            <div class="sheet-section">
-                <h3>COUNTDOWN BEFORE START (SECONDS)</h3>
-                <div class="time-slider-wrap">
-                    <input type="range" id="countdownBeforeStartSlider" min="0" max="60" step="1" value="10" aria-label="Countdown before start seconds">
-                </div>
-                <div class="time-stepper-row">
-                    <button type="button" class="stepper-btn rounds-adjust-btn" id="countdownDecreaseBtn" aria-label="Decrease countdown">−</button>
-                    <input type="number" id="countdownBeforeStartInput" class="custom-time-input countdown-input-no-spinners" value="10" min="0" max="60" aria-label="Countdown before start">
-                    <button type="button" class="stepper-btn rounds-adjust-btn" id="countdownIncreaseBtn" aria-label="Increase countdown">+</button>
-                </div>
-            </div>
-            <div class="sheet-section">
-                <h3>Completion Message (14 chars max)</h3>
-                <input type="text" id="doneMessageInput" class="shadcn-input" maxlength="14" value="Completed" placeholder="Completed" aria-label="Completion message">
-                <p class="text-xs text-[rgb(var(--muted-foreground))] mt-1 text-right"><span id="doneMessageCharCount">0</span>/14</p>
-            </div>
-            <div class="sheet-section">
-                <button type="button" id="clearAllSettingsBtn" class="btn-clear-all-settings" aria-label="Clear all settings">Clear All Settings</button>
-            </div>
-            <div class="sheet-section">
+            
+            <!-- About This Timer -->
+            <div class="drawer-section">
                 <h3>About This Timer</h3>
-                <p class="text-sm text-[rgb(var(--muted-foreground))] leading-relaxed">Ideal for HIIT, circuit training, or cardio sessions with work/rest intervals.</p>
+                <p>
+                    Ideal for HIIT, circuit training, or cardio sessions with work/rest intervals. 
+                    Set your work time, rest time, and number of rounds for structured interval workouts.
+                </p>
+                <p style="margin-top: 0.75rem;">
+                    <strong>Keywords:</strong> interval timer, HIIT interval, work rest timer, fitness interval tool, circuit training timer, cardio interval timer.
+                </p>
             </div>
-            <div class="sheet-section">
-                <p class="text-sm text-[rgb(var(--muted-foreground))]"><strong>Version:</strong> v0.17 · <span id="releaseDate">—</span></p>
+            
+            <!-- General Info -->
+            <div class="drawer-section">
+                <h3>General Info</h3>
+                <p><strong>Version:</strong> v0.15</p>
+                <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
     </div>
     
-    <script>
-        (function() {
-            var themeKey = 'timerist-theme';
-            var darkThemeValue = 'style1';
-            function getInitialTheme() {
-                var saved = localStorage.getItem(themeKey);
-                if (saved) return saved;
-                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-            }
-            function isDarkMode() {
-                return document.documentElement.getAttribute('data-theme') === darkThemeValue;
-            }
-            function applyTheme(theme) {
-                var root = document.documentElement;
-                if (theme === 'dark') {
-                    root.setAttribute('data-theme', darkThemeValue);
-                } else {
-                    root.removeAttribute('data-theme');
-                }
-                localStorage.setItem(themeKey, theme);
-            }
-            applyTheme(getInitialTheme());
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-                if (!localStorage.getItem(themeKey)) applyTheme(e.matches ? 'dark' : 'light');
-            });
-            window.toggleTheme = function() {
-                applyTheme(isDarkMode() ? 'light' : 'dark');
-            };
-        })();
-    </script>
     <script>
         // Interval Timer Logic
         let currentTime = 0;
@@ -1163,19 +1250,11 @@
         let isRunning = false;
         let isPaused = false;
         let isWorkPhase = true;
-        let currentRound = 0;
+        let currentRound = 1;
         let workTime = 0;
         let restTime = 0;
         let totalRounds = 0;
         let isCountdownPhase = false;
-        
-        const TIMER_NAME = 'Preset Intervals';
-        let currentPresetKey = null;
-        let userEditedTitle = false;
-        let userEditedDescription = false;
-        let appliedPresetWork = 0;
-        let appliedPresetRest = 0;
-        let appliedPresetRounds = 0;
         
         const display = document.getElementById('display');
         const phaseLabel = document.getElementById('phaseLabel');
@@ -1191,8 +1270,10 @@
         const roundsInput = document.getElementById('roundsInput');
         const roundsDecreaseBtn = document.getElementById('roundsDecreaseBtn');
         const roundsIncreaseBtn = document.getElementById('roundsIncreaseBtn');
-        const workTimeSlider = document.getElementById('workTimeSlider');
-        const restTimeSlider = document.getElementById('restTimeSlider');
+        const workDecreaseBtn = document.getElementById('workDecreaseBtn');
+        const workIncreaseBtn = document.getElementById('workIncreaseBtn');
+        const restDecreaseBtn = document.getElementById('restDecreaseBtn');
+        const restIncreaseBtn = document.getElementById('restIncreaseBtn');
         const roundsInputMain = document.getElementById('roundsInputMain');
         const roundsDecreaseBtnMain = document.getElementById('roundsDecreaseBtnMain');
         const roundsIncreaseBtnMain = document.getElementById('roundsIncreaseBtnMain');
@@ -1207,87 +1288,8 @@
         const workoutTitleCharCount = document.getElementById('workoutTitleCharCount');
         const workoutDescriptionCharCount = document.getElementById('workoutDescriptionCharCount');
         const countdownBeforeStartInput = document.getElementById('countdownBeforeStartInput');
-        const countdownBeforeStartSlider = document.getElementById('countdownBeforeStartSlider');
         const countdownDecreaseBtn = document.getElementById('countdownDecreaseBtn');
         const countdownIncreaseBtn = document.getElementById('countdownIncreaseBtn');
-        const presetSelect = document.getElementById('presetSelect');
-        
-        // Preset definitions: work (sec), rest (sec), rounds (number or null = user specifies), title, description
-        const QUICK_PRESETS = {
-            tabata:     { work: 20,  rest: 10,  rounds: 8,  title: 'Tabata HIIT',           description: '20 seconds high-intensity work, 10 seconds rest, 8 rounds. Classic Tabata protocol for VO2 max and fat burn.' },
-            emom:       { work: 60,  rest: 0,   rounds: null, title: 'EMOM',                  description: 'A set number of reps of a movement/s performed every minute on the minute.' },
-            little:     { work: 60,  rest: 75,  rounds: null, title: 'Little Method',        description: '60 seconds work, 75 seconds rest. Popular endurance protocol (often 8–12 rounds).' },
-            gibala:     { work: 60,  rest: 75,  rounds: null, title: 'Gibala HIIT',          description: '60 seconds work, 75 seconds rest. Research-backed high-intensity interval training.' },
-            norwegian:  { work: 240, rest: 180, rounds: 4,   title: 'Norwegian 4x4',        description: '4 minutes work, 3 minutes active recovery, 4 rounds. Proven VO2 max builder.' },
-            '30/30':    { work: 30,  rest: 30,  rounds: null, title: '30/30 Interval',        description: '30 seconds work, 30 seconds rest. Balanced beginner/intermediate HIIT ratio.' },
-            '45/15':    { work: 45,  rest: 15,  rounds: null, title: '45/15 Interval',        description: '45 seconds work, 15 seconds rest. High-intensity, short-recovery HIIT.' },
-            '60/30':    { work: 60,  rest: 30,  rounds: null, title: '60/30 Interval',       description: '1 minute work, 30 seconds rest. Classic moderate-to-high intensity ratio.' },
-            '45/45':    { work: 45,  rest: 45,  rounds: null, title: '45/45 Interval',       description: '45 seconds work, 45 seconds rest. Equal work/rest ratio.' },
-            '60/60':    { work: 60,  rest: 60,  rounds: null, title: '60/60 Interval',       description: '1 minute work, 1 minute rest. Equal work/rest for steady intensity.' },
-            '30/60':    { work: 30,  rest: 60,  rounds: null, title: '30/60 Interval',        description: '30 seconds work, 1 minute rest. Short burst, longer recovery.' },
-            '20/10':    { work: 20,  rest: 10,  rounds: null, title: '20/10 Interval',        description: '20 seconds work, 10 seconds rest. Tabata-style short intervals.' },
-            '40/20':    { work: 40,  rest: 20,  rounds: null, title: '40/20 Interval',        description: '40 seconds work, 20 seconds rest. EMOM-style ratio.' },
-            '90/30':    { work: 90,  rest: 30,  rounds: null, title: '90/30 Interval',        description: '90 seconds work, 30 seconds rest. Longer work, short recovery.' },
-            '2:00/1:00': { work: 120, rest: 60, rounds: null, title: '2:00/1:00 Interval',    description: '2 minutes work, 1 minute rest. Aerobic endurance intervals.' },
-            '3:00/1:00': { work: 180, rest: 60, rounds: null, title: '3:00/1:00 Interval',    description: '3 minutes work, 1 minute rest. Longer aerobic intervals.' },
-            '1:00/30':   { work: 60,  rest: 30, rounds: null, title: '1:00/30 Interval',       description: '1 minute work, 30 seconds rest. Classic moderate-to-high intensity ratio.' }
-        };
-        
-        function syncSlidersFromInputs() {
-            if (workTimeSlider) workTimeSlider.value = Math.min(600, parseTime(workTimeInput && workTimeInput.value));
-            if (restTimeSlider) restTimeSlider.value = Math.min(300, parseTime(restTimeInput && restTimeInput.value));
-            if (countdownBeforeStartSlider) countdownBeforeStartSlider.value = Math.min(60, Math.max(0, getCountdownBeforeStart()));
-        }
-        function syncInputsFromSliders() {
-            if (workTimeSlider) {
-                const sec = parseInt(workTimeSlider.value, 10);
-                workTimeInput.value = formatTime(sec);
-                workTime = sec;
-            }
-            if (restTimeSlider) {
-                const sec = parseInt(restTimeSlider.value, 10);
-                restTimeInput.value = formatTime(sec);
-                restTime = sec;
-            }
-            if (countdownBeforeStartSlider) {
-                const sec = Math.min(60, Math.max(0, parseInt(countdownBeforeStartSlider.value, 10)));
-                if (countdownBeforeStartInput) countdownBeforeStartInput.value = sec;
-                saveCountdownBeforeStart(sec);
-            }
-        }
-        
-        function loadQuickPreset(key) {
-            if (!key || key === 'custom') {
-                currentPresetKey = null;
-                updateWorkoutDisplay();
-                return;
-            }
-            const preset = QUICK_PRESETS[key];
-            if (!preset) return;
-            const roundsToUse = preset.rounds != null ? Math.max(1, Math.min(99, preset.rounds)) : 1;
-            currentPresetKey = key;
-            userEditedTitle = false;
-            userEditedDescription = false;
-            appliedPresetWork = preset.work;
-            appliedPresetRest = preset.rest;
-            appliedPresetRounds = roundsToUse;
-            workTimeInput.value = formatTime(preset.work);
-            restTimeInput.value = formatTime(preset.rest);
-            roundsInput.value = roundsToUse;
-            workTime = preset.work;
-            restTime = preset.rest;
-            totalRounds = roundsToUse;
-            if (workoutTitleInput) workoutTitleInput.value = preset.title;
-            if (workoutDescriptionInput) workoutDescriptionInput.value = preset.description || '';
-            document.querySelectorAll('.quick-select-btn').forEach(b => b.classList.remove('selected'));
-            document.querySelectorAll('.quick-select-btn[data-preset-key="' + key + '"]').forEach(function(b) { b.classList.add('selected'); });
-            if (roundsInputMain) roundsInputMain.value = roundsToUse;
-            syncSlidersFromInputs();
-            updateWorkoutCharCounts();
-            updateWorkoutDisplay();
-            resetTimer();
-            updateDisplay();
-        }
         
         // Get/save countdown before start (default 10)
         function getCountdownBeforeStart() {
@@ -1297,7 +1299,6 @@
         function saveCountdownBeforeStart(seconds) {
             const s = Math.max(0, Math.min(60, seconds));
             if (countdownBeforeStartInput) countdownBeforeStartInput.value = s;
-            if (countdownBeforeStartSlider) countdownBeforeStartSlider.value = s;
             try { localStorage.setItem('quick-interval-countdownBeforeStart', String(s)); } catch (e) {}
         }
         
@@ -1351,9 +1352,13 @@
             const currentSeconds = parseTime(input.value);
             const newSeconds = Math.max(0, currentSeconds + (increment ? 10 : -10));
             input.value = formatTime(newSeconds);
-            if (input === workTimeInput) workTime = newSeconds;
-            else if (input === restTimeInput) restTime = newSeconds;
-            syncSlidersFromInputs();
+            
+            // Update the corresponding time variable
+            if (input === workTimeInput) {
+                workTime = newSeconds;
+            } else if (input === restTimeInput) {
+                restTime = newSeconds;
+            }
             
             // Reset timer to reflect new time
             if (!isRunning) {
@@ -1373,6 +1378,9 @@
             workIncreaseBtn.disabled = true;
             restDecreaseBtn.disabled = true;
             restIncreaseBtn.disabled = true;
+            if (roundsInputMain) roundsInputMain.disabled = true;
+            if (roundsDecreaseBtnMain) roundsDecreaseBtnMain.disabled = true;
+            if (roundsIncreaseBtnMain) roundsIncreaseBtnMain.disabled = true;
             if (countdownBeforeStartInput) countdownBeforeStartInput.disabled = true;
             if (countdownDecreaseBtn) countdownDecreaseBtn.disabled = true;
             if (countdownIncreaseBtn) countdownIncreaseBtn.disabled = true;
@@ -1397,45 +1405,9 @@
             if (countdownIncreaseBtn) countdownIncreaseBtn.disabled = false;
         }
         
-        // Check if timer has valid data to proceed (allow rest=0 for EMOM/custom)
+        // Check if timer has valid data to proceed
         function hasValidTimerData() {
-            const allowZeroRest = currentPresetKey === 'emom' || currentPresetKey === 'custom' || !currentPresetKey;
-            return workTime > 0 && totalRounds > 0 && (restTime > 0 || allowZeroRest);
-        }
-        
-        function formatModifiedParams() {
-            return workTime + 's work, ' + restTime + 's rest, ' + totalRounds + ' round' + (totalRounds === 1 ? '' : 's');
-        }
-        
-        function updateWorkoutDisplay() {
-            const titleEl = workoutTitleText;
-            const descEl = workoutDescriptionText;
-            const titleBlock = workoutTitleDisplay;
-            const descBlock = workoutDescriptionDisplay;
-            const isActive = isRunning || isPaused || (getCountdownBeforeStart() > 0 && currentTime > 0);
-            let titleToShow = '';
-            let descToShow = '';
-            if (isActive) {
-                titleToShow = userEditedTitle ? (workoutTitleInput && workoutTitleInput.value) : (currentPresetKey && QUICK_PRESETS[currentPresetKey] ? QUICK_PRESETS[currentPresetKey].title : (workoutTitleInput && workoutTitleInput.value));
-                if (!titleToShow) titleBlock.classList.add('empty'); else titleBlock.classList.remove('empty');
-                descToShow = userEditedDescription ? (workoutDescriptionInput && workoutDescriptionInput.value) : (currentPresetKey && QUICK_PRESETS[currentPresetKey] ? QUICK_PRESETS[currentPresetKey].description : (workoutDescriptionInput && workoutDescriptionInput.value)) || '';
-                if (currentPresetKey && appliedPresetWork !== undefined && (workTime !== appliedPresetWork || restTime !== appliedPresetRest || totalRounds !== appliedPresetRounds)) {
-                    descToShow += (descToShow ? '\n\n' : '') + 'Modified: ' + formatModifiedParams();
-                }
-            } else {
-                /* Title area: show default timer name when no custom title (match countdown model) */
-                const defaultTitle = 'Preset Intervals';
-                titleToShow = userEditedTitle ? (workoutTitleInput && workoutTitleInput.value && workoutTitleInput.value.trim()) : (currentPresetKey && QUICK_PRESETS[currentPresetKey] ? QUICK_PRESETS[currentPresetKey].title : (workoutTitleInput && workoutTitleInput.value && workoutTitleInput.value.trim())) || defaultTitle;
-                if (!titleToShow) titleBlock.classList.add('empty'); else titleBlock.classList.remove('empty');
-                descToShow = userEditedDescription ? (workoutDescriptionInput && workoutDescriptionInput.value) : (currentPresetKey && QUICK_PRESETS[currentPresetKey] ? QUICK_PRESETS[currentPresetKey].description : (workoutDescriptionInput && workoutDescriptionInput.value)) || '';
-                if (currentPresetKey && appliedPresetWork !== undefined && (workTime !== appliedPresetWork || restTime !== appliedPresetRest || totalRounds !== appliedPresetRounds)) {
-                    descToShow += (descToShow ? '\n\n' : '') + 'Modified: ' + formatModifiedParams();
-                }
-            }
-            if (titleEl) titleEl.textContent = titleToShow || '';
-            if (descEl) descEl.textContent = descToShow || '';
-            if (titleBlock) titleBlock.classList.toggle('empty', !titleToShow);
-            if (descBlock) descBlock.classList.toggle('empty', !descToShow);
+            return workTime > 0 && restTime > 0 && totalRounds > 0;
         }
         
         // Update display with color coding
@@ -1447,7 +1419,7 @@
             }
             if (isCountdownPhase) {
                 display.textContent = String(currentTime);
-                phaseLabel.textContent = 'Preparation';
+                phaseLabel.textContent = 'Get ready';
                 phaseLabel.classList.remove('rest');
                 phaseLabel.style.color = 'rgb(var(--primary))';
                 roundDisplay.textContent = currentRound;
@@ -1455,11 +1427,12 @@
                 display.classList.remove('warning', 'danger');
                 if (currentTime <= 3 && currentTime > 0) display.classList.add('warning');
                 if (currentTime <= 1 && currentTime > 0) display.classList.add('danger');
-            } else if (isRunning || isPaused) {
+            } else {
                 display.textContent = formatTime(currentTime);
                 phaseLabel.textContent = isWorkPhase ? 'Work' : 'Rest';
                 roundDisplay.textContent = currentRound;
                 totalRoundsDisplay.textContent = totalRounds;
+                // Update phase label color
                 if (isWorkPhase) {
                     phaseLabel.classList.remove('rest');
                     phaseLabel.style.color = 'rgb(var(--primary))';
@@ -1478,16 +1451,7 @@
                         display.classList.add('warning');
                     }
                 }
-            } else {
-                // Idle: phase label empty; timer name shown in title area
-                phaseLabel.textContent = '';
-                phaseLabel.classList.remove('rest');
-                display.textContent = formatTime(workTime);
-                roundDisplay.textContent = currentRound;
-                totalRoundsDisplay.textContent = totalRounds;
-                display.classList.remove('warning', 'danger');
             }
-            updateWorkoutDisplay();
             
             // Add running class for styling
             if (isRunning) {
@@ -1541,7 +1505,7 @@
                 restTime = parseTime(restTimeInput.value);
                 totalRounds = parseInt(roundsInput.value) || 0;
                 currentTime = workTime;
-                currentRound = totalRounds > 0 ? 1 : 0;
+                currentRound = 1;
                 isWorkPhase = true;
             }
             
@@ -1589,20 +1553,6 @@
                 }
                 if (isWorkPhase) {
                     isWorkPhase = false;
-                    if (restTime <= 0) {
-                        // EMOM / zero rest: skip rest phase
-                        if (currentRound >= totalRounds) {
-                            stopTimer();
-                            playSound();
-                            showDoneMessage();
-                            return;
-                        }
-                        isWorkPhase = true;
-                        currentRound++;
-                        currentTime = workTime;
-                        updateDisplay();
-                        return;
-                    }
                     currentTime = restTime;
                     updateDisplay();
                     return;
@@ -1666,12 +1616,17 @@
             isPaused = false;
             isCountdownPhase = false;
             
+            // Get current values from inputs (prefer main page input if available)
             workTime = parseTime(workTimeInput.value);
             restTime = parseTime(restTimeInput.value);
-            const roundsVal = (roundsInputMain ? parseInt(roundsInputMain.value) : parseInt(roundsInput.value)) || parseInt(roundsInput.value) || 0;
-            totalRounds = Math.max(0, Math.min(99, roundsVal));
-            if (roundsInputMain) roundsInputMain.value = totalRounds;
-            if (roundsInput) roundsInput.value = totalRounds;
+            const roundsValue = roundsInputMain ? parseInt(roundsInputMain.value) : parseInt(roundsInput.value);
+            totalRounds = roundsValue || 0;
+            
+            // Sync both inputs
+            if (roundsInputMain && roundsInput) {
+                roundsInput.value = totalRounds;
+                roundsInputMain.value = totalRounds;
+            }
             
             // Reset to work phase, round 1
             currentTime = workTime;
@@ -1701,21 +1656,22 @@
             workTimeInput.value = '00:00';
             restTimeInput.value = '00:00';
             roundsInput.value = '0';
-            if (roundsInputMain) roundsInputMain.value = '0';
-            totalRounds = 0;
-            currentPresetKey = null;
-            userEditedTitle = false;
-            userEditedDescription = false;
-            if (presetSelect) presetSelect.value = 'custom';
-            document.querySelectorAll('.quick-select-btn').forEach(btn => btn.classList.remove('selected'));
-            if (workTimeSlider) workTimeSlider.value = 0;
-            if (restTimeSlider) restTimeSlider.value = 0;
             
-            // Reset timer state
+            // Reset main page rounds input to 1
+            if (roundsInputMain) {
+                roundsInputMain.value = '1';
+            }
+            
+            // Clear selected preset button
+            const presetButtons = document.querySelectorAll('.quick-select-btn[data-work][data-rest]');
+            presetButtons.forEach(btn => btn.classList.remove('selected'));
+            
+            // Reset timer state to zero
             workTime = 0;
             restTime = 0;
+            totalRounds = 0;
             currentTime = 0;
-            currentRound = 0;
+            currentRound = 1;
             isWorkPhase = true;
             isCountdownPhase = false;
             
@@ -1756,13 +1712,13 @@
         // Get completion message from localStorage or use default
         function getDoneMessage() {
             const saved = localStorage.getItem('quick-interval-doneMessage');
-            return saved || 'Completed';
+            return saved || 'completed';
         }
         
         // Save completion message to localStorage
         function saveDoneMessage(message) {
             const v = (message || '').trim();
-            localStorage.setItem('quick-interval-doneMessage', v ? v : 'Completed');
+            localStorage.setItem('quick-interval-doneMessage', v ? v : 'completed');
         }
         
         // Show completion message on display
@@ -1798,6 +1754,31 @@
             }
         }
 
+        // Update workout title and notes display (match emom.html)
+        function updateWorkoutDisplay() {
+            if (!workoutTitleInput || !workoutDescriptionInput) return;
+            const title = workoutTitleInput.value.trim();
+            const description = workoutDescriptionInput.value.trim();
+
+            if (workoutTitleDisplay && workoutTitleText) {
+                if (title) {
+                    workoutTitleText.textContent = title;
+                    workoutTitleDisplay.style.display = 'block';
+                } else {
+                    workoutTitleDisplay.style.display = 'none';
+                }
+            }
+
+            if (workoutDescriptionDisplay && workoutDescriptionText) {
+                if (description) {
+                    workoutDescriptionText.textContent = description;
+                    workoutDescriptionDisplay.style.display = 'block';
+                } else {
+                    workoutDescriptionDisplay.style.display = 'none';
+                }
+            }
+        }
+
         function updateWorkoutCharCounts() {
             if (workoutTitleInput && workoutTitleCharCount) {
                 workoutTitleCharCount.textContent = workoutTitleInput.value.length;
@@ -1821,7 +1802,9 @@
         pauseBtn.addEventListener('click', pauseTimer);
         resetBtn.addEventListener('click', resetTimer);
         clearBtn.addEventListener('click', clearTimer);
-        setupBtn.addEventListener('click', openSheet);
+        setupBtn.addEventListener('click', function() {
+            toggleDrawer();
+        });
         
         // Time adjustment buttons
         workDecreaseBtn.addEventListener('click', function() {
@@ -1846,7 +1829,9 @@
             let rounds = parseInt(roundsInput.value) || 0;
             rounds = Math.max(0, rounds - 1);
             roundsInput.value = rounds;
-            if (roundsInputMain) roundsInputMain.value = rounds;
+            if (roundsInputMain) {
+                roundsInputMain.value = rounds;
+            }
             totalRounds = rounds;
             if (!isRunning) {
                 resetTimer();
@@ -1859,7 +1844,9 @@
             let rounds = parseInt(roundsInput.value) || 0;
             rounds = Math.min(99, rounds + 1);
             roundsInput.value = rounds;
-            if (roundsInputMain) roundsInputMain.value = rounds;
+            if (roundsInputMain) {
+                roundsInputMain.value = rounds;
+            }
             totalRounds = rounds;
             if (!isRunning) {
                 resetTimer();
@@ -1889,156 +1876,128 @@
         roundsInput.addEventListener('input', function() {
             if (!isRunning) {
                 const value = parseInt(this.value) || 0;
-                totalRounds = Math.max(0, Math.min(99, value));
-                this.value = totalRounds;
-                if (roundsInputMain) roundsInputMain.value = totalRounds;
+                totalRounds = value;
+                if (roundsInputMain) {
+                    roundsInputMain.value = value;
+                }
                 resetTimer();
-                updateDisplay();
+                updateDisplay(); // Update button visibility based on validity
             }
         });
         
-        if (roundsInputMain) {
-            roundsInputMain.addEventListener('input', function() {
+        // Main page rounds adjustment buttons
+        if (roundsDecreaseBtnMain && roundsIncreaseBtnMain && roundsInputMain) {
+            roundsDecreaseBtnMain.addEventListener('click', function() {
+                if (isRunning) return;
+                let rounds = parseInt(roundsInputMain.value) || 1;
+                rounds = Math.max(1, rounds - 1);
+                roundsInputMain.value = rounds;
+                roundsInput.value = rounds;
+                totalRounds = rounds;
                 if (!isRunning) {
-                    const value = parseInt(this.value) || 1;
-                    const clamped = Math.max(1, Math.min(99, value));
-                    this.value = clamped;
-                    roundsInput.value = clamped;
-                    totalRounds = clamped;
                     resetTimer();
                     updateDisplay();
                 }
             });
-        }
-        if (roundsDecreaseBtnMain) {
-            roundsDecreaseBtnMain.addEventListener('click', function() {
-                if (isRunning) return;
-                let r = parseInt(roundsInputMain.value) || 1;
-                r = Math.max(1, r - 1);
-                roundsInputMain.value = r;
-                roundsInput.value = r;
-                totalRounds = r;
-                resetTimer();
-                updateDisplay();
-            });
-        }
-        if (roundsIncreaseBtnMain) {
+            
             roundsIncreaseBtnMain.addEventListener('click', function() {
                 if (isRunning) return;
-                let r = parseInt(roundsInputMain.value) || 1;
-                r = Math.min(99, r + 1);
-                roundsInputMain.value = r;
-                roundsInput.value = r;
-                totalRounds = r;
-                resetTimer();
-                updateDisplay();
-            });
-        }
-        
-        // Preset chips (main page + sheet): use loadQuickPreset
-        document.querySelectorAll('.quick-select-btn[data-preset-key]').forEach(btn => {
-            btn.addEventListener('click', function() {
-                if (isRunning) return;
-                const presetKey = this.getAttribute('data-preset-key');
-                loadQuickPreset(presetKey);
-            });
-        });
-        
-        // Workout title/notes: mark user edited
-        if (workoutTitleInput) {
-            workoutTitleInput.addEventListener('input', function() {
-                userEditedTitle = true;
-                updateWorkoutCharCounts();
-                updateWorkoutDisplay();
-            });
-        }
-        if (workoutDescriptionInput) {
-            workoutDescriptionInput.addEventListener('input', function() {
-                userEditedDescription = true;
-                updateWorkoutCharCounts();
-                updateWorkoutDisplay();
-            });
-        }
-        
-        // Preset dropdown: load preset on change
-        if (presetSelect) {
-            presetSelect.addEventListener('change', function() {
-                if (isRunning) return;
-                loadQuickPreset(this.value);
-            });
-        }
-        
-        // Sliders sync with inputs
-        if (workTimeSlider) {
-            workTimeSlider.addEventListener('input', function() {
-                if (isRunning) return;
-                syncInputsFromSliders();
-                resetTimer();
-                updateDisplay();
-            });
-        }
-        if (restTimeSlider) {
-            restTimeSlider.addEventListener('input', function() {
-                if (isRunning) return;
-                syncInputsFromSliders();
-                resetTimer();
-                updateDisplay();
-            });
-        }
-        if (countdownBeforeStartSlider) {
-            countdownBeforeStartSlider.addEventListener('input', function() {
-                if (isRunning) return;
-                syncInputsFromSliders();
-            });
-        }
-        
-        // Sheet open/close (bottom sheet)
-        function openSheet() {
-            const sheet = document.getElementById('settingsDrawer');
-            const overlay = document.getElementById('drawerOverlay');
-            if (sheet) sheet.classList.add('open');
-            if (overlay) { overlay.classList.add('open'); overlay.setAttribute('aria-hidden', 'false'); }
-        }
-        function closeSheet() {
-            const sheet = document.getElementById('settingsDrawer');
-            const overlay = document.getElementById('drawerOverlay');
-            if (sheet) sheet.classList.remove('open');
-            if (overlay) { overlay.classList.remove('open'); overlay.setAttribute('aria-hidden', 'true'); }
-        }
-        
-        const menuBtn = document.getElementById('menuBtn');
-        const drawerCloseBtn = document.getElementById('drawerCloseBtn');
-        const headerClearBtn = document.getElementById('headerClearBtn');
-        const clearAllSettingsBtn = document.getElementById('clearAllSettingsBtn');
-        const timerDisplayBlock = document.getElementById('timerDisplayBlock');
-        
-        if (menuBtn) menuBtn.addEventListener('click', openSheet);
-        if (drawerCloseBtn) drawerCloseBtn.addEventListener('click', closeSheet);
-        if (document.getElementById('drawerOverlay')) {
-            document.getElementById('drawerOverlay').addEventListener('click', closeSheet);
-        }
-        
-        function confirmClearThenClear() {
-            if (!confirm('Clear timer and reset all settings to defaults?')) return;
-            clearTimer();
-            closeSheet();
-        }
-        if (headerClearBtn) headerClearBtn.addEventListener('click', confirmClearThenClear);
-        if (clearAllSettingsBtn) clearAllSettingsBtn.addEventListener('click', confirmClearThenClear);
-        
-        // Double-tap on timer block opens sheet (avoids accidental open)
-        if (timerDisplayBlock) {
-            let lastTap = 0;
-            timerDisplayBlock.addEventListener('click', function(e) {
-                const now = Date.now();
-                if (now - lastTap < 400) {
-                    e.preventDefault();
-                    openSheet();
-                    lastTap = 0;
-                } else {
-                    lastTap = now;
+                let rounds = parseInt(roundsInputMain.value) || 1;
+                rounds = Math.min(12, rounds + 1);
+                roundsInputMain.value = rounds;
+                roundsInput.value = rounds;
+                totalRounds = rounds;
+                if (!isRunning) {
+                    resetTimer();
+                    updateDisplay();
                 }
             });
+            
+            // Sync main page input with drawer input
+            roundsInputMain.addEventListener('input', function() {
+                if (!isRunning) {
+                    const value = parseInt(this.value) || 1;
+                    const clampedValue = Math.max(1, Math.min(12, value));
+                    roundsInputMain.value = clampedValue;
+                    roundsInput.value = clampedValue;
+                    totalRounds = clampedValue;
+                    resetTimer();
+                    updateDisplay();
+                }
+            });
+            
+            // Sync drawer input with main page input
+            roundsInput.addEventListener('input', function() {
+                if (!isRunning && roundsInputMain) {
+                    const value = parseInt(this.value) || 1;
+                    const clampedValue = Math.max(1, Math.min(12, value));
+                    roundsInputMain.value = clampedValue;
+                }
+            });
+        }
+        
+        // Preset Interval Buttons
+        const presetButtons = document.querySelectorAll('.quick-select-btn[data-work][data-rest]');
+        
+        presetButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (isRunning) return; // Don't allow changing presets while running
+                
+                const workSeconds = parseInt(this.getAttribute('data-work'));
+                const restSeconds = parseInt(this.getAttribute('data-rest'));
+                const selectedRounds = parseInt(roundsInputMain ? roundsInputMain.value : roundsInput.value) || 1;
+                
+                // Update work and rest time inputs
+                workTimeInput.value = formatTime(workSeconds);
+                restTimeInput.value = formatTime(restSeconds);
+                roundsInput.value = selectedRounds;
+                if (roundsInputMain) {
+                    roundsInputMain.value = selectedRounds;
+                }
+                
+                // Update timer state
+                workTime = workSeconds;
+                restTime = restSeconds;
+                totalRounds = selectedRounds;
+                
+                // Update selected button state
+                presetButtons.forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+                
+                // Reset timer with new values
+                resetTimer();
+                updateDisplay();
+            });
+        });
+
+        // Workout title and notes event listeners
+        if (workoutTitleInput) {
+            workoutTitleInput.addEventListener('input', function() {
+                updateWorkoutCharCounts();
+                updateWorkoutDisplay();
+            });
+        }
+
+        if (workoutDescriptionInput) {
+            workoutDescriptionInput.addEventListener('input', function() {
+                updateWorkoutCharCounts();
+                updateWorkoutDisplay();
+            });
+        }
+        
+        // Drawer Functions
+        function toggleDrawer() {
+            const drawer = document.getElementById('settingsDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+            drawer.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+        
+        function closeDrawer() {
+            const drawer = document.getElementById('settingsDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+            drawer.classList.remove('open');
+            overlay.classList.remove('open');
         }
         
         // Countdown before start: init from localStorage, +/- buttons, persist on change
@@ -2091,7 +2050,7 @@
                 if (doneMessageCharCount) {
                     doneMessageCharCount.textContent = value.length;
                 }
-                saveDoneMessage(value || 'Completed');
+                saveDoneMessage(value || 'completed');
             });
             
             // Ensure default value on change if empty
@@ -2111,12 +2070,21 @@
         // Initialize
         workTime = parseTime(workTimeInput.value);
         restTime = parseTime(restTimeInput.value);
-        totalRounds = parseInt(roundsInputMain ? roundsInputMain.value : roundsInput.value, 10) || parseInt(roundsInput.value) || 1;
-        if (roundsInputMain) roundsInputMain.value = totalRounds;
-        roundsInput.value = totalRounds;
+        totalRounds = parseInt(roundsInput.value) || 0;
         currentTime = workTime;
         
-        syncSlidersFromInputs();
+        // Initialize main page rounds input
+        if (roundsInputMain) {
+            const initialRounds = Math.max(1, Math.min(12, totalRounds || 1));
+            roundsInputMain.value = initialRounds;
+            if (totalRounds === 0) {
+                roundsInput.value = initialRounds;
+                totalRounds = initialRounds;
+            } else {
+                roundsInputMain.value = totalRounds;
+            }
+        }
+        
         updateDisplay();
 
         // Initialize workout display and character counts
@@ -2126,8 +2094,9 @@
         // Set release date
         document.getElementById('releaseDate').textContent = new Date().toISOString().split('T')[0];
     </script>
+    <script src="scripts/dark-mode-toggle.js"></script>
     <script>
-        // Theme toggle and logo/icon update
+        // Ensure theme toggle button works on mobile (iOS/Android)
         document.addEventListener('DOMContentLoaded', function() {
             const themeToggleBtn = document.getElementById('themeToggleBtn');
             if (themeToggleBtn) {

@@ -1003,7 +1003,7 @@
                 </div>
                 <div class="phase-label" id="phaseLabel"></div>
                 <div class="timer-display-large" id="display">00:00</div>
-                <div class="round-info">Round <span id="round">1</span> of <span id="totalRounds">0</span></div>
+                <div class="round-info">Round <span id="round">0</span> of <span id="totalRounds">0</span></div>
                 <div id="workoutDescriptionDisplay" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgb(var(--border));">
                     <p id="workoutDescriptionText" class="text-sm text-[rgb(var(--muted-foreground))] leading-relaxed m-0 text-left whitespace-pre-wrap break-words"></p>
                 </div>
@@ -1242,7 +1242,7 @@
         let isRunning = false;
         let isPaused = false;
         let isWorkPhase = true;
-        let currentRound = 1;
+        let currentRound = 0;
         let workTime = 0;
         let restTime = 0;
         let totalRounds = 0;
@@ -1542,7 +1542,8 @@
             localStorage.setItem('hiit-doneMessage', v ? v : 'Completed');
         }
         
-        // Update workout title and description display
+        // Update workout title and description display (title in workout area on load, match countdown model)
+        const DEFAULT_TIMER_NAME = 'HIIT';
         function updateWorkoutDisplay() {
             if (!workoutTitleInput || !workoutDescriptionInput) return;
             if (!workoutTitleDisplay || !workoutTitleText) return;
@@ -1551,12 +1552,8 @@
             const title = workoutTitleInput.value.trim();
             const notes = workoutDescriptionInput.value.trim();
             
-            if (title) {
-                workoutTitleText.textContent = title;
-                workoutTitleDisplay.style.display = 'block';
-            } else {
-                workoutTitleDisplay.style.display = 'none';
-            }
+            workoutTitleText.textContent = title || DEFAULT_TIMER_NAME;
+            workoutTitleDisplay.style.display = 'block';
             
             if (notes) {
                 workoutDescriptionText.textContent = notes;
@@ -1818,7 +1815,7 @@
             phaseLabel.classList.remove('rest', 'work-intense', 'cooldown');
             
             if (!isRunning && !hasValidTimerData()) {
-                phaseLabel.textContent = TIMER_NAME;
+                phaseLabel.textContent = '';
                 phaseLabel.style.color = 'rgb(var(--primary))';
             } else if (currentPhase === 'prep') {
                 phaseLabel.textContent = 'Get ready';

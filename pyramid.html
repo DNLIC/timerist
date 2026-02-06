@@ -98,11 +98,11 @@
             max-width: 1000px;
             margin: 0 auto;
             overflow-x: hidden;
-            margin-top: clamp(5rem, 8vw, 6rem);
+            margin-top: clamp(4rem, 8vw, 5rem);
             width: 100%;
         }
         
-        /* iPad vertical (portrait) - position timer below header */
+        /* iPad vertical (portrait) - position timer below header (align with other layouts) */
         @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
             .timer-container {
                 margin-top: clamp(4rem, 6vw, 5rem);
@@ -116,7 +116,7 @@
             }
         }
         
-        /* Desktop - position timer below header */
+        /* Desktop - position timer below header (align with other layouts) */
         @media (min-width: 1025px) {
             .timer-container {
                 margin-top: clamp(4rem, 6vw, 5rem);
@@ -1073,7 +1073,7 @@
                     <h2 id="workoutTitleText" style="font-size: 1.25rem; font-weight: 600; color: rgb(var(--foreground)); margin: 0; word-wrap: break-word;"></h2>
                 </div>
                 
-                <div class="phase-label" id="phaseLabel">Pyramid Timer</div>
+                <div class="phase-label" id="phaseLabel"></div>
                 <div class="timer-display-large" id="display">00:00</div>
                 <div class="round-info">
                     <span id="pyramidInfo">Level 1 of 9</span>
@@ -1314,7 +1314,7 @@
             <!-- General Info -->
             <div class="sheet-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.15</p>
+                <p><strong>Version:</strong> v0.16</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -1702,10 +1702,9 @@
                     pyramidInfo.textContent = 'Workout finished';
                 }
             } else {
-                // Timer is ready (not running) - show timer name and pattern summary
-                phaseLabel.textContent = 'Pyramid Timer';
+                // Timer is ready (not running) - title in workout area; phase label empty
+                phaseLabel.textContent = '';
                 phaseLabel.classList.remove('rest');
-                phaseLabel.style.color = 'rgb(var(--primary))';
                 
                 // Show pyramid pattern summary when ready
                 const patternSummary = getPyramidPatternSummary();
@@ -2263,17 +2262,16 @@
         syncWarmupCooldownSlidersFromInputs();
         updateDisplay();
         
-        // Update workout title and description display
+        // Update workout title and description display (title in workout area on load, match countdown model)
+        const DEFAULT_TIMER_NAME = 'Pyramid Timer';
         function updateWorkoutDisplay() {
             const title = workoutTitleInput ? workoutTitleInput.value.trim() : '';
             const description = workoutDescriptionInput ? workoutDescriptionInput.value.trim() : '';
             
-            // Update title display
-            if (title && workoutTitleText && workoutTitleDisplay) {
-                workoutTitleText.textContent = title;
+            // Update title display: show default timer name when no custom title
+            if (workoutTitleText && workoutTitleDisplay) {
+                workoutTitleText.textContent = title || DEFAULT_TIMER_NAME;
                 workoutTitleDisplay.style.display = 'block';
-            } else if (workoutTitleDisplay) {
-                workoutTitleDisplay.style.display = 'none';
             }
             
             // Update description display

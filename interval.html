@@ -536,11 +536,11 @@
         <div class="timer-container">
             <div class="timer-display-block" id="timerDisplayBlock">
                 <div id="workoutTitleDisplay">
-                    <h2 id="workoutTitleText" class="text-lg font-semibold text-[rgb(var(--foreground))] m-0"></h2>
+                    <h2 id="workoutTitleText" class="text-lg font-semibold text-[rgb(var(--foreground))] m-0 break-words"></h2>
                 </div>
                 <div class="phase-label" id="phaseLabel"></div>
                 <div class="timer-display-large" id="display">00:00</div>
-                <div class="round-info">Round <span id="round">1</span> of <span id="totalRounds">0</span></div>
+                <div class="round-info">Round <span id="round">0</span> of <span id="totalRounds">0</span></div>
                 <div id="workoutDescriptionDisplay">
                     <p id="workoutDescriptionText" class="text-sm text-[rgb(var(--muted-foreground))] leading-relaxed m-0 text-left whitespace-pre-wrap break-words"></p>
                 </div>
@@ -738,7 +738,7 @@
         var isRunning = false;
         var isPaused = false;
         var isWorkPhase = true;
-        var currentRound = 1;
+        var currentRound = 0;
         var workTime = 0;
         var restTime = 0;
         var totalRounds = 0;
@@ -780,7 +780,7 @@
         var workTimeSlider = document.getElementById('workTimeSlider');
         var restTimeSlider = document.getElementById('restTimeSlider');
 
-        var TIMER_NAME = 'Interval Presets';
+        var TIMER_NAME = 'Intervals';
         var currentPresetKey = null;
         var userEditedTitle = false;
         var userEditedDescription = false;
@@ -953,9 +953,8 @@
                         phaseLabel.style.color = 'rgb(var(--secondary))';
                     }
                 } else {
-                    phaseLabel.textContent = TIMER_NAME;
+                    phaseLabel.textContent = '';
                     phaseLabel.classList.remove('rest');
-                    phaseLabel.style.color = 'rgb(var(--primary))';
                 }
                 display.classList.remove('warning', 'danger');
                 var phaseDuration = isWorkPhase ? workTime : restTime;
@@ -1007,7 +1006,7 @@
                 restTime = parseTime(restTimeInput.value);
                 totalRounds = parseInt(roundsInput.value, 10) || 0;
                 currentTime = workTime;
-                currentRound = 1;
+                currentRound = totalRounds > 0 ? 1 : 0;
                 isWorkPhase = true;
             }
             if (currentTime <= 0 && !isCountdownPhase) return;
@@ -1096,7 +1095,7 @@
             restTime = parseTime(restTimeInput.value);
             totalRounds = parseInt(roundsInput.value, 10) || 0;
             currentTime = workTime;
-            currentRound = 1;
+            currentRound = totalRounds > 0 ? 1 : 0;
             isWorkPhase = true;
             if (display) {
                 display.classList.remove('danger', 'done-message');
@@ -1117,7 +1116,7 @@
             restTime = 0;
             totalRounds = 0;
             currentTime = 0;
-            currentRound = 1;
+            currentRound = 0;
             isWorkPhase = true;
             isCountdownPhase = false;
             if (workTimeSlider) workTimeSlider.value = 0;
@@ -1196,6 +1195,7 @@
         function formatModifiedParams() {
             return workTime + 's work, ' + restTime + 's rest, ' + totalRounds + ' round' + (totalRounds === 1 ? '' : 's');
         }
+        const DEFAULT_TIMER_NAME = 'Intervals';
         function updateWorkoutDisplay() {
             if (!workoutTitleInput || !workoutDescriptionInput) return;
             var title;
@@ -1220,8 +1220,8 @@
                 desc = workoutDescriptionInput.value.trim();
             }
             if (workoutTitleDisplay && workoutTitleText) {
-                if (title) { workoutTitleText.textContent = title; workoutTitleDisplay.style.display = 'block'; }
-                else workoutTitleDisplay.style.display = 'none';
+                workoutTitleText.textContent = title || DEFAULT_TIMER_NAME;
+                workoutTitleDisplay.style.display = 'block';
             }
             if (workoutDescriptionDisplay && workoutDescriptionText) {
                 if (desc) { workoutDescriptionText.textContent = desc; workoutDescriptionDisplay.style.display = 'block'; }

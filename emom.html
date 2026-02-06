@@ -318,7 +318,7 @@
                 <div class="phase-label" id="phaseLabel"></div>
                 <div class="timer-display-large" id="display">01:00</div>
                 <div class="round-info">
-                    Round <span id="round">1</span> of <span id="totalRounds">5</span> | <span id="targetRepsDisplay">0</span> Per Min
+                    Round <span id="round">0</span> of <span id="totalRounds">0</span> | <span id="targetRepsDisplay">0</span> Per Min
                 </div>
                 <div id="workoutDescriptionDisplay">
                     <p id="workoutDescriptionText" class="text-sm text-[rgb(var(--muted-foreground))] leading-relaxed m-0 text-left whitespace-pre-wrap break-words"></p>
@@ -342,7 +342,7 @@
                     <label for="roundsInputMain" class="block text-center mb-3">Total Rounds</label>
                     <div class="rounds-stepper">
                         <button type="button" class="rounds-adjust-btn" id="roundsDecreaseBtnMain" aria-label="Decrease rounds by 1">−1</button>
-                        <input type="text" id="roundsInputMain" class="custom-time-input" value="5" aria-label="Number of rounds">
+                        <input type="text" id="roundsInputMain" class="custom-time-input" value="0" aria-label="Number of rounds">
                         <button type="button" class="rounds-adjust-btn" id="roundsIncreaseBtnMain" aria-label="Increase rounds by 1">+1</button>
                     </div>
                 </div>
@@ -409,7 +409,7 @@
                     <label for="roundsInput">Total Rounds</label>
                     <div class="rounds-stepper">
                         <button type="button" class="stepper-btn rounds-adjust-btn" id="roundsDecreaseBtn" aria-label="Decrease rounds">−</button>
-                        <input type="text" id="roundsInput" class="custom-time-input" value="5" aria-label="Number of rounds">
+                        <input type="text" id="roundsInput" class="custom-time-input" value="0" aria-label="Number of rounds">
                         <button type="button" class="stepper-btn rounds-adjust-btn" id="roundsIncreaseBtn" aria-label="Increase rounds">+</button>
                     </div>
                 </div>
@@ -449,10 +449,10 @@
         let interval = null;
         let isRunning = false;
         let isPaused = false;
-        let currentRound = 1;
+        let currentRound = 0;
         let workTime = 60; // EMOM: Fixed at 60 seconds
         let restTime = 0; // EMOM: No rest phase
-        let totalRounds = 5;
+        let totalRounds = 0;
         let targetReps = 0; // Target quantity of reps
         
         const display = document.getElementById('display');
@@ -607,8 +607,12 @@
         // Update display with color coding
         function updateDisplay() {
             display.textContent = formatTime(currentTime);
-            // EMOM: Show "Minute X of Y" above the timer (updates each minute)
-            phaseLabel.textContent = 'Minute ' + currentRound + ' of ' + totalRounds;
+            // EMOM: Show "Minute X of Y" above the timer only after workout is programmed (totalRounds > 0)
+            if (totalRounds > 0) {
+                phaseLabel.textContent = 'Minute ' + currentRound + ' of ' + totalRounds;
+            } else {
+                phaseLabel.textContent = '';
+            }
             roundDisplay.textContent = currentRound;
             totalRoundsDisplay.textContent = totalRounds;
             if (targetRepsDisplay) targetRepsDisplay.textContent = targetReps;
@@ -800,16 +804,16 @@
             
             // EMOM: Get current values from inputs (prefer main input, fallback to drawer input)
             const roundsValue = roundsInputMain ? parseInt(roundsInputMain.value) : parseInt(roundsInput.value);
-            totalRounds = isNaN(roundsValue) ? 5 : roundsValue;
+            totalRounds = isNaN(roundsValue) ? 0 : roundsValue;
             // Sync both inputs
             if (roundsInputMain) roundsInputMain.value = totalRounds;
             roundsInput.value = totalRounds;
             workTime = 60; // EMOM: Fixed at 60 seconds
             restTime = 0; // EMOM: No rest phase
             
-            // Reset to round 1, 60 seconds
+            // Reset to round 1 when rounds set, else 0 of 0
             currentTime = 60;
-            currentRound = 1;
+            currentRound = totalRounds > 0 ? 1 : 0;
             
             // Update display immediately (this will enable inputs and check validity)
             updateDisplay();
@@ -838,7 +842,7 @@
             restTime = 0; // EMOM: No rest phase
             totalRounds = 0;
             currentTime = 60; // EMOM: Start at 60 seconds
-            currentRound = 1;
+            currentRound = 0;
             
             // Update display (this will enable inputs and show Set Up button)
             updateDisplay();
@@ -1209,8 +1213,8 @@
         // Clear all settings (with confirm) - header trash and "Clear All Settings" button
         function clearAllSettingsWithConfirm() {
             if (!confirm('Clear timer and reset all settings to defaults?')) return;
-            roundsInput.value = '5';
-            if (roundsInputMain) roundsInputMain.value = '5';
+            roundsInput.value = '0';
+            if (roundsInputMain) roundsInputMain.value = '0';
             if (repsInput) repsInput.value = '0';
             if (repsInputMain) repsInputMain.value = '0';
             if (workoutTitleInput) workoutTitleInput.value = '';
@@ -1219,7 +1223,7 @@
             if (workoutTitleCharCount) workoutTitleCharCount.textContent = '0';
             if (workoutDescriptionCharCount) workoutDescriptionCharCount.textContent = '0';
             if (doneMessageCharCount) doneMessageCharCount.textContent = '9';
-            totalRounds = 5;
+            totalRounds = 0;
             targetReps = 0;
             updateCharCounts();
             updateWorkoutDisplay();
@@ -1236,22 +1240,22 @@
         // Initialize
         workTime = 60; // EMOM: Fixed at 60 seconds
         restTime = 0; // EMOM: No rest phase
-        totalRounds = parseInt(roundsInput.value) || 5;
+        totalRounds = parseInt(roundsInput.value) || 0;
         currentTime = 60; // EMOM: Start at 60 seconds
-        currentRound = 1;
+        currentRound = totalRounds > 0 ? 1 : 0;
         
         // Initialize main rounds input
         if (roundsInputMain) {
             const inputValue = parseInt(roundsInputMain.value);
-            if (isNaN(inputValue) || inputValue === 0) {
-                // If input is empty or 0, set to default of 5
-                roundsInputMain.value = 5;
-                roundsInput.value = 5;
-                totalRounds = 5;
+            if (isNaN(inputValue)) {
+                roundsInputMain.value = 0;
+                roundsInput.value = 0;
+                totalRounds = 0;
+                currentRound = 0;
             } else {
-                // Use the value from the input
                 totalRounds = inputValue;
                 roundsInput.value = inputValue;
+                currentRound = totalRounds > 0 ? 1 : 0;
             }
         }
         
