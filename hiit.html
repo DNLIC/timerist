@@ -98,7 +98,7 @@
             max-width: 100%;
             margin: 0 auto;
             overflow-x: hidden;
-            margin-top: clamp(5rem, 8vw, 6rem);
+            margin-top: clamp(4rem, 8vw, 5rem);
             width: 100%;
         }
         
@@ -998,13 +998,13 @@
         
         <div class="timer-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
             <div class="timer-display-block bg-card border border-border rounded-xl shadow-lg text-center p-4" id="timerDisplayBlock">
-                <div id="workoutTitleDisplay" style="display: none;">
+                <div id="workoutTitleDisplay" style="display: none; text-align: center; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid rgb(var(--border));">
                     <h2 id="workoutTitleText" class="text-lg font-semibold text-[rgb(var(--foreground))] m-0"></h2>
                 </div>
                 <div class="phase-label" id="phaseLabel"></div>
                 <div class="timer-display-large" id="display">00:00</div>
                 <div class="round-info">Round <span id="round">1</span> of <span id="totalRounds">0</span></div>
-                <div id="workoutDescriptionDisplay" style="display: none;">
+                <div id="workoutDescriptionDisplay" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgb(var(--border));">
                     <p id="workoutDescriptionText" class="text-sm text-[rgb(var(--muted-foreground))] leading-relaxed m-0 text-left whitespace-pre-wrap break-words"></p>
                 </div>
             </div>
