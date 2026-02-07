@@ -219,7 +219,11 @@
         .timer-display-large.danger {
             color: rgb(var(--destructive));
         }
-        
+        .timer-display-large.done-message {
+            white-space: nowrap;
+            letter-spacing: -0.01em;
+            font-variant-numeric: normal;
+        }
         .timer-display-large.prepare {
             color: #f59e0b;
         }
@@ -1361,7 +1365,7 @@
 
             <div class="sheet-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v1.05</p>
+                <p><strong>Version:</strong> v1.06</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2026-01-28</span></p>
             </div>
         </div>
@@ -1941,12 +1945,12 @@
         function updateDisplay() {
             if (isPrepPhase) {
                 display.textContent = formatTime(currentPrepTime);
-                display.classList.remove('warning', 'danger');
+                display.classList.remove('warning', 'danger', 'done-message');
                 display.classList.add('prepare');
                 statusLabel.textContent = 'Prepare';
             } else if (isRestPeriod) {
                 display.textContent = formatTime(currentRestTime);
-                display.classList.remove('warning', 'danger', 'prepare');
+                display.classList.remove('warning', 'danger', 'prepare', 'done-message');
                 const totalRest = amrapType === 'rounds' ? restBetweenRoundsSeconds : restBetweenExercises;
                 if (totalRest > 0) {
                     const percentRemaining = currentRestTime / totalRest;
@@ -1955,7 +1959,7 @@
                 }
             } else if (!timerDone) {
                 display.textContent = formatTime(currentTime);
-                display.classList.remove('warning', 'danger', 'prepare');
+                display.classList.remove('warning', 'danger', 'prepare', 'done-message');
                 if (totalSeconds > 0) {
                     const percentRemaining = currentTime / totalSeconds;
                     if (percentRemaining <= 0.1) {
@@ -2070,12 +2074,26 @@
             timerDone = true;
 
             display.textContent = message;
-            display.classList.add('danger');
+            display.classList.add('danger', 'done-message');
             display.classList.remove('warning', 'prepare');
 
             const fontSize = calculateFontSize(message);
             display.style.fontSize = `${fontSize}px`;
         }
+        function resizeCompletionMessageIfVisible() {
+            if (!timerDone || !display || !display.classList.contains('done-message')) return;
+            const message = display.textContent || doneMessageInput.value.trim() || 'Completed';
+            const fontSize = calculateFontSize(message);
+            display.style.fontSize = `${fontSize}px`;
+        }
+        let resizeCompletionTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeCompletionTimeout);
+            resizeCompletionTimeout = setTimeout(resizeCompletionMessageIfVisible, 100);
+        });
+        window.addEventListener('orientationchange', function() {
+            setTimeout(resizeCompletionMessageIfVisible, 200);
+        });
         
         function advanceToNextExerciseOrCycle() {
             if (amrapType !== 'reps' || !cycleExercises || exercises.length === 0) return;
@@ -2287,7 +2305,7 @@
             timerDone = false;
             if (display) {
                 display.textContent = '00:00';
-                display.classList.remove('warning', 'danger', 'prepare');
+                display.classList.remove('warning', 'danger', 'prepare', 'done-message');
                 display.style.fontSize = '';
             }
             if (amrapTimeInput) amrapTimeInput.value = '00:00';

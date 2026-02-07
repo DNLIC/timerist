@@ -1234,7 +1234,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.17</p>
+                <p><strong>Version:</strong> v0.18</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -2861,6 +2861,19 @@
                 iterations += 1;
             }
         }
+        function resizeCompletionMessageIfVisible() {
+            if (display && display.classList.contains('done-message')) {
+                fitTextToContainer(display, { minPx: 18 });
+            }
+        }
+        let resizeCompletionTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeCompletionTimeout);
+            resizeCompletionTimeout = setTimeout(resizeCompletionMessageIfVisible, 100);
+        });
+        window.addEventListener('orientationchange', function() {
+            setTimeout(resizeCompletionMessageIfVisible, 200);
+        });
         
         // Timer functions
         function startTimer() {

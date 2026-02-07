@@ -187,7 +187,7 @@
             user-select: none;
         }
         .status-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: rgb(var(--muted-foreground)); margin-bottom: 0.5rem; }
-        .quick-select-btn {
+        .preset-select-btn {
             padding: 0.5rem 1rem;
             border-radius: 0.5rem;
             font-size: 1.125rem;
@@ -209,33 +209,33 @@
         }
         
         @media (min-width: 640px) {
-            .quick-select-btn {
+            .preset-select-btn {
                 min-width: 100px;
                 font-size: 1.25rem;
                 height: 2.5rem;
             }
         }
         
-        .quick-select-grid {
+        .preset-select-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 0.5rem;
         }
         
         @media (min-width: 480px) {
-            .quick-select-grid {
+            .preset-select-grid {
                 grid-template-columns: repeat(4, 1fr);
             }
         }
         
         @media (min-width: 640px) {
-            .quick-select-grid {
+            .preset-select-grid {
                 grid-template-columns: repeat(5, 1fr);
             }
         }
         
         @media (orientation: landscape) and (max-height: 500px) {
-            .quick-select-grid {
+            .preset-select-grid {
                 grid-template-columns: repeat(5, 1fr);
             }
         }
@@ -277,24 +277,24 @@
             }
         }
         
-        .quick-select-btn:hover:not(:disabled) {
+        .preset-select-btn:hover:not(:disabled) {
             background-color: rgb(100, 100, 100);
             color: rgb(255, 255, 255);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
         /* Dark mode hover state - use lighter gray */
-        [data-theme="style1"] .quick-select-btn:hover:not(:disabled) {
+        [data-theme="style1"] .preset-select-btn:hover:not(:disabled) {
             background-color: rgb(150, 150, 150);
             color: rgb(0, 0, 0);
         }
         
-        .quick-select-btn:disabled {
+        .preset-select-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
         
-        .quick-select-btn.selected {
+        .preset-select-btn.selected {
             font-weight: 700;
         }
         
@@ -511,6 +511,7 @@
         let interval = null;
         let isRunning = false;
         let isPaused = false;
+        let showingCompletionMessage = false;
 
         const display = document.getElementById('display');
         const statusLabel = document.getElementById('statusLabel');
@@ -713,14 +714,17 @@
             const message = getDoneMessage();
             const originalFontSize = display.style.fontSize;
 
+            showingCompletionMessage = true;
             display.textContent = message;
-            display.classList.add('danger');
+            display.classList.add('danger', 'done-message');
 
             const fontSize = calculateFontSize(message);
             display.style.fontSize = `${fontSize}px`;
 
             setTimeout(() => {
+                showingCompletionMessage = false;
                 display.style.fontSize = originalFontSize || '';
+                display.classList.remove('done-message');
                 updateDisplay();
             }, 2000);
         }
@@ -880,13 +884,13 @@
                 value = value.substring(0, 14);
                 this.value = value;
             }
-            saveDoneMessage(value || 'Done');
+            saveDoneMessage(value || 'Completed');
         });
         
         doneMessageInput.addEventListener('change', function() {
             let value = this.value.trim();
             if (!value) {
-                value = 'Done';
+                value = 'Completed';
                 this.value = value;
             }
             saveDoneMessage(value);
@@ -961,6 +965,22 @@
                 applyTheme(e.matches ? 'dark' : 'light');
                 updateThemeIcon();
             }
+        });
+
+        // Resize completion message when orientation or window size changes (so it fits in portrait/landscape)
+        function resizeCompletionMessageIfVisible() {
+            if (!showingCompletionMessage || !display) return;
+            const message = getDoneMessage();
+            const fontSize = calculateFontSize(message);
+            display.style.fontSize = `${fontSize}px`;
+        }
+        let resizeCompletionTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeCompletionTimeout);
+            resizeCompletionTimeout = setTimeout(resizeCompletionMessageIfVisible, 100);
+        });
+        window.addEventListener('orientationchange', function() {
+            setTimeout(resizeCompletionMessageIfVisible, 200);
         });
 
         document.getElementById('menuBtn').addEventListener('click', toggleDrawer);

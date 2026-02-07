@@ -193,6 +193,9 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
         }
         .control-buttons-container { display: flex; gap: 0.75rem; justify-content: center; align-items: center; flex-wrap: wrap; }
         @media (max-width: 390px) {
@@ -267,12 +270,20 @@
         .btn-clear-all-settings:hover { filter: brightness(1.1); }
         .btn-clear-all-settings:active { filter: brightness(0.95); }
         /* Preset-select preset chips (countdown time presets) */
+        /* Entire preset section (instruction + buttons) non-selectable so double-taps never select "Override" or nearby text on iOS */
+        .preset-section {
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
         .preset-select-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
         @media (max-width: 410px) { .preset-select-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
         .preset-select-btn {
             min-height: 48px; min-width: 0; padding: 0.75rem 0.5rem; border-radius: 9999px; font-size: 1.125rem; font-weight: 500;
             border: 2px solid rgb(var(--border)); background: rgb(var(--card)); color: rgb(var(--foreground)); cursor: pointer; transition: all 0.2s;
             -webkit-tap-highlight-color: transparent; touch-action: manipulation; font-family: inherit;
+            -webkit-user-select: none; user-select: none;
+            -webkit-touch-callout: none;
         }
         .preset-select-btn:hover:not(:disabled) { background: rgb(var(--accent)); }
         .preset-select-btn.selected { background: rgb(var(--selected-chip)); color: rgb(255 255 255); border-color: rgb(var(--selected-chip)); font-weight: 600; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25); }
@@ -323,7 +334,7 @@
                 </div>
             </div>
 
-            <div class="p-4 rounded-2xl bg-[rgb(var(--card))] border border-[rgb(var(--border))] shadow-lg">
+            <div class="preset-section p-4 rounded-2xl bg-[rgb(var(--card))] border border-[rgb(var(--border))] shadow-lg">
                 <p class="text-xs font-semibold uppercase tracking-wide text-center text-[rgb(var(--muted-foreground))] mb-3">1 Tap to Start · 2 Tap to Override</p>
                 <div class="preset-select-grid">
                     <button class="preset-select-btn" data-seconds="15">00:15</button>
@@ -701,6 +712,22 @@
         resumeBtn.addEventListener('click', togglePlayPause);
         resetBtn.addEventListener('click', resetTimer);
         
+        // Resize completion message when orientation or window size changes (so it fits in portrait/landscape)
+        function resizeCompletionMessageIfVisible() {
+            if (!showingCompletionMessage || !display) return;
+            const message = getDoneMessage();
+            const fontSize = calculateFontSize(message);
+            display.style.fontSize = `${fontSize}px`;
+        }
+        let resizeCompletionTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeCompletionTimeout);
+            resizeCompletionTimeout = setTimeout(resizeCompletionMessageIfVisible, 100);
+        });
+        window.addEventListener('orientationchange', function() {
+            setTimeout(resizeCompletionMessageIfVisible, 200);
+        });
+        
         // Preset-select: single tap = start (or after completion clear + start); second tap within 400ms = override (end current, start this preset)
         // Any two taps within 400ms count as "override" so the newly tapped button gets dark gray (selected) immediately
         let presetSelectTapTimeout = null;
@@ -843,14 +870,14 @@
                     value = value.substring(0, 14);
                     this.value = value;
                 }
-                saveDoneMessage(value || 'Done');
+                saveDoneMessage(value || 'Completed');
                 updateCharCounts();
             });
             
             doneMessageInput.addEventListener('change', function() {
                 let value = this.value.trim();
                 if (!value) {
-                    value = 'Done';
+                    value = 'Completed';
                     this.value = value;
                 }
                 saveDoneMessage(value);

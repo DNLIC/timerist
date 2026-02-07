@@ -4,10 +4,10 @@ const path = require('path');
 // HTML files to copy
 const htmlFiles = [
   'index.html',
-  'quick-countdown.html',
-  'quick-interval.html',
+  'countdown-presets.html',
+  'hiit-presets.html',
+  'interval-presets.html',
   'quick-interval-iphone-shadcn.html',
-  'quick-hiit.html',
   'tabata.html',
   'interval.html',
   'main.html',

@@ -211,7 +211,11 @@
         .timer-display-large.danger {
             color: rgb(var(--destructive));
         }
-        
+        .timer-display-large.done-message {
+            white-space: nowrap;
+            letter-spacing: -0.01em;
+            font-variant-numeric: normal;
+        }
         .timer-display-block {
             padding: 1.5rem;
             overflow: hidden;
@@ -323,7 +327,7 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
-        /* Set Up button hover - dark gray like quick countdown timer */
+        /* Set Up button hover - dark gray like preset countdown timer */
         #setupBtn:hover:not(:disabled) {
             background-color: rgb(100, 100, 100);
             color: rgb(255, 255, 255);
@@ -365,7 +369,7 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
-        /* Clear button hover - dark gray like quick countdown timer */
+        /* Clear button hover - dark gray like preset countdown timer */
         #clearBtn:hover:not(:disabled) {
             background-color: rgb(100, 100, 100);
             color: rgb(255, 255, 255);
@@ -1314,7 +1318,7 @@
             <!-- General Info -->
             <div class="sheet-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.16</p>
+                <p><strong>Version:</strong> v0.17</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -1716,7 +1720,7 @@
             }
             
             // Color coding: normal -> warning (last 30%) -> danger (last 10%)
-            display.classList.remove('warning', 'danger');
+            display.classList.remove('warning', 'danger', 'done-message');
             if (pyramidSequence.length > 0 && currentSequenceIndex < pyramidSequence.length) {
                 const phaseDuration = pyramidSequence[currentSequenceIndex].duration;
                 if (phaseDuration > 0) {
@@ -1806,7 +1810,8 @@
                         playSound(); // Play completion sound
                         const completionMessage = getDoneMessage();
                         display.textContent = completionMessage;
-                        display.classList.add('danger');
+                        display.classList.add('danger', 'done-message');
+                        fitTextToContainer(display, { minPx: 18 });
                         phaseLabel.textContent = 'Pyramid Complete!';
                         pyramidInfo.textContent = 'Workout finished';
                         return;
@@ -2295,6 +2300,34 @@
             localStorage.setItem('pyramid-doneMessage', v ? v : 'Completed');
         }
         
+        function fitTextToContainer(el, { minPx = 16 } = {}) {
+            if (!el) return;
+            el.style.fontSize = '';
+            let fontSize = parseFloat(window.getComputedStyle(el).fontSize || '0');
+            if (!Number.isFinite(fontSize) || fontSize <= 0) return;
+            const fits = () => el.scrollWidth <= el.clientWidth;
+            if (fits()) return;
+            let iterations = 0;
+            while (!fits() && fontSize > minPx && iterations < 120) {
+                fontSize -= 1;
+                el.style.fontSize = fontSize + 'px';
+                iterations += 1;
+            }
+        }
+        function resizeCompletionMessageIfVisible() {
+            if (display && display.classList.contains('done-message')) {
+                fitTextToContainer(display, { minPx: 18 });
+            }
+        }
+        let resizeCompletionTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeCompletionTimeout);
+            resizeCompletionTimeout = setTimeout(resizeCompletionMessageIfVisible, 100);
+        });
+        window.addEventListener('orientationchange', function() {
+            setTimeout(resizeCompletionMessageIfVisible, 200);
+        });
+        
         // Update character counts
         function updateCharCounts() {
             if (workoutTitleCharCount && workoutTitleInput) {
@@ -2356,7 +2389,7 @@
             // Get current values directly from input fields to ensure accuracy
             const workoutTitle = workoutTitleInput ? workoutTitleInput.value.trim() : '';
             const workoutDescription = workoutDescriptionInput ? workoutDescriptionInput.value.trim() : '';
-            const doneMessage = doneMessageInput ? doneMessageInput.value.trim() : 'Complete';
+            const doneMessage = doneMessageInput ? doneMessageInput.value.trim() : 'Completed';
             const startTimeValue = startTimeInput ? parseInt(startTimeInput.value) || 10 : 10;
             const incrementValue = incrementInput ? parseInt(incrementInput.value) || 10 : 10;
             const peakTimeValue = peakTimeInput ? parseInt(peakTimeInput.value) || 50 : 50;
@@ -2440,7 +2473,7 @@
                         }
                         if (doneMessageInput) {
                             const importedDone = (data.doneMessage || '').trim();
-                            doneMessageInput.value = importedDone ? importedDone : 'Complete';
+                            doneMessageInput.value = importedDone ? importedDone : 'Completed';
                             setDoneMessage(doneMessageInput.value);
                         }
                         

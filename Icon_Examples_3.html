@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Timerist Emoji Comparison – Current vs Preset Candidates</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: { colors: { primary: '#6366f1', accent: '#10b981', danger: '#ef4444', warning: '#f59e0b', neutral: '#6b7280', preset: '#8b5cf6', presetAlt: '#f97316' } } }
+    }
+  </script>
+
+  <!-- Lucide Icons CDN (kept for consistency with prior demos) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+
+  <header class="bg-white dark:bg-gray-900 shadow sticky top-0 z-10">
+    <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+      <h1 class="text-2xl font-bold">Timerist Emoji Comparison: Current vs Preset Candidates</h1>
+      <button id="theme-toggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition">
+        <span class="sr-only">Toggle dark mode</span>
+        <i data-lucide="moon" class="w-6 h-6 dark:hidden"></i>
+        <i data-lucide="sun" class="w-6 h-6 hidden dark:block"></i>
+      </button>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-6 py-10 space-y-16">
+
+    <!-- Current Emojis Size Comparison (from previous) -->
+    <section>
+      <h2 class="text-3xl font-semibold mb-6">Current Timerist Homepage Emojis – Size View</h2>
+      <p class="text-gray-600 dark:text-gray-400 mb-8">Your live site's emojis, sized small (16px), medium (32px), large (64px).</p>
+      <div class="space-y-12">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+            <div class="flex flex-col items-center gap-4">
+              <span class="text-[16px]">📋</span><span class="text-[32px]">📋</span><span class="text-[64px]">📋</span>
+            </div>
+            <p class="mt-4 font-medium">⚡ Lightning Bolt (current Preset marker)</p>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+            <div class="flex flex-col items-center gap-4">
+              <span class="text-[16px]">⏲️</span><span class="text-[32px]">⏲️</span><span class="text-[64px]">⏲️</span>
+            </div>
+            <p class="mt-4 font-medium">⏲️ Timer Clock</p>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+            <div class="flex flex-col items-center gap-4">
+              <span class="text-[16px]">🔄</span><span class="text-[32px]">🔄</span><span class="text-[64px]">🔄</span>
+            </div>
+            <p class="mt-4 font-medium">🔄 Arrows (Intervals)</p>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+            <div class="flex flex-col items-center gap-4">
+              <span class="text-[16px]">💥</span><span class="text-[32px]">💥</span><span class="text-[64px]">💥</span>
+            </div>
+            <p class="mt-4 font-medium">💥 Explosion (HIIT)</p>
+          </div>
+        </div>
+        <!-- Add more current ones if needed; truncated for space -->
+      </div>
+    </section>
+
+    <!-- New: Preset Emoji Candidates for replacing ⚡ -->
+    <section>
+      <h2 class="text-3xl font-semibold mb-6">Preset Designation Candidates – Emoji Alternatives to ⚡</h2>
+      <p class="text-gray-600 dark:text-gray-400 mb-8">
+        Common emoji used in apps for "presets", "saved", "ready-made", "library", or "favorites". Shown in same sizes as your current ones (16/32/64px). 
+        Top picks: bookmark/ribbon (saved), star (favorited), check (ready), pin (pinned), book (library/collection).
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <!-- Bookmark / Ribbon -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+          <div class="flex flex-col items-center gap-4">
+            <span class="text-[16px]">🔖</span><span class="text-[32px]">🔖</span><span class="text-[64px]">🔖</span>
+          </div>
+          <p class="mt-4 font-medium">🔖 Bookmark/Ribbon (top recommendation – saved/preset)</p>
+        </div>
+
+        <!-- Star -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+          <div class="flex flex-col items-center gap-4">
+            <span class="text-[16px]">⭐</span><span class="text-[32px]">⭐</span><span class="text-[64px]">⭐</span>
+          </div>
+          <p class="mt-4 font-medium">⭐ Star (favorited/featured preset)</p>
+        </div>
+
+        <!-- Checkmark -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+          <div class="flex flex-col items-center gap-4">
+            <span class="text-[16px]">✅</span><span class="text-[32px]">✅</span><span class="text-[64px]">✅</span>
+          </div>
+          <p class="mt-4 font-medium">✅ Check (ready/verified preset)</p>
+        </div>
+
+        <!-- Pushpin -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+          <div class="flex flex-col items-center gap-4">
+            <span class="text-[16px]">📌</span><span class="text-[32px]">📌</span><span class="text-[64px]">📌</span>
+          </div>
+          <p class="mt-4 font-medium">📌 Pushpin (pinned/preset-access preset)</p>
+        </div>
+
+        <!-- Open Book (Library) -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+          <div class="flex flex-col items-center gap-4">
+            <span class="text-[16px]">📖</span><span class="text-[32px]">📖</span><span class="text-[64px]">📖</span>
+          </div>
+          <p class="mt-4 font-medium">📖 Open Book (preset library/collection)</p>
+        </div>
+
+        <!-- Sparkles (instant/magic) -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+          <div class="flex flex-col items-center gap-4">
+            <span class="text-[16px]">✨</span><span class="text-[32px]">✨</span><span class="text-[64px]">✨</span>
+          </div>
+          <p class="mt-4 font-medium">✨ Sparkles (one-tap/easy preset)</p>
+        </div>
+
+        <!-- Clipboard/Checklist -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+          <div class="flex flex-col items-center gap-4">
+            <span class="text-[16px]">📋</span><span class="text-[32px]">📋</span><span class="text-[64px]">📋</span>
+          </div>
+          <p class="mt-4 font-medium">📋 Clipboard (structured preset list)</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    lucide.createIcons();
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+    });
+  </script>
+</body>
+</html>

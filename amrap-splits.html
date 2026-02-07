@@ -219,7 +219,11 @@
         .timer-display-large.danger {
             color: rgb(var(--destructive));
         }
-        
+        .timer-display-large.done-message {
+            white-space: nowrap;
+            letter-spacing: -0.01em;
+            font-variant-numeric: normal;
+        }
         .timer-display-large.prepare {
             color: #f59e0b;
         }
@@ -2191,12 +2195,12 @@
         function updateDisplay() {
             if (isPrepPhase) {
                 display.textContent = formatTime(currentPrepTime);
-                display.classList.remove('warning', 'danger');
+                display.classList.remove('warning', 'danger', 'done-message');
                 display.classList.add('prepare');
                 statusLabel.textContent = 'Prepare';
             } else if (isRestPeriod) {
                 display.textContent = formatTime(currentRestTime);
-                display.classList.remove('warning', 'danger', 'prepare');
+                display.classList.remove('warning', 'danger', 'prepare', 'done-message');
                 const totalRest = amrapType === 'rounds' ? restBetweenRoundsSeconds : restBetweenExercises;
                 if (totalRest > 0) {
                     const percentRemaining = currentRestTime / totalRest;
@@ -2207,7 +2211,7 @@
                 const isRepsCyclingWork = amrapType === 'reps' && cycleExercises && exercises.length > 0 && !isRestPeriod;
                 const showTime = isRepsCyclingWork ? workTimeRemaining : currentTime;
                 display.textContent = formatTime(showTime);
-                display.classList.remove('warning', 'danger', 'prepare');
+                display.classList.remove('warning', 'danger', 'prepare', 'done-message');
                 const totalForPercent = isRepsCyclingWork ? workTimePerExerciseSeconds : totalSeconds;
                 if (totalForPercent > 0) {
                     const percentRemaining = showTime / totalForPercent;
@@ -2324,7 +2328,7 @@
             timerDone = true;
 
             display.textContent = message;
-            display.classList.add('danger');
+            display.classList.add('danger', 'done-message');
             display.classList.remove('warning', 'prepare');
 
             const fontSize = calculateFontSize(message);
@@ -2333,6 +2337,20 @@
             // Always show result entry in splits version
             showResultEntry();
         }
+        function resizeCompletionMessageIfVisible() {
+            if (!timerDone || !display || !display.classList.contains('done-message')) return;
+            const message = display.textContent || doneMessageInput.value.trim() || 'Completed';
+            const fontSize = calculateFontSize(message);
+            display.style.fontSize = `${fontSize}px`;
+        }
+        let resizeCompletionTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeCompletionTimeout);
+            resizeCompletionTimeout = setTimeout(resizeCompletionMessageIfVisible, 100);
+        });
+        window.addEventListener('orientationchange', function() {
+            setTimeout(resizeCompletionMessageIfVisible, 200);
+        });
         
         function formatResultTimestamp(isoString) {
             try {
@@ -2987,7 +3005,7 @@
             
             if (display) {
                 display.textContent = '00:00';
-                display.classList.remove('warning', 'danger', 'prepare');
+                display.classList.remove('warning', 'danger', 'prepare', 'done-message');
                 display.style.fontSize = '';
             }
             if (roundsDisplay) {

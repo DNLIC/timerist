@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timerist Icon Options - Lucide for ShadCN/Tailwind</title>
+    <!-- Tailwind CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6">Timerist Icon Options (Lucide Library for ShadCN/Tailwind)</h1>
+        <p class="mb-4">Search and browse icons below. These work seamlessly in ShadCN components (e.g., &lt;Button icon="bookmark"&gt;). Suggested icons for presets are highlighted in blue.</p>
+        
+        <!-- Search Input -->
+        <input id="icon-search" type="text" placeholder="Search icons (e.g., bookmark, clock)" class="w-full p-2 mb-6 border rounded-md" oninput="filterIcons()">
+        
+        <!-- Suggested Icons Section -->
+        <h2 class="text-2xl font-semibold mb-4">Recommended for Presets</h2>
+        <div class="grid grid-cols-4 gap-4 mb-8">
+            <div class="bg-blue-100 p-4 rounded text-center">
+                <i data-lucide="bookmark" class="w-12 h-12 mx-auto block"></i>
+                <p>bookmark</p>
+            </div>
+            <div class="bg-blue-100 p-4 rounded text-center">
+                <i data-lucide="circle-star" class="w-12 h-12 mx-auto block"></i>
+                <p>circle-star (alt for star)</p>
+            </div>
+            <div class="bg-blue-100 p-4 rounded text-center">
+                <i data-lucide="book-open" class="w-12 h-12 mx-auto block"></i>
+                <p>book-open (library)</p>
+            </div>
+            <div class="bg-blue-100 p-4 rounded text-center">
+                <i data-lucide="circle-play" class="w-12 h-12 mx-auto block"></i>
+                <p>circle-play (ready play)</p>
+            </div>
+            <div class="bg-blue-100 p-4 rounded text-center">
+                <i data-lucide="circle-check-big" class="w-12 h-12 mx-auto block"></i>
+                <p>circle-check-big (with check)</p>
+            </div>
+            <div class="bg-blue-100 p-4 rounded text-center">
+                <i data-lucide="layout-grid" class="w-12 h-12 mx-auto block"></i>
+                <p>layout-grid</p>
+            </div>
+            <div class="bg-blue-100 p-4 rounded text-center">
+                <i data-lucide="clock-arrow-up" class="w-12 h-12 mx-auto block"></i>
+                <p>clock-arrow-up (clock with arrow)</p>
+            </div>
+            <div class="bg-blue-100 p-4 rounded text-center">
+                <i data-lucide="list" class="w-12 h-12 mx-auto block"></i>
+                <p>list</p>
+            </div>
+            <div class="bg-blue-100 p-4 rounded text-center">
+                <i data-lucide="wand" class="w-12 h-12 mx-auto block"></i>
+                <p>wand (alt for wand-sparkles)</p>
+            </div>
+            <div class="bg-blue-100 p-4 rounded text-center">
+                <i data-lucide="sparkles" class="w-12 h-12 mx-auto block"></i>
+                <p>sparkles (add to wand)</p>
+            </div>
+            <div class="bg-blue-100 p-4 rounded text-center">
+                <i data-lucide="clipboard-list" class="w-12 h-12 mx-auto block"></i>
+                <p>clipboard-list</p>
+            </div>
+        </div>
+        
+        <!-- Full Icon Grid -->
+        <h2 class="text-2xl font-semibold mb-4">Exhaustive Lucide Icons (Partial List - Searchable)</h2>
+        <div id="icon-grid" class="grid grid-cols-6 gap-4">
+            <!-- Icons will be populated here via JS -->
+        </div>
+    </div>
+
+    <script>
+        // List of all extracted Lucide icon names (partial exhaustive)
+        const iconNames = [
+            'a-arrow-down', 'a-arrow-up', 'a-large-small', 'arrow-big-down', 'arrow-big-left', 'arrow-big-right', 'arrow-big-up',
+            'arrow-down', 'arrow-down-0-1', 'arrow-down-1-0', 'arrow-down-a-z', 'arrow-down-from-line', 'arrow-down-left',
+            'arrow-down-narrow-wide', 'arrow-down-right', 'arrow-down-to-dot', 'arrow-down-to-line', 'arrow-down-up',
+            'arrow-down-wide-narrow', 'arrow-down-z-a', 'arrow-left', 'arrow-left-from-line', 'arrow-left-right', 'arrow-left-to-line',
+            'arrow-right', 'arrow-right-from-line', 'arrow-right-left', 'arrow-right-to-line', 'arrow-up', 'arrow-up-0-1',
+            'arrow-up-1-0', 'arrow-up-a-z', 'arrow-up-down', 'arrow-up-from-dot', 'arrow-up-from-line', 'arrow-up-left',
+            'arrow-up-narrow-wide', 'arrow-up-right', 'arrow-up-to-line', 'arrow-up-wide-narrow', 'arrow-up-z-a', 'arrows-up-from-line',
+            'chevron-down', 'chevron-first', 'chevron-last', 'chevron-left', 'chevron-right', 'chevron-up', 'chevrons-down',
+            'chevrons-down-up', 'chevrons-left', 'chevrons-left-right', 'chevrons-left-right-ellipsis', 'chevrons-right',
+            'chevrons-right-left', 'chevrons-up', 'chevrons-up-down', 'align-center-horizontal', 'align-center-vertical',
+            'align-end-horizontal', 'align-end-vertical', 'align-horizontal-distribute-center', 'align-horizontal-distribute-end',
+            'align-horizontal-distribute-start', 'align-horizontal-justify-center', 'align-horizontal-justify-end',
+            'align-horizontal-justify-start', 'align-horizontal-space-around', 'align-horizontal-space-between',
+            'align-start-horizontal', 'align-start-vertical', 'align-vertical-distribute-center', 'align-vertical-distribute-end',
+            'align-vertical-distribute-start', 'align-vertical-justify-center', 'align-vertical-justify-end',
+            'align-vertical-justify-start', 'align-vertical-space-around', 'align-vertical-space-between', 'between-horizontal-end',
+            'between-horizontal-start', 'between-vertical-end', 'between-vertical-start', 'bring-to-front', 'columns-2', 'columns-3',
+            'columns-3-cog', 'columns-4', 'bold', 'braces', 'brackets', 'case-lower', 'case-sensitive', 'case-upper', 'app-window',
+            'app-window-mac', 'circle', 'circle-alert', 'circle-arrow-down', 'circle-arrow-left', 'circle-arrow-out-down-left',
+            'circle-arrow-out-down-right', 'circle-arrow-out-up-left', 'circle-arrow-out-up-right', 'circle-arrow-right',
+            'circle-arrow-up', 'circle-check', 'circle-check-big', 'circle-chevron-down', 'circle-chevron-left', 'circle-chevron-right',
+            'circle-chevron-up', 'circle-dashed', 'circle-divide', 'circle-dollar-sign', 'circle-dot', 'circle-dot-dashed',
+            'circle-ellipsis', 'circle-equal', 'circle-fading-arrow-up', 'circle-fading-plus', 'circle-gauge', 'circle-minus',
+            'circle-off', 'circle-parking', 'circle-parking-off', 'circle-pause', 'circle-percent', 'circle-pile', 'circle-play',
+            'circle-plus', 'circle-pound-sterling', 'circle-power', 'circle-question-mark', 'circle-slash', 'circle-slash-2',
+            'circle-small', 'circle-star', 'circle-stop', 'circle-user', 'circle-user-round', 'circle-x', 'clipboard', 'clipboard-check',
+            'clipboard-clock', 'clipboard-copy', 'clipboard-list', 'clipboard-minus', 'clipboard-paste', 'clipboard-pen',
+            'clipboard-pen-line', 'clipboard-plus', 'clipboard-type', 'clipboard-x', 'contrast', 'layout-grid', 'list', 'album',
+            'audio-lines', 'audio-waveform', 'book', 'book-a', 'book-alert', 'book-audio', 'book-check', 'book-copy', 'book-dashed',
+            'book-down', 'book-headphones', 'book-heart', 'book-image', 'book-key', 'book-lock', 'book-marked', 'book-minus',
+            'book-open', 'book-open-check', 'book-open-text', 'book-plus', 'book-search', 'book-text', 'book-type', 'book-up',
+            'book-up-2', 'book-user', 'book-x', 'boom-box', 'camera', 'camera-off', 'cast', 'clapperboard', 'closed-caption',
+            'code', 'code-xml', 'codepen', 'codesandbox', 'coffee', 'cookie', 'bookmark', 'bookmark-check', 'bookmark-minus',
+            'bookmark-plus', 'bookmark-x', 'check', 'check-check', 'check-line', 'clock', 'clock-1', 'clock-10', 'clock-11',
+            'clock-12', 'clock-2', 'clock-3', 'clock-4', 'clock-5', 'clock-6', 'clock-7', 'clock-8', 'clock-9', 'clock-alert',
+            'clock-arrow-down', 'clock-arrow-up', 'clock-check', 'clock-fading', 'clock-plus', 'alarm-clock', 'alarm-clock-check',
+            'alarm-clock-minus', 'alarm-clock-off', 'alarm-clock-plus', 'calendar', 'calendar-1', 'calendar-arrow-down',
+            'calendar-arrow-up', 'calendar-check', 'calendar-check-2', 'calendar-clock', 'calendar-cog', 'calendar-days',
+            'calendar-fold', 'calendar-heart', 'calendar-minus', 'calendar-minus-2', 'calendar-off', 'calendar-plus',
+            'calendar-plus-2', 'calendar-range', 'calendar-search', 'calendar-sync', 'calendar-x', 'calendar-x-2', 'calendars',
+            // Add more if needed; this is the partial list from extraction
+        ];
+
+        // Populate grid
+        const grid = document.getElementById('icon-grid');
+        iconNames.forEach(name => {
+            const div = document.createElement('div');
+            div.className = 'bg-white p-4 rounded shadow text-center';
+            div.innerHTML = `<i data-lucide="${name}" class="w-8 h-8 mx-auto block mb-2"></i><p class="text-sm">${name}</p>`;
+            grid.appendChild(div);
+        });
+
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Filter function
+        function filterIcons() {
+            const search = document.getElementById('icon-search').value.toLowerCase();
+            const items = grid.children;
+            for (let item of items) {
+                const name = item.textContent.toLowerCase();
+                item.style.display = name.includes(search) ? 'block' : 'none';
+            }
+        }
+    </script>
+</body>
+</html>

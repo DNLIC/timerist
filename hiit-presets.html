@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <title>HIIT Timer - Timerist | High Intensity Interval Training Timer, Tabata, 30/30, 4x4 Norwegian</title>
-    <meta name="description" content="HIIT timer with preset protocols (Tabata, 30/30, 4x4 Norwegian) and custom intervals. Includes prep time, cool-down, sets, and motivational phase labels for high-intensity workouts.">
+    <meta name="description" content="HIIT timer with preset protocols (Tabata, 30/30, 4x4 Norwegian) and custom intervals. Includes prep countdown, cool-down, sets, and motivational phase labels for high-intensity workouts.">
+    <link rel="stylesheet" href="styles/timerist-design-system.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @keyframes bounce {
@@ -86,16 +87,15 @@
             align-items: center;
             justify-content: flex-start;
             width: 100%;
-            max-width: 28rem;
+            max-width: 1200px;
             padding: 1rem;
-            padding-bottom: env(safe-area-inset-bottom, 1rem);
             margin: 0 auto;
             overflow-x: hidden;
             position: relative;
         }
         
         .timer-container {
-            max-width: 100%;
+            max-width: 1000px;
             margin: 0 auto;
             overflow-x: hidden;
             margin-top: clamp(4rem, 8vw, 5rem);
@@ -113,49 +113,6 @@
         @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
             .timer-container {
                 margin-top: clamp(4.5rem, 7vw, 5.5rem);
-            }
-        }
-        
-        /* Smartphone landscape spacing fix (tighten vertical space) */
-        @media (orientation: landscape) and (max-height: 500px) {
-            .timer-container {
-                margin-top: clamp(3.5rem, 6vw, 4.25rem) !important;
-                gap: 0.5rem !important;
-            }
-            
-            .timer-display-block {
-                padding: 1rem;
-            }
-            
-            .phase-label {
-                margin-bottom: 0.25rem;
-                font-size: 1rem;
-            }
-            
-            .timer-display-large {
-                font-size: 3.25rem;
-                margin-bottom: 0.5rem;
-            }
-            
-            .round-info {
-                margin-top: 0.5rem;
-                font-size: 0.8125rem;
-            }
-            
-            .p-6 {
-                padding: 0.75rem;
-            }
-            
-            /* Tighten workout title display spacing in landscape */
-            #workoutTitleDisplay {
-                padding-bottom: 0.5rem !important;
-                margin-bottom: 0.5rem !important;
-            }
-            
-            /* Tighten workout notes display spacing in landscape */
-            #workoutDescriptionDisplay {
-                margin-top: 0.5rem !important;
-                padding-top: 0.5rem !important;
             }
         }
         
@@ -212,11 +169,15 @@
         .timer-display-large.danger {
             color: rgb(var(--destructive));
         }
+        
+        /* Completion message: keep on one line; JS shrinks font to fit time box */
         .timer-display-large.done-message {
             white-space: nowrap;
             letter-spacing: -0.01em;
             font-variant-numeric: normal;
+            word-break: normal;
         }
+        
         .timer-display-block {
             padding: 1.5rem;
             overflow: hidden;
@@ -268,25 +229,26 @@
         }
         
         .control-btn {
-            padding: 0.75rem 1.25rem;
-            border-radius: 1rem;
-            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
             font-weight: 500;
-            min-height: 56px;
-            min-width: 56px;
             transition: all 0.2s;
             cursor: pointer;
             border: none;
-            font-family: inherit;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
             white-space: nowrap;
-            flex: 1 1 0;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
+            flex-shrink: 1;
         }
+        
         @media (max-width: 390px) {
-            .control-btn { min-height: 48px; min-width: 48px; border-radius: 0.75rem; font-size: 0.875rem; }
+            .control-btn {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.75rem;
+            }
         }
+        
         .control-buttons-container {
             display: flex;
             gap: 0.5rem;
@@ -447,6 +409,7 @@
             opacity: 0.7;
         }
         
+        /* Bottom sheet (match hiit.html) */
         .sheet-overlay {
             position: fixed;
             inset: 0;
@@ -513,9 +476,7 @@
             justify-content: center;
             border-radius: 0.5rem;
         }
-        .header-clear-btn:hover {
-            opacity: 0.8;
-        }
+        .header-clear-btn:hover { opacity: 0.8; }
         .drawer-close {
             background: transparent;
             border: none;
@@ -530,9 +491,7 @@
             justify-content: center;
             border-radius: var(--radius);
         }
-        .drawer-close:hover {
-            opacity: 0.7;
-        }
+        .drawer-close:hover { opacity: 0.7; }
         .sheet-content {
             overflow-y: auto;
             padding: 1rem;
@@ -556,7 +515,6 @@
             margin-bottom: 0.75rem;
             font-size: 0.875rem;
         }
-        
         .shadcn-input, .shadcn-textarea {
             width: 100%;
             padding: 0.875rem 1rem;
@@ -597,7 +555,7 @@
             opacity: 0.5;
             cursor: not-allowed;
         }
-        /* Large horizontal slider – track 52px, thumb 40px (match interval.html) */
+        /* Large horizontal slider – track 52px, thumb 40px (match hiit.html) */
         .time-slider-wrap { margin-bottom: 0.5rem; }
         .time-slider-wrap input[type="range"] {
             -webkit-appearance: none;
@@ -664,24 +622,6 @@
         .sets-entry-center { text-align: center; margin-top: 0.25rem; }
         .stepper-btn:hover:not(:disabled), .rounds-adjust-btn:hover:not(:disabled) { background: rgb(var(--accent)); }
         .stepper-btn:disabled, .rounds-adjust-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .preset-chip {
-            min-height: 48px;
-            padding: 0.5rem 1rem;
-            border-radius: 9999px;
-            border: 2px solid rgb(var(--border));
-            background: rgb(var(--card));
-            color: rgb(var(--foreground));
-            font-size: 0.875rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background 0.2s, border-color 0.2s;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .preset-chip:hover:not(:disabled) { background: rgb(var(--accent)); }
-        .preset-chip.selected { background: rgb(var(--primary)); color: rgb(var(--primary-foreground)); border-color: rgb(var(--primary)); font-weight: 600; box-shadow: 0 2px 8px rgba(var(--primary), 0.3); }
-        .preset-grid-workout { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
-        .preset-grid-time { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
-        @media (max-width: 380px) { .preset-grid-time { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
         .btn-clear-all-settings {
             width: 100%;
             min-height: 52px;
@@ -719,19 +659,299 @@
         .countdown-input-no-spinners::-webkit-outer-spin-button,
         .countdown-input-no-spinners::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         .countdown-input-no-spinners { -moz-appearance: textfield; }
+        .rounds-input-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        .rounds-input-group input {
+            flex: 0 1 auto;
+            width: 80px;
+            max-width: 100px;
+            text-align: center;
+        }
+        
+        .rounds-input-group input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .time-input-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .time-adjust-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .time-adjust-group-label {
+            font-size: 0.625rem;
+            color: rgb(var(--muted-foreground));
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .time-adjust-buttons {
+            display: flex;
+            gap: 0.25rem;
+        }
+        
+        .time-adjust-btn {
+            width: 36px;
+            height: 36px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            border: 2px solid rgb(var(--border));
+            border-radius: var(--radius);
+            background-color: rgb(var(--card));
+            color: rgb(var(--foreground));
+            cursor: pointer;
+            transition: opacity 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        
+        @media (max-width: 390px) {
+            .time-adjust-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 0.75rem;
+            }
+        }
+        
+        .time-adjust-btn:hover:not(:disabled) {
+            opacity: 0.7;
+        }
+        
+        .time-adjust-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Front-page Rounds/Sets block – shadcn design system (Card, Label, Input, Button variants) */
+        .rounds-sets-front-card {
+            padding: 1.5rem;
+            background-color: rgb(var(--card));
+            border: 1px solid rgb(var(--border));
+            border-radius: var(--radius);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+        [data-theme="style1"] .rounds-sets-front-card {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+        }
+        .rounds-sets-front-desc {
+            font-size: 0.875rem;
+            line-height: 1.5;
+            color: rgb(var(--muted-foreground));
+            text-align: left;
+            margin: 0 0 1rem 0;
+        }
+        .rounds-sets-front-desc strong {
+            color: rgb(var(--foreground));
+            font-weight: 600;
+        }
+        .rounds-sets-front-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .rounds-sets-front-group {
+            flex: 0 1 auto;
+            min-width: 200px;
+        }
+        /* shadcn Label: text-sm font-medium; uppercase variant for form sections */
+        .rounds-sets-front-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: rgb(var(--muted-foreground));
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .rounds-sets-front-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        /* shadcn Button variant=outline: border border-input bg-background hover:bg-accent */
+        .rounds-sets-front-btn {
+            flex-shrink: 0;
+            min-width: 48px;
+            min-height: 48px;
+            font-size: 1rem;
+            font-weight: 700;
+            border: 2px solid rgb(var(--border));
+            border-radius: var(--radius);
+            background-color: rgb(var(--background));
+            color: rgb(var(--foreground));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .rounds-sets-front-btn:hover:not(:disabled) {
+            background-color: rgb(var(--accent));
+            color: rgb(var(--accent-foreground));
+        }
+        .rounds-sets-front-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        /* shadcn Input: border border-input bg-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 */
+        .rounds-sets-front-input {
+            width: 5.5rem;
+            min-width: 5.5rem;
+            max-width: 5.5rem;
+            text-align: center;
+            padding: 0.5rem 0.75rem;
+            font-size: 1.75rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            background-color: rgb(var(--background));
+            border: 2px solid rgb(var(--input));
+            border-radius: var(--radius);
+            color: rgb(var(--foreground));
+            min-height: auto;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .rounds-sets-front-input:focus {
+            outline: none;
+            border-color: rgb(var(--ring));
+            box-shadow: 0 0 0 2px rgb(var(--background)), 0 0 0 4px rgba(var(--ring), 0.2);
+        }
+        .rounds-sets-front-input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .rounds-sets-front-time-input {
+            width: 8rem;
+            min-width: 8rem;
+            text-align: center;
+            padding: 0.5rem 0.75rem;
+            font-size: 1.75rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            font-family: inherit;
+            background-color: rgb(var(--background));
+            border: 2px solid rgb(var(--input));
+            border-radius: var(--radius);
+            color: rgb(var(--foreground));
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .rounds-sets-front-time-input:focus {
+            outline: none;
+            border-color: rgb(var(--ring));
+            box-shadow: 0 0 0 2px rgb(var(--background)), 0 0 0 4px rgba(var(--ring), 0.2);
+        }
+        .rounds-sets-front-time-input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .set-rest-main-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        .set-rest-main-row .time-adjust-btn {
+            flex-shrink: 0;
+            width: 48px;
+            min-width: 48px;
+            height: 48px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            border: 2px solid rgb(var(--border));
+            border-radius: var(--radius);
+            background-color: rgb(var(--background));
+            color: rgb(var(--foreground));
+        }
+        .set-rest-main-row .time-adjust-btn:hover:not(:disabled) {
+            background-color: rgb(var(--accent));
+            color: rgb(var(--accent-foreground));
+        }
+        .set-rest-main-row .set-rest-time-input-main {
+            width: 8rem;
+            min-width: 8rem;
+            text-align: center;
+            padding: 0.5rem 0.75rem;
+            font-size: 1.75rem;
+            font-weight: 700;
+            font-family: inherit;
+            background-color: rgb(var(--background));
+            border: 2px solid rgb(var(--input));
+            border-radius: var(--radius);
+            color: rgb(var(--foreground));
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .set-rest-main-row .set-rest-time-input-main:focus {
+            outline: none;
+            border-color: rgb(var(--ring));
+            box-shadow: 0 0 0 2px rgb(var(--background)), 0 0 0 4px rgba(var(--ring), 0.2);
+        }
+        .set-rest-main-row .set-rest-time-input-main:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .time-input-group input {
+            flex: 1;
+        }
+        
+        @media (max-width: 390px) {
+            .time-adjust-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 0.75rem;
+            }
+            
+            .time-input-group {
+                gap: 0.5rem;
+            }
+            
+            .rounds-input-group {
+                gap: 0.5rem;
+            }
+            
+            .rounds-input-group input {
+                width: 60px;
+                max-width: 80px;
+                padding: 0.5rem;
+            }
+            
+            .rounds-adjust-btn {
+                width: 40px;
+                height: 40px;
+            }
+        }
+        
         .timer-running .custom-time-input:not(:disabled),
+        .timer-running .set-rest-time-input-main:not(:disabled),
         .timer-running .stepper-btn:not(:disabled),
         .timer-running .rounds-adjust-btn:not(:disabled),
+        .timer-running .time-adjust-btn:not(:disabled),
         .timer-running .preset-select:not(:disabled) {
             opacity: 0.5;
             cursor: not-allowed;
             pointer-events: none;
         }
-        .timer-display-block {
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-        }
+        
         .header-top {
             position: absolute;
             top: clamp(1rem, 3vw, 2rem);
@@ -913,36 +1133,81 @@
             stroke: #fafafa !important;
         }
         
-        .workout-select, .preset-select {
+        /* HIIT ADDITION: Preset select dropdown styling (shadcn/ui compatible) */
+        .preset-select {
             width: 100%;
-            padding: 0.75rem 2.5rem 0.75rem 1rem;
-            border-radius: 0.75rem;
-            font-size: 16px;
+            padding: 0.5rem 2.5rem 0.5rem 0.75rem;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
             font-weight: 500;
-            border: 2px solid rgb(var(--input));
+            border: 1px solid rgb(var(--input));
             background-color: rgb(var(--background));
             color: rgb(var(--foreground));
             cursor: pointer;
-            font-family: inherit;
+            transition: all 0.2s;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 0.5rem center;
-            background-size: 1.25rem;
-            min-height: 52px;
+            background-size: 1rem;
+            min-height: 2.5rem;
         }
-        [data-theme="style1"] .workout-select,
+        
+        .preset-select:hover:not(:disabled) {
+            border-color: rgb(var(--ring));
+        }
+        
+        .preset-select:focus {
+            outline: none;
+            border-color: rgb(var(--ring));
+            box-shadow: 0 0 0 2px rgba(var(--ring), 0.2);
+        }
+        
+        .preset-select:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: rgb(var(--muted));
+        }
+        
+        /* Dark mode select styling */
         [data-theme="style1"] .preset-select {
             background-color: rgb(var(--card));
             border-color: rgb(var(--border));
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
         }
-        .workout-select:focus, .preset-select:focus {
-            outline: none;
+        
+        [data-theme="style1"] .preset-select:focus {
             border-color: rgb(var(--ring));
-            box-shadow: 0 0 0 3px rgba(var(--ring), 0.2);
         }
-        .workout-select:disabled, .preset-select:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        /* Current preset display */
+        .current-preset-display {
+            margin-top: 0.75rem;
+            font-size: 0.875rem;
+            color: rgb(var(--muted-foreground));
+            padding: 0.5rem;
+            background-color: rgba(var(--accent), 0.5);
+            border-radius: var(--radius);
+            text-align: center;
+        }
+        
+        .current-preset-display strong {
+            color: rgb(var(--foreground));
+            font-weight: 600;
+        }
+        
+        @media (max-width: 390px) {
+            .preset-select {
+                padding: 0.4rem 2rem 0.4rem 0.625rem;
+                font-size: 0.75rem;
+                min-height: 2.25rem;
+            }
+            
+            .current-preset-display {
+                font-size: 0.75rem;
+                padding: 0.375rem;
+            }
+        }
         
         /* HIIT ADDITION: Enhanced phase label for work phase */
         .phase-label.work-intense {
@@ -956,7 +1221,8 @@
             }
         }
         
-        /* HIIT ADDITION: Cool-down phase styling */
+        /* HIIT ADDITION: Warm-up and cool-down phase styling */
+        .phase-label.warmup,
         .phase-label.cooldown {
             color: rgb(var(--muted-foreground));
         }
@@ -975,6 +1241,115 @@
                 font-size: 1rem;
             }
         }
+        
+        /* Preset Interval Buttons – shadcn/Tailwind style (chip variant) */
+        .preset-select-btn {
+            min-height: 48px;
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            line-height: 1.3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            border: 2px solid rgb(var(--border));
+            background: rgb(var(--card));
+            color: rgb(var(--foreground));
+            font-family: inherit;
+            min-width: 0;
+            width: 100%;
+            text-align: center;
+            white-space: normal;
+            word-wrap: break-word;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        @media (min-width: 640px) {
+            .preset-select-btn {
+                min-width: 100px;
+                font-size: 1rem;
+                min-height: 48px;
+            }
+        }
+        
+        .preset-select-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 0.5rem;
+        }
+        
+        @media (min-width: 420px) {
+            .preset-select-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 480px) {
+            .preset-select-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (min-width: 640px) {
+            .preset-select-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (orientation: landscape) and (max-height: 500px) {
+            .preset-select-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .timer-container {
+                margin-top: clamp(3.5rem, 6vw, 4.25rem) !important;
+                gap: 0.5rem !important;
+            }
+            
+            .timer-display-block { padding: 1rem; }
+            .phase-label { margin-bottom: 0.25rem; font-size: 1rem; }
+            .timer-display-large { font-size: 3.25rem; margin-bottom: 0.5rem; }
+            .round-info { margin-top: 0.5rem; font-size: 0.8125rem; }
+            .p-6 { padding: 0.75rem; }
+            .preset-select-grid { gap: 0.4rem; }
+            .preset-select-btn { padding: 0.4rem 0.6rem; font-size: 0.95rem; min-height: 2.25rem; }
+            #workoutTitleDisplay { padding-bottom: 0.5rem !important; margin-bottom: 0.5rem !important; }
+            #workoutDescriptionDisplay { margin-top: 0.5rem !important; padding-top: 0.5rem !important; }
+        }
+        
+        .preset-select-grid.single-column {
+            grid-template-columns: repeat(1, 1fr) !important;
+        }
+        
+        .preset-select-btn:hover:not(:disabled) {
+            background: rgb(var(--accent));
+        }
+        
+        [data-theme="style1"] .preset-select-btn:hover:not(:disabled) {
+            background: rgb(var(--accent));
+        }
+        
+        .preset-select-btn.selected {
+            background: rgb(var(--primary));
+            color: rgb(var(--primary-foreground));
+            border-color: rgb(var(--primary));
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(var(--primary), 0.3);
+        }
+        
+        .preset-select-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .timer-running .preset-select-btn:not(.reset-btn):not(.selected) {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body class="font-sans">
@@ -982,43 +1357,123 @@
         <div class="header-top">
             <div style="display: flex; align-items: center; gap: 0.75rem;">
                 <a href="index.html" style="display: flex; align-items: center; text-decoration: none; cursor: pointer;">
-                    <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" id="timerist-logo">
-                        <circle cx="20" cy="20" r="15" fill="none" stroke="currentColor" stroke-width="2.5" class="logo-circle"/>
-                        <line x1="20" y1="20" x2="20" y2="8" stroke="currentColor" stroke-width="2.5" class="logo-line"/>
-                        <line x1="20" y1="20" x2="30" y2="20" stroke="currentColor" stroke-width="2.5" class="logo-line"/>
+                    <svg
+                        width="40"
+                        height="40"
+                        viewBox="0 0 40 40"
+                        xmlns="http://www.w3.org/2000/svg"
+                        id="timerist-logo"
+                    >
+                        <circle cx="20" cy="20" r="15" fill="none" stroke="#0a0a0a" stroke-width="2.5" class="logo-circle"/>
+                        <line x1="20" y1="20" x2="20" y2="8" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
+                        <line x1="20" y1="20" x2="30" y2="20" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
                     </svg>
                 </a>
                 <a href="index.html" style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground)); text-decoration: none; cursor: pointer;">timerist.com</a>
                 <span class="separator" style="color: rgb(var(--muted-foreground));">|</span>
-                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">HIIT</span>
+                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: rgb(var(--foreground));">Preset HIIT</span>
             </div>
+            
             <div class="header-actions">
                 <button class="mode-toggle-btn mode-toggle" id="themeToggleBtn" aria-label="Toggle dark mode">
                     <span id="theme-icon">🌙</span>
                 </button>
-                <button type="button" class="hamburger-menu" id="menuBtn" aria-label="Open setup">☰</button>
+                <button class="hamburger-menu" onclick="toggleDrawer()" aria-label="Open Timer Setup menu">
+                    ☰
+                </button>
             </div>
         </div>
         
         <div class="timer-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
-            <div class="timer-display-block bg-card border border-border rounded-xl shadow-lg text-center p-4" id="timerDisplayBlock">
+            <!-- Timer Display -->
+            <div class="timer-display-block bg-card border border-border rounded-xl shadow-lg text-center">
+                <!-- Workout Title -->
                 <div id="workoutTitleDisplay" style="display: none; text-align: center; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid rgb(var(--border));">
-                    <h2 id="workoutTitleText" class="text-lg font-semibold text-[rgb(var(--foreground))] m-0"></h2>
+                    <h2 id="workoutTitleText" style="font-size: 1.25rem; font-weight: 600; color: rgb(var(--foreground)); margin: 0; word-wrap: break-word;"></h2>
                 </div>
+                
                 <div class="phase-label" id="phaseLabel"></div>
                 <div class="timer-display-large" id="display">00:00</div>
-                <div class="round-info">Round <span id="round">0</span> of <span id="totalRounds">0</span></div>
+                <div class="round-info">
+                    Round <span id="round">0</span> of <span id="totalRounds">0</span> | <span id="presetNameDisplay">Custom</span>
+                </div>
+                
+                <!-- Workout Notes -->
                 <div id="workoutDescriptionDisplay" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgb(var(--border));">
-                    <p id="workoutDescriptionText" class="text-sm text-[rgb(var(--muted-foreground))] leading-relaxed m-0 text-left whitespace-pre-wrap break-words"></p>
+                    <p id="workoutDescriptionText" style="font-size: 0.875rem; color: rgb(var(--muted-foreground)); line-height: 1.6; margin: 0; text-align: left; white-space: pre-wrap; word-wrap: break-word;"></p>
                 </div>
             </div>
-            <div class="p-4 rounded-2xl bg-[rgb(var(--card))] border border-[rgb(var(--border))] shadow-lg">
+            
+            <!-- Control Buttons -->
+            <div class="p-6 bg-card border border-border rounded-xl shadow-lg">
                 <div class="control-buttons-container">
                     <button class="control-btn btn-primary" id="startBtn" aria-label="Start timer">Start</button>
-                    <button class="control-btn btn-primary" id="pauseBtn" style="display:none;" aria-label="Pause timer">Pause</button>
-                    <button class="control-btn btn-destructive" id="resetBtn" style="display:none;" aria-label="Reset timer">Reset</button>
+                    <button class="control-btn btn-primary" id="pauseBtn" style="display: none;" aria-label="Pause timer">Pause</button>
+                    <button class="control-btn btn-destructive" id="resetBtn" style="display: none;" aria-label="Reset timer">Reset</button>
                     <button class="control-btn btn-secondary" id="clearBtn" aria-label="Clear timer">Clear</button>
-                    <button class="control-btn btn-primary" id="setupBtn" style="display:none;" aria-label="Set up timer">Set Up</button>
+                    <button class="control-btn btn-primary" id="setupBtn" style="display: none;" aria-label="Set up timer">Set Up</button>
+                </div>
+            </div>
+            
+            <!-- Rounds, Sets & Rest between sets (main page – light/dark themed per images) -->
+            <div id="roundsSetsBlockMain" class="rounds-sets-front-card" style="display: none;">
+                <p class="rounds-sets-front-desc">
+                    <strong>Rounds</strong> = work/rest cycles per block. <strong>Sets</strong> = how many times you repeat that block (e.g. 2 sets = do the workout twice).
+                </p>
+                <div class="rounds-sets-front-row">
+                    <div class="rounds-sets-front-group">
+                        <label for="roundsInputMain" class="rounds-sets-front-label">Rounds</label>
+                        <div class="rounds-input-group rounds-sets-front-controls">
+                            <button class="rounds-adjust-btn rounds-sets-front-btn" id="roundsDecreaseBtnMain" type="button" aria-label="Decrease rounds">−</button>
+                            <input type="text" id="roundsInputMain" class="rounds-sets-front-input" value="0" aria-label="Number of rounds">
+                            <button class="rounds-adjust-btn rounds-sets-front-btn" id="roundsIncreaseBtnMain" type="button" aria-label="Increase rounds">+</button>
+                        </div>
+                    </div>
+                    <div class="rounds-sets-front-group">
+                        <label for="setsInputMain" class="rounds-sets-front-label">Sets</label>
+                        <div class="rounds-input-group rounds-sets-front-controls">
+                            <button class="rounds-adjust-btn rounds-sets-front-btn" id="setsDecreaseBtnMain" type="button" aria-label="Decrease sets">−</button>
+                            <input type="text" id="setsInputMain" class="rounds-sets-front-input" value="1" aria-label="Number of sets">
+                            <button class="rounds-adjust-btn rounds-sets-front-btn" id="setsIncreaseBtnMain" type="button" aria-label="Increase sets">+</button>
+                        </div>
+                    </div>
+                    <div id="setRestGroupMain" class="rounds-sets-front-group" style="display: none;">
+                        <label for="setRestTimeInputMain" class="rounds-sets-front-label">Rest between sets (MM:SS)</label>
+                        <div class="time-slider-wrap">
+                            <input type="range" id="setRestTimeSliderMain" min="0" max="600" step="5" value="120" aria-label="Rest between sets (seconds)">
+                        </div>
+                        <div class="set-rest-main-row rounds-sets-front-controls">
+                            <button class="time-adjust-btn rounds-sets-front-btn" id="setRestDecrease10BtnMain" type="button" aria-label="Decrease rest between sets by 10 seconds">−10</button>
+                            <input type="text" id="setRestTimeInputMain" class="set-rest-time-input-main rounds-sets-front-time-input" value="02:00" pattern="[0-9]{2}:[0-9]{2}" placeholder="MM:SS" aria-label="Rest between sets">
+                            <button class="time-adjust-btn rounds-sets-front-btn" id="setRestIncrease10BtnMain" type="button" aria-label="Increase rest between sets by 10 seconds">+10</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Preset Workout Buttons (same order as interval-presets.html: Workout Presets then Time Presets) -->
+            <div class="p-6 bg-card border border-border rounded-xl shadow-lg">
+                <h3 class="text-xs font-semibold uppercase tracking-wide mb-4 block text-center" style="color: rgb(var(--muted-foreground)); letter-spacing: 0.05em; margin-bottom: 1rem;">
+                    Presets
+                </h3>
+                <div class="preset-select-grid">
+                    <button class="preset-select-btn" data-work="20" data-rest="10" data-rounds="8" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="tabata" data-title="Tabata Protocol" data-description="20 s high-intensity work / 10 s rest × 8 rounds. Classic interval structure shown to improve VO2 max in a short session." aria-label="Tabata: 20 seconds work, 10 seconds rest, 8 rounds">Tabata</button>
+                    <button class="preset-select-btn" data-work="40" data-rest="20" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="emom" data-title="EMOM Interval" data-description="40 s work / 20 s rest every minute. High-intensity format used in circuits; supports VO2 max development with repeated efforts." aria-label="EMOM: 40 seconds work, 20 seconds rest">EMOM</button>
+                    <button class="preset-select-btn" data-work="60" data-rest="75" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="little" data-title="Little Method" data-description="60 s high-intensity work / 75 s rest. Interval pattern from research demonstrating significant VO2 max gains." aria-label="Little Method: 60 seconds work, 75 seconds rest">Little</button>
+                    <button class="preset-select-btn" data-work="60" data-rest="75" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="gibala" data-title="Gibala Protocol" data-description="60 s high-intensity work / 75 s rest. Evidence-based HIIT method effective for increasing VO2 max." aria-label="Gibala: 60 seconds work, 75 seconds rest">Gibala</button>
+                    <button class="preset-select-btn" data-work="240" data-rest="180" data-rounds="8" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="norwegian" data-title="Norwegian 4×4" data-description="4 min high-intensity work / 3 min active recovery × 4 rounds. Well-studied protocol for improving VO2 max." aria-label="Norwegian 4x4: 4 minutes work, 3 minutes rest, 8 rounds">Norwegian</button>
+                    <button class="preset-select-btn" data-work="30" data-rest="30" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="30/30" data-title="30/30 Interval" data-description="30 s high-intensity work / 30 s rest. Balanced HIIT ratio that can contribute to VO2 max improvement." aria-label="30/30: 30 seconds work, 30 seconds rest">30/30</button>
+                    <button class="preset-select-btn" data-work="45" data-rest="15" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="45/15" data-title="45/15 Interval" data-description="45 s high-intensity work / 15 s rest. Short-recovery format suitable for VO2 max training." aria-label="45/15: 45 seconds work, 15 seconds rest">45/15</button>
+                    <button class="preset-select-btn" data-work="60" data-rest="30" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="60/30" data-title="60/30 Interval" data-description="60 s high-intensity work / 30 s rest. Moderate-duration efforts effective for VO2 max gains." aria-label="60/30: 60 seconds work, 30 seconds rest">60/30</button>
+                    <button class="preset-select-btn" data-work="45" data-rest="45" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="45/45" data-title="45/45 Interval" data-description="45 s high-intensity work / 45 s rest. Equal work–rest ratio used in VO2 max-focused sessions." aria-label="45/45: 45 seconds work, 45 seconds rest">45/45</button>
+                    <button class="preset-select-btn" data-work="60" data-rest="60" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="60/60" data-title="60/60 Interval" data-description="60 s high-intensity work / 60 s rest. Allows repeated high-effort intervals to support VO2 max." aria-label="60/60: 60 seconds work, 60 seconds rest">60/60</button>
+                    <button class="preset-select-btn" data-work="30" data-rest="60" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="30/60" data-title="30/60 Interval" data-description="30 s high-intensity work / 60 s rest. Shorter bursts with longer recovery; useful for VO2 max work." aria-label="30/60: 30 seconds work, 60 seconds rest">30/60</button>
+                    <button class="preset-select-btn" data-work="20" data-rest="10" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="20/10" data-title="20/10 Interval" data-description="20 s high-intensity work / 10 s rest. Very short, intense efforts linked to VO2 max improvement." aria-label="20/10: 20 seconds work, 10 seconds rest">20/10</button>
+                    <button class="preset-select-btn" data-work="40" data-rest="20" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="40/20" data-title="40/20 Interval" data-description="40 s high-intensity work / 20 s rest. Common ratio in protocols that enhance VO2 max." aria-label="40/20: 40 seconds work, 20 seconds rest">40/20</button>
+                    <button class="preset-select-btn" data-work="90" data-rest="30" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="90/30" data-title="90/30 Interval" data-description="90 s high-intensity work / 30 s rest. Longer efforts suitable for VO2 max development." aria-label="90/30: 90 seconds work, 30 seconds rest">90/30</button>
+                    <button class="preset-select-btn" data-work="120" data-rest="60" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="2:00/1:00" data-title="2:00/1:00 Interval" data-description="2 min high-intensity work / 1 min rest. Extended intervals effective for VO2 max gains." aria-label="2:00/1:00: 2 minutes work, 1 minute rest">2:00/1:00</button>
+                    <button class="preset-select-btn" data-work="180" data-rest="60" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="3:00/1:00" data-title="3:00/1:00 Interval" data-description="3 min high-intensity work / 1 min rest. Longer high-effort rounds shown to improve VO2 max." aria-label="3:00/1:00: 3 minutes work, 1 minute rest">3:00/1:00</button>
+                    <button class="preset-select-btn" data-work="60" data-rest="30" data-rounds="1" data-warmup="10" data-cooldown="60" data-sets="1" data-preset="1:00/30" data-title="1:00/30 Interval" data-description="60 s high-intensity work / 30 s rest. Moderate-length efforts that support VO2 max training." aria-label="1:00/30: 1 minute work, 30 seconds rest">1:00/30</button>
                 </div>
             </div>
         </div>
@@ -1040,35 +1495,32 @@
             <div class="sheet-section">
                 <div class="input-group">
                     <label for="presetSelect">Select a Workout</label>
-                    <select id="presetSelect" class="workout-select preset-select" aria-label="Select timer preset">
+                    <select id="presetSelect" class="preset-select" aria-label="Select preset workout">
                         <option value="custom" selected>Custom</option>
-                        <option value="tabata">Tabata</option>
-                        <option value="3030">30/30</option>
-                        <option value="4x4">4×4 Norwegian</option>
-                        <option value="littlemethod">Little Method</option>
-                        <option value="gibala">Gibala</option>
-                        <option value="4020">40/20</option>
-                        <option value="2040">20/40</option>
-                        <option value="6060">60/60</option>
-                        <option value="4545">45/45</option>
-                        <option value="sprintsit">Sprint SIT</option>
+                        <optgroup label="Workout Presets">
+                            <option value="tabata">Tabata</option>
+                            <option value="emom">EMOM</option>
+                            <option value="little">Little Method</option>
+                            <option value="gibala">Gibala</option>
+                            <option value="norwegian">Norwegian 4x4</option>
+                        </optgroup>
+                        <optgroup label="Time Presets">
+                            <option value="30/30">30/30</option>
+                            <option value="45/15">45/15</option>
+                            <option value="60/30">60/30</option>
+                            <option value="45/45">45/45</option>
+                            <option value="60/60">60/60</option>
+                            <option value="30/60">30/60</option>
+                            <option value="20/10">20/10</option>
+                            <option value="40/20">40/20</option>
+                            <option value="90/30">90/30</option>
+                            <option value="2:00/1:00">2:00/1:00</option>
+                            <option value="3:00/1:00">3:00/1:00</option>
+                            <option value="1:00/30">1:00/30</option>
+                        </optgroup>
                     </select>
-                    <p class="text-xs text-[rgb(var(--muted-foreground))] mt-1">Choose a preset to fill work, rest, rounds, and more.</p>
-                </div>
-            </div>
-            <div class="sheet-section">
-                <h3>Workout Presets</h3>
-                <div class="preset-grid-workout">
-                    <button type="button" class="preset-chip hiit-preset-chip" data-preset="tabata">Tabata</button>
-                    <button type="button" class="preset-chip hiit-preset-chip" data-preset="3030">30/30</button>
-                    <button type="button" class="preset-chip hiit-preset-chip" data-preset="4x4">4×4 Norwegian</button>
-                    <button type="button" class="preset-chip hiit-preset-chip" data-preset="littlemethod">Little</button>
-                    <button type="button" class="preset-chip hiit-preset-chip" data-preset="gibala">Gibala</button>
-                    <button type="button" class="preset-chip hiit-preset-chip" data-preset="4020">40/20</button>
-                    <button type="button" class="preset-chip hiit-preset-chip" data-preset="2040">20/40</button>
-                    <button type="button" class="preset-chip hiit-preset-chip" data-preset="6060">60/60</button>
-                    <button type="button" class="preset-chip hiit-preset-chip" data-preset="4545">45/45</button>
-                    <button type="button" class="preset-chip hiit-preset-chip" data-preset="sprintsit">Sprint SIT</button>
+                    <p class="text-xs text-[rgb(var(--muted-foreground))] mt-1">Choose a preset to fill work, rest, rounds, sets, prep countdown, and cool-down. Or choose Custom to build your own HIIT workout.</p>
+                    <div class="current-preset-display" id="currentPresetDisplay">Current Timer: <strong>Custom</strong></div>
                 </div>
             </div>
             <div class="sheet-section">
@@ -1115,17 +1567,28 @@
                     </div>
                 </div>
             </div>
-            <div class="sheet-section sheet-section--centered">
-                <h3>Prep time (seconds)</h3>
+            <div class="sheet-section">
+                <h3>Prep countdown (MM:SS)</h3>
                 <div class="time-slider-wrap">
-                    <input type="range" id="prepTimeSlider" min="0" max="60" step="1" value="10" aria-label="Prep time before start (seconds)">
+                    <input type="range" id="warmupTimeSlider" min="0" max="600" step="5" value="0" aria-label="Prep countdown seconds">
                 </div>
-                <div class="rounds-stepper">
-                    <button type="button" class="stepper-btn rounds-adjust-btn" id="prepTimeDecreaseBtn" aria-label="Decrease prep time">−</button>
-                    <input type="number" id="prepTimeInput" class="custom-time-input countdown-input-no-spinners" value="10" min="0" max="60" aria-label="Prep time before start (seconds)">
-                    <button type="button" class="stepper-btn rounds-adjust-btn" id="prepTimeIncreaseBtn" aria-label="Increase prep time">+</button>
+                <div class="time-input-group">
+                    <div class="time-adjust-group">
+                        <div class="time-adjust-group-label">Min</div>
+                        <div class="time-adjust-buttons">
+                            <button class="time-adjust-btn" id="warmupMinDecreaseBtn" type="button" aria-label="Decrease prep countdown by 1 minute">−1</button>
+                            <button class="time-adjust-btn" id="warmupMinIncreaseBtn" type="button" aria-label="Increase prep countdown by 1 minute">+1</button>
+                        </div>
+                    </div>
+                    <input type="text" id="warmupTimeInput" class="custom-time-input" value="00:00" pattern="[0-9]{2}:[0-9]{2}" placeholder="MM:SS" aria-label="Prep countdown">
+                    <div class="time-adjust-group">
+                        <div class="time-adjust-group-label">Sec</div>
+                        <div class="time-adjust-buttons">
+                            <button class="time-adjust-btn" id="warmupSecDecreaseBtn" type="button" aria-label="Decrease prep countdown by 5 seconds">−5</button>
+                            <button class="time-adjust-btn" id="warmupSecIncreaseBtn" type="button" aria-label="Increase prep countdown by 5 seconds">+5</button>
+                        </div>
+                    </div>
                 </div>
-                <p class="text-xs text-[rgb(var(--muted-foreground))] mt-1">Countdown before workout starts (0–60).</p>
             </div>
             <div class="sheet-section">
                 <h3>Cool-down Time (MM:SS)</h3>
@@ -1142,15 +1605,7 @@
                                 <button class="time-adjust-btn" id="cooldownMinIncreaseBtn" type="button" aria-label="Increase cool-down time by 1 minute">+1</button>
                             </div>
                         </div>
-                        <input 
-                            type="text" 
-                            id="cooldownTimeInput" 
-                            class="custom-time-input" 
-                            value="01:00"
-                            pattern="[0-9]{2}:[0-9]{2}"
-                            placeholder="MM:SS"
-                            aria-label="Cool-down time"
-                        >
+                        <input type="text" id="cooldownTimeInput" class="custom-time-input" value="01:00" pattern="[0-9]{2}:[0-9]{2}" placeholder="MM:SS" aria-label="Cool-down time">
                         <div class="time-adjust-group">
                             <div class="time-adjust-group-label">Sec</div>
                             <div class="time-adjust-buttons">
@@ -1160,7 +1615,6 @@
                         </div>
                     </div>
                 </div>
-                
                 <div class="sheet-section sheet-section-sets">
                     <h3>Number of Sets</h3>
                     <p class="sets-description text-xs text-[rgb(var(--muted-foreground))] mb-2">Cycles of the HIIT (work/rest intervals).</p>
@@ -1188,15 +1642,7 @@
                                 <button class="time-adjust-btn" id="setRestMinIncreaseBtn" type="button" aria-label="Increase set rest time by 1 minute">+1</button>
                             </div>
                         </div>
-                        <input 
-                            type="text" 
-                            id="setRestTimeInput" 
-                            class="custom-time-input" 
-                            value="02:00"
-                            pattern="[0-9]{2}:[0-9]{2}"
-                            placeholder="MM:SS"
-                            aria-label="Set rest time"
-                        >
+                        <input type="text" id="setRestTimeInput" class="custom-time-input" value="02:00" pattern="[0-9]{2}:[0-9]{2}" placeholder="MM:SS" aria-label="Set rest time">
                         <div class="time-adjust-group">
                             <div class="time-adjust-group-label">Sec</div>
                             <div class="time-adjust-buttons">
@@ -1229,8 +1675,8 @@
             <div class="sheet-section">
                 <h3>About This Timer</h3>
                 <p class="text-sm text-[rgb(var(--muted-foreground))] leading-relaxed">
-                    High-intensity interval training timer with preset protocols (Tabata, 30/30, 4×4 Norwegian) and custom intervals. 
-                    Includes prep time, cool-down, sets, and motivational phase labels for maximum intensity workouts.
+                    High-intensity interval training timer with preset protocols (Tabata, 30/30, 4×4 Norwegian) and custom intervals.
+                    Includes prep countdown, cool-down, sets, and motivational phase labels for high-intensity workouts.
                 </p>
             </div>
             <div class="sheet-section">
@@ -1252,8 +1698,9 @@
         let totalRounds = 0;
         
         // HIIT ADDITION: New state variables
-        let currentPhase = 'work'; // 'prep', 'work', 'rest', 'setrest', 'cooldown'
-        let cooldownTime = 60; // default 1 minute
+        let currentPhase = 'work'; // 'warmup', 'work', 'rest', 'setrest', 'cooldown'
+        let warmupTime = 0;
+        let cooldownTime = 0;
         let totalSets = 1;
         let currentSet = 1;
         let setRestTime = 120; // Default 2 minutes
@@ -1263,6 +1710,7 @@
         const phaseLabel = document.getElementById('phaseLabel');
         const roundDisplay = document.getElementById('round');
         const totalRoundsDisplay = document.getElementById('totalRounds');
+        const presetNameDisplay = document.getElementById('presetNameDisplay');
         const startBtn = document.getElementById('startBtn');
         const pauseBtn = document.getElementById('pauseBtn');
         const resetBtn = document.getElementById('resetBtn');
@@ -1273,6 +1721,16 @@
         const roundsInput = document.getElementById('roundsInput');
         const roundsDecreaseBtn = document.getElementById('roundsDecreaseBtn');
         const roundsIncreaseBtn = document.getElementById('roundsIncreaseBtn');
+        const roundsInputMain = document.getElementById('roundsInputMain');
+        const roundsDecreaseBtnMain = document.getElementById('roundsDecreaseBtnMain');
+        const roundsIncreaseBtnMain = document.getElementById('roundsIncreaseBtnMain');
+        const setsInputMain = document.getElementById('setsInputMain');
+        const setsDecreaseBtnMain = document.getElementById('setsDecreaseBtnMain');
+        const setsIncreaseBtnMain = document.getElementById('setsIncreaseBtnMain');
+        const roundsSetsBlockMain = document.getElementById('roundsSetsBlockMain');
+        const setRestTimeInputMain = document.getElementById('setRestTimeInputMain');
+        const setRestDecrease10BtnMain = document.getElementById('setRestDecrease10BtnMain');
+        const setRestIncrease10BtnMain = document.getElementById('setRestIncrease10BtnMain');
         
         const workTimeSlider = document.getElementById('workTimeSlider');
         const restTimeSlider = document.getElementById('restTimeSlider');
@@ -1280,19 +1738,23 @@
         const workIncreaseBtn = document.getElementById('workIncreaseBtn');
         const restDecreaseBtn = document.getElementById('restDecreaseBtn');
         const restIncreaseBtn = document.getElementById('restIncreaseBtn');
-        
+        const warmupTimeSlider = document.getElementById('warmupTimeSlider');
         const cooldownTimeSlider = document.getElementById('cooldownTimeSlider');
         const setRestTimeSlider = document.getElementById('setRestTimeSlider');
-        const prepTimeSlider = document.getElementById('prepTimeSlider');
+        const setRestTimeSliderMain = document.getElementById('setRestTimeSliderMain');
         
+        // HIIT ADDITION: New DOM references
+        const warmupTimeInput = document.getElementById('warmupTimeInput');
         const cooldownTimeInput = document.getElementById('cooldownTimeInput');
         const setsInput = document.getElementById('setsInput');
         const setRestTimeInput = document.getElementById('setRestTimeInput');
         const setRestGroup = document.getElementById('setRestGroup');
+        const setRestGroupMain = document.getElementById('setRestGroupMain');
         const totalTimeDisplay = document.getElementById('totalTimeDisplay');
-        const prepTimeInput = document.getElementById('prepTimeInput');
-        const prepTimeDecreaseBtn = document.getElementById('prepTimeDecreaseBtn');
-        const prepTimeIncreaseBtn = document.getElementById('prepTimeIncreaseBtn');
+        const warmupMinDecreaseBtn = document.getElementById('warmupMinDecreaseBtn');
+        const warmupMinIncreaseBtn = document.getElementById('warmupMinIncreaseBtn');
+        const warmupSecDecreaseBtn = document.getElementById('warmupSecDecreaseBtn');
+        const warmupSecIncreaseBtn = document.getElementById('warmupSecIncreaseBtn');
         const cooldownMinDecreaseBtn = document.getElementById('cooldownMinDecreaseBtn');
         const cooldownMinIncreaseBtn = document.getElementById('cooldownMinIncreaseBtn');
         const cooldownSecDecreaseBtn = document.getElementById('cooldownSecDecreaseBtn');
@@ -1303,10 +1765,11 @@
         const setRestMinIncreaseBtn = document.getElementById('setRestMinIncreaseBtn');
         const setRestSecDecreaseBtn = document.getElementById('setRestSecDecreaseBtn');
         const setRestSecIncreaseBtn = document.getElementById('setRestSecIncreaseBtn');
-        
+        // HIIT ADDITION: Preset select dropdown
         const presetSelect = document.getElementById('presetSelect');
+        const currentPresetDisplay = document.getElementById('currentPresetDisplay');
         
-        // Workout title and notes DOM references
+        // Workout title and notes (displayed in timer)
         const workoutTitleInput = document.getElementById('workoutTitleInput');
         const workoutDescriptionInput = document.getElementById('workoutDescriptionInput');
         const workoutTitleDisplay = document.getElementById('workoutTitleDisplay');
@@ -1315,15 +1778,55 @@
         const workoutDescriptionText = document.getElementById('workoutDescriptionText');
         const workoutTitleCharCount = document.getElementById('workoutTitleCharCount');
         const workoutDescriptionCharCount = document.getElementById('workoutDescriptionCharCount');
-
+        
         // Completion message
         const doneMessageInput = document.getElementById('doneMessageInput');
         const doneMessageCharCount = document.getElementById('doneMessageCharCount');
         
-        // Export/Import DOM references
         const exportBtn = document.getElementById('exportBtn');
         const importBtn = document.getElementById('importBtn');
         const importFileInput = document.getElementById('importFileInput');
+
+        // Completion message storage (match EMOM pattern)
+        function getDoneMessage() {
+            const saved = localStorage.getItem('preset-hiit-doneMessage');
+            if (saved) return saved;
+            return doneMessageInput ? (doneMessageInput.value || 'Completed') : 'Completed';
+        }
+        
+        function setDoneMessage(value) {
+            const v = (value || '').trim();
+            localStorage.setItem('preset-hiit-doneMessage', v ? v : 'Completed');
+        }
+        
+        // Shrink completion message text until it fits in the time box (one line; same as interval-presets / emom-splits)
+        function fitTextToContainer(el, { minPx = 16 } = {}) {
+            if (!el) return;
+            el.style.fontSize = '';
+            let fontSize = parseFloat(window.getComputedStyle(el).fontSize || '0');
+            if (!Number.isFinite(fontSize) || fontSize <= 0) return;
+            const fits = () => el.scrollWidth <= el.clientWidth;
+            if (fits()) return;
+            let iterations = 0;
+            while (!fits() && fontSize > minPx && iterations < 120) {
+                fontSize -= 1;
+                el.style.fontSize = fontSize + 'px';
+                iterations += 1;
+            }
+        }
+        function resizeCompletionMessageIfVisible() {
+            if (display && display.classList.contains('done-message')) {
+                fitTextToContainer(display, { minPx: 18 });
+            }
+        }
+        let resizeCompletionTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeCompletionTimeout);
+            resizeCompletionTimeout = setTimeout(resizeCompletionMessageIfVisible, 100);
+        });
+        window.addEventListener('orientationchange', function() {
+            setTimeout(resizeCompletionMessageIfVisible, 200);
+        });
         
         // Parse MM:SS format to seconds
         function parseTime(timeString) {
@@ -1368,6 +1871,30 @@
             return value;
         }
         
+        // Adjust time by 10 seconds (±10) – for work/rest stepper row (match hiit.html)
+        function adjustTimeBy10(input, increment) {
+            if (isRunning) return;
+            const currentSeconds = parseTime(input.value);
+            const newSeconds = Math.max(0, currentSeconds + (increment ? 10 : -10));
+            const maxVal = input === restTimeInput ? 300 : 600;
+            const clamped = Math.min(maxVal, newSeconds);
+            input.value = formatTime(clamped);
+            if (input === workTimeInput) workTime = clamped;
+            else if (input === restTimeInput) restTime = clamped;
+            syncSlidersFromInputs();
+            if (!isRunning) { resetTimer(); updateDisplay(); updateTotalTime(); }
+        }
+        
+        function syncSlidersFromInputs() {
+            if (workTimeSlider) workTimeSlider.value = Math.min(600, parseTime(workTimeInput.value));
+            if (restTimeSlider) restTimeSlider.value = Math.min(300, parseTime(restTimeInput.value));
+        }
+        function syncWarmupCooldownSetRestSlidersFromInputs() {
+            if (warmupTimeSlider) warmupTimeSlider.value = Math.min(600, parseTime(warmupTimeInput.value));
+            if (cooldownTimeSlider) cooldownTimeSlider.value = Math.min(600, parseTime(cooldownTimeInput.value));
+            if (setRestTimeSlider) setRestTimeSlider.value = Math.min(600, parseTime(setRestTimeInput.value));
+        }
+        
         // Adjust time by minutes (±1 minute)
         function adjustTimeMinutes(input, increment) {
             if (isRunning) return;
@@ -1382,6 +1909,8 @@
                 workTime = newSeconds;
             } else if (input === restTimeInput) {
                 restTime = newSeconds;
+            } else if (input === warmupTimeInput) {
+                warmupTime = newSeconds;
             } else if (input === cooldownTimeInput) {
                 cooldownTime = newSeconds;
             } else if (input === setRestTimeInput) {
@@ -1410,6 +1939,8 @@
                 workTime = newSeconds;
             } else if (input === restTimeInput) {
                 restTime = newSeconds;
+            } else if (input === warmupTimeInput) {
+                warmupTime = newSeconds;
             } else if (input === cooldownTimeInput) {
                 cooldownTime = newSeconds;
             } else if (input === setRestTimeInput) {
@@ -1424,42 +1955,6 @@
             }
         }
         
-        function syncSlidersFromInputs() {
-            if (workTimeSlider) workTimeSlider.value = Math.min(600, parseTime(workTimeInput.value));
-            if (restTimeSlider) restTimeSlider.value = Math.min(300, parseTime(restTimeInput.value));
-        }
-        function syncWarmupCooldownSlidersFromInputs() {
-            if (cooldownTimeSlider) cooldownTimeSlider.value = Math.min(600, parseTime(cooldownTimeInput.value));
-        }
-        function syncPrepSliderFromInput() {
-            if (prepTimeSlider) prepTimeSlider.value = Math.min(60, parseInt(prepTimeInput && prepTimeInput.value, 10) || 0);
-        }
-        function syncSetRestSliderFromInput() {
-            if (setRestTimeSlider) setRestTimeSlider.value = Math.min(600, parseTime(setRestTimeInput.value));
-        }
-        function syncInputsFromSliders() {
-            if (workTimeSlider) {
-                const sec = parseInt(workTimeSlider.value, 10);
-                workTimeInput.value = formatTime(sec);
-                workTime = sec;
-            }
-            if (restTimeSlider) {
-                const sec = parseInt(restTimeSlider.value, 10);
-                restTimeInput.value = formatTime(sec);
-                restTime = sec;
-            }
-        }
-        function adjustTimeBy10(input, increment) {
-            if (isRunning) return;
-            const currentSeconds = parseTime(input.value);
-            const newSeconds = Math.max(0, currentSeconds + (increment ? 10 : -10));
-            input.value = formatTime(newSeconds);
-            if (input === workTimeInput) workTime = newSeconds;
-            else if (input === restTimeInput) restTime = newSeconds;
-            syncSlidersFromInputs();
-            if (!isRunning) { resetTimer(); updateDisplay(); updateTotalTime(); }
-        }
-        
         // Disable inputs when timer is running
         function disableInputs() {
             workTimeInput.disabled = true;
@@ -1469,32 +1964,53 @@
             roundsIncreaseBtn.disabled = true;
             if (workTimeSlider) workTimeSlider.disabled = true;
             if (restTimeSlider) restTimeSlider.disabled = true;
-            if (cooldownTimeSlider) cooldownTimeSlider.disabled = true;
-            if (setRestTimeSlider) setRestTimeSlider.disabled = true;
             if (workDecreaseBtn) workDecreaseBtn.disabled = true;
             if (workIncreaseBtn) workIncreaseBtn.disabled = true;
             if (restDecreaseBtn) restDecreaseBtn.disabled = true;
             if (restIncreaseBtn) restIncreaseBtn.disabled = true;
+            // HIIT ADDITION: Disable new inputs
+            warmupTimeInput.disabled = true;
             cooldownTimeInput.disabled = true;
             setsInput.disabled = true;
             setRestTimeInput.disabled = true;
+            if (warmupTimeSlider) warmupTimeSlider.disabled = true;
+            if (cooldownTimeSlider) cooldownTimeSlider.disabled = true;
+            if (setRestTimeSlider) setRestTimeSlider.disabled = true;
+            // Time adjustment buttons - Warm-up
+            warmupMinDecreaseBtn.disabled = true;
+            warmupMinIncreaseBtn.disabled = true;
+            warmupSecDecreaseBtn.disabled = true;
+            warmupSecIncreaseBtn.disabled = true;
+            // Time adjustment buttons - Cool-down
             cooldownMinDecreaseBtn.disabled = true;
             cooldownMinIncreaseBtn.disabled = true;
             cooldownSecDecreaseBtn.disabled = true;
             cooldownSecIncreaseBtn.disabled = true;
+            // Sets buttons
             setsDecreaseBtn.disabled = true;
             setsIncreaseBtn.disabled = true;
+            // Time adjustment buttons - Set Rest
             setRestMinDecreaseBtn.disabled = true;
             setRestMinIncreaseBtn.disabled = true;
             setRestSecDecreaseBtn.disabled = true;
             setRestSecIncreaseBtn.disabled = true;
-            if (presetSelect) presetSelect.disabled = true;
+            // Disable main-page rounds/sets
+            if (roundsInputMain) roundsInputMain.disabled = true;
+            if (roundsDecreaseBtnMain) roundsDecreaseBtnMain.disabled = true;
+            if (roundsIncreaseBtnMain) roundsIncreaseBtnMain.disabled = true;
+            if (setsInputMain) setsInputMain.disabled = true;
+            if (setsDecreaseBtnMain) setsDecreaseBtnMain.disabled = true;
+            if (setsIncreaseBtnMain) setsIncreaseBtnMain.disabled = true;
+            if (setRestTimeInputMain) setRestTimeInputMain.disabled = true;
+            if (setRestDecrease10BtnMain) setRestDecrease10BtnMain.disabled = true;
+            if (setRestTimeSliderMain) setRestTimeSliderMain.disabled = true;
+            if (setRestIncrease10BtnMain) setRestIncrease10BtnMain.disabled = true;
+            // Disable preset select
+            presetSelect.disabled = true;
+            // Workout title and notes
             if (workoutTitleInput) workoutTitleInput.disabled = true;
             if (workoutDescriptionInput) workoutDescriptionInput.disabled = true;
             if (doneMessageInput) doneMessageInput.disabled = true;
-            if (prepTimeInput) prepTimeInput.disabled = true;
-            if (prepTimeDecreaseBtn) prepTimeDecreaseBtn.disabled = true;
-            if (prepTimeIncreaseBtn) prepTimeIncreaseBtn.disabled = true;
         }
         
         // Enable inputs when timer is stopped
@@ -1506,199 +2022,75 @@
             roundsIncreaseBtn.disabled = false;
             if (workTimeSlider) workTimeSlider.disabled = false;
             if (restTimeSlider) restTimeSlider.disabled = false;
-            if (cooldownTimeSlider) cooldownTimeSlider.disabled = false;
-            if (setRestTimeSlider) setRestTimeSlider.disabled = false;
             if (workDecreaseBtn) workDecreaseBtn.disabled = false;
             if (workIncreaseBtn) workIncreaseBtn.disabled = false;
             if (restDecreaseBtn) restDecreaseBtn.disabled = false;
             if (restIncreaseBtn) restIncreaseBtn.disabled = false;
+            // HIIT ADDITION: Enable new inputs
+            warmupTimeInput.disabled = false;
             cooldownTimeInput.disabled = false;
             setsInput.disabled = false;
             setRestTimeInput.disabled = false;
+            if (warmupTimeSlider) warmupTimeSlider.disabled = false;
+            if (cooldownTimeSlider) cooldownTimeSlider.disabled = false;
+            if (setRestTimeSlider) setRestTimeSlider.disabled = false;
+            // Time adjustment buttons - Warm-up
+            warmupMinDecreaseBtn.disabled = false;
+            warmupMinIncreaseBtn.disabled = false;
+            warmupSecDecreaseBtn.disabled = false;
+            warmupSecIncreaseBtn.disabled = false;
+            // Time adjustment buttons - Cool-down
             cooldownMinDecreaseBtn.disabled = false;
             cooldownMinIncreaseBtn.disabled = false;
             cooldownSecDecreaseBtn.disabled = false;
             cooldownSecIncreaseBtn.disabled = false;
+            // Sets buttons
             setsDecreaseBtn.disabled = false;
             setsIncreaseBtn.disabled = false;
+            // Enable main-page rounds/sets
+            if (roundsInputMain) roundsInputMain.disabled = false;
+            if (roundsDecreaseBtnMain) roundsDecreaseBtnMain.disabled = false;
+            if (roundsIncreaseBtnMain) roundsIncreaseBtnMain.disabled = false;
+            if (setsInputMain) setsInputMain.disabled = false;
+            if (setsDecreaseBtnMain) setsDecreaseBtnMain.disabled = false;
+            if (setsIncreaseBtnMain) setsIncreaseBtnMain.disabled = false;
+            if (setRestTimeInputMain) setRestTimeInputMain.disabled = false;
+            if (setRestDecrease10BtnMain) setRestDecrease10BtnMain.disabled = false;
+            if (setRestTimeSliderMain) setRestTimeSliderMain.disabled = false;
+            if (setRestIncrease10BtnMain) setRestIncrease10BtnMain.disabled = false;
+            // Time adjustment buttons - Set Rest
             setRestMinDecreaseBtn.disabled = false;
             setRestMinIncreaseBtn.disabled = false;
             setRestSecDecreaseBtn.disabled = false;
             setRestSecIncreaseBtn.disabled = false;
-            if (presetSelect) presetSelect.disabled = false;
+            // Enable preset select
+            presetSelect.disabled = false;
+            // Workout title and notes
             if (workoutTitleInput) workoutTitleInput.disabled = false;
             if (workoutDescriptionInput) workoutDescriptionInput.disabled = false;
             if (doneMessageInput) doneMessageInput.disabled = false;
-            if (prepTimeInput) prepTimeInput.disabled = false;
-            if (prepTimeDecreaseBtn) prepTimeDecreaseBtn.disabled = false;
-            if (prepTimeIncreaseBtn) prepTimeIncreaseBtn.disabled = false;
-        }
-
-        // Completion message storage
-        function getDoneMessage() {
-            const saved = localStorage.getItem('hiit-doneMessage');
-            if (saved) return saved;
-            return doneMessageInput ? (doneMessageInput.value || 'Completed') : 'Completed';
-        }
-
-        function setDoneMessage(value) {
-            const v = (value || '').trim();
-            localStorage.setItem('hiit-doneMessage', v ? v : 'Completed');
-        }
-        function fitTextToContainer(el, { minPx = 16 } = {}) {
-            if (!el) return;
-            el.style.fontSize = '';
-            let fontSize = parseFloat(window.getComputedStyle(el).fontSize || '0');
-            if (!Number.isFinite(fontSize) || fontSize <= 0) return;
-            const fits = () => el.scrollWidth <= el.clientWidth;
-            if (fits()) return;
-            let iterations = 0;
-            while (!fits() && fontSize > minPx && iterations < 120) {
-                fontSize -= 1;
-                el.style.fontSize = fontSize + 'px';
-                iterations += 1;
-            }
-        }
-        function resizeCompletionMessageIfVisible() {
-            if (display && display.classList.contains('done-message')) {
-                fitTextToContainer(display, { minPx: 18 });
-            }
-        }
-        let resizeCompletionTimeout;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeCompletionTimeout);
-            resizeCompletionTimeout = setTimeout(resizeCompletionMessageIfVisible, 100);
-        });
-        window.addEventListener('orientationchange', function() {
-            setTimeout(resizeCompletionMessageIfVisible, 200);
-        });
-        
-        // Update workout title and description display (title in workout area on load, match countdown model)
-        const DEFAULT_TIMER_NAME = 'HIIT';
-        function updateWorkoutDisplay() {
-            if (!workoutTitleInput || !workoutDescriptionInput) return;
-            if (!workoutTitleDisplay || !workoutTitleText) return;
-            if (!workoutDescriptionDisplay || !workoutDescriptionText) return;
-            
-            const title = workoutTitleInput.value.trim();
-            const notes = workoutDescriptionInput.value.trim();
-            
-            workoutTitleText.textContent = title || DEFAULT_TIMER_NAME;
-            workoutTitleDisplay.style.display = 'block';
-            
-            if (notes) {
-                workoutDescriptionText.textContent = notes;
-                workoutDescriptionDisplay.style.display = 'block';
-            } else {
-                workoutDescriptionDisplay.style.display = 'none';
-            }
         }
         
-        // Update character counts
-        function updateCharCounts() {
-            if (workoutTitleInput && workoutTitleCharCount) {
-                workoutTitleCharCount.textContent = workoutTitleInput.value.length;
-            }
-            if (workoutDescriptionInput && workoutDescriptionCharCount) {
-                workoutDescriptionCharCount.textContent = workoutDescriptionInput.value.length;
-            }
-            if (doneMessageInput && doneMessageCharCount) {
-                doneMessageCharCount.textContent = doneMessageInput.value.length;
-            }
-        }
-        
-        // HIIT preset configurations (titles/descriptions from interval-presets.html where they match)
+        // HIIT ADDITION: Preset configurations
         const presets = {
-            tabata: {
-                workTime: 20,
-                restTime: 10,
-                rounds: 8,
-                cooldown: 0,
-                sets: 1,
-                title: 'Tabata HIIT',
-                description: '20 seconds high-intensity work, 10 seconds rest, 8 rounds. Classic Tabata protocol for VO2 max and fat burn.'
-            },
-            '3030': {
-                workTime: 30,
-                restTime: 30,
-                rounds: 10,
-                cooldown: 0,
-                sets: 1,
-                title: '30/30 Interval',
-                description: '30 seconds work, 30 seconds rest. Balanced beginner/intermediate HIIT ratio.'
-            },
-            '4x4': {
-                workTime: 240, // 4 minutes
-                restTime: 180, // 3 minutes
-                rounds: 4,
-                cooldown: 60, // 1 minute
-                sets: 1,
-                title: 'Norwegian 4x4',
-                description: '4 minutes work, 3 minutes active recovery, 4 rounds. Proven VO2 max builder.'
-            },
-            'littlemethod': {
-                workTime: 60,
-                restTime: 75,
-                rounds: 10,
-                cooldown: 300,
-                sets: 1,
-                title: 'Little Method',
-                description: '60 seconds work, 75 seconds rest. Popular endurance protocol (often 8–12 rounds).'
-            },
-            'gibala': {
-                workTime: 60,
-                restTime: 75,
-                rounds: 8,
-                cooldown: 300,
-                sets: 1,
-                title: 'Gibala HIIT',
-                description: '60 seconds work, 75 seconds rest. Research-backed high-intensity interval training.'
-            },
-            '4020': {
-                workTime: 40,
-                restTime: 20,
-                rounds: 10,
-                cooldown: 300,
-                sets: 1,
-                title: '40/20 Interval',
-                description: '40 seconds work, 20 seconds rest. EMOM-style ratio.'
-            },
-            '2040': {
-                workTime: 20,
-                restTime: 40,
-                rounds: 10,
-                cooldown: 300,
-                sets: 1,
-                title: '20/40 Interval',
-                description: '20 seconds work, 40 seconds rest. Short burst, longer recovery.'
-            },
-            '6060': {
-                workTime: 60,
-                restTime: 60,
-                rounds: 10,
-                cooldown: 300,
-                sets: 1,
-                title: '60/60 Interval',
-                description: '1 minute work, 1 minute rest. Equal work/rest for steady intensity.'
-            },
-            '4545': {
-                workTime: 45,
-                restTime: 45,
-                rounds: 10,
-                cooldown: 300,
-                sets: 1,
-                title: '45/45 Interval',
-                description: '45 seconds work, 45 seconds rest. Equal work/rest ratio.'
-            },
-            'sprintsit': {
-                workTime: 30,
-                restTime: 240, // 4 minutes
-                rounds: 4,
-                cooldown: 300,
-                sets: 1,
-                title: 'Sprint SIT',
-                description: '30 seconds all-out, 4 minutes rest, 4 rounds. Sprint interval training for fitness.'
-            }
+            // Same order and parameters as interval-presets.html (workout presets then time presets)
+            tabata:     { workTime: 20,  restTime: 10,  rounds: 8, warmup: 10, cooldown: 60, sets: 1, title: 'Tabata Protocol', description: '20 s high-intensity work / 10 s rest × 8 rounds. Classic interval structure shown to improve VO2 max in a short session.' },
+            emom:       { workTime: 40,  restTime: 20,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: 'EMOM Interval', description: '40 s work / 20 s rest every minute. High-intensity format used in circuits; supports VO2 max development with repeated efforts.' },
+            little:     { workTime: 60,  restTime: 75,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: 'Little Method', description: '60 s high-intensity work / 75 s rest. Interval pattern from research demonstrating significant VO2 max gains.' },
+            gibala:     { workTime: 60,  restTime: 75,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: 'Gibala Protocol', description: '60 s high-intensity work / 75 s rest. Evidence-based HIIT method effective for increasing VO2 max.' },
+            norwegian:  { workTime: 240, restTime: 180, rounds: 8, warmup: 10, cooldown: 60, sets: 1, title: 'Norwegian 4×4', description: '4 min high-intensity work / 3 min active recovery × 4 rounds. Well-studied protocol for improving VO2 max.' },
+            '30/30':    { workTime: 30,  restTime: 30,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: '30/30 Interval', description: '30 s high-intensity work / 30 s rest. Balanced HIIT ratio that can contribute to VO2 max improvement.' },
+            '45/15':    { workTime: 45,  restTime: 15,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: '45/15 Interval', description: '45 s high-intensity work / 15 s rest. Short-recovery format suitable for VO2 max training.' },
+            '60/30':    { workTime: 60,  restTime: 30,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: '60/30 Interval', description: '60 s high-intensity work / 30 s rest. Moderate-duration efforts effective for VO2 max gains.' },
+            '45/45':    { workTime: 45,  restTime: 45,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: '45/45 Interval', description: '45 s high-intensity work / 45 s rest. Equal work–rest ratio used in VO2 max-focused sessions.' },
+            '60/60':    { workTime: 60,  restTime: 60,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: '60/60 Interval', description: '60 s high-intensity work / 60 s rest. Allows repeated high-effort intervals to support VO2 max.' },
+            '30/60':    { workTime: 30,  restTime: 60,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: '30/60 Interval', description: '30 s high-intensity work / 60 s rest. Shorter bursts with longer recovery; useful for VO2 max work.' },
+            '20/10':    { workTime: 20,  restTime: 10,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: '20/10 Interval', description: '20 s high-intensity work / 10 s rest. Very short, intense efforts linked to VO2 max improvement.' },
+            '40/20':    { workTime: 40,  restTime: 20,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: '40/20 Interval', description: '40 s high-intensity work / 20 s rest. Common ratio in protocols that enhance VO2 max.' },
+            '90/30':    { workTime: 90,  restTime: 30,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: '90/30 Interval', description: '90 s high-intensity work / 30 s rest. Longer efforts suitable for VO2 max development.' },
+            '2:00/1:00': { workTime: 120, restTime: 60, rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: '2:00/1:00 Interval', description: '2 min high-intensity work / 1 min rest. Extended intervals effective for VO2 max gains.' },
+            '3:00/1:00': { workTime: 180, restTime: 60, rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: '3:00/1:00 Interval', description: '3 min high-intensity work / 1 min rest. Longer high-effort rounds shown to improve VO2 max.' },
+            '1:00/30':   { workTime: 60,  restTime: 30,  rounds: 1, warmup: 10, cooldown: 60, sets: 1, title: '1:00/30 Interval', description: '60 s high-intensity work / 30 s rest. Moderate-length efforts that support VO2 max training.' }
         };
         
         // HIIT ADDITION: Get preset display name
@@ -1706,82 +2098,83 @@
             const displayNames = {
                 'custom': 'Custom',
                 'tabata': 'Tabata',
-                '3030': '30/30',
-                '4x4': '4×4 Norwegian',
-                'littlemethod': 'Little Method',
+                'emom': 'EMOM',
+                'little': 'Little Method',
                 'gibala': 'Gibala',
-                '4020': '40/20',
-                '2040': '20/40',
-                '6060': '60/60',
-                '4545': '45/45',
-                'sprintsit': 'Sprint SIT'
+                'norwegian': 'Norwegian 4x4',
+                '30/30': '30/30',
+                '45/15': '45/15',
+                '60/30': '60/30',
+                '45/45': '45/45',
+                '60/60': '60/60',
+                '30/60': '30/60',
+                '20/10': '20/10',
+                '40/20': '40/20',
+                '90/30': '90/30',
+                '2:00/1:00': '2:00/1:00',
+                '3:00/1:00': '3:00/1:00',
+                '1:00/30': '1:00/30'
             };
             return displayNames[presetName] || 'Custom';
         }
         
+        // HIIT ADDITION: Update current preset display
+        function updateCurrentPresetDisplay(presetName) {
+            const displayName = getPresetDisplayName(presetName);
+            currentPresetDisplay.innerHTML = 'Current Timer: <strong>' + displayName + '</strong>';
+        }
+        
         // HIIT ADDITION: Apply preset
         function applyPreset(presetName) {
+            selectedPreset = presetName;
+            
+            // Update select value
+            presetSelect.value = presetName;
+            
+            // Update current preset display
+            updateCurrentPresetDisplay(presetName);
+            
             if (presetName === 'custom') {
-                selectedPreset = 'custom';
-                // Clear all inputs for custom
-                workTimeInput.value = '00:00';
-                restTimeInput.value = '00:00';
-                roundsInput.value = '0';
-                cooldownTimeInput.value = '01:00';
-                setsInput.value = '1';
-                setRestTimeInput.value = '02:00';
-                if (prepTimeInput) prepTimeInput.value = 10;
-                
-                if (workoutTitleInput) workoutTitleInput.value = '';
-                if (workoutDescriptionInput) workoutDescriptionInput.value = '';
-                
-                workTime = 0;
-                restTime = 0;
-                totalRounds = 0;
-                cooldownTime = 60;
-                totalSets = 1;
-                setRestTime = 120;
-                
-                if (presetSelect) presetSelect.value = 'custom';
-                document.querySelectorAll('.hiit-preset-chip').forEach(el => el.classList.remove('selected'));
-                updateSetRestVisibility();
-                resetTimer();
-                updateTotalTime();
-                updateCharCounts();
-                updateWorkoutDisplay();
-                syncSlidersFromInputs();
-                return;
+                updateRoundsSetsBlockVisibility(); // Hide panel when cleared
+                return; // Don't change inputs for custom
             }
             
-            selectedPreset = presetName;
             const preset = presets[presetName];
+            
+            // Show panel first, then populate with this preset’s values (clears previous preset’s values)
+            updateRoundsSetsBlockVisibility();
             
             // Update inputs
             workTimeInput.value = formatTime(preset.workTime);
             restTimeInput.value = formatTime(preset.restTime);
             roundsInput.value = preset.rounds;
+            warmupTimeInput.value = formatTime(preset.warmup);
             cooldownTimeInput.value = formatTime(preset.cooldown);
             setsInput.value = preset.sets;
-            if (cooldownTimeSlider) cooldownTimeSlider.value = Math.min(600, preset.cooldown);
+            syncRoundsSetsToMain();
+            syncSetRestToMain();
             
-            workTime = preset.workTime;
-            restTime = preset.restTime;
-            totalRounds = preset.rounds;
-            cooldownTime = preset.cooldown;
-            totalSets = preset.sets;
-            
-            if (workoutTitleInput && preset.title) workoutTitleInput.value = preset.title;
-            if (workoutDescriptionInput && preset.description) workoutDescriptionInput.value = preset.description;
+            const title = preset.title || '';
+            const description = preset.description || '';
+            if (workoutTitleInput) workoutTitleInput.value = title;
+            if (workoutDescriptionInput) workoutDescriptionInput.value = description;
             updateCharCounts();
             updateWorkoutDisplay();
             
-            if (presetSelect) presetSelect.value = presetName;
-            document.querySelectorAll('.hiit-preset-chip').forEach(el => el.classList.remove('selected'));
-            const chip = document.querySelector('.hiit-preset-chip[data-preset="' + presetName + '"]');
-            if (chip) chip.classList.add('selected');
+            // Update variables
+            workTime = preset.workTime;
+            restTime = preset.restTime;
+            totalRounds = preset.rounds;
+            warmupTime = preset.warmup;
+            cooldownTime = preset.cooldown;
+            totalSets = preset.sets;
+            
+            // Update set rest visibility
             updateSetRestVisibility();
+            
             syncSlidersFromInputs();
-            syncWarmupCooldownSlidersFromInputs();
+            syncWarmupCooldownSetRestSlidersFromInputs();
+            // Reset timer and update display
             resetTimer();
             updateTotalTime();
         }
@@ -1790,8 +2183,8 @@
         function calculateTotalTime() {
             let total = 0;
             
-            // Prep time
-            total += getPrepTime();
+            // Warm-up
+            total += warmupTime;
             
             // Work/rest cycles: each set has totalRounds rounds, each round has work + rest
             const timePerRound = workTime + restTime;
@@ -1815,12 +2208,80 @@
             totalTimeDisplay.textContent = 'Total: ' + formatTime(total);
         }
         
-        // HIIT ADDITION: Update set rest visibility
+        // HIIT ADDITION: Update set rest visibility (drawer and main page)
         function updateSetRestVisibility() {
             if (totalSets > 1) {
                 setRestGroup.style.display = 'block';
+                if (setRestGroupMain) setRestGroupMain.style.display = 'block';
             } else {
                 setRestGroup.style.display = 'none';
+                if (setRestGroupMain) setRestGroupMain.style.display = 'none';
+            }
+        }
+        
+        // HIIT ADDITION: Sync main-page rounds/sets from drawer (single source of truth: roundsInput, setsInput)
+        function syncRoundsSetsToMain() {
+            if (roundsInputMain) roundsInputMain.value = roundsInput.value;
+            if (setsInputMain) setsInputMain.value = setsInput.value;
+        }
+        
+        // HIIT ADDITION: Sync main-page set rest from drawer (and front-page slider)
+        function syncSetRestToMain() {
+            if (setRestTimeInputMain && setRestTimeInput) setRestTimeInputMain.value = setRestTimeInput.value;
+            if (setRestTimeSliderMain && setRestTimeInput) setRestTimeSliderMain.value = Math.min(600, parseTime(setRestTimeInput.value));
+        }
+        
+        // HIIT ADDITION: Adjust set rest time by ±10 seconds (used by main-page −10 / +10 buttons)
+        function adjustSetRestBySeconds(delta) {
+            if (isRunning) return;
+            const current = parseTime(setRestTimeInput ? setRestTimeInput.value : '00:00');
+            const newSec = Math.max(0, current + delta);
+            const formatted = formatTime(newSec);
+            if (setRestTimeInput) setRestTimeInput.value = formatted;
+            if (setRestTimeInputMain) setRestTimeInputMain.value = formatted;
+            if (setRestTimeSliderMain) setRestTimeSliderMain.value = Math.min(600, newSec);
+            setRestTime = newSec;
+            resetTimer();
+            updateTotalTime();
+        }
+        
+        // HIIT ADDITION: Show Rounds/Sets block only when a workout preset is selected; hide when cleared
+        function updateRoundsSetsBlockVisibility() {
+            if (roundsSetsBlockMain) {
+                roundsSetsBlockMain.style.display = (selectedPreset !== 'custom') ? 'block' : 'none';
+            }
+        }
+
+        // Update workout title and notes display (title in workout area on load, match countdown model)
+        const DEFAULT_TIMER_NAME = 'Preset HIIT';
+        function updateWorkoutDisplay() {
+            if (!workoutTitleInput || !workoutDescriptionInput) return;
+            if (!workoutTitleDisplay || !workoutTitleText) return;
+            if (!workoutDescriptionDisplay || !workoutDescriptionText) return;
+            
+            const title = workoutTitleInput.value.trim();
+            const notes = workoutDescriptionInput.value.trim();
+            
+            workoutTitleText.textContent = title || DEFAULT_TIMER_NAME;
+            workoutTitleDisplay.style.display = 'block';
+            
+            if (notes) {
+                workoutDescriptionText.textContent = notes;
+                workoutDescriptionDisplay.style.display = 'block';
+            } else {
+                workoutDescriptionDisplay.style.display = 'none';
+            }
+        }
+        
+        function updateCharCounts() {
+            if (workoutTitleInput && workoutTitleCharCount) {
+                workoutTitleCharCount.textContent = workoutTitleInput.value.length;
+            }
+            if (workoutDescriptionInput && workoutDescriptionCharCount) {
+                workoutDescriptionCharCount.textContent = workoutDescriptionInput.value.length;
+            }
+            if (doneMessageInput && doneMessageCharCount) {
+                doneMessageCharCount.textContent = doneMessageInput.value.length;
             }
         }
         
@@ -1830,27 +2291,18 @@
         }
         
         // Update display with color coding
-        const TIMER_NAME = 'HIIT';
-        function getPrepTime() {
-            const v = parseInt(prepTimeInput && prepTimeInput.value, 10);
-            return (Number.isFinite(v) && v >= 0 && v <= 60) ? v : 10;
-        }
         function updateDisplay() {
-            if (!isRunning) {
-                display.textContent = '00:00';
-            } else if (currentPhase === 'prep') {
-                display.textContent = String(currentTime);
-            } else {
-                display.textContent = formatTime(currentTime);
-            }
-            phaseLabel.classList.remove('rest', 'work-intense', 'cooldown');
+            display.textContent = formatTime(currentTime);
+            display.classList.remove('done-message');
+            display.style.fontSize = '';
             
-            if (!isRunning && !hasValidTimerData()) {
-                phaseLabel.textContent = '';
-                phaseLabel.style.color = 'rgb(var(--primary))';
-            } else if (currentPhase === 'prep') {
-                phaseLabel.textContent = 'Get ready';
-                phaseLabel.style.color = 'rgb(var(--primary))';
+            // HIIT ADDITION: Update phase label with HIIT-specific labels
+            phaseLabel.classList.remove('rest', 'work-intense', 'warmup', 'cooldown');
+            
+            if (currentPhase === 'warmup') {
+                phaseLabel.textContent = 'Prep countdown';
+                phaseLabel.classList.add('warmup');
+                phaseLabel.style.color = 'rgb(var(--muted-foreground))';
             } else if (currentPhase === 'cooldown') {
                 phaseLabel.textContent = 'Cool Down';
                 phaseLabel.classList.add('cooldown');
@@ -1859,10 +2311,13 @@
                 phaseLabel.textContent = 'Set Rest';
                 phaseLabel.classList.add('rest');
                 phaseLabel.style.color = 'rgb(var(--muted-foreground))';
-            } else if (isWorkPhase) {
+            } else if (isWorkPhase && (isRunning || isPaused)) {
+                // Only show HIGH INTENSITY when workout is actually in the work phase (triggered by starting the workout)
                 phaseLabel.textContent = 'HIGH INTENSITY';
                 phaseLabel.classList.add('work-intense');
                 phaseLabel.style.color = 'rgb(var(--primary))';
+            } else if (!isRunning && !isPaused) {
+                phaseLabel.textContent = '';
             } else {
                 phaseLabel.textContent = 'RECOVERY';
                 phaseLabel.classList.add('rest');
@@ -1878,11 +2333,14 @@
                 totalRoundsDisplay.textContent = totalRounds;
             }
             
+            // Update preset name display
+            presetNameDisplay.textContent = getPresetDisplayName(selectedPreset);
+            
             // Color coding: normal -> warning (last 30%) -> danger (last 10%)
-            display.classList.remove('warning', 'danger', 'done-message');
+            display.classList.remove('warning', 'danger');
             let phaseDuration = 0;
-            if (currentPhase === 'prep') {
-                phaseDuration = getPrepTime();
+            if (currentPhase === 'warmup') {
+                phaseDuration = warmupTime;
             } else if (currentPhase === 'cooldown') {
                 phaseDuration = cooldownTime;
             } else if (currentPhase === 'setrest') {
@@ -1950,15 +2408,15 @@
                 workTime = parseTime(workTimeInput.value);
                 restTime = parseTime(restTimeInput.value);
                 totalRounds = parseInt(roundsInput.value) || 0;
+                warmupTime = parseTime(warmupTimeInput.value);
                 cooldownTime = parseTime(cooldownTimeInput.value);
                 totalSets = parseInt(setsInput.value) || 1;
                 setRestTime = parseTime(setRestTimeInput.value);
                 
-                // Start with prep if set, then work
-                const prepSecs = getPrepTime();
-                if (prepSecs > 0) {
-                    currentPhase = 'prep';
-                    currentTime = prepSecs;
+                // Start with warm-up if set, otherwise work phase
+                if (warmupTime > 0) {
+                    currentPhase = 'warmup';
+                    currentTime = warmupTime;
                 } else {
                     currentPhase = 'work';
                     currentTime = workTime;
@@ -1986,8 +2444,8 @@
                     }
                     
                     // HIIT ADDITION: Phase transition logic
-                    if (currentPhase === 'prep') {
-                        // Prep complete, start work
+                    if (currentPhase === 'warmup') {
+                        // Warm-up complete, start first work phase
                         currentPhase = 'work';
                         isWorkPhase = true;
                         currentTime = workTime;
@@ -2009,7 +2467,12 @@
                                     currentTime = cooldownTime;
                                 } else {
                                     // No cool-down - stop timer
-                                    showCompletion();
+                                    stopTimer();
+                                    const completionMessage = getDoneMessage();
+                                    display.textContent = completionMessage;
+                                    display.classList.add('danger', 'done-message');
+                                    fitTextToContainer(display, { minPx: 18 });
+                                    playSound();
                                     return;
                                 }
                             } else {
@@ -2034,7 +2497,12 @@
                         currentRound = 1;
                     } else if (currentPhase === 'cooldown') {
                         // Cool-down complete - stop timer
-                        showCompletion();
+                        stopTimer();
+                        const completionMessage = getDoneMessage();
+                        display.textContent = completionMessage;
+                        display.classList.add('danger', 'done-message');
+                        fitTextToContainer(display, { minPx: 18 });
+                        playSound();
                         return;
                     }
                     updateDisplay();
@@ -2079,15 +2547,6 @@
             interval = null;
             updateDisplay();
         }
-
-        function showCompletion() {
-            stopTimer();
-            const completionMessage = getDoneMessage();
-            display.textContent = completionMessage;
-            display.classList.add('danger', 'done-message');
-            fitTextToContainer(display, { minPx: 18 });
-            playSound();
-        }
         
         // Reset timer
         function resetTimer() {
@@ -2101,15 +2560,16 @@
             workTime = parseTime(workTimeInput.value);
             restTime = parseTime(restTimeInput.value);
             totalRounds = parseInt(roundsInput.value) || 0;
+            // HIIT ADDITION: Get new input values
+            warmupTime = parseTime(warmupTimeInput.value);
             cooldownTime = parseTime(cooldownTimeInput.value);
             totalSets = parseInt(setsInput.value) || 1;
             setRestTime = parseTime(setRestTimeInput.value);
             
-            // Reset to starting phase: prep if set, else work
-            const prepSecs = getPrepTime();
-            if (prepSecs > 0) {
-                currentPhase = 'prep';
-                currentTime = prepSecs;
+            // HIIT ADDITION: Reset to appropriate starting phase
+            if (warmupTime > 0) {
+                currentPhase = 'warmup';
+                currentTime = warmupTime;
             } else {
                 currentPhase = 'work';
                 currentTime = workTime;
@@ -2123,7 +2583,7 @@
             updateTotalTime();
         }
         
-        // Clear timer (sets to 00:00)
+        // Clear timer: clean slate – stop timer, zero all drawer/settings data and runtime state
         function clearTimer() {
             // Stop the timer first
             clearInterval(interval);
@@ -2131,19 +2591,32 @@
             isRunning = false;
             isPaused = false;
             
-            // Zero out all values
+            // Zero out all timer inputs (drawer and main page)
             workTimeInput.value = '00:00';
             restTimeInput.value = '00:00';
             roundsInput.value = '0';
-            cooldownTimeInput.value = '01:00';
+            warmupTimeInput.value = '00:00';
+            cooldownTimeInput.value = '00:00';
             setsInput.value = '1';
             setRestTimeInput.value = '02:00';
+            syncRoundsSetsToMain();
+            syncSetRestToMain();
+            syncSlidersFromInputs();
+            syncWarmupCooldownSetRestSlidersFromInputs();
+            
+            // Clear all settings panel data (workout title, notes, completion message)
+            if (workoutTitleInput) workoutTitleInput.value = '';
+            if (workoutDescriptionInput) workoutDescriptionInput.value = '';
+            if (doneMessageInput) doneMessageInput.value = 'Completed';
+            updateCharCounts();
+            updateWorkoutDisplay();
             
             // Reset timer state to zero
             workTime = 0;
             restTime = 0;
             totalRounds = 0;
-            cooldownTime = 60;
+            warmupTime = 0;
+            cooldownTime = 0;
             totalSets = 1;
             currentSet = 1;
             setRestTime = 120;
@@ -2152,24 +2625,12 @@
             currentPhase = 'work';
             isWorkPhase = true;
             
-            selectedPreset = 'custom';
-            if (presetSelect) presetSelect.value = 'custom';
-            document.querySelectorAll('.hiit-preset-chip').forEach(el => el.classList.remove('selected'));
-            if (workoutTitleInput) workoutTitleInput.value = '';
-            if (workoutDescriptionInput) workoutDescriptionInput.value = '';
-            if (doneMessageInput) { doneMessageInput.value = 'Completed'; setDoneMessage('Completed'); }
-            if (workTimeSlider) workTimeSlider.value = 0;
-            if (restTimeSlider) restTimeSlider.value = 0;
-            if (cooldownTimeSlider) cooldownTimeSlider.value = 60;
-            if (setRestTimeSlider) setRestTimeSlider.value = 120;
-            if (prepTimeInput) prepTimeInput.value = 10;
-            if (prepTimeSlider) prepTimeSlider.value = 10;
-            syncSlidersFromInputs();
-            syncWarmupCooldownSlidersFromInputs();
-            syncSetRestSliderFromInput();
-            updateCharCounts();
-            updateWorkoutDisplay();
-            updateSetRestVisibility();
+            // Clear selected quick preset buttons and reset to Custom (hides rounds/sets panel)
+            const presetPresetButtons = document.querySelectorAll('.preset-select-btn[data-work][data-rest]');
+            presetPresetButtons.forEach(b => b.classList.remove('selected'));
+            applyPreset('custom');
+            
+            // Update display (enable inputs, show Set Up button)
             updateDisplay();
             updateTotalTime();
         }
@@ -2235,7 +2696,9 @@
         pauseBtn.addEventListener('click', pauseTimer);
         resetBtn.addEventListener('click', resetTimer);
         clearBtn.addEventListener('click', clearTimer);
-        setupBtn.addEventListener('click', openSheet);
+        setupBtn.addEventListener('click', function() {
+            toggleDrawer();
+        });
         
         if (workDecreaseBtn) workDecreaseBtn.addEventListener('click', function() { adjustTimeBy10(workTimeInput, false); });
         if (workIncreaseBtn) workIncreaseBtn.addEventListener('click', function() { adjustTimeBy10(workTimeInput, true); });
@@ -2272,6 +2735,7 @@
             rounds = Math.max(0, rounds - 1);
             roundsInput.value = rounds;
             totalRounds = rounds;
+            syncRoundsSetsToMain();
             if (!isRunning) {
                 resetTimer();
                 updateDisplay(); // Update button visibility based on validity
@@ -2285,52 +2749,13 @@
             rounds = Math.min(99, rounds + 1);
             roundsInput.value = rounds;
             totalRounds = rounds;
+            syncRoundsSetsToMain();
             if (!isRunning) {
                 resetTimer();
-                updateDisplay();
-                updateTotalTime();
+                updateDisplay(); // Update button visibility based on validity
+                updateTotalTime(); // HIIT ADDITION: Update total time
             }
         });
-        
-        if (prepTimeDecreaseBtn) {
-            prepTimeDecreaseBtn.addEventListener('click', function() {
-                if (isRunning || !prepTimeInput) return;
-                let v = Math.max(0, getPrepTime() - 1);
-                prepTimeInput.value = v;
-                if (prepTimeSlider) prepTimeSlider.value = v;
-                resetTimer();
-                updateTotalTime();
-            });
-        }
-        if (prepTimeIncreaseBtn) {
-            prepTimeIncreaseBtn.addEventListener('click', function() {
-                if (isRunning || !prepTimeInput) return;
-                let v = Math.min(60, getPrepTime() + 1);
-                prepTimeInput.value = v;
-                if (prepTimeSlider) prepTimeSlider.value = v;
-                resetTimer();
-                updateTotalTime();
-            });
-        }
-        if (prepTimeInput) {
-            prepTimeInput.addEventListener('input', function() {
-                if (isRunning) return;
-                let v = Math.max(0, Math.min(60, parseInt(this.value, 10) || 0));
-                this.value = v;
-                if (prepTimeSlider) prepTimeSlider.value = v;
-                resetTimer();
-                updateTotalTime();
-            });
-        }
-        if (prepTimeSlider) {
-            prepTimeSlider.addEventListener('input', function() {
-                if (isRunning) return;
-                const v = parseInt(this.value, 10);
-                if (prepTimeInput) prepTimeInput.value = v;
-                resetTimer();
-                updateTotalTime();
-            });
-        }
         
         // Input validation and updates
         workTimeInput.addEventListener('input', function() {
@@ -2358,6 +2783,7 @@
         roundsInput.addEventListener('input', function() {
             if (!isRunning) {
                 totalRounds = parseInt(this.value) || 0;
+                syncRoundsSetsToMain();
                 resetTimer();
                 updateDisplay(); // Update button visibility based on validity
                 updateTotalTime();
@@ -2365,14 +2791,93 @@
         });
         
         // HIIT ADDITION: Preset select dropdown event listener
-        if (presetSelect) {
-            presetSelect.addEventListener('change', function() {
-                if (!isRunning) {
-                    const selectedValue = this.value;
-                    applyPreset(selectedValue);
-                }
+        presetSelect.addEventListener('change', function() {
+            if (!isRunning) {
+                applyPreset(this.value);
+            }
+        });
+        
+        // Preset Buttons (third section)
+        const presetPresetButtons = document.querySelectorAll('.preset-select-btn[data-work][data-rest]');
+        
+        presetPresetButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (isRunning) return; // Don't allow changing presets while running
+                
+                const workSeconds = parseInt(this.getAttribute('data-work'));
+                const restSeconds = parseInt(this.getAttribute('data-rest'));
+                const rounds = parseInt(this.getAttribute('data-rounds'));
+                const warmupSeconds = parseInt(this.getAttribute('data-warmup'));
+                const cooldownSeconds = parseInt(this.getAttribute('data-cooldown'));
+                const sets = parseInt(this.getAttribute('data-sets'));
+                
+                // Get preset name from button, or default to 'custom'
+                const presetName = this.getAttribute('data-preset') || 'custom';
+                
+                // Set preset first so visibility and display reflect the selected preset immediately (one-click show)
+                selectedPreset = presetName;
+                presetSelect.value = presetName;
+                updateCurrentPresetDisplay(presetName);
+                
+                // Update all inputs (clears to zero/previous then populates with this preset’s values)
+                workTimeInput.value = formatTime(workSeconds);
+                restTimeInput.value = formatTime(restSeconds);
+                roundsInput.value = rounds;
+                warmupTimeInput.value = formatTime(warmupSeconds);
+                cooldownTimeInput.value = formatTime(cooldownSeconds);
+                setsInput.value = sets;
+                syncRoundsSetsToMain();
+                syncSetRestToMain();
+                updateRoundsSetsBlockVisibility();
+                
+                // Update timer state
+                workTime = workSeconds;
+                restTime = restSeconds;
+                totalRounds = rounds;
+                warmupTime = warmupSeconds;
+                cooldownTime = cooldownSeconds;
+                totalSets = sets;
+                
+                // Update set rest visibility
+                updateSetRestVisibility();
+                
+                const preset = presets[presetName];
+                const title = this.getAttribute('data-title') || (preset && preset.title) || '';
+                const description = this.getAttribute('data-description') || (preset && preset.description) || '';
+                if (workoutTitleInput) workoutTitleInput.value = title;
+                if (workoutDescriptionInput) workoutDescriptionInput.value = description;
+                updateCharCounts();
+                updateWorkoutDisplay();
+                
+                // Update selected button state
+                presetPresetButtons.forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+                
+                // Sync sliders in drawer to match
+                syncSlidersFromInputs();
+                syncWarmupCooldownSetRestSlidersFromInputs();
+                // Reset timer with new values
+                resetTimer();
+                updateDisplay();
             });
-        }
+        });
+        
+        // HIIT ADDITION: Warm-up time adjustment
+        warmupMinDecreaseBtn.addEventListener('click', function() {
+            adjustTimeMinutes(warmupTimeInput, false);
+        });
+        
+        warmupMinIncreaseBtn.addEventListener('click', function() {
+            adjustTimeMinutes(warmupTimeInput, true);
+        });
+        
+        warmupSecDecreaseBtn.addEventListener('click', function() {
+            adjustTimeSeconds(warmupTimeInput, false);
+        });
+        
+        warmupSecIncreaseBtn.addEventListener('click', function() {
+            adjustTimeSeconds(warmupTimeInput, true);
+        });
         
         // HIIT ADDITION: Cool-down time adjustment
         cooldownMinDecreaseBtn.addEventListener('click', function() {
@@ -2398,6 +2903,7 @@
             sets = Math.max(1, sets - 1);
             setsInput.value = sets;
             totalSets = sets;
+            syncRoundsSetsToMain();
             updateSetRestVisibility();
             if (!isRunning) {
                 resetTimer();
@@ -2411,6 +2917,7 @@
             sets = Math.min(10, sets + 1);
             setsInput.value = sets;
             totalSets = sets;
+            syncRoundsSetsToMain();
             updateSetRestVisibility();
             if (!isRunning) {
                 resetTimer();
@@ -2418,34 +2925,170 @@
             }
         });
         
+        // Main-page rounds/sets: sync with drawer and respond to changes
+        if (roundsDecreaseBtnMain) {
+            roundsDecreaseBtnMain.addEventListener('click', function() {
+                if (isRunning) return;
+                let rounds = parseInt(roundsInput.value) || 0;
+                rounds = Math.max(0, rounds - 1);
+                roundsInput.value = rounds;
+                totalRounds = rounds;
+                syncRoundsSetsToMain();
+                resetTimer();
+                updateDisplay();
+                updateTotalTime();
+            });
+        }
+        if (roundsIncreaseBtnMain) {
+            roundsIncreaseBtnMain.addEventListener('click', function() {
+                if (isRunning) return;
+                let rounds = parseInt(roundsInput.value) || 0;
+                rounds = Math.min(99, rounds + 1);
+                roundsInput.value = rounds;
+                totalRounds = rounds;
+                syncRoundsSetsToMain();
+                resetTimer();
+                updateDisplay();
+                updateTotalTime();
+            });
+        }
+        if (roundsInputMain) {
+            roundsInputMain.addEventListener('input', function() {
+                if (!isRunning) {
+                    totalRounds = parseInt(this.value) || 0;
+                    roundsInput.value = this.value;
+                    syncRoundsSetsToMain();
+                    resetTimer();
+                    updateDisplay();
+                    updateTotalTime();
+                }
+            });
+        }
+        if (setsDecreaseBtnMain) {
+            setsDecreaseBtnMain.addEventListener('click', function() {
+                if (isRunning) return;
+                let sets = parseInt(setsInput.value) || 1;
+                sets = Math.max(1, sets - 1);
+                setsInput.value = sets;
+                totalSets = sets;
+                syncRoundsSetsToMain();
+                updateSetRestVisibility();
+                resetTimer();
+                updateTotalTime();
+            });
+        }
+        if (setsIncreaseBtnMain) {
+            setsIncreaseBtnMain.addEventListener('click', function() {
+                if (isRunning) return;
+                let sets = parseInt(setsInput.value) || 1;
+                sets = Math.min(10, sets + 1);
+                setsInput.value = sets;
+                totalSets = sets;
+                syncRoundsSetsToMain();
+                updateSetRestVisibility();
+                resetTimer();
+                updateTotalTime();
+            });
+        }
+        if (setsInputMain) {
+            setsInputMain.addEventListener('input', function() {
+                if (!isRunning) {
+                    totalSets = Math.max(1, Math.min(10, parseInt(this.value) || 1));
+                    this.value = totalSets;
+                    setsInput.value = totalSets;
+                    syncRoundsSetsToMain();
+                    updateSetRestVisibility();
+                    resetTimer();
+                    updateTotalTime();
+                }
+            });
+        }
+        if (setRestTimeInputMain) {
+            setRestTimeInputMain.addEventListener('input', function() {
+                if (!isRunning) {
+                    validateTimeInput(this);
+                    setRestTime = parseTime(this.value);
+                    if (setRestTimeInput) setRestTimeInput.value = this.value;
+                    if (setRestTimeSliderMain) setRestTimeSliderMain.value = Math.min(600, setRestTime);
+                    resetTimer();
+                    updateTotalTime();
+                }
+            });
+        }
+        if (setRestTimeSliderMain) {
+            setRestTimeSliderMain.addEventListener('input', function() {
+                if (isRunning) return;
+                const sec = parseInt(this.value, 10);
+                const formatted = formatTime(sec);
+                if (setRestTimeInputMain) setRestTimeInputMain.value = formatted;
+                if (setRestTimeInput) setRestTimeInput.value = formatted;
+                setRestTime = sec;
+                resetTimer();
+                updateTotalTime();
+            });
+        }
+        if (setRestDecrease10BtnMain) {
+            setRestDecrease10BtnMain.addEventListener('click', function() {
+                adjustSetRestBySeconds(-10);
+            });
+        }
+        if (setRestIncrease10BtnMain) {
+            setRestIncrease10BtnMain.addEventListener('click', function() {
+                adjustSetRestBySeconds(10);
+            });
+        }
+        
         // HIIT ADDITION: Set rest time adjustment
         setRestMinDecreaseBtn.addEventListener('click', function() {
             adjustTimeMinutes(setRestTimeInput, false);
+            syncSetRestToMain();
         });
         
         setRestMinIncreaseBtn.addEventListener('click', function() {
             adjustTimeMinutes(setRestTimeInput, true);
+            syncSetRestToMain();
         });
         
         setRestSecDecreaseBtn.addEventListener('click', function() {
             adjustTimeSeconds(setRestTimeInput, false);
+            syncSetRestToMain();
         });
         
         setRestSecIncreaseBtn.addEventListener('click', function() {
             adjustTimeSeconds(setRestTimeInput, true);
+            syncSetRestToMain();
         });
         
         // HIIT ADDITION: Input event listeners for new inputs
-        cooldownTimeInput.addEventListener('input', function() {
+        warmupTimeInput.addEventListener('input', function() {
             validateTimeInput(this);
             if (!isRunning) {
-                cooldownTime = parseTime(this.value);
-                syncWarmupCooldownSlidersFromInputs();
+                warmupTime = parseTime(this.value);
+                syncWarmupCooldownSetRestSlidersFromInputs();
                 resetTimer();
                 updateTotalTime();
             }
         });
+        if (warmupTimeSlider) {
+            warmupTimeSlider.addEventListener('input', function() {
+                if (isRunning) return;
+                const sec = parseInt(this.value, 10);
+                warmupTimeInput.value = formatTime(sec);
+                warmupTime = sec;
+                resetTimer();
+                updateTotalTime();
+            });
+        }
         
+        cooldownTimeInput.addEventListener('input', function() {
+            validateTimeInput(this);
+            if (!isRunning) {
+                cooldownTime = parseTime(this.value);
+                syncWarmupCooldownSetRestSlidersFromInputs();
+                resetTimer();
+                updateTotalTime();
+            }
+        });
         if (cooldownTimeSlider) {
             cooldownTimeSlider.addEventListener('input', function() {
                 if (isRunning) return;
@@ -2461,6 +3104,7 @@
             if (!isRunning) {
                 totalSets = Math.max(1, Math.min(10, parseInt(this.value) || 1));
                 this.value = totalSets;
+                syncRoundsSetsToMain();
                 updateSetRestVisibility();
                 resetTimer();
                 updateTotalTime();
@@ -2471,24 +3115,25 @@
             validateTimeInput(this);
             if (!isRunning) {
                 setRestTime = parseTime(this.value);
-                syncSetRestSliderFromInput();
+                syncWarmupCooldownSetRestSlidersFromInputs();
+                syncSetRestToMain();
                 resetTimer();
                 updateTotalTime();
             }
         });
-        
         if (setRestTimeSlider) {
             setRestTimeSlider.addEventListener('input', function() {
                 if (isRunning) return;
                 const sec = parseInt(this.value, 10);
                 setRestTimeInput.value = formatTime(sec);
                 setRestTime = sec;
+                syncSetRestToMain();
                 resetTimer();
                 updateTotalTime();
             });
         }
-        
-        // Workout title and description event listeners
+
+        // Workout title and notes listeners
         if (workoutTitleInput) {
             workoutTitleInput.addEventListener('input', function() {
                 updateCharCounts();
@@ -2502,25 +3147,32 @@
                 updateWorkoutDisplay();
             });
         }
+
+        // Completion message listeners
+        if (doneMessageInput) {
+            doneMessageInput.addEventListener('input', function() {
+                updateCharCounts();
+                setDoneMessage(this.value);
+            });
+            
+            doneMessageInput.addEventListener('change', function() {
+                setDoneMessage(this.value);
+            });
+        }
         
-        // Export/Import functions
+        
+        // Export/Import (match hiit.html; hiit-presets uses warmupTime not prepTime)
         function exportWorkout() {
-            // Stop timer if running
             if (isRunning || isPaused) {
-                stopTimer();
                 resetTimer();
             }
-            
-            // Get current values
             const workoutTitle = workoutTitleInput ? workoutTitleInput.value.trim() : '';
             const workoutDescription = workoutDescriptionInput ? workoutDescriptionInput.value.trim() : '';
             const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
-            const filename = `timerist_HIIT_${timestamp}.json`;
-            
-            // Collect all HIIT workout data
+            const filename = `timerist_PresetHIIT_${timestamp}.json`;
             const data = {
                 version: '1.0',
-                type: 'HIIT',
+                type: 'PresetHIIT',
                 title: workoutTitle,
                 description: workoutDescription,
                 doneMessage: getDoneMessage(),
@@ -2528,13 +3180,12 @@
                 workTime: workTime,
                 restTime: restTime,
                 rounds: totalRounds,
-                prepTime: getPrepTime(),
+                warmupTime: warmupTime,
                 cooldownTime: cooldownTime,
                 sets: totalSets,
                 setRestTime: setRestTime,
                 exportedAt: new Date().toISOString()
             };
-            
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -2543,50 +3194,30 @@
             a.click();
             URL.revokeObjectURL(url);
         }
-        
         function importWorkout() {
-            if (importFileInput) {
-                importFileInput.click();
-            }
+            if (importFileInput) importFileInput.click();
         }
-        
         if (importFileInput) {
             importFileInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (!file) return;
-                
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function(ev) {
                     try {
-                        const data = JSON.parse(e.target.result);
-                        
-                        // Validate it's a HIIT workout file
-                        if (data.type && data.type !== 'HIIT') {
-                            alert('Invalid workout file format. This file is not a HIIT workout.');
+                        const data = JSON.parse(ev.target.result);
+                        if (data.type && data.type !== 'PresetHIIT' && data.type !== 'HIIT') {
+                            alert('Invalid workout file format.');
                             e.target.value = '';
                             return;
                         }
-                        
-                        // Stop timer if running
-                        if (isRunning || isPaused) {
-                            stopTimer();
-                            resetTimer();
-                        }
-                        
-                        // Load workout data
-                        if (data.title && workoutTitleInput) {
-                            workoutTitleInput.value = data.title;
-                        }
-                        if (data.description && workoutDescriptionInput) {
-                            workoutDescriptionInput.value = data.description || '';
-                        }
+                        if (isRunning || isPaused) resetTimer();
+                        if (data.title && workoutTitleInput) workoutTitleInput.value = data.title;
+                        if (data.description && workoutDescriptionInput) workoutDescriptionInput.value = data.description || '';
                         if (doneMessageInput) {
                             const importedDone = (data.doneMessage || '').trim();
                             doneMessageInput.value = importedDone ? importedDone : 'Completed';
                             setDoneMessage(doneMessageInput.value);
                         }
-                        
-                        // Load timer settings
                         if (data.workTime !== undefined) {
                             workTime = data.workTime;
                             workTimeInput.value = formatTime(workTime);
@@ -2599,10 +3230,13 @@
                             totalRounds = data.rounds;
                             roundsInput.value = totalRounds;
                         }
-                        if (data.prepTime !== undefined && prepTimeInput) {
-                            const pt = Math.max(0, Math.min(60, parseInt(data.prepTime, 10) || 0));
-                            prepTimeInput.value = pt;
-                            if (prepTimeSlider) prepTimeSlider.value = pt;
+                        if (data.warmupTime !== undefined) {
+                            warmupTime = data.warmupTime;
+                            warmupTimeInput.value = formatTime(warmupTime);
+                        }
+                        if (data.prepTime !== undefined) {
+                            warmupTime = Math.min(600, parseInt(data.prepTime, 10) || 0);
+                            warmupTimeInput.value = formatTime(warmupTime);
                         }
                         if (data.cooldownTime !== undefined) {
                             cooldownTime = data.cooldownTime;
@@ -2619,20 +3253,19 @@
                         if (data.preset !== undefined) {
                             selectedPreset = data.preset;
                             if (presetSelect) presetSelect.value = selectedPreset;
-                            document.querySelectorAll('.hiit-preset-chip').forEach(el => el.classList.remove('selected'));
-                            const chip = document.querySelector('.hiit-preset-chip[data-preset="' + selectedPreset + '"]');
-                            if (chip) chip.classList.add('selected');
+                            updateCurrentPresetDisplay(selectedPreset);
+                            document.querySelectorAll('.preset-select-btn[data-work][data-rest]').forEach(el => el.classList.remove('selected'));
                         }
                         updateSetRestVisibility();
                         syncSlidersFromInputs();
-                        syncWarmupCooldownSlidersFromInputs();
-                        syncSetRestSliderFromInput();
+                        syncWarmupCooldownSetRestSlidersFromInputs();
+                        syncRoundsSetsToMain();
+                        syncSetRestToMain();
                         updateCharCounts();
                         updateWorkoutDisplay();
                         resetTimer();
                         updateTotalTime();
                         updateDisplay();
-                        
                     } catch (err) {
                         alert('Error importing workout: ' + err.message);
                     }
@@ -2641,134 +3274,206 @@
                 e.target.value = '';
             });
         }
+        if (exportBtn) exportBtn.addEventListener('click', exportWorkout);
+        if (importBtn) importBtn.addEventListener('click', importWorkout);
         
-        // Export/Import button event listeners
-        if (exportBtn) {
-            exportBtn.addEventListener('click', exportWorkout);
-        }
-        if (importBtn) {
-            importBtn.addEventListener('click', importWorkout);
-        }
-
-        // Completion message listeners
-        if (doneMessageInput) {
-            doneMessageInput.addEventListener('input', function() {
-                updateCharCounts();
-                setDoneMessage(this.value);
-            });
-            doneMessageInput.addEventListener('change', function() {
-                setDoneMessage(this.value);
-            });
+        // Drawer Functions
+        function toggleDrawer() {
+            const drawer = document.getElementById('settingsDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+            drawer.classList.toggle('open');
+            overlay.classList.toggle('open');
         }
         
-        
-        function openSheet() {
-            document.getElementById('settingsDrawer').classList.add('open');
-            document.getElementById('drawerOverlay').classList.add('open');
-        }
-        function closeSheet() {
-            document.getElementById('settingsDrawer').classList.remove('open');
-            document.getElementById('drawerOverlay').classList.remove('open');
+        function closeDrawer() {
+            const drawer = document.getElementById('settingsDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+            drawer.classList.remove('open');
+            overlay.classList.remove('open');
         }
         
-        const timerDisplayBlock = document.getElementById('timerDisplayBlock');
-        const menuBtn = document.getElementById('menuBtn');
-        const drawerOverlay = document.getElementById('drawerOverlay');
+        const drawerOverlayEl = document.getElementById('drawerOverlay');
         const drawerCloseBtn = document.getElementById('drawerCloseBtn');
         const headerClearBtn = document.getElementById('headerClearBtn');
         const clearAllSettingsBtn = document.getElementById('clearAllSettingsBtn');
-        if (timerDisplayBlock) timerDisplayBlock.addEventListener('click', openSheet);
-        if (menuBtn) menuBtn.addEventListener('click', openSheet);
-        if (drawerOverlay) drawerOverlay.addEventListener('click', closeSheet);
-        if (drawerCloseBtn) drawerCloseBtn.addEventListener('click', closeSheet);
+        if (drawerOverlayEl) drawerOverlayEl.addEventListener('click', closeDrawer);
+        if (drawerCloseBtn) drawerCloseBtn.addEventListener('click', closeDrawer);
         function confirmClearSettings() {
             return confirm('Clear timer and reset all settings to defaults? Work time, rest time, rounds, presets, title, notes, prep time, cool-down, sets, and completion message will be reset.');
         }
-        if (headerClearBtn) headerClearBtn.addEventListener('click', function() { if (confirmClearSettings()) clearTimer(); closeSheet(); });
-        if (clearAllSettingsBtn) clearAllSettingsBtn.addEventListener('click', function() { if (confirmClearSettings()) clearTimer(); closeSheet(); });
-        
-        document.querySelectorAll('.hiit-preset-chip').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                if (isRunning) return;
-                const preset = this.getAttribute('data-preset');
-                if (preset) applyPreset(preset);
-            });
-        });
+        if (headerClearBtn) headerClearBtn.addEventListener('click', function() { if (confirmClearSettings()) clearTimer(); closeDrawer(); });
+        if (clearAllSettingsBtn) clearAllSettingsBtn.addEventListener('click', function() { if (confirmClearSettings()) clearTimer(); closeDrawer(); });
         
         // Initialize
         workTime = parseTime(workTimeInput.value);
         restTime = parseTime(restTimeInput.value);
         totalRounds = parseInt(roundsInput.value) || 0;
+        // HIIT ADDITION: Initialize new variables
+        warmupTime = parseTime(warmupTimeInput.value);
         cooldownTime = parseTime(cooldownTimeInput.value);
         totalSets = parseInt(setsInput.value) || 1;
         setRestTime = parseTime(setRestTimeInput.value);
-        const prepSecsInit = getPrepTime();
-        currentPhase = prepSecsInit > 0 ? 'prep' : 'work';
-        currentTime = prepSecsInit > 0 ? prepSecsInit : workTime;
+        currentPhase = warmupTime > 0 ? 'warmup' : 'work';
+        currentTime = warmupTime > 0 ? warmupTime : workTime;
         currentSet = 1;
+        // HIIT ADDITION: Initialize preset select and display
+        presetSelect.value = selectedPreset;
+        updateCurrentPresetDisplay(selectedPreset);
         updateSetRestVisibility();
+        syncRoundsSetsToMain();
+        syncSetRestToMain();
+        updateRoundsSetsBlockVisibility();
         syncSlidersFromInputs();
-        syncWarmupCooldownSlidersFromInputs();
-        syncSetRestSliderFromInput();
+        syncWarmupCooldownSetRestSlidersFromInputs();
         updateTotalTime();
         updateDisplay();
+        
+        // Initialize workout title/notes display + counters
         updateCharCounts();
         updateWorkoutDisplay();
+
+        // Initialize completion message from storage
         if (doneMessageInput) {
             const savedDone = getDoneMessage();
             doneMessageInput.value = savedDone;
-            if (doneMessageCharCount) doneMessageCharCount.textContent = savedDone.length;
+            if (doneMessageCharCount) {
+                doneMessageCharCount.textContent = savedDone.length;
+            }
         }
-        const releaseEl = document.getElementById('releaseDate');
-        if (releaseEl) releaseEl.textContent = new Date().toISOString().split('T')[0];
+        
+        // Set release date
+        document.getElementById('releaseDate').textContent = new Date().toISOString().split('T')[0];
     </script>
+    <script src="scripts/dark-mode-toggle.js"></script>
     <script>
-        (function() {
-            var themeKey = 'timerist-theme';
-            var darkThemeValue = 'style1';
-            function getInitialTheme() {
-                var saved = localStorage.getItem(themeKey);
-                if (saved) return saved;
-                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-            }
-            function isDarkMode() {
-                return document.documentElement.getAttribute('data-theme') === darkThemeValue;
-            }
-            function applyTheme(theme) {
-                var root = document.documentElement;
-                if (theme === 'dark') root.setAttribute('data-theme', darkThemeValue);
-                else root.removeAttribute('data-theme');
-                localStorage.setItem(themeKey, theme);
-            }
-            applyTheme(getInitialTheme());
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-                if (!localStorage.getItem(themeKey)) applyTheme(e.matches ? 'dark' : 'light');
+        // Function to detect text wrapping and adjust grid layout
+        function checkButtonTextWrapping() {
+            const grid = document.querySelector('.preset-select-grid');
+            const buttons = document.querySelectorAll('.preset-select-btn');
+            
+            if (!grid || buttons.length === 0) return;
+            
+            let hasWrappedText = false;
+            
+            buttons.forEach(button => {
+                // Get the computed line height
+                const lineHeight = parseFloat(window.getComputedStyle(button).lineHeight);
+                const padding = parseFloat(window.getComputedStyle(button).paddingTop) + 
+                               parseFloat(window.getComputedStyle(button).paddingBottom);
+                
+                // Calculate expected single-line height (line-height + padding)
+                const expectedSingleLineHeight = lineHeight + padding;
+                
+                // Get actual button height
+                const actualHeight = button.offsetHeight;
+                
+                // If actual height is significantly more than single line, text is wrapping
+                // Use a threshold of 1.5x to account for slight variations
+                if (actualHeight > expectedSingleLineHeight * 1.5) {
+                    hasWrappedText = true;
+                }
             });
-            window.toggleTheme = function() { applyTheme(isDarkMode() ? 'light' : 'dark'); };
-        })();
-    </script>
-    <script>
+            
+            // If any button text wraps, switch to single column
+            if (hasWrappedText) {
+                grid.classList.add('single-column');
+            } else {
+                // Only remove single-column class if screen is wide enough
+                // This prevents flickering on narrow screens
+                const screenWidth = window.innerWidth;
+                if (screenWidth >= 420) {
+                    grid.classList.remove('single-column');
+                }
+            }
+        }
+        
+        // Check on load and resize
         document.addEventListener('DOMContentLoaded', function() {
-            var themeToggleBtn = document.getElementById('themeToggleBtn');
+            // Initial check after a short delay to ensure layout is complete
+            setTimeout(checkButtonTextWrapping, 100);
+            
+            // Check on window resize with debouncing
+            let resizeTimeout;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(checkButtonTextWrapping, 150);
+            });
+            
+            // Also check when orientation changes
+            window.addEventListener('orientationchange', function() {
+                setTimeout(checkButtonTextWrapping, 200);
+            });
+        });
+        
+        // Ensure theme toggle button works on mobile (iOS/Android)
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggleBtn = document.getElementById('themeToggleBtn');
             if (themeToggleBtn) {
-                themeToggleBtn.addEventListener('click', function(e) { e.preventDefault(); if (window.toggleTheme) window.toggleTheme(); });
-                themeToggleBtn.addEventListener('touchstart', function(e) { e.preventDefault(); if (window.toggleTheme) window.toggleTheme(); }, { passive: false });
+                // Add both click and touchstart for maximum compatibility
+                themeToggleBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (window.toggleTheme) {
+                        window.toggleTheme();
+                    }
+                });
+                
+                // Also add touchstart for better mobile support
+                themeToggleBtn.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (window.toggleTheme) {
+                        window.toggleTheme();
+                    }
+                }, { passive: false });
             }
         });
+        
+        // Logo color update for dark mode
         function updateLogoColors() {
-            var logo = document.getElementById('timerist-logo');
+            const logo = document.getElementById('timerist-logo');
             if (!logo) return;
-            var color = document.documentElement.getAttribute('data-theme') === 'style1' ? '#fafafa' : '#0a0a0a';
-            logo.querySelectorAll('.logo-circle, .logo-line').forEach(function(el) { el.setAttribute('stroke', color); });
+            
+            const isDark = document.documentElement.getAttribute('data-theme') === 'style1';
+            const lightColor = '#0a0a0a';
+            const darkColor = '#fafafa';
+            const color = isDark ? darkColor : lightColor;
+            
+            const circles = logo.querySelectorAll('.logo-circle');
+            const lines = logo.querySelectorAll('.logo-line');
+            
+            circles.forEach(el => el.setAttribute('stroke', color));
+            lines.forEach(el => el.setAttribute('stroke', color));
         }
+        
+        // Theme icon update
         function updateThemeIcon() {
-            var icon = document.getElementById('theme-icon');
-            if (icon) icon.textContent = document.documentElement.getAttribute('data-theme') === 'style1' ? '☀️' : '🌙';
+            const icon = document.getElementById('theme-icon');
+            if (!icon) return;
+            const isDark = document.documentElement.getAttribute('data-theme') === 'style1';
+            icon.textContent = isDark ? '☀️' : '🌙';
         }
-        var themeObserver = new MutationObserver(function() { updateLogoColors(); updateThemeIcon(); });
-        themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-        var orig = window.toggleTheme;
-        window.toggleTheme = function() { if (orig) orig(); setTimeout(function() { updateLogoColors(); updateThemeIcon(); }, 10); };
+        
+        // Watch for theme changes
+        const themeObserver = new MutationObserver(() => {
+            updateLogoColors();
+            updateThemeIcon();
+        });
+        themeObserver.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-theme', 'class']
+        });
+        
+        // Override toggleTheme to update logo, icon
+        const originalToggle = window.toggleTheme;
+        window.toggleTheme = function() {
+            originalToggle();
+            setTimeout(() => {
+                updateLogoColors();
+                updateThemeIcon();
+            }, 10);
+        };
+        
         updateLogoColors();
         updateThemeIcon();
     </script>

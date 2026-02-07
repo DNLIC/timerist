@@ -1797,6 +1797,19 @@
                 iterations += 1;
             }
         }
+        function resizeCompletionMessageIfVisible() {
+            if (display && display.classList.contains('done-message')) {
+                fitTextToContainer(display, { minPx: 18 });
+            }
+        }
+        let resizeCompletionTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeCompletionTimeout);
+            resizeCompletionTimeout = setTimeout(resizeCompletionMessageIfVisible, 100);
+        });
+        window.addEventListener('orientationchange', function() {
+            setTimeout(resizeCompletionMessageIfVisible, 200);
+        });
 
         function updateWorkoutCharCounts() {
             if (workoutTitleInput && workoutTitleCharCount) {
