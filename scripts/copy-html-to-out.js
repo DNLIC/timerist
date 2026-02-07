@@ -4,6 +4,9 @@ const path = require('path');
 // HTML files to copy
 const htmlFiles = [
   'index.html',
+  'about.html',
+  'subscribe.html',
+  'faq.html',
   'countdown-presets.html',
   'hiit-presets.html',
   'interval-presets.html',
@@ -23,7 +26,17 @@ const htmlFiles = [
   'pyramid.html',
   'custom.html',
   'mobility.html',
-  'Component_Demo.html'
+  'Component_Demo.html',
+  // Timer about / article pages
+  'clock-timer-about.html',
+  'countdown-timer-about.html',
+  'emon-timer-about.html',
+  'hiit-timer-about.html',
+  'interval-timer-about.html',
+  'mobility-timer-about.html',
+  'pyramid-timer-about.html',
+  'stopwatch-timer-about.html',
+  'tabata-timer-about.html'
 ];
 
 // JSON files to copy from public directory

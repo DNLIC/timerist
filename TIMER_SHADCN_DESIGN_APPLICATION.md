@@ -294,6 +294,49 @@ Use this list and the checklists above when doing the **shadcn design pass** on 
 
 ---
 
+## Blog / Article Page Hero Section (Timerist Blog Posts)
+
+Use this pattern for **blog-style article pages** (e.g. EMOM Timer guide, Tabata guide, HIIT guide). Reference: [shadcn-ui Theme Explorer](https://shadcn-ui-theme-explorer.vercel.app/default) (“Why so bland?” / “Color the web with beautifully designed themes”). Implemented in **emon-timer-about.html**; the hero block is wrapped in `<!-- ========== HERO SECTION ... ========== -->` comments so it can be copied to other timer article pages.
+
+### 1. Headline
+
+- **Purpose:** Large, impactful title (e.g. “Master Every Minute: The EMOM Timer Guide”).
+- **Class:** `.hero-headline`
+- **Font weight:** 900 (black). Use Inter 800/900 from Google Fonts.
+- **Gradient:** Vertical, **darker at top → lighter at bottom** (debossed look). Light mode: black → charcoal; dark mode: white → light gray.
+- **Size:** Responsive — `text-5xl sm:text-6xl md:text-7xl`, `tracking-tight`, `leading-tight`.
+- **CSS (in page or shared styles):**
+  - Light: `background: linear-gradient(180deg, rgb(0 0 0) 0%, rgb(24 24 27) 35%, rgb(63 63 70) 100%);`
+  - Dark: `background: linear-gradient(180deg, rgb(250 250 250) 0%, rgb(212 212 216) 40%, rgb(161 161 170) 100%);`
+  - Plus: `-webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent;`
+
+### 2. Subhead
+
+- **Purpose:** Tagline under the headline (e.g. “Build unbreakable endurance and efficiency — one timed minute at a time.”).
+- **Class:** `.hero-subhead`
+- **Font weight:** 800 (extrabold) — matches Theme Explorer subhead.
+- **Gradient:** Horizontal, **light at left → dark at right** (same direction as reference).
+  - Light: `linear-gradient(90deg, rgb(148 163 184) 0%, rgb(100 116 139) 25%, rgb(51 65 85) 50%, rgb(30 41 59) 85%, rgb(15 23 42) 100%);`
+  - Dark: `linear-gradient(90deg, rgb(248 250 252) 0%, rgb(203 213 225) 35%, rgb(148 163 184) 65%, rgb(71 85 105) 100%);`
+- **Size:** `text-xl sm:text-2xl md:text-3xl`, `leading-relaxed`, `max-w-3xl mx-auto`. Letter-spacing: `-0.02em`.
+- Same `background-clip: text` / `color: transparent` pattern as headline.
+
+### 3. Metadata / credit line
+
+- **Purpose:** Credit and contact under the subhead (e.g. “Brought to you by Timerist • Questions or suggestions? Reach out at …”).
+- **Style:** Matches reference “Inspired by @peduarte work on Raycast Theme Explorer…” block.
+- **Classes:** `text-base leading-7 text-muted-foreground text-center max-w-2xl mx-auto`, with `mt-6` for spacing below subhead.
+- **Size:** Base (16px), not small — use `text-base`, not `text-sm`.
+
+**Checklist for each new blog post:**
+
+- [ ] Headline uses `.hero-headline` (weight 900, vertical gradient darker→lighter).
+- [ ] Subhead uses `.hero-subhead` (weight 800, horizontal gradient light→dark left to right).
+- [ ] Metadata/credit line uses `text-base leading-7 text-muted-foreground` (and optional `max-w-2xl mx-auto`).
+- [ ] Hero block is inside `<!-- ========== HERO SECTION ... ========== -->` so it can be reused; only headline and subhead copy change per page.
+
+---
+
 ## Quick Reference: Class Names Mapping
 
 | quick-interval (old) | quick-interval-iphone-shadcn (new) |
@@ -314,4 +357,4 @@ Use this list and the checklists above when doing the **shadcn design pass** on 
 
 ---
 
-*Document version: 1.4. Section 1.1: Main page header must remain left-justified; reference interval.html and countdown.html; checklist to verify header format after any layout change. v1.3: Section 5 “Modified” message; Section 14 presets table. v1.2: Time data entry: single MM:SS control per duration. v1.1: quick-countdown pass. Use interval.html, countdown.html, quick-interval.html, and quick-countdown.html as references.*
+*Document version: 1.5. Section "Blog / Article Page Hero Section": headline, subhead, metadata line; reference emon-timer-about.html. v1.4: Section 1.1: Main page header must remain left-justified; reference interval.html and countdown.html; checklist to verify header format after any layout change. v1.3: Section 5 “Modified” message; Section 14 presets table. v1.2: Time data entry: single MM:SS control per duration. v1.1: quick-countdown pass. Use interval.html, countdown.html, quick-interval.html, and quick-countdown.html as references.*

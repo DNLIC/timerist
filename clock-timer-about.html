@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<!-- Add class "dark" to <html> for dark mode when your site uses a theme toggle. -->
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Clock - Timerist | Workout Clock</title>
+    <meta name="description" content="Simple clock for workouts. Part of Timerist Fitness Timers.">
+    <!-- If your site already uses Tailwind (e.g. built with PostCSS), remove the next script and rely on your global config. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <script>
+        // Extend Tailwind so shadcn-style classes (bg-background, text-foreground, etc.) work with CSS variables.
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        background: 'rgb(var(--background))',
+                        foreground: 'rgb(var(--foreground))',
+                        card: { DEFAULT: 'rgb(var(--card))', foreground: 'rgb(var(--card-foreground))' },
+                        primary: { DEFAULT: 'rgb(var(--primary))', foreground: 'rgb(var(--primary-foreground))' },
+                        secondary: { DEFAULT: 'rgb(var(--secondary))', foreground: 'rgb(var(--secondary-foreground))' },
+                        muted: { DEFAULT: 'rgb(var(--muted))', foreground: 'rgb(var(--muted-foreground))' },
+                        accent: { DEFAULT: 'rgb(var(--accent))', foreground: 'rgb(var(--accent-foreground))' },
+                        destructive: { DEFAULT: 'rgb(var(--destructive))', foreground: 'rgb(var(--destructive-foreground))' },
+                        border: 'rgb(var(--border))',
+                        input: 'rgb(var(--input))',
+                        ring: 'rgb(var(--ring))',
+                    },
+                    borderRadius: {
+                        lg: 'var(--radius)',
+                        md: 'calc(var(--radius) - 2px)',
+                        sm: 'calc(var(--radius) - 4px)',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        :root {
+            --background: 250 250 250;
+            --foreground: 10 10 10;
+            --card: 255 255 255;
+            --card-foreground: 10 10 10;
+            --primary: 24 24 27;
+            --primary-foreground: 250 250 250;
+            --secondary: 244 244 245;
+            --secondary-foreground: 24 24 27;
+            --muted: 244 244 245;
+            --muted-foreground: 100 116 139;
+            --accent: 244 244 245;
+            --accent-foreground: 24 24 27;
+            --destructive: 239 68 68;
+            --destructive-foreground: 250 250 250;
+            --border: 228 228 231;
+            --input: 228 228 231;
+            --ring: 24 24 27;
+            --radius: 0.5rem;
+        }
+        .dark {
+            --background: 10 10 10;
+            --foreground: 250 250 250;
+            --card: 24 24 27;
+            --card-foreground: 250 250 250;
+            --primary: 250 250 250;
+            --primary-foreground: 24 24 27;
+            --secondary: 39 39 42;
+            --secondary-foreground: 250 250 250;
+            --muted: 39 39 42;
+            --muted-foreground: 161 161 170;
+            --accent: 39 39 42;
+            --accent-foreground: 250 250 250;
+            --destructive: 239 68 68;
+            --destructive-foreground: 250 250 250;
+            --border: 39 39 42;
+            --input: 39 39 42;
+            --ring: 212 212 216;
+        }
+        * { box-sizing: border-box; }
+        body {
+            background-color: rgb(var(--background));
+            color: rgb(var(--foreground));
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .timer-display-emom {
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.02em;
+        }
+        .stepper-btn {
+            min-width: 2.75rem;
+            min-height: 2.75rem;
+            padding: 0.5rem;
+            border: 1px solid rgb(var(--border));
+            border-radius: var(--radius);
+            background: rgb(var(--card));
+            color: rgb(var(--foreground));
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .stepper-btn:hover {
+            background: rgb(var(--accent));
+            border-color: rgb(var(--input));
+        }
+        .stepper-btn:focus-visible {
+            outline: 2px solid rgb(var(--ring));
+            outline-offset: 2px;
+        }
+        .value-readout {
+            min-width: 3rem;
+            text-align: center;
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
+        /* Hero headline: shadcn Theme Explorer style — heavy weight + vertical gradient (darker top → lighter bottom) */
+        .hero-headline {
+            font-weight: 900;
+            background: linear-gradient(180deg, rgb(0 0 0) 0%, rgb(24 24 27) 35%, rgb(63 63 70) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+        }
+        .dark .hero-headline {
+            background: linear-gradient(180deg, rgb(250 250 250) 0%, rgb(212 212 216) 40%, rgb(161 161 170) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+        }
+        /* Hero subhead: matches shadcn Theme Explorer — font-extrabold (800) + horizontal gradient light→dark (left to right) */
+        .hero-subhead {
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(90deg, rgb(148 163 184) 0%, rgb(100 116 139) 25%, rgb(51 65 85) 50%, rgb(30 41 59) 85%, rgb(15 23 42) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+        }
+        .dark .hero-subhead {
+            background: linear-gradient(90deg, rgb(248 250 252) 0%, rgb(203 213 225) 35%, rgb(148 163 184) 65%, rgb(71 85 105) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+        }
+        /* Blog nav: Theme Explorer–style menu line with Timers dropdown */
+        .blog-nav {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.25rem 1rem;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgb(var(--border));
+            background: rgb(var(--card));
+        }
+        .blog-nav a, .blog-nav .nav-summary {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: rgb(var(--muted-foreground));
+            text-decoration: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius);
+            transition: color 0.2s, background 0.2s;
+        }
+        .blog-nav a:hover, .blog-nav .nav-summary:hover {
+            color: rgb(var(--foreground));
+            background: rgb(var(--accent));
+        }
+        .blog-nav .nav-summary {
+            cursor: pointer;
+            list-style: none;
+            border: none;
+            background: none;
+            font-family: inherit;
+        }
+        .blog-nav .nav-summary::-webkit-details-marker { display: none; }
+        .blog-nav details[open] .nav-summary { color: rgb(var(--foreground)); }
+        .blog-nav .nav-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            min-width: 10rem;
+            margin-top: 0.25rem;
+            padding: 0.5rem 0;
+            background: rgb(var(--card));
+            border: 1px solid rgb(var(--border));
+            border-radius: var(--radius);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            z-index: 50;
+        }
+        .blog-nav .nav-dropdown a {
+            display: block;
+            padding: 0.5rem 1rem;
+            white-space: nowrap;
+        }
+        .blog-nav details { position: relative; }
+        /* Blog header: same strip as timer pages (logo, site name, page title, theme toggle, hamburger) */
+        .blog-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            gap: 0.5rem;
+            min-width: 0;
+            border-bottom: 1px solid rgb(var(--border));
+            background: rgb(var(--card));
+        }
+        .blog-header-top > div:first-child {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 0;
+            flex-shrink: 1;
+            overflow: hidden;
+        }
+        .blog-header-top .header-sep { color: rgb(var(--muted-foreground)); }
+        .blog-header-top a { transition: opacity 0.2s ease; text-decoration: none; }
+        .blog-header-top a:hover { opacity: 0.7; }
+        .blog-header-actions { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
+        .blog-header-top .blog-mode-btn,
+        .blog-header-top .blog-hamburger {
+            width: 44px; height: 44px; flex-shrink: 0;
+            background: transparent; border: none; cursor: pointer; padding: 0.5rem;
+            display: flex; align-items: center; justify-content: center;
+            color: rgb(var(--foreground)); font-size: 1.25rem; transition: opacity 0.2s;
+            border-radius: var(--radius); min-width: 44px;
+            -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none;
+        }
+        .blog-header-top .blog-mode-btn:hover, .blog-header-top .blog-mode-btn:active,
+        .blog-header-top .blog-hamburger:hover, .blog-header-top .blog-hamburger:active {
+            opacity: 0.7; background-color: rgba(var(--accent), 0.5);
+        }
+        .blog-header-top .blog-mode-btn:focus, .blog-header-top .blog-hamburger:focus {
+            outline: 2px solid rgb(var(--ring)); outline-offset: 2px;
+        }
+        #blog-timerist-logo { display: block; width: 40px; height: 40px; color: rgb(var(--foreground)); }
+        #blog-timerist-logo circle, #blog-timerist-logo line { stroke: currentColor; stroke-width: 2.5; }
+        .dark #blog-timerist-logo { color: rgb(var(--foreground)); }
+        @media (max-width: 390px) {
+            .blog-header-top { padding: 0 0.75rem; }
+            .blog-header-top .header-sep, .blog-header-top .blog-page-title { display: none; }
+            .blog-header-actions .blog-mode-btn, .blog-header-actions .blog-hamburger { width: 40px; height: 40px; font-size: 1.125rem; }
+        }
+        /* Mobile: horizontal nav hidden; hamburger opens drawer instead */
+        @media (max-width: 768px) {
+            body:not(.blog-nav-open) .blog-nav { display: none; }
+        }
+        /* Blog hamburger menu: slide-out drawer with same nav links (vertical list) */
+        .blog-menu-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 40;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+        }
+        body.blog-menu-open .blog-menu-overlay {
+            opacity: 1;
+            visibility: visible;
+        }
+        .blog-menu-drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: min(280px, 85vw);
+            max-width: 280px;
+            height: 100vh;
+            background: rgb(var(--card));
+            border-left: 1px solid rgb(var(--border));
+            box-shadow: -4px 0 12px rgba(0,0,0,0.1);
+            z-index: 50;
+            transform: translateX(100%);
+            transition: transform 0.25s ease;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        body.blog-menu-open .blog-menu-drawer {
+            transform: translateX(0);
+        }
+        .blog-menu-drawer .blog-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid rgb(var(--border));
+        }
+        .blog-menu-drawer .blog-menu-header h2 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: rgb(var(--foreground));
+            margin: 0;
+        }
+        .blog-menu-drawer .blog-menu-close {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: transparent;
+            color: rgb(var(--foreground));
+            font-size: 1.5rem;
+            cursor: pointer;
+            border-radius: var(--radius);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .blog-menu-drawer .blog-menu-close:hover {
+            background: rgb(var(--accent));
+        }
+        .blog-menu-drawer .blog-menu-content {
+            padding: 1rem 0;
+        }
+        .blog-menu-drawer .blog-menu-content a {
+            display: block;
+            padding: 0.625rem 1.25rem;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: rgb(var(--foreground));
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .blog-menu-drawer .blog-menu-content a:hover {
+            background: rgb(var(--accent));
+        }
+        .blog-menu-drawer .blog-menu-content .blog-menu-sub {
+            padding-left: 1.25rem;
+            border-left: 2px solid rgb(var(--border));
+            margin-left: 1.25rem;
+            margin-top: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+        .blog-menu-drawer .blog-menu-content .blog-menu-sub a {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            color: rgb(var(--muted-foreground));
+        }
+        .blog-menu-drawer .blog-menu-content .blog-menu-sub a:hover {
+            color: rgb(var(--foreground));
+        }
+        .blog-menu-drawer .blog-menu-label {
+            padding: 0.5rem 1.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: rgb(var(--muted-foreground));
+        }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+    <div class="flex flex-col min-h-screen">
+        <!-- ========== BLOG HEADER (timer pages style: logo, site name, page title, theme + hamburger) ========== -->
+        <div class="blog-header-top mx-auto w-full max-w-4xl px-4 sm:px-6">
+            <div class="flex items-center gap-2 sm:gap-3">
+                <a href="index.html" class="flex items-center shrink-0" aria-label="Timerist home">
+                    <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" id="blog-timerist-logo">
+                        <circle cx="20" cy="20" r="15" fill="none" stroke="currentColor" stroke-width="2.5" class="logo-circle"/>
+                        <line x1="20" y1="20" x2="20" y2="8" stroke="currentColor" stroke-width="2.5" class="logo-line"/>
+                        <line x1="20" y1="20" x2="30" y2="20" stroke="currentColor" stroke-width="2.5" class="logo-line"/>
+                    </svg>
+                </a>
+                <a href="index.html" class="font-semibold text-foreground" style="font-size: clamp(1rem, 3vw, 1.25rem);">timerist.com</a>
+                <span class="header-sep">|</span>
+                <span class="blog-page-title font-semibold text-foreground" style="font-size: clamp(1rem, 3vw, 1.25rem);">Clock</span>
+            </div>
+            <div class="blog-header-actions">
+                <button type="button" class="blog-mode-btn" id="blogThemeBtn" aria-label="Toggle dark mode"><span id="blog-theme-icon">🌙</span></button>
+                <button type="button" class="blog-hamburger" id="blogMenuBtn" aria-label="Open menu">☰</button>
+            </div>
+        </div>
+        <!-- ========== END BLOG HEADER ========== -->
+
+        <!-- ========== BLOG NAV (Theme Explorer–style menu line; duplicate on other blog pages) ========== -->
+        <nav class="blog-nav mx-auto w-full max-w-4xl px-4 sm:px-6" id="blogNav" aria-label="Main">
+            <a href="index.html">Home</a>
+            <details class="inline-block">
+                <summary class="nav-summary">About</summary>
+                <div class="nav-dropdown">
+                    <a href="about.html">About Timerist</a>
+                    <a href="clock-timer-about.html">Clock</a>
+                    <a href="countdown-timer-about.html">Countdown</a>
+                    <a href="emon-timer-about.html">EMOM</a>
+                    <a href="hiit-timer-about.html">HIIT</a>
+                    <a href="interval-timer-about.html">Interval</a>
+                    <a href="mobility-timer-about.html">Mobility</a>
+                    <a href="pyramid-timer-about.html">Pyramid</a>
+                    <a href="stopwatch-timer-about.html">Stopwatch</a>
+                    <a href="tabata-timer-about.html">Tabata</a>
+                </div>
+            </details>
+            <a href="apps.html">Apps</a>
+            <a href="blog.html">Blog</a>
+            <a href="faq.html">FAQ</a>
+            <a href="subscribe.html">Subscribe</a>
+            <details class="inline-block">
+                <summary class="nav-summary">Timers</summary>
+                <div class="nav-dropdown">
+                    <a href="clock.html">Clock</a>
+                    <a href="countdown.html">Countdown</a>
+                    <a href="emom.html">EMOM</a>
+                    <a href="hiit.html">HIIT</a>
+                    <a href="interval.html">Interval</a>
+                    <a href="mobility.html">Mobility</a>
+                    <a href="pyramid.html">Pyramid</a>
+                    <a href="stopwatch.html">Stopwatch</a>
+                    <a href="tabata.html">Tabata</a>
+                </div>
+            </details>
+        </nav>
+        <!-- ========== END BLOG NAV ========== -->
+
+        <!-- Blog hamburger menu: slide-out drawer with same links as horizontal nav (vertical list) -->
+        <div class="blog-menu-overlay" id="blogMenuOverlay" aria-hidden="true"></div>
+        <aside class="blog-menu-drawer" id="blogMenuDrawer" role="dialog" aria-label="Menu">
+            <div class="blog-menu-header">
+                <h2>Menu</h2>
+                <button type="button" class="blog-menu-close" id="blogMenuClose" aria-label="Close menu">×</button>
+            </div>
+            <div class="blog-menu-content">
+                <a href="index.html">Home</a>
+                <span class="blog-menu-label">About</span>
+                <div class="blog-menu-sub">
+                    <a href="about.html">About Timerist</a>
+                    <a href="clock-timer-about.html">Clock</a>
+                    <a href="countdown-timer-about.html">Countdown</a>
+                    <a href="emon-timer-about.html">EMOM</a>
+                    <a href="hiit-timer-about.html">HIIT</a>
+                    <a href="interval-timer-about.html">Interval</a>
+                    <a href="mobility-timer-about.html">Mobility</a>
+                    <a href="pyramid-timer-about.html">Pyramid</a>
+                    <a href="stopwatch-timer-about.html">Stopwatch</a>
+                    <a href="tabata-timer-about.html">Tabata</a>
+                </div>
+                <a href="apps.html">Apps</a>
+                <a href="blog.html">Blog</a>
+                <a href="faq.html">FAQ</a>
+                <a href="subscribe.html">Subscribe</a>
+                <span class="blog-menu-label">Timers</span>
+                <div class="blog-menu-sub">
+                    <a href="clock.html">Clock</a>
+                    <a href="countdown.html">Countdown</a>
+                    <a href="emom.html">EMOM</a>
+                    <a href="hiit.html">HIIT</a>
+                    <a href="interval.html">Interval</a>
+                    <a href="mobility.html">Mobility</a>
+                    <a href="pyramid.html">Pyramid</a>
+                    <a href="stopwatch.html">Stopwatch</a>
+                    <a href="tabata.html">Tabata</a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ========== HERO SECTION (template for other timer pages: Tabata, HIIT, AMRAP, etc.) ========== -->
+        <!-- Duplicate this block for new timer articles; change headline, subhead, and optional border/background. -->
+        <header class="border-b border-border bg-background px-4 py-12 sm:py-16 md:py-20 sm:px-6">
+            <div class="mx-auto max-w-4xl w-full text-center">
+                <h1 class="hero-headline text-5xl sm:text-6xl md:text-7xl tracking-tight leading-tight">
+                    The Clock Guide
+                </h1>
+                <p class="hero-subhead text-xl sm:text-2xl md:text-3xl mt-4 sm:mt-6 leading-relaxed max-w-3xl mx-auto">
+                    Build unbreakable endurance and efficiency — one timed minute at a time.
+                </p>
+                <!-- Hero metadata/credit (matches reference "Inspired by..." block — base size, leading-7) -->
+                <p class="mt-6 text-base leading-7 text-muted-foreground text-center max-w-2xl mx-auto">
+                    Brought to you by Timerist • Questions or suggestions? Reach out at <a href="mailto:hello@timerist.com" class="text-foreground underline underline-offset-2 hover:opacity-80">hello@timerist.com</a> or on X <a href="https://x.com/timeristapp" target="_blank" rel="noopener noreferrer" class="text-foreground underline underline-offset-2 hover:opacity-80">@timeristapp</a>
+                </p>
+            </div>
+        </header>
+        <!-- ========== END HERO SECTION ========== -->
+
+        <main class="flex-1 px-4 py-8 sm:px-6">
+            <div class="mx-auto max-w-2xl w-full">
+                <div class="rounded-lg border border-border bg-card p-6 shadow-sm">
+                    <!-- Large timer display -->
+                    <div class="flex flex-col items-center justify-center py-4">
+                        <p id="emomStatus" class="text-xs font-medium uppercase tracking-wider text-muted-foreground">Round 0 of 0 | 0 Per Min</p>
+                        <p id="emomDisplay" class="timer-display-emom mt-2 font-mono text-5xl font-semibold text-foreground sm:text-6xl">01:00</p>
+                    </div>
+
+                    <!-- Action buttons -->
+                    <div class="flex flex-wrap gap-3 justify-center mt-6">
+                        <button type="button" id="emomClearBtn" class="inline-flex items-center justify-center rounded-md border border-border bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" aria-label="Clear timer">Clear</button>
+                        <button type="button" id="emomSetUpBtn" class="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" aria-label="Set up timer">Set Up</button>
+                    </div>
+
+                    <!-- Input sections: Minutes, Rounds, Reps Per Min -->
+                    <div class="mt-8 space-y-6 border-t border-border pt-6">
+                        <div>
+                            <label for="emomMinutesReadout" class="block text-sm font-medium text-foreground">Minutes per round</label>
+                            <div class="mt-2 flex items-center gap-2">
+                                <button type="button" id="emomMinutesMinus" class="stepper-btn" aria-label="Decrease minutes">−</button>
+                                <span id="emomMinutesReadout" class="value-readout font-mono text-lg text-foreground" aria-live="polite">1</span>
+                                <button type="button" id="emomMinutesPlus" class="stepper-btn" aria-label="Increase minutes">+</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="emomRoundsReadout" class="block text-sm font-medium text-foreground">Rounds</label>
+                            <div class="mt-2 flex items-center gap-2">
+                                <button type="button" id="emomRoundsMinus" class="stepper-btn" aria-label="Decrease rounds by 5">−5</button>
+                                <span id="emomRoundsReadout" class="value-readout font-mono text-lg text-foreground" aria-live="polite">10</span>
+                                <button type="button" id="emomRoundsPlus" class="stepper-btn" aria-label="Increase rounds by 5">+5</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="emomRepsReadout" class="block text-sm font-medium text-foreground">Reps per minute</label>
+                            <div class="mt-2 flex items-center gap-2">
+                                <button type="button" id="emomRepsMinus" class="stepper-btn" aria-label="Decrease reps per minute">−</button>
+                                <span id="emomRepsReadout" class="value-readout font-mono text-lg text-foreground" aria-live="polite">0</span>
+                                <button type="button" id="emomRepsPlus" class="stepper-btn" aria-label="Increase reps per minute">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About EMOM / How to Use This Timer -->
+                <div class="border-t border-border pt-8 mt-8">
+                    <h2 class="text-2xl font-semibold tracking-tight text-foreground mt-10 mb-6">What is an EMOM Timer & How to Use It</h2>
+
+                    <p class="mt-4 text-base leading-relaxed text-foreground">
+                        <strong class="text-foreground">EMOM</strong> stands for <em>Every Minute On the Minute</em>. It’s a popular high-intensity interval training (HIIT) format: at the start of each minute you begin a set of exercises, complete the prescribed reps or work as quickly as you can with good form, then rest for whatever time is left in that 60-second window. The cycle repeats for your chosen number of rounds, making it simple to structure and easy to scale.
+                    </p>
+
+                    <h3 class="mt-6 text-lg font-semibold text-foreground">How This Timer Works</h3>
+                    <p class="mt-4 text-base leading-relaxed text-muted-foreground">
+                        Set <strong class="text-foreground">Minutes per round</strong> (work window length, usually 1 minute), <strong class="text-foreground">Rounds</strong> (how many minutes/cycles), and optionally <strong class="text-foreground">Reps per minute</strong> as a target to aim for or to track pace. The large display counts down the current minute. Finish your reps early and you get more rest; struggle to finish and you get less rest and higher intensity. Use <strong class="text-foreground">Set Up</strong> to lock in your settings and start, and <strong class="text-foreground">Clear</strong> to reset.
+                    </p>
+
+                    <h3 class="mt-6 text-lg font-semibold text-foreground">Benefits</h3>
+                    <p class="mt-4 text-base leading-relaxed text-muted-foreground">
+                        EMOM builds work capacity, endurance, and mental toughness. It improves pacing and efficiency under fatigue and is highly time-efficient — you can get a full-body or strength-focused workout in 10–30 minutes. It scales from beginners (lower reps, more rest) to advanced (complex movements, heavier loads), and supports cardiovascular fitness, strength, and metabolic conditioning. It’s a staple of the Timerist fitness timers collection for good reason.
+                    </p>
+
+                    <h3 class="mt-6 text-lg font-semibold text-foreground">Tips for Best Results</h3>
+                    <ul class="mt-4 space-y-2 text-base leading-relaxed text-muted-foreground list-disc pl-6">
+                        <li>Choose exercises you can perform consistently with good form.</li>
+                        <li>Start conservative with reps and rounds to avoid burnout.</li>
+                        <li>Track your pace over time — faster completion means more rest and clear progress.</li>
+                        <li>Pair with bodyweight, dumbbells, barbells, or cardio moves depending on your goals.</li>
+                    </ul>
+
+                    <h3 class="mt-6 text-lg font-semibold text-foreground">Example Workouts</h3>
+                    <ul class="mt-4 space-y-3 text-base leading-relaxed text-muted-foreground list-disc pl-6">
+                        <li><strong class="text-foreground">Beginner:</strong> 10 rounds EMOM — 8–12 air squats (rest the remainder of each minute).</li>
+                        <li><strong class="text-foreground">Strength:</strong> 12 rounds EMOM — 5 deadlifts or push presses at moderate weight.</li>
+                        <li><strong class="text-foreground">Conditioning:</strong> 20 rounds EMOM alternating — Minute 1: 10 burpees, Minute 2: 15 kettlebell swings.</li>
+                        <li><strong class="text-foreground">Skill/Endurance:</strong> 15 rounds EMOM — 10 pull-ups or ring rows + 20 double-unders (scale as needed).</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+
+        <footer class="border-t border-border bg-card px-4 py-4 sm:px-6">
+            <div class="mx-auto max-w-2xl w-full text-center text-sm text-muted-foreground">
+                Part of <a href="/" class="font-medium text-foreground underline underline-offset-4 hover:opacity-80">Timerist Fitness Timers</a> collection.
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        (function () {
+            'use strict';
+
+            // Blog header: theme toggle (class "dark" on html) + hamburger (toggle nav on mobile)
+            const themeKey = 'timerist-theme';
+            function getBlogTheme() {
+                var saved = localStorage.getItem(themeKey);
+                if (saved === 'dark' || saved === 'light') return saved;
+                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            function applyBlogTheme(theme) {
+                if (theme === 'dark') document.documentElement.classList.add('dark');
+                else document.documentElement.classList.remove('dark');
+                localStorage.setItem(themeKey, theme);
+            }
+            function updateBlogThemeIcon() {
+                var icon = document.getElementById('blog-theme-icon');
+                if (!icon) return;
+                var isDark = document.documentElement.classList.contains('dark');
+                icon.textContent = isDark ? '☀️' : '🌙';
+            }
+            applyBlogTheme(getBlogTheme());
+            updateBlogThemeIcon();
+            document.getElementById('blogThemeBtn')?.addEventListener('click', function () {
+                var isDark = document.documentElement.classList.contains('dark');
+                applyBlogTheme(isDark ? 'light' : 'dark');
+                updateBlogThemeIcon();
+            });
+            // Hamburger: open drawer (same menu as horizontal nav, vertical list)
+            function openBlogMenu() {
+                document.body.classList.add('blog-menu-open');
+                document.getElementById('blogMenuOverlay')?.setAttribute('aria-hidden', 'false');
+                document.getElementById('blogMenuDrawer')?.setAttribute('aria-hidden', 'false');
+            }
+            function closeBlogMenu() {
+                document.body.classList.remove('blog-menu-open');
+                document.getElementById('blogMenuOverlay')?.setAttribute('aria-hidden', 'true');
+                document.getElementById('blogMenuDrawer')?.setAttribute('aria-hidden', 'true');
+            }
+            document.getElementById('blogMenuBtn')?.addEventListener('click', openBlogMenu);
+            document.getElementById('blogMenuClose')?.addEventListener('click', closeBlogMenu);
+            document.getElementById('blogMenuOverlay')?.addEventListener('click', closeBlogMenu);
+            document.querySelectorAll('.blog-menu-drawer .blog-menu-content a').forEach(function (a) {
+                a.addEventListener('click', closeBlogMenu);
+            });
+
+            // Placeholder: EMOM timer state and DOM refs for future timer logic (start/stop, countdown, rounds).
+            const state = {
+                minutes: 1,
+                rounds: 10,
+                repsPerMin: 0,
+                currentRound: 0,
+                secondsRemaining: 60,
+                isRunning: false,
+            };
+
+            const display = document.getElementById('emomDisplay');
+            const statusEl = document.getElementById('emomStatus');
+            const minutesReadout = document.getElementById('emomMinutesReadout');
+            const roundsReadout = document.getElementById('emomRoundsReadout');
+            const repsReadout = document.getElementById('emomRepsReadout');
+
+            function formatTime(seconds) {
+                const m = Math.floor(seconds / 60);
+                const s = seconds % 60;
+                return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+            }
+
+            function render() {
+                if (display) display.textContent = formatTime(state.secondsRemaining);
+                if (statusEl) statusEl.textContent = 'Round ' + state.currentRound + ' of ' + state.rounds + ' | ' + state.repsPerMin + ' Per Min';
+                if (minutesReadout) minutesReadout.textContent = state.minutes;
+                if (roundsReadout) roundsReadout.textContent = state.rounds;
+                if (repsReadout) repsReadout.textContent = state.repsPerMin;
+            }
+
+            function clampMinutes(v) { return Math.max(1, Math.min(99, v)); }
+            function clampRounds(v) { return Math.max(0, Math.min(999, v)); }
+            function clampReps(v) { return Math.max(0, Math.min(999, v)); }
+
+            document.getElementById('emomMinutesMinus')?.addEventListener('click', function () {
+                state.minutes = clampMinutes(state.minutes - 1);
+                state.secondsRemaining = state.minutes * 60;
+                render();
+            });
+            document.getElementById('emomMinutesPlus')?.addEventListener('click', function () {
+                state.minutes = clampMinutes(state.minutes + 1);
+                state.secondsRemaining = state.minutes * 60;
+                render();
+            });
+            document.getElementById('emomRoundsMinus')?.addEventListener('click', function () {
+                state.rounds = clampRounds(state.rounds - 5);
+                render();
+            });
+            document.getElementById('emomRoundsPlus')?.addEventListener('click', function () {
+                state.rounds = clampRounds(state.rounds + 5);
+                render();
+            });
+            document.getElementById('emomRepsMinus')?.addEventListener('click', function () {
+                state.repsPerMin = clampReps(state.repsPerMin - 1);
+                render();
+            });
+            document.getElementById('emomRepsPlus')?.addEventListener('click', function () {
+                state.repsPerMin = clampReps(state.repsPerMin + 1);
+                render();
+            });
+
+            document.getElementById('emomClearBtn')?.addEventListener('click', function () {
+                state.minutes = 1;
+                state.rounds = 10;
+                state.repsPerMin = 0;
+                state.currentRound = 0;
+                state.secondsRemaining = 60;
+                state.isRunning = false;
+                render();
+            });
+
+            document.getElementById('emomSetUpBtn')?.addEventListener('click', function () {
+                // Extensible: open a setup modal/sheet or apply settings and (optionally) start.
+                console.log('EMOM Set Up clicked', state);
+            });
+
+            render();
+            console.log('EMOM Timer page loaded');
+        })();
+    </script>
+</body>
+</html>
