@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<!-- Add class "dark" to <html> for dark mode when your site uses a theme toggle. -->
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>EMOM Timer - Timerist | Every Minute On the Minute Workout Timer</title>
+    <meta name="description" content="Every Minute On the Minute timer for structured workouts. Complete your work, rest for the remainder of each minute. Part of Timerist Fitness Timers.">
+    <!-- If your site already uses Tailwind (e.g. built with PostCSS), remove the next script and rely on your global config. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <script>
+        // Extend Tailwind so shadcn-style classes (bg-background, text-foreground, etc.) work with CSS variables.
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        background: 'rgb(var(--background))',
+                        foreground: 'rgb(var(--foreground))',
+                        card: { DEFAULT: 'rgb(var(--card))', foreground: 'rgb(var(--card-foreground))' },
+                        primary: { DEFAULT: 'rgb(var(--primary))', foreground: 'rgb(var(--primary-foreground))' },
+                        secondary: { DEFAULT: 'rgb(var(--secondary))', foreground: 'rgb(var(--secondary-foreground))' },
+                        muted: { DEFAULT: 'rgb(var(--muted))', foreground: 'rgb(var(--muted-foreground))' },
+                        accent: { DEFAULT: 'rgb(var(--accent))', foreground: 'rgb(var(--accent-foreground))' },
+                        destructive: { DEFAULT: 'rgb(var(--destructive))', foreground: 'rgb(var(--destructive-foreground))' },
+                        border: 'rgb(var(--border))',
+                        input: 'rgb(var(--input))',
+                        ring: 'rgb(var(--ring))',
+                    },
+                    borderRadius: {
+                        lg: 'var(--radius)',
+                        md: 'calc(var(--radius) - 2px)',
+                        sm: 'calc(var(--radius) - 4px)',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        :root {
+            --background: 250 250 250;
+            --foreground: 10 10 10;
+            --card: 255 255 255;
+            --card-foreground: 10 10 10;
+            --primary: 24 24 27;
+            --primary-foreground: 250 250 250;
+            --secondary: 244 244 245;
+            --secondary-foreground: 24 24 27;
+            --muted: 244 244 245;
+            --muted-foreground: 113 113 122;
+            --accent: 244 244 245;
+            --accent-foreground: 24 24 27;
+            --destructive: 239 68 68;
+            --destructive-foreground: 250 250 250;
+            --border: 228 228 231;
+            --input: 228 228 231;
+            --ring: 24 24 27;
+            --radius: 0.5rem;
+        }
+        .dark {
+            --background: 10 10 10;
+            --foreground: 250 250 250;
+            --card: 24 24 27;
+            --card-foreground: 250 250 250;
+            --primary: 250 250 250;
+            --primary-foreground: 24 24 27;
+            --secondary: 39 39 42;
+            --secondary-foreground: 250 250 250;
+            --muted: 39 39 42;
+            --muted-foreground: 161 161 170;
+            --accent: 39 39 42;
+            --accent-foreground: 250 250 250;
+            --destructive: 239 68 68;
+            --destructive-foreground: 250 250 250;
+            --border: 39 39 42;
+            --input: 39 39 42;
+            --ring: 212 212 216;
+        }
+        * { box-sizing: border-box; }
+        body {
+            background-color: rgb(var(--background));
+            color: rgb(var(--foreground));
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .timer-display-emom {
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.02em;
+        }
+        .stepper-btn {
+            min-width: 2.75rem;
+            min-height: 2.75rem;
+            padding: 0.5rem;
+            border: 1px solid rgb(var(--border));
+            border-radius: var(--radius);
+            background: rgb(var(--card));
+            color: rgb(var(--foreground));
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .stepper-btn:hover {
+            background: rgb(var(--accent));
+            border-color: rgb(var(--input));
+        }
+        .stepper-btn:focus-visible {
+            outline: 2px solid rgb(var(--ring));
+            outline-offset: 2px;
+        }
+        .value-readout {
+            min-width: 3rem;
+            text-align: center;
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+    <!-- Insert site header here (e.g. nav, logo) if your site provides a shared header include. -->
+    <div class="flex flex-col min-h-screen">
+        <header class="border-b border-border bg-card px-4 py-6 sm:px-6">
+            <div class="mx-auto max-w-2xl w-full">
+                <h1 class="text-2xl font-semibold tracking-tight text-foreground">EMOM Timer</h1>
+                <p class="mt-1 text-sm text-muted-foreground">Every Minute On the Minute timer for structured workouts. Complete your work, rest for the remainder of each minute.</p>
+            </div>
+        </header>
+
+        <main class="flex-1 px-4 py-8 sm:px-6">
+            <div class="mx-auto max-w-2xl w-full">
+                <div class="rounded-lg border border-border bg-card p-6 shadow-sm">
+                    <!-- Large timer display -->
+                    <div class="flex flex-col items-center justify-center py-4">
+                        <p id="emomStatus" class="text-xs font-medium uppercase tracking-wider text-muted-foreground">Round 0 of 0 | 0 Per Min</p>
+                        <p id="emomDisplay" class="timer-display-emom mt-2 font-mono text-5xl font-semibold text-foreground sm:text-6xl">01:00</p>
+                    </div>
+
+                    <!-- Action buttons -->
+                    <div class="flex flex-wrap gap-3 justify-center mt-6">
+                        <button type="button" id="emomClearBtn" class="inline-flex items-center justify-center rounded-md border border-border bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" aria-label="Clear timer">Clear</button>
+                        <button type="button" id="emomSetUpBtn" class="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" aria-label="Set up timer">Set Up</button>
+                    </div>
+
+                    <!-- Input sections: Minutes, Rounds, Reps Per Min -->
+                    <div class="mt-8 space-y-6 border-t border-border pt-6">
+                        <div>
+                            <label for="emomMinutesReadout" class="block text-sm font-medium text-foreground">Minutes per round</label>
+                            <div class="mt-2 flex items-center gap-2">
+                                <button type="button" id="emomMinutesMinus" class="stepper-btn" aria-label="Decrease minutes">−</button>
+                                <span id="emomMinutesReadout" class="value-readout font-mono text-lg text-foreground" aria-live="polite">1</span>
+                                <button type="button" id="emomMinutesPlus" class="stepper-btn" aria-label="Increase minutes">+</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="emomRoundsReadout" class="block text-sm font-medium text-foreground">Rounds</label>
+                            <div class="mt-2 flex items-center gap-2">
+                                <button type="button" id="emomRoundsMinus" class="stepper-btn" aria-label="Decrease rounds by 5">−5</button>
+                                <span id="emomRoundsReadout" class="value-readout font-mono text-lg text-foreground" aria-live="polite">10</span>
+                                <button type="button" id="emomRoundsPlus" class="stepper-btn" aria-label="Increase rounds by 5">+5</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="emomRepsReadout" class="block text-sm font-medium text-foreground">Reps per minute</label>
+                            <div class="mt-2 flex items-center gap-2">
+                                <button type="button" id="emomRepsMinus" class="stepper-btn" aria-label="Decrease reps per minute">−</button>
+                                <span id="emomRepsReadout" class="value-readout font-mono text-lg text-foreground" aria-live="polite">0</span>
+                                <button type="button" id="emomRepsPlus" class="stepper-btn" aria-label="Increase reps per minute">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About EMOM / How to Use This Timer -->
+                <div class="border-t border-border pt-8 mt-8">
+                    <h2 class="text-2xl font-semibold tracking-tight text-foreground mt-10 mb-6">What is an EMOM Timer & How to Use It</h2>
+
+                    <p class="mt-4 text-base leading-relaxed text-foreground">
+                        <strong class="text-foreground">EMOM</strong> stands for <em>Every Minute On the Minute</em>. It’s a popular high-intensity interval training (HIIT) format: at the start of each minute you begin a set of exercises, complete the prescribed reps or work as quickly as you can with good form, then rest for whatever time is left in that 60-second window. The cycle repeats for your chosen number of rounds, making it simple to structure and easy to scale.
+                    </p>
+
+                    <h3 class="mt-6 text-lg font-semibold text-foreground">How This Timer Works</h3>
+                    <p class="mt-4 text-base leading-relaxed text-muted-foreground">
+                        Set <strong class="text-foreground">Minutes per round</strong> (work window length, usually 1 minute), <strong class="text-foreground">Rounds</strong> (how many minutes/cycles), and optionally <strong class="text-foreground">Reps per minute</strong> as a target to aim for or to track pace. The large display counts down the current minute. Finish your reps early and you get more rest; struggle to finish and you get less rest and higher intensity. Use <strong class="text-foreground">Set Up</strong> to lock in your settings and start, and <strong class="text-foreground">Clear</strong> to reset.
+                    </p>
+
+                    <h3 class="mt-6 text-lg font-semibold text-foreground">Benefits</h3>
+                    <p class="mt-4 text-base leading-relaxed text-muted-foreground">
+                        EMOM builds work capacity, endurance, and mental toughness. It improves pacing and efficiency under fatigue and is highly time-efficient — you can get a full-body or strength-focused workout in 10–30 minutes. It scales from beginners (lower reps, more rest) to advanced (complex movements, heavier loads), and supports cardiovascular fitness, strength, and metabolic conditioning. It’s a staple of the Timerist fitness timers collection for good reason.
+                    </p>
+
+                    <h3 class="mt-6 text-lg font-semibold text-foreground">Tips for Best Results</h3>
+                    <ul class="mt-4 space-y-2 text-base leading-relaxed text-muted-foreground list-disc pl-6">
+                        <li>Choose exercises you can perform consistently with good form.</li>
+                        <li>Start conservative with reps and rounds to avoid burnout.</li>
+                        <li>Track your pace over time — faster completion means more rest and clear progress.</li>
+                        <li>Pair with bodyweight, dumbbells, barbells, or cardio moves depending on your goals.</li>
+                    </ul>
+
+                    <h3 class="mt-6 text-lg font-semibold text-foreground">Example Workouts</h3>
+                    <ul class="mt-4 space-y-3 text-base leading-relaxed text-muted-foreground list-disc pl-6">
+                        <li><strong class="text-foreground">Beginner:</strong> 10 rounds EMOM — 8–12 air squats (rest the remainder of each minute).</li>
+                        <li><strong class="text-foreground">Strength:</strong> 12 rounds EMOM — 5 deadlifts or push presses at moderate weight.</li>
+                        <li><strong class="text-foreground">Conditioning:</strong> 20 rounds EMOM alternating — Minute 1: 10 burpees, Minute 2: 15 kettlebell swings.</li>
+                        <li><strong class="text-foreground">Skill/Endurance:</strong> 15 rounds EMOM — 10 pull-ups or ring rows + 20 double-unders (scale as needed).</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+
+        <footer class="border-t border-border bg-card px-4 py-4 sm:px-6">
+            <div class="mx-auto max-w-2xl w-full text-center text-sm text-muted-foreground">
+                Part of <a href="/" class="font-medium text-foreground underline underline-offset-4 hover:opacity-80">Timerist Fitness Timers</a> collection.
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        (function () {
+            'use strict';
+
+            // Placeholder: EMOM timer state and DOM refs for future timer logic (start/stop, countdown, rounds).
+            const state = {
+                minutes: 1,
+                rounds: 10,
+                repsPerMin: 0,
+                currentRound: 0,
+                secondsRemaining: 60,
+                isRunning: false,
+            };
+
+            const display = document.getElementById('emomDisplay');
+            const statusEl = document.getElementById('emomStatus');
+            const minutesReadout = document.getElementById('emomMinutesReadout');
+            const roundsReadout = document.getElementById('emomRoundsReadout');
+            const repsReadout = document.getElementById('emomRepsReadout');
+
+            function formatTime(seconds) {
+                const m = Math.floor(seconds / 60);
+                const s = seconds % 60;
+                return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+            }
+
+            function render() {
+                if (display) display.textContent = formatTime(state.secondsRemaining);
+                if (statusEl) statusEl.textContent = 'Round ' + state.currentRound + ' of ' + state.rounds + ' | ' + state.repsPerMin + ' Per Min';
+                if (minutesReadout) minutesReadout.textContent = state.minutes;
+                if (roundsReadout) roundsReadout.textContent = state.rounds;
+                if (repsReadout) repsReadout.textContent = state.repsPerMin;
+            }
+
+            function clampMinutes(v) { return Math.max(1, Math.min(99, v)); }
+            function clampRounds(v) { return Math.max(0, Math.min(999, v)); }
+            function clampReps(v) { return Math.max(0, Math.min(999, v)); }
+
+            document.getElementById('emomMinutesMinus')?.addEventListener('click', function () {
+                state.minutes = clampMinutes(state.minutes - 1);
+                state.secondsRemaining = state.minutes * 60;
+                render();
+            });
+            document.getElementById('emomMinutesPlus')?.addEventListener('click', function () {
+                state.minutes = clampMinutes(state.minutes + 1);
+                state.secondsRemaining = state.minutes * 60;
+                render();
+            });
+            document.getElementById('emomRoundsMinus')?.addEventListener('click', function () {
+                state.rounds = clampRounds(state.rounds - 5);
+                render();
+            });
+            document.getElementById('emomRoundsPlus')?.addEventListener('click', function () {
+                state.rounds = clampRounds(state.rounds + 5);
+                render();
+            });
+            document.getElementById('emomRepsMinus')?.addEventListener('click', function () {
+                state.repsPerMin = clampReps(state.repsPerMin - 1);
+                render();
+            });
+            document.getElementById('emomRepsPlus')?.addEventListener('click', function () {
+                state.repsPerMin = clampReps(state.repsPerMin + 1);
+                render();
+            });
+
+            document.getElementById('emomClearBtn')?.addEventListener('click', function () {
+                state.minutes = 1;
+                state.rounds = 10;
+                state.repsPerMin = 0;
+                state.currentRound = 0;
+                state.secondsRemaining = 60;
+                state.isRunning = false;
+                render();
+            });
+
+            document.getElementById('emomSetUpBtn')?.addEventListener('click', function () {
+                // Extensible: open a setup modal/sheet or apply settings and (optionally) start.
+                console.log('EMOM Set Up clicked', state);
+            });
+
+            render();
+            console.log('EMOM Timer page loaded');
+        })();
+    </script>
+</body>
+</html>
