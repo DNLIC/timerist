@@ -1,0 +1,9 @@
+{
+  "format": "timerist_hiit",
+  "version": "1.0",
+  "name": "Beginner HIIT Blast",
+  "description": "20s max effort / 40s rest × 8 rounds",
+  "workSeconds": 20,
+  "restSeconds": 40,
+  "rounds": 8
+}

@@ -1,0 +1,13 @@
+{
+  "format": "timerist_mobility",
+  "version": "1.0",
+  "name": "Mobility Flow Sequence",
+  "description": "5-minute yoga-inspired transitions for recovery days",
+  "durationSeconds": 300,
+  "activities": [
+    {"name": "Cat-Cow", "durationSeconds": 30},
+    {"name": "Child's pose", "durationSeconds": 30},
+    {"name": "Hip circles", "durationSeconds": 45},
+    {"name": "Shoulder rolls", "durationSeconds": 30}
+  ]
+}

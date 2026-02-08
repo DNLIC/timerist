@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>About Timerist - Timerist | Fitness Timers</title>
-    <meta name="description" content="Timerist is a collection of free fitness timers: countdown, interval, HIIT, Tabata, EMOM, stopwatch, pyramid, mobility, and clock. Built for workouts at home or in the gym.">
+    <title>About Fitness Timers</title>
+    <meta name="description" content="About our Fitness Timers collection — Countdown, Interval, HIIT, Tabata, EMOM, Mobility, Pyramid, AMRAP, Stopwatch, Clock. Browser-based timers, then apps.">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -23,13 +23,12 @@
                         secondary: { DEFAULT: 'rgb(var(--secondary))', foreground: 'rgb(var(--secondary-foreground))' },
                         muted: { DEFAULT: 'rgb(var(--muted))', foreground: 'rgb(var(--muted-foreground))' },
                         accent: { DEFAULT: 'rgb(var(--accent))', foreground: 'rgb(var(--accent-foreground))' },
-                        destructive: { DEFAULT: 'rgb(var(--destructive))', foreground: 'rgb(var(--destructive-foreground))' },
                         border: 'rgb(var(--border))',
                         input: 'rgb(var(--input))',
                         ring: 'rgb(var(--ring))',
                     },
                     borderRadius: { lg: 'var(--radius)', md: 'calc(var(--radius) - 2px)', sm: 'calc(var(--radius) - 4px)' },
-                    fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'], mono: ['JetBrains Mono', 'ui-monospace', 'monospace'] },
+                    fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'] },
                 },
             },
         };
@@ -48,8 +47,6 @@
             --muted-foreground: 100 116 139;
             --accent: 244 244 245;
             --accent-foreground: 24 24 27;
-            --destructive: 239 68 68;
-            --destructive-foreground: 250 250 250;
             --border: 228 228 231;
             --input: 228 228 231;
             --ring: 24 24 27;
@@ -68,8 +65,6 @@
             --muted-foreground: 161 161 170;
             --accent: 39 39 42;
             --accent-foreground: 250 250 250;
-            --destructive: 239 68 68;
-            --destructive-foreground: 250 250 250;
             --border: 39 39 42;
             --input: 39 39 42;
             --ring: 212 212 216;
@@ -153,13 +148,18 @@
             background: rgb(var(--card));
             border: 1px solid rgb(var(--border));
             border-radius: var(--radius);
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-            z-index: 50;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 20;
         }
         .blog-nav .nav-dropdown a {
             display: block;
             padding: 0.5rem 1rem;
-            white-space: nowrap;
+            font-size: 0.875rem;
+            color: rgb(var(--foreground));
+            text-decoration: none;
+        }
+        .blog-nav .nav-dropdown a:hover {
+            background: rgb(var(--accent));
         }
         .blog-nav details { position: relative; }
         .blog-header-top {
@@ -202,7 +202,6 @@
         }
         #blog-timerist-logo { display: block; width: 40px; height: 40px; color: rgb(var(--foreground)); }
         #blog-timerist-logo circle, #blog-timerist-logo line { stroke: currentColor; stroke-width: 2.5; }
-        .dark #blog-timerist-logo { color: rgb(var(--foreground)); }
         @media (max-width: 390px) {
             .blog-header-top { padding: 0 0.75rem; }
             .blog-header-top .header-sep, .blog-header-top .blog-page-title { display: none; }
@@ -220,14 +219,10 @@
             visibility: hidden;
             transition: opacity 0.2s, visibility 0.2s;
         }
-        body.blog-menu-open .blog-menu-overlay {
-            opacity: 1;
-            visibility: visible;
-        }
+        body.blog-menu-open .blog-menu-overlay { opacity: 1; visibility: visible; }
         .blog-menu-drawer {
             position: fixed;
-            top: 0;
-            right: 0;
+            top: 0; right: 0;
             width: min(280px, 85vw);
             max-width: 280px;
             height: 100vh;
@@ -241,9 +236,7 @@
             display: flex;
             flex-direction: column;
         }
-        body.blog-menu-open .blog-menu-drawer {
-            transform: translateX(0);
-        }
+        body.blog-menu-open .blog-menu-drawer { transform: translateX(0); }
         .blog-menu-drawer .blog-menu-header {
             display: flex;
             justify-content: space-between;
@@ -260,25 +253,17 @@
             margin: 0;
         }
         .blog-menu-drawer .blog-menu-close {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            background: transparent;
+            width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+            border: none; background: transparent;
             color: rgb(var(--foreground));
             font-size: 1.5rem;
             cursor: pointer;
             border-radius: var(--radius);
             -webkit-tap-highlight-color: transparent;
         }
-        .blog-menu-drawer .blog-menu-close:hover {
-            background: rgb(var(--accent));
-        }
-        .blog-menu-drawer .blog-menu-content {
-            padding: 1rem 0;
-        }
+        .blog-menu-drawer .blog-menu-close:hover { background: rgb(var(--accent)); }
+        .blog-menu-drawer .blog-menu-content { padding: 1rem 0; }
         .blog-menu-drawer .blog-menu-content a {
             display: block;
             padding: 0.625rem 1.25rem;
@@ -288,9 +273,7 @@
             text-decoration: none;
             transition: background 0.2s;
         }
-        .blog-menu-drawer .blog-menu-content a:hover {
-            background: rgb(var(--accent));
-        }
+        .blog-menu-drawer .blog-menu-content a:hover { background: rgb(var(--accent)); }
         .blog-menu-drawer .blog-menu-content .blog-menu-sub {
             padding-left: 1.25rem;
             border-left: 2px solid rgb(var(--border));
@@ -303,9 +286,7 @@
             font-size: 0.875rem;
             color: rgb(var(--muted-foreground));
         }
-        .blog-menu-drawer .blog-menu-content .blog-menu-sub a:hover {
-            color: rgb(var(--foreground));
-        }
+        .blog-menu-drawer .blog-menu-content .blog-menu-sub a:hover { color: rgb(var(--foreground)); }
         .blog-menu-drawer .blog-menu-label {
             padding: 0.5rem 1.25rem;
             font-size: 0.75rem;
@@ -314,10 +295,18 @@
             letter-spacing: 0.05em;
             color: rgb(var(--muted-foreground));
         }
+        .about-page-content { max-width: 800px; margin-left: auto; margin-right: auto; }
+        .about-page-content a {
+            color: rgb(var(--foreground));
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+        .about-page-content a:hover { opacity: 0.8; }
     </style>
 </head>
 <body class="min-h-screen font-sans antialiased">
     <div class="flex flex-col min-h-screen">
+        <!-- Blog header: logo, site name, page title, theme + hamburger -->
         <div class="blog-header-top mx-auto w-full max-w-4xl px-4 sm:px-6">
             <div class="flex items-center gap-2 sm:gap-3">
                 <a href="index.html" class="flex items-center shrink-0" aria-label="Timerist home">
@@ -342,7 +331,8 @@
             <details class="inline-block">
                 <summary class="nav-summary">About</summary>
                 <div class="nav-dropdown">
-                    <a href="about.html">About Timerist</a>
+                    <a href="about.html">About Fitness Timers Collection</a>
+                    <a href="amrap-timer-about.html">AMRAP</a>
                     <a href="clock-timer-about.html">Clock</a>
                     <a href="countdown-timer-about.html">Countdown</a>
                     <a href="emon-timer-about.html">EMOM</a>
@@ -350,17 +340,18 @@
                     <a href="interval-timer-about.html">Interval</a>
                     <a href="mobility-timer-about.html">Mobility</a>
                     <a href="pyramid-timer-about.html">Pyramid</a>
+                    <a href="preset-countdowns-about.html">Preset Countdowns</a>
+                    <a href="preset-intervals-about.html">Preset Intervals</a>
                     <a href="stopwatch-timer-about.html">Stopwatch</a>
                     <a href="tabata-timer-about.html">Tabata</a>
                 </div>
             </details>
-            <a href="apps.html">Apps</a>
-            <a href="blog.html">Blog</a>
+            <a href="contact-form.html">Contact</a>
             <a href="faq.html">FAQ</a>
-            <a href="subscribe.html">Subscribe</a>
             <details class="inline-block">
                 <summary class="nav-summary">Timers</summary>
                 <div class="nav-dropdown">
+                    <a href="amrap.html">AMRAP</a>
                     <a href="clock.html">Clock</a>
                     <a href="countdown.html">Countdown</a>
                     <a href="emom.html">EMOM</a>
@@ -384,7 +375,8 @@
                 <a href="index.html">Home</a>
                 <span class="blog-menu-label">About</span>
                 <div class="blog-menu-sub">
-                    <a href="about.html">About Timerist</a>
+                    <a href="about.html">About Fitness Timers Collection</a>
+                    <a href="amrap-timer-about.html">AMRAP</a>
                     <a href="clock-timer-about.html">Clock</a>
                     <a href="countdown-timer-about.html">Countdown</a>
                     <a href="emon-timer-about.html">EMOM</a>
@@ -392,15 +384,16 @@
                     <a href="interval-timer-about.html">Interval</a>
                     <a href="mobility-timer-about.html">Mobility</a>
                     <a href="pyramid-timer-about.html">Pyramid</a>
+                    <a href="preset-countdowns-about.html">Preset Countdowns</a>
+                    <a href="preset-intervals-about.html">Preset Intervals</a>
                     <a href="stopwatch-timer-about.html">Stopwatch</a>
                     <a href="tabata-timer-about.html">Tabata</a>
                 </div>
-                <a href="apps.html">Apps</a>
-                <a href="blog.html">Blog</a>
+                <a href="contact-form.html">Contact</a>
                 <a href="faq.html">FAQ</a>
-                <a href="subscribe.html">Subscribe</a>
                 <span class="blog-menu-label">Timers</span>
                 <div class="blog-menu-sub">
+                    <a href="amrap.html">AMRAP</a>
                     <a href="clock.html">Clock</a>
                     <a href="countdown.html">Countdown</a>
                     <a href="emom.html">EMOM</a>
@@ -414,40 +407,57 @@
             </div>
         </aside>
 
+        <!-- Hero -->
         <header class="border-b border-border bg-background px-4 py-12 sm:py-16 md:py-20 sm:px-6">
             <div class="mx-auto max-w-4xl w-full text-center">
-                <h1 class="hero-headline text-5xl sm:text-6xl md:text-7xl tracking-tight leading-tight">
-                    About Timerist
+                <h1 class="hero-headline text-4xl sm:text-5xl md:text-6xl tracking-tight leading-tight">
+                    About Our Fitness Timers Collection
                 </h1>
-                <p class="hero-subhead text-xl sm:text-2xl md:text-3xl mt-4 sm:mt-6 leading-relaxed max-w-3xl mx-auto">
-                    Fitness timers for everyone — countdown, intervals, HIIT, Tabata, EMOM, and more.
-                </p>
-                <p class="mt-6 text-base leading-7 text-muted-foreground text-center max-w-2xl mx-auto">
-                    Part of the Timerist collection • <a href="mailto:hello@timerist.com" class="text-foreground underline underline-offset-2 hover:opacity-80">hello@timerist.com</a> • <a href="https://x.com/timeristapp" target="_blank" rel="noopener noreferrer" class="text-foreground underline underline-offset-2 hover:opacity-80">@timeristapp</a>
+                <p class="hero-subhead text-lg sm:text-xl md:text-2xl mt-4 sm:mt-6 leading-relaxed max-w-2xl mx-auto">
+                    Browser-based Timerist-style timers — simple, no sign-ups, built to keep you moving
                 </p>
             </div>
         </header>
 
         <main class="flex-1 px-4 py-8 sm:px-6">
-            <div class="mx-auto max-w-2xl w-full">
-                <h2 class="text-2xl font-semibold tracking-tight text-foreground mb-6">What is Timerist?</h2>
-                <p class="text-base leading-relaxed text-foreground">
-                    <strong class="text-foreground">Timerist</strong> is a free collection of fitness timers built for home workouts, gym sessions, and any training that runs on the clock. Whether you need a simple countdown, structured intervals, Tabata, EMOM, HIIT, pyramid, mobility blocks, a stopwatch, or a quick clock — we’ve got you covered.
+            <div class="about-page-content">
+                <p class="text-base leading-7 text-muted-foreground mt-6">
+                    This is a collection of browser-based fitness timers inspired by Timerist. One place for instructions and tools: <strong class="text-foreground">Countdown</strong>, <strong class="text-foreground">Quick Countdown / Presets</strong>, <strong class="text-foreground">Interval</strong>, <strong class="text-foreground">Preset Intervals</strong>, <strong class="text-foreground">Stopwatch</strong> (with splits), <strong class="text-foreground">EMOM</strong> (rep splits), <strong class="text-foreground">HIIT</strong> and presets, <strong class="text-foreground">Tabata</strong>, <strong class="text-foreground">Pyramid</strong>, <strong class="text-foreground">Mobility</strong>, <strong class="text-foreground">AMRAP</strong>, and <strong class="text-foreground">Clock</strong>. Each timer offers custom inputs, audio cues, progress display, and presets where it makes sense.
                 </p>
-                <h3 class="mt-6 text-lg font-semibold text-foreground">The collection</h3>
-                <p class="mt-4 text-base leading-relaxed text-muted-foreground">
-                    Each timer is available right in the browser: no app install required. Use them on your phone, tablet, or desktop. You’ll find guides and tips on the About pages for each timer (Clock, Countdown, EMOM, HIIT, Interval, Mobility, Pyramid, Stopwatch, Tabata), so you can pick the right format and get the most out of your sessions.
+                <p class="text-base leading-7 text-muted-foreground mt-4">
+                    <strong class="text-foreground">Goal:</strong> HTML versions first — use them in the browser with no install. Later we expand to App Store apps so you can take your workouts anywhere.
                 </p>
-                <h3 class="mt-6 text-lg font-semibold text-foreground">Get in touch</h3>
-                <p class="mt-4 text-base leading-relaxed text-muted-foreground">
-                    Questions, suggestions, or feedback? Email <a href="mailto:hello@timerist.com" class="text-foreground underline underline-offset-2 hover:opacity-80">hello@timerist.com</a> or reach out on X <a href="https://x.com/timeristapp" target="_blank" rel="noopener noreferrer" class="text-foreground underline underline-offset-2 hover:opacity-80">@timeristapp</a>. We’d love to hear from you.
+                <p class="text-base leading-7 text-muted-foreground mt-4">
+                    Use these timers for HIIT sessions, mobility flows, timed reps, and structured intervals. No sign-ups — just open a timer and go. Simple, motivational, and built for real workouts.
+                </p>
+                <ul class="mt-6 space-y-2 text-base leading-7 text-muted-foreground list-none pl-0">
+                    <li>⏱️ <strong class="text-foreground">Countdown</strong> — set time, go. Holds, rest, skill practice.</li>
+                    <li>📋 <strong class="text-foreground">Preset Countdowns</strong> — one-tap common durations.</li>
+                    <li>🔄 <strong class="text-foreground">Interval</strong> — work/rest cycles. Preset intervals for quick starts.</li>
+                    <li>⏲️ <strong class="text-foreground">Stopwatch &amp; Splits</strong> — elapsed time, lap tracking.</li>
+                    <li>📆 <strong class="text-foreground">EMOM</strong> — every minute on the minute, rep splits.</li>
+                    <li>🔥 <strong class="text-foreground">HIIT</strong> — high-intensity blocks. Presets for popular formats.</li>
+                    <li>⚡ <strong class="text-foreground">Tabata</strong> — 20s work / 10s rest, classic protocol.</li>
+                    <li>🔺 <strong class="text-foreground">Pyramid</strong> — ramping and descending intervals.</li>
+                    <li>🧘 <strong class="text-foreground">Mobility</strong> — timed stretches and flows.</li>
+                    <li>💪 <strong class="text-foreground">AMRAP</strong> — as many rounds/reps as possible in time.</li>
+                    <li>🕐 <strong class="text-foreground">Clock</strong> — real-time display for open workouts and classes.</li>
+                </ul>
+                <p class="text-base leading-7 text-muted-foreground mt-6">
+                    Pick a timer from <a href="index.html">Home</a>, set your parameters, and start. Questions? See the <a href="faq.html">FAQ</a> or <a href="contact-form.html">Contact</a>.
                 </p>
             </div>
         </main>
 
-        <footer class="border-t border-border bg-card px-4 py-4 sm:px-6">
+        <footer class="border-t border-border bg-card px-4 py-4 sm:px-6 mt-auto">
             <div class="mx-auto max-w-2xl w-full text-center text-sm text-muted-foreground">
-                Part of <a href="index.html" class="font-medium text-foreground underline underline-offset-4 hover:opacity-80">Timerist Fitness Timers</a> collection.
+                <a href="index.html" class="font-medium text-foreground underline underline-offset-4 hover:opacity-80">Home</a>
+                <span class="mx-2" aria-hidden="true">|</span>
+                <a href="contact-form.html" class="font-medium text-foreground underline underline-offset-4 hover:opacity-80">Contact</a>
+                <span class="mx-2" aria-hidden="true">|</span>
+                <a href="faq.html" class="font-medium text-foreground underline underline-offset-4 hover:opacity-80">FAQ</a>
+                <span class="mx-2" aria-hidden="true">|</span>
+                <span>VERSION 1.0</span>
             </div>
         </footer>
     </div>
@@ -455,7 +465,7 @@
     <script>
         (function () {
             'use strict';
-            const themeKey = 'timerist-theme';
+            var themeKey = 'timerist-theme';
             function getBlogTheme() {
                 var saved = localStorage.getItem(themeKey);
                 if (saved === 'dark' || saved === 'light') return saved;

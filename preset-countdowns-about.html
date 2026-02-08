@@ -4,15 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Countdown Timer - Timerist | Workout Countdown Timer</title>
-    <meta name="description" content="Countdown timer for workouts. Set your time and go. Part of Timerist Fitness Timers.">
-    <!-- If your site already uses Tailwind (e.g. built with PostCSS), remove the next script and rely on your global config. -->
+    <title>Preset Countdowns Guide - Timerist | Quick Start Countdown Timer, Common Workout Countdown Durations</title>
+    <meta name="description" content="Preset countdowns guide: quick start countdown timer with common workout countdown durations. One-tap time boxes for rests, holds, finishers. How to use preset countdowns and tips. Part of Timerist Fitness Timers.">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
     <script>
-        // Extend Tailwind so shadcn-style classes (bg-background, text-foreground, etc.) work with CSS variables.
         tailwind.config = {
             darkMode: 'class',
             theme: {
@@ -30,15 +28,8 @@
                         input: 'rgb(var(--input))',
                         ring: 'rgb(var(--ring))',
                     },
-                    borderRadius: {
-                        lg: 'var(--radius)',
-                        md: 'calc(var(--radius) - 2px)',
-                        sm: 'calc(var(--radius) - 4px)',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
-                    },
+                    borderRadius: { lg: 'var(--radius)', md: 'calc(var(--radius) - 2px)', sm: 'calc(var(--radius) - 4px)' },
+                    fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'], mono: ['JetBrains Mono', 'ui-monospace', 'monospace'] },
                 },
             },
         };
@@ -90,41 +81,6 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
-        .timer-display-emom {
-            font-variant-numeric: tabular-nums;
-            letter-spacing: -0.02em;
-        }
-        .stepper-btn {
-            min-width: 2.75rem;
-            min-height: 2.75rem;
-            padding: 0.5rem;
-            border: 1px solid rgb(var(--border));
-            border-radius: var(--radius);
-            background: rgb(var(--card));
-            color: rgb(var(--foreground));
-            font-size: 1.125rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.2s, border-color 0.2s;
-        }
-        .stepper-btn:hover {
-            background: rgb(var(--accent));
-            border-color: rgb(var(--input));
-        }
-        .stepper-btn:focus-visible {
-            outline: 2px solid rgb(var(--ring));
-            outline-offset: 2px;
-        }
-        .value-readout {
-            min-width: 3rem;
-            text-align: center;
-            font-weight: 600;
-            font-variant-numeric: tabular-nums;
-        }
-        /* Hero headline: shadcn Theme Explorer style — heavy weight + vertical gradient (darker top → lighter bottom) */
         .hero-headline {
             font-weight: 900;
             background: linear-gradient(180deg, rgb(0 0 0) 0%, rgb(24 24 27) 35%, rgb(63 63 70) 100%);
@@ -140,7 +96,6 @@
             color: transparent;
             -webkit-text-fill-color: transparent;
         }
-        /* Hero subhead: matches shadcn Theme Explorer — font-extrabold (800) + horizontal gradient light→dark (left to right) */
         .hero-subhead {
             font-weight: 800;
             letter-spacing: -0.02em;
@@ -157,7 +112,6 @@
             color: transparent;
             -webkit-text-fill-color: transparent;
         }
-        /* Blog nav: Theme Explorer–style menu line with Timers dropdown */
         .blog-nav {
             display: flex;
             flex-wrap: wrap;
@@ -208,7 +162,6 @@
             white-space: nowrap;
         }
         .blog-nav details { position: relative; }
-        /* Blog header: same strip as timer pages (logo, site name, page title, theme toggle, hamburger) */
         .blog-header-top {
             display: flex;
             justify-content: space-between;
@@ -255,11 +208,9 @@
             .blog-header-top .header-sep, .blog-header-top .blog-page-title { display: none; }
             .blog-header-actions .blog-mode-btn, .blog-header-actions .blog-hamburger { width: 40px; height: 40px; font-size: 1.125rem; }
         }
-        /* Mobile: horizontal nav hidden; hamburger opens drawer instead */
         @media (max-width: 768px) {
             body:not(.blog-nav-open) .blog-nav { display: none; }
         }
-        /* Blog hamburger menu: slide-out drawer with same nav links (vertical list) */
         .blog-menu-overlay {
             position: fixed;
             inset: 0;
@@ -367,7 +318,7 @@
 </head>
 <body class="min-h-screen font-sans antialiased">
     <div class="flex flex-col min-h-screen">
-        <!-- ========== BLOG HEADER (timer pages style: logo, site name, page title, theme + hamburger) ========== -->
+        <!-- ========== BLOG HEADER ========== -->
         <div class="blog-header-top mx-auto w-full max-w-4xl px-4 sm:px-6">
             <div class="flex items-center gap-2 sm:gap-3">
                 <a href="index.html" class="flex items-center shrink-0" aria-label="Timerist home">
@@ -379,7 +330,7 @@
                 </a>
                 <a href="index.html" class="font-semibold text-foreground" style="font-size: clamp(1rem, 3vw, 1.25rem);">timerist.com</a>
                 <span class="header-sep">|</span>
-                <span class="blog-page-title font-semibold text-foreground" style="font-size: clamp(1rem, 3vw, 1.25rem);">Countdown</span>
+                <span class="blog-page-title font-semibold text-foreground" style="font-size: clamp(1rem, 3vw, 1.25rem);">Preset Countdowns</span>
             </div>
             <div class="blog-header-actions">
                 <button type="button" class="blog-mode-btn" id="blogThemeBtn" aria-label="Toggle dark mode"><span id="blog-theme-icon">🌙</span></button>
@@ -388,7 +339,7 @@
         </div>
         <!-- ========== END BLOG HEADER ========== -->
 
-        <!-- ========== BLOG NAV (Theme Explorer–style menu line; duplicate on other blog pages) ========== -->
+        <!-- ========== BLOG NAV ========== -->
         <nav class="blog-nav mx-auto w-full max-w-4xl px-4 sm:px-6" id="blogNav" aria-label="Main">
             <a href="index.html">Home</a>
             <details class="inline-block">
@@ -401,6 +352,7 @@
                     <a href="hiit-timer-about.html">HIIT</a>
                     <a href="interval-timer-about.html">Interval</a>
                     <a href="mobility-timer-about.html">Mobility</a>
+                    <a href="preset-countdowns-about.html">Preset Countdowns</a>
                     <a href="pyramid-timer-about.html">Pyramid</a>
                     <a href="stopwatch-timer-about.html">Stopwatch</a>
                     <a href="tabata-timer-about.html">Tabata</a>
@@ -419,6 +371,7 @@
                     <a href="hiit.html">HIIT</a>
                     <a href="interval.html">Interval</a>
                     <a href="mobility.html">Mobility</a>
+                    <a href="preset-countdown.html">Preset Countdown</a>
                     <a href="pyramid.html">Pyramid</a>
                     <a href="stopwatch.html">Stopwatch</a>
                     <a href="tabata.html">Tabata</a>
@@ -427,7 +380,6 @@
         </nav>
         <!-- ========== END BLOG NAV ========== -->
 
-        <!-- Blog hamburger menu: slide-out drawer with same links as horizontal nav (vertical list) -->
         <div class="blog-menu-overlay" id="blogMenuOverlay" aria-hidden="true"></div>
         <aside class="blog-menu-drawer" id="blogMenuDrawer" role="dialog" aria-label="Menu">
             <div class="blog-menu-header">
@@ -445,6 +397,7 @@
                     <a href="hiit-timer-about.html">HIIT</a>
                     <a href="interval-timer-about.html">Interval</a>
                     <a href="mobility-timer-about.html">Mobility</a>
+                    <a href="preset-countdowns-about.html">Preset Countdowns</a>
                     <a href="pyramid-timer-about.html">Pyramid</a>
                     <a href="stopwatch-timer-about.html">Stopwatch</a>
                     <a href="tabata-timer-about.html">Tabata</a>
@@ -461,6 +414,7 @@
                     <a href="hiit.html">HIIT</a>
                     <a href="interval.html">Interval</a>
                     <a href="mobility.html">Mobility</a>
+                    <a href="preset-countdown.html">Preset Countdown</a>
                     <a href="pyramid.html">Pyramid</a>
                     <a href="stopwatch.html">Stopwatch</a>
                     <a href="tabata.html">Tabata</a>
@@ -468,85 +422,64 @@
             </div>
         </aside>
 
-        <!-- ========== HERO SECTION (template for other timer pages: Tabata, HIIT, AMRAP, etc.) ========== -->
+        <!-- ========== HERO SECTION ========== -->
         <header class="border-b border-border bg-background px-4 py-12 sm:py-16 md:py-20 sm:px-6">
             <div class="mx-auto max-w-4xl w-full text-center">
                 <h1 class="hero-headline text-5xl sm:text-6xl md:text-7xl tracking-tight leading-tight">
-                    Count Down to Greatness: The Countdown Timer Guide
+                    Instant Time Box: The Preset Countdowns Guide
                 </h1>
                 <p class="hero-subhead text-xl sm:text-2xl md:text-3xl mt-4 sm:mt-6 leading-relaxed max-w-3xl mx-auto">
-                    Set it, start it, own it — simple, reliable timing for holds, sets, tests, and focused efforts
+                    Pick a ready-made duration, hit start, and dive in — no dials, just pure focused effort
                 </p>
-                <p class="mt-4 text-base text-foreground text-center">Ready to time your effort? Jump to the <a href="countdown-timer.html" class="underline underline-offset-4 hover:opacity-80">Countdown Timer</a>. Or start instantly with <a href="preset-countdowns.html" class="underline underline-offset-4 hover:opacity-80">Preset Countdowns</a> for common durations.</p>
-                <p class="mt-6 text-base leading-7 text-muted-foreground text-center max-w-2xl mx-auto">
-                    Brought to you by Timerist • Questions or suggestions? Reach out at <a href="mailto:hello@timerist.com" class="text-foreground underline underline-offset-2 hover:opacity-80">hello@timerist.com</a> or on X <a href="https://x.com/timeristapp" target="_blank" rel="noopener noreferrer" class="text-foreground underline underline-offset-2 hover:opacity-80">@timeristapp</a>.
-                </p>
+                <p class="mt-4 text-base text-foreground text-center">Ready for instant countdowns? Jump to the <a href="preset-countdowns.html" class="underline underline-offset-4 hover:opacity-80">Preset Countdowns</a>. For full control over any duration, check the <a href="countdown-timer.html" class="underline underline-offset-4 hover:opacity-80">Countdown Timer</a>.</p>
+                <p class="mt-6 text-base leading-7 text-muted-foreground text-center">Brought to you by Timerist • Questions or suggestions? Reach out at <a href="mailto:hello@timerist.com" class="text-foreground underline underline-offset-2 hover:opacity-80">hello@timerist.com</a> or on X <a href="https://x.com/timeristapp" target="_blank" rel="noopener noreferrer" class="text-foreground underline underline-offset-2 hover:opacity-80">@timeristapp</a>.</p>
             </div>
         </header>
         <!-- ========== END HERO SECTION ========== -->
 
         <main class="flex-1 px-4 py-8 sm:px-6">
             <div class="mx-auto max-w-2xl w-full">
+                <!-- Quick link to timer -->
                 <div class="rounded-lg border border-border bg-card p-6 shadow-sm">
-                    <!-- Large timer display -->
-                    <div class="flex flex-col items-center justify-center py-4">
-                        <p id="countdownStatus" class="text-xs font-medium uppercase tracking-wider text-muted-foreground">Ready</p>
-                        <p id="countdownDisplay" class="timer-display-emom mt-2 font-mono text-5xl font-semibold text-foreground sm:text-6xl">01:00</p>
-                    </div>
-
-                    <!-- Action buttons -->
-                    <div class="flex flex-wrap gap-3 justify-center mt-6">
-                        <button type="button" id="countdownClearBtn" class="inline-flex items-center justify-center rounded-md border border-border bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" aria-label="Clear timer">Clear</button>
-                        <button type="button" id="countdownStartBtn" class="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" aria-label="Start timer">Start</button>
-                    </div>
-
-                    <!-- Input sections: Minutes, Seconds -->
-                    <div class="mt-8 space-y-6 border-t border-border pt-6">
-                        <div>
-                            <label for="countdownMinutesReadout" class="block text-sm font-medium text-foreground">Minutes</label>
-                            <div class="mt-2 flex items-center gap-2">
-                                <button type="button" id="countdownMinutesMinus" class="stepper-btn" aria-label="Decrease minutes">−</button>
-                                <span id="countdownMinutesReadout" class="value-readout font-mono text-lg text-foreground" aria-live="polite">1</span>
-                                <button type="button" id="countdownMinutesPlus" class="stepper-btn" aria-label="Increase minutes">+</button>
-                            </div>
-                        </div>
-                        <div>
-                            <label for="countdownSecondsReadout" class="block text-sm font-medium text-foreground">Seconds</label>
-                            <div class="mt-2 flex items-center gap-2">
-                                <button type="button" id="countdownSecondsMinus" class="stepper-btn" aria-label="Decrease seconds">−</button>
-                                <span id="countdownSecondsReadout" class="value-readout font-mono text-lg text-foreground" aria-live="polite">0</span>
-                                <button type="button" id="countdownSecondsPlus" class="stepper-btn" aria-label="Increase seconds">+</button>
-                            </div>
-                        </div>
-                    </div>
+                    <p class="text-base leading-relaxed text-muted-foreground text-center">Tap a preset on the timer page and go — no setup. Use the link below to open the quick-start countdown timer.</p>
+                    <p class="mt-4 text-center">
+                        <a href="preset-countdowns.html" class="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">Open Preset Countdown Timer</a>
+                    </p>
                 </div>
 
-                <!-- About Countdown / How to Use This Timer -->
+                <!-- About Preset Countdowns / How to Use -->
                 <div class="border-t border-border pt-8 mt-8">
-                    <h2 class="text-2xl font-semibold tracking-tight text-foreground mt-10 mb-6">What is a Countdown Timer & How to Use It</h2>
+                    <h2 class="text-2xl font-semibold tracking-tight text-foreground mt-10 mb-6">What are Preset Countdowns & How to Use Them</h2>
 
                     <p class="mt-4 text-base leading-relaxed text-muted-foreground">
-                        A countdown timer counts down from a set duration to zero, signaling the end of a timed effort, hold, set, rest, or test. It's the simplest and most versatile tool for fixed-time activities — no complex intervals, just pure duration focus. Whether you're timing a plank, resting between heavy sets, or drilling a skill for a set length, the workout countdown timer keeps you locked in until the beep.
+                        <strong class="text-foreground">Preset Countdowns</strong> are pre-set fixed durations — think 30 seconds, 1 minute, 2 minutes, 5 or 10 minutes — available as one-tap quick starts. Unlike the custom <a href="countdown-timer-about.html" class="text-foreground underline underline-offset-2 hover:opacity-80">Countdown Timer</a>, where you dial in exact seconds, presets remove setup entirely: select one and begin. They’re perfect when you want a standard time box without thinking. This preset countdowns guide walks you through how to get the most from these common workout countdown durations.
                     </p>
 
+                    <h3 class="mt-6 text-lg font-semibold text-foreground">How It Works</h3>
                     <p class="mt-4 text-base leading-relaxed text-muted-foreground">
-                        Set your minutes and seconds (or use presets like 30s, 60s, or 2 minutes if your timer offers them), hit start, and get visual and audio alerts as time expires. Pause and resume when you need a quick break; reset with <strong class="text-foreground">Clear</strong> when you're done. The large display shows remaining time at a glance. Ideal for single efforts, plank holds, rest periods between sets, or skill practice — the countdown timer guide you need is right here.
+                        Browse or tap a preset duration from the list or cards. It loads instantly and starts counting down from that time with clear visual and audio end cues. Pause, resume, or reset as needed. Use preset countdowns for single efforts, timed holds, rest windows, or finishers. They’re ideal for fast transitions in classes or when you’re ready to go <em>now</em> — no configuration, no mistakes. Need to track total elapsed time instead? Pair with the <a href="stopwatch-timer-about.html" class="text-foreground underline underline-offset-2 hover:opacity-80">Stopwatch</a>. For timed holds or mobility flows, the <a href="mobility-timer-about.html" class="text-foreground underline underline-offset-2 hover:opacity-80">Mobility</a> timer fits multi-segment routines. For repeating work/rest cycles, try the <a href="interval-timer-about.html" class="text-foreground underline underline-offset-2 hover:opacity-80">Interval</a> timer.
                     </p>
 
+                    <h3 class="mt-6 text-lg font-semibold text-foreground">Benefits</h3>
                     <p class="mt-4 text-base leading-relaxed text-muted-foreground">
-                        A countdown builds discipline and mental focus under time pressure. It's perfect for measuring progress: hold that plank 10 seconds longer next week, or shave 5 seconds off your rest and watch your work capacity grow. Set once, execute fully — no decision fatigue. Use it in the gym, at home, in yoga, or for running drills. Pair it with a <a href="stopwatch-timer-about.html" class="text-foreground underline underline-offset-2 hover:opacity-80">Stopwatch</a> for elapsed time, an <a href="interval-timer-about.html" class="text-foreground underline underline-offset-2 hover:opacity-80">Interval</a> timer for repeating work/rest cycles, or the <a href="mobility-timer-about.html" class="text-foreground underline underline-offset-2 hover:opacity-80">Mobility</a> timer for timed holds in stretches — hybrid workouts have never been easier.
+                        <strong class="text-foreground">Lightning-fast start.</strong> Your momentum stays high because you’re not fumbling with dials or typing numbers. <strong class="text-foreground">Reliable for common staples.</strong> Planks, rest between sets, AMRAP finishers — these common workout countdown durations are built in, so you get consistent time boxes every time. <strong class="text-foreground">Consistency.</strong> Repeatable standard times make it easy to compare sessions and track progress. <strong class="text-foreground">Beginner-proof.</strong> No configuration errors: pick a duration and go. When you need an odd duration (e.g. 2:37), the custom <a href="countdown-timer-about.html" class="text-foreground underline underline-offset-2 hover:opacity-80">Countdown Timer</a> complements presets perfectly.
                     </p>
 
-                    <p class="mt-4 text-base leading-relaxed text-muted-foreground">
-                        Use presets for common times (e.g. 30s, 60s, 2 min) to save setup. Add a 5–10 second buffer for transitions if you need it. Visualize success as the clock ticks — stay present. Track sessions to set new personal bests, and combine with notes (e.g. reps achieved in time) for full logs. Timed hold examples and fitness countdowns become second nature.
-                    </p>
+                    <h3 class="mt-6 text-lg font-semibold text-foreground">Tips for Best Results</h3>
+                    <ul class="mt-4 space-y-2 text-base leading-relaxed text-muted-foreground list-disc pl-6">
+                        <li>Pick based on purpose: short (20–60 seconds) for intensity bursts; longer (3–10 minutes) for endurance or holds.</li>
+                        <li>Use as rest timers between sets — start immediately after finishing work so recovery stays consistent.</li>
+                        <li>Track how you feel at each preset over time (e.g. “60s plank now easy” = progress).</li>
+                        <li>Combine with other timers: run a Preset Countdown, then switch to an <a href="interval-timer-about.html" class="text-foreground underline underline-offset-2 hover:opacity-80">Interval</a> for a hybrid workout.</li>
+                        <li>Favorite the presets you use most for even quicker access.</li>
+                    </ul>
 
-                    <p class="mt-4 text-base leading-relaxed text-muted-foreground">Simple example workouts you can run with this countdown:</p>
-                    <ul class="mt-4 space-y-3 list-disc pl-6 text-muted-foreground">
-                        <li><strong class="text-foreground">Core hold:</strong> 60-second plank countdown — hold perfect form to zero.</li>
-                        <li><strong class="text-foreground">Rest timing:</strong> 90-second rest between heavy sets — start countdown immediately.</li>
-                        <li><strong class="text-foreground">Mobility stretch:</strong> 45-second hold per side — deep lunge or pigeon pose.</li>
-                        <li><strong class="text-foreground">Skill drill:</strong> 2-minute handstand practice — aim to stay up longer each attempt.</li>
+                    <h3 class="mt-6 text-lg font-semibold text-foreground">Simple Example Presets & Uses</h3>
+                    <ul class="mt-4 space-y-3 list-disc pl-6">
+                        <li class="text-base leading-relaxed text-muted-foreground"><strong class="text-foreground">60-second plank or wall sit</strong> — core stability builder.</li>
+                        <li class="text-base leading-relaxed text-muted-foreground"><strong class="text-foreground">90-second rest between heavy lifts</strong> — standard recovery window.</li>
+                        <li class="text-base leading-relaxed text-muted-foreground"><strong class="text-foreground">2-minute max-effort cardio finisher</strong> — push to the buzzer.</li>
+                        <li class="text-base leading-relaxed text-muted-foreground"><strong class="text-foreground">5-minute yoga flow or mobility circuit</strong> — timed open practice.</li>
                     </ul>
                 </div>
             </div>
@@ -554,7 +487,7 @@
 
         <footer class="border-t border-border bg-card px-4 py-4 sm:px-6">
             <div class="mx-auto max-w-2xl w-full text-center text-sm text-muted-foreground">
-                Part of <a href="/" class="font-medium text-foreground underline underline-offset-4 hover:opacity-80">Timerist Fitness Timers</a> collection.
+                Part of <a href="index.html" class="font-medium text-foreground underline underline-offset-4 hover:opacity-80">Timerist Fitness Timers</a> collection.
             </div>
         </footer>
     </div>
@@ -562,8 +495,6 @@
     <script>
         (function () {
             'use strict';
-
-            // Blog header: theme toggle (class "dark" on html) + hamburger (toggle nav on mobile)
             const themeKey = 'timerist-theme';
             function getBlogTheme() {
                 var saved = localStorage.getItem(themeKey);
@@ -588,7 +519,6 @@
                 applyBlogTheme(isDark ? 'light' : 'dark');
                 updateBlogThemeIcon();
             });
-            // Hamburger: open drawer (same menu as horizontal nav, vertical list)
             function openBlogMenu() {
                 document.body.classList.add('blog-menu-open');
                 document.getElementById('blogMenuOverlay')?.setAttribute('aria-hidden', 'false');
@@ -605,82 +535,6 @@
             document.querySelectorAll('.blog-menu-drawer .blog-menu-content a').forEach(function (a) {
                 a.addEventListener('click', closeBlogMenu);
             });
-
-            // Countdown timer state and DOM refs (display + steppers; full countdown logic can be added later).
-            const state = {
-                minutes: 1,
-                seconds: 0,
-                totalSeconds: 60,
-                isRunning: false,
-            };
-
-            const display = document.getElementById('countdownDisplay');
-            const statusEl = document.getElementById('countdownStatus');
-            const minutesReadout = document.getElementById('countdownMinutesReadout');
-            const secondsReadout = document.getElementById('countdownSecondsReadout');
-
-            function formatTime(seconds) {
-                const m = Math.floor(seconds / 60);
-                const s = seconds % 60;
-                return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
-            }
-
-            function totalFromState() {
-                return state.minutes * 60 + state.seconds;
-            }
-
-            function render() {
-                var total = totalFromState();
-                if (display) display.textContent = formatTime(total);
-                if (statusEl) statusEl.textContent = state.isRunning ? 'Running' : 'Ready';
-                if (minutesReadout) minutesReadout.textContent = state.minutes;
-                if (secondsReadout) secondsReadout.textContent = state.seconds;
-            }
-
-            function clampMinutes(v) { return Math.max(0, Math.min(99, v)); }
-            function clampSeconds(v) { return Math.max(0, Math.min(59, v)); }
-
-            document.getElementById('countdownMinutesMinus')?.addEventListener('click', function () {
-                state.minutes = clampMinutes(state.minutes - 1);
-                render();
-            });
-            document.getElementById('countdownMinutesPlus')?.addEventListener('click', function () {
-                state.minutes = clampMinutes(state.minutes + 1);
-                render();
-            });
-            document.getElementById('countdownSecondsMinus')?.addEventListener('click', function () {
-                if (state.seconds === 0 && state.minutes > 0) {
-                    state.minutes--;
-                    state.seconds = 59;
-                } else {
-                    state.seconds = clampSeconds(state.seconds - 1);
-                }
-                render();
-            });
-            document.getElementById('countdownSecondsPlus')?.addEventListener('click', function () {
-                if (state.seconds === 59) {
-                    state.minutes = clampMinutes(state.minutes + 1);
-                    state.seconds = 0;
-                } else {
-                    state.seconds = clampSeconds(state.seconds + 1);
-                }
-                render();
-            });
-
-            document.getElementById('countdownClearBtn')?.addEventListener('click', function () {
-                state.minutes = 1;
-                state.seconds = 0;
-                state.isRunning = false;
-                render();
-            });
-
-            document.getElementById('countdownStartBtn')?.addEventListener('click', function () {
-                // Teaser: redirect to main countdown timer or start in-page countdown later.
-                window.location.href = 'countdown.html';
-            });
-
-            render();
-            console.log('Countdown Timer about page loaded');
         })();
     </script>
 </body>

@@ -1,0 +1,7 @@
+{
+  "format": "timerist_pyramid",
+  "version": "1.0",
+  "name": "Leg Day Pyramid",
+  "description": "Progressive build-up then drop: 10-20-30-20-10 reps",
+  "steps": [10, 20, 30, 20, 10]
+}

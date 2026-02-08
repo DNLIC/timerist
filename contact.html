@@ -4,15 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Countdown Timer - Timerist | Workout Countdown Timer</title>
-    <meta name="description" content="Countdown timer for workouts. Set your time and go. Part of Timerist Fitness Timers.">
-    <!-- If your site already uses Tailwind (e.g. built with PostCSS), remove the next script and rely on your global config. -->
+    <title>Contact - Fitness Timers</title>
+    <meta name="description" content="Contact the Fitness Timers team. Support, feedback, sales, or workout submissions—reach out via email.">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
     <script>
-        // Extend Tailwind so shadcn-style classes (bg-background, text-foreground, etc.) work with CSS variables.
         tailwind.config = {
             darkMode: 'class',
             theme: {
@@ -30,15 +28,8 @@
                         input: 'rgb(var(--input))',
                         ring: 'rgb(var(--ring))',
                     },
-                    borderRadius: {
-                        lg: 'var(--radius)',
-                        md: 'calc(var(--radius) - 2px)',
-                        sm: 'calc(var(--radius) - 4px)',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
-                    },
+                    borderRadius: { lg: 'var(--radius)', md: 'calc(var(--radius) - 2px)', sm: 'calc(var(--radius) - 4px)' },
+                    fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Arial', 'sans-serif'], mono: ['JetBrains Mono', 'ui-monospace', 'monospace'] },
                 },
             },
         };
@@ -63,6 +54,7 @@
             --input: 228 228 231;
             --ring: 24 24 27;
             --radius: 0.5rem;
+            --accent-orange: #ff4500;
         }
         .dark {
             --background: 10 10 10;
@@ -90,41 +82,6 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
-        .timer-display-emom {
-            font-variant-numeric: tabular-nums;
-            letter-spacing: -0.02em;
-        }
-        .stepper-btn {
-            min-width: 2.75rem;
-            min-height: 2.75rem;
-            padding: 0.5rem;
-            border: 1px solid rgb(var(--border));
-            border-radius: var(--radius);
-            background: rgb(var(--card));
-            color: rgb(var(--foreground));
-            font-size: 1.125rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.2s, border-color 0.2s;
-        }
-        .stepper-btn:hover {
-            background: rgb(var(--accent));
-            border-color: rgb(var(--input));
-        }
-        .stepper-btn:focus-visible {
-            outline: 2px solid rgb(var(--ring));
-            outline-offset: 2px;
-        }
-        .value-readout {
-            min-width: 3rem;
-            text-align: center;
-            font-weight: 600;
-            font-variant-numeric: tabular-nums;
-        }
-        /* Hero headline: shadcn Theme Explorer style — heavy weight + vertical gradient (darker top → lighter bottom) */
         .hero-headline {
             font-weight: 900;
             background: linear-gradient(180deg, rgb(0 0 0) 0%, rgb(24 24 27) 35%, rgb(63 63 70) 100%);
@@ -140,24 +97,6 @@
             color: transparent;
             -webkit-text-fill-color: transparent;
         }
-        /* Hero subhead: matches shadcn Theme Explorer — font-extrabold (800) + horizontal gradient light→dark (left to right) */
-        .hero-subhead {
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            background: linear-gradient(90deg, rgb(148 163 184) 0%, rgb(100 116 139) 25%, rgb(51 65 85) 50%, rgb(30 41 59) 85%, rgb(15 23 42) 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            -webkit-text-fill-color: transparent;
-        }
-        .dark .hero-subhead {
-            background: linear-gradient(90deg, rgb(248 250 252) 0%, rgb(203 213 225) 35%, rgb(148 163 184) 65%, rgb(71 85 105) 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            -webkit-text-fill-color: transparent;
-        }
-        /* Blog nav: Theme Explorer–style menu line with Timers dropdown */
         .blog-nav {
             display: flex;
             flex-wrap: wrap;
@@ -208,7 +147,6 @@
             white-space: nowrap;
         }
         .blog-nav details { position: relative; }
-        /* Blog header: same strip as timer pages (logo, site name, page title, theme toggle, hamburger) */
         .blog-header-top {
             display: flex;
             justify-content: space-between;
@@ -255,11 +193,9 @@
             .blog-header-top .header-sep, .blog-header-top .blog-page-title { display: none; }
             .blog-header-actions .blog-mode-btn, .blog-header-actions .blog-hamburger { width: 40px; height: 40px; font-size: 1.125rem; }
         }
-        /* Mobile: horizontal nav hidden; hamburger opens drawer instead */
         @media (max-width: 768px) {
             body:not(.blog-nav-open) .blog-nav { display: none; }
         }
-        /* Blog hamburger menu: slide-out drawer with same nav links (vertical list) */
         .blog-menu-overlay {
             position: fixed;
             inset: 0;
@@ -363,11 +299,43 @@
             letter-spacing: 0.05em;
             color: rgb(var(--muted-foreground));
         }
+        /* Contact page: mailto cards with fitness accent */
+        .contact-card {
+            display: block;
+            padding: 1rem 1.25rem;
+            border: 1px solid rgb(var(--border));
+            border-radius: var(--radius);
+            background: rgb(var(--card));
+            color: rgb(var(--card-foreground));
+            text-decoration: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            min-height: 52px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .contact-card:hover,
+        .contact-card:focus {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 0 2px rgba(255, 69, 0, 0.2);
+            outline: none;
+        }
+        .contact-card .contact-label {
+            font-weight: 600;
+            font-size: 1.0625rem;
+        }
+        .contact-card .contact-desc {
+            font-size: 0.9375rem;
+            color: rgb(var(--muted-foreground));
+            margin-top: 0.25rem;
+        }
+        .contact-card:hover .contact-desc,
+        .contact-card:focus .contact-desc {
+            color: rgb(var(--foreground));
+        }
     </style>
 </head>
 <body class="min-h-screen font-sans antialiased">
     <div class="flex flex-col min-h-screen">
-        <!-- ========== BLOG HEADER (timer pages style: logo, site name, page title, theme + hamburger) ========== -->
+        <!-- ========== BLOG HEADER ========== -->
         <div class="blog-header-top mx-auto w-full max-w-4xl px-4 sm:px-6">
             <div class="flex items-center gap-2 sm:gap-3">
                 <a href="index.html" class="flex items-center shrink-0" aria-label="Timerist home">
@@ -379,7 +347,7 @@
                 </a>
                 <a href="index.html" class="font-semibold text-foreground" style="font-size: clamp(1rem, 3vw, 1.25rem);">timerist.com</a>
                 <span class="header-sep">|</span>
-                <span class="blog-page-title font-semibold text-foreground" style="font-size: clamp(1rem, 3vw, 1.25rem);">Countdown</span>
+                <span class="blog-page-title font-semibold text-foreground" style="font-size: clamp(1rem, 3vw, 1.25rem);">Contact</span>
             </div>
             <div class="blog-header-actions">
                 <button type="button" class="blog-mode-btn" id="blogThemeBtn" aria-label="Toggle dark mode"><span id="blog-theme-icon">🌙</span></button>
@@ -388,19 +356,22 @@
         </div>
         <!-- ========== END BLOG HEADER ========== -->
 
-        <!-- ========== BLOG NAV (Theme Explorer–style menu line; duplicate on other blog pages) ========== -->
+        <!-- ========== BLOG NAV ========== -->
         <nav class="blog-nav mx-auto w-full max-w-4xl px-4 sm:px-6" id="blogNav" aria-label="Main">
             <a href="index.html">Home</a>
             <details class="inline-block">
                 <summary class="nav-summary">About</summary>
                 <div class="nav-dropdown">
                     <a href="about.html">About Timerist</a>
+                    <a href="amrap-timer-about.html">AMRAP</a>
                     <a href="clock-timer-about.html">Clock</a>
                     <a href="countdown-timer-about.html">Countdown</a>
                     <a href="emon-timer-about.html">EMOM</a>
                     <a href="hiit-timer-about.html">HIIT</a>
                     <a href="interval-timer-about.html">Interval</a>
                     <a href="mobility-timer-about.html">Mobility</a>
+                    <a href="preset-countdowns-about.html">Preset Countdowns</a>
+                    <a href="preset-intervals-about.html">Preset Intervals</a>
                     <a href="pyramid-timer-about.html">Pyramid</a>
                     <a href="stopwatch-timer-about.html">Stopwatch</a>
                     <a href="tabata-timer-about.html">Tabata</a>
@@ -409,16 +380,22 @@
             <a href="apps.html">Apps</a>
             <a href="blog.html">Blog</a>
             <a href="faq.html">FAQ</a>
+            <a href="downloads.html">📥 Downloads</a>
+            <a href="import-export.html">Import & Export</a>
+            <a href="contact.html">Contact</a>
             <a href="subscribe.html">Subscribe</a>
             <details class="inline-block">
                 <summary class="nav-summary">Timers</summary>
                 <div class="nav-dropdown">
+                    <a href="amrap.html">AMRAP</a>
                     <a href="clock.html">Clock</a>
                     <a href="countdown.html">Countdown</a>
                     <a href="emom.html">EMOM</a>
                     <a href="hiit.html">HIIT</a>
                     <a href="interval.html">Interval</a>
                     <a href="mobility.html">Mobility</a>
+                    <a href="preset-countdown.html">Preset Countdown</a>
+                    <a href="preset-interval.html">Preset Interval</a>
                     <a href="pyramid.html">Pyramid</a>
                     <a href="stopwatch.html">Stopwatch</a>
                     <a href="tabata.html">Tabata</a>
@@ -427,7 +404,6 @@
         </nav>
         <!-- ========== END BLOG NAV ========== -->
 
-        <!-- Blog hamburger menu: slide-out drawer with same links as horizontal nav (vertical list) -->
         <div class="blog-menu-overlay" id="blogMenuOverlay" aria-hidden="true"></div>
         <aside class="blog-menu-drawer" id="blogMenuDrawer" role="dialog" aria-label="Menu">
             <div class="blog-menu-header">
@@ -439,12 +415,15 @@
                 <span class="blog-menu-label">About</span>
                 <div class="blog-menu-sub">
                     <a href="about.html">About Timerist</a>
+                    <a href="amrap-timer-about.html">AMRAP</a>
                     <a href="clock-timer-about.html">Clock</a>
                     <a href="countdown-timer-about.html">Countdown</a>
                     <a href="emon-timer-about.html">EMOM</a>
                     <a href="hiit-timer-about.html">HIIT</a>
                     <a href="interval-timer-about.html">Interval</a>
                     <a href="mobility-timer-about.html">Mobility</a>
+                    <a href="preset-countdowns-about.html">Preset Countdowns</a>
+                    <a href="preset-intervals-about.html">Preset Intervals</a>
                     <a href="pyramid-timer-about.html">Pyramid</a>
                     <a href="stopwatch-timer-about.html">Stopwatch</a>
                     <a href="tabata-timer-about.html">Tabata</a>
@@ -452,15 +431,22 @@
                 <a href="apps.html">Apps</a>
                 <a href="blog.html">Blog</a>
                 <a href="faq.html">FAQ</a>
+                <a href="downloads.html">📥 Downloads</a>
+                <a href="import-export.html">Import & Export</a>
+                <a href="contact.html">Contact</a>
+                <a href="submit-workout.html">Submit Workout</a>
                 <a href="subscribe.html">Subscribe</a>
                 <span class="blog-menu-label">Timers</span>
                 <div class="blog-menu-sub">
+                    <a href="amrap.html">AMRAP</a>
                     <a href="clock.html">Clock</a>
                     <a href="countdown.html">Countdown</a>
                     <a href="emom.html">EMOM</a>
                     <a href="hiit.html">HIIT</a>
                     <a href="interval.html">Interval</a>
                     <a href="mobility.html">Mobility</a>
+                    <a href="preset-countdown.html">Preset Countdown</a>
+                    <a href="preset-interval.html">Preset Interval</a>
                     <a href="pyramid.html">Pyramid</a>
                     <a href="stopwatch.html">Stopwatch</a>
                     <a href="tabata.html">Tabata</a>
@@ -468,93 +454,64 @@
             </div>
         </aside>
 
-        <!-- ========== HERO SECTION (template for other timer pages: Tabata, HIIT, AMRAP, etc.) ========== -->
-        <header class="border-b border-border bg-background px-4 py-12 sm:py-16 md:py-20 sm:px-6">
+        <!-- ========== HERO SECTION ========== -->
+        <header class="border-b border-border bg-background px-4 py-10 sm:py-14 md:py-16 sm:px-6">
             <div class="mx-auto max-w-4xl w-full text-center">
-                <h1 class="hero-headline text-5xl sm:text-6xl md:text-7xl tracking-tight leading-tight">
-                    Count Down to Greatness: The Countdown Timer Guide
+                <h1 class="hero-headline text-4xl sm:text-5xl md:text-6xl tracking-tight leading-tight">
+                    Contact - Fitness Timers
                 </h1>
-                <p class="hero-subhead text-xl sm:text-2xl md:text-3xl mt-4 sm:mt-6 leading-relaxed max-w-3xl mx-auto">
-                    Set it, start it, own it — simple, reliable timing for holds, sets, tests, and focused efforts
-                </p>
-                <p class="mt-4 text-base text-foreground text-center">Ready to time your effort? Jump to the <a href="countdown-timer.html" class="underline underline-offset-4 hover:opacity-80">Countdown Timer</a>. Or start instantly with <a href="preset-countdowns.html" class="underline underline-offset-4 hover:opacity-80">Preset Countdowns</a> for common durations.</p>
-                <p class="mt-6 text-base leading-7 text-muted-foreground text-center max-w-2xl mx-auto">
-                    Brought to you by Timerist • Questions or suggestions? Reach out at <a href="mailto:hello@timerist.com" class="text-foreground underline underline-offset-2 hover:opacity-80">hello@timerist.com</a> or on X <a href="https://x.com/timeristapp" target="_blank" rel="noopener noreferrer" class="text-foreground underline underline-offset-2 hover:opacity-80">@timeristapp</a>.
+                <p class="mt-4 text-base sm:text-lg leading-relaxed text-foreground max-w-2xl mx-auto" style="font-size: clamp(1rem, 2vw, 1.125rem);">
+                    Have questions about our timers, feature ideas, technical issues, sales opportunities, or a workout to share? Reach out directly via email—we're here to help make your training better.
                 </p>
             </div>
         </header>
         <!-- ========== END HERO SECTION ========== -->
 
-        <main class="flex-1 px-4 py-8 sm:px-6">
-            <div class="mx-auto max-w-2xl w-full">
-                <div class="rounded-lg border border-border bg-card p-6 shadow-sm">
-                    <!-- Large timer display -->
-                    <div class="flex flex-col items-center justify-center py-4">
-                        <p id="countdownStatus" class="text-xs font-medium uppercase tracking-wider text-muted-foreground">Ready</p>
-                        <p id="countdownDisplay" class="timer-display-emom mt-2 font-mono text-5xl font-semibold text-foreground sm:text-6xl">01:00</p>
-                    </div>
+        <main class="flex-1 px-4 py-8 sm:px-6" id="main-content">
+            <div class="mx-auto w-full text-center sm:text-left" style="max-width: 900px;">
+                <section class="space-y-4" aria-labelledby="contact-heading">
+                    <h2 id="contact-heading" class="sr-only">Get in touch</h2>
 
-                    <!-- Action buttons -->
-                    <div class="flex flex-wrap gap-3 justify-center mt-6">
-                        <button type="button" id="countdownClearBtn" class="inline-flex items-center justify-center rounded-md border border-border bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" aria-label="Clear timer">Clear</button>
-                        <button type="button" id="countdownStartBtn" class="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" aria-label="Start timer">Start</button>
-                    </div>
+                    <a href="mailto:support@timerist.com?subject=Timerist%20Support%20Inquiry" class="contact-card block text-left">
+                        <span class="contact-label">Support 📧</span>
+                        <span class="contact-desc">For technical help, bugs, or questions about using the timers.</span>
+                    </a>
 
-                    <!-- Input sections: Minutes, Seconds -->
-                    <div class="mt-8 space-y-6 border-t border-border pt-6">
-                        <div>
-                            <label for="countdownMinutesReadout" class="block text-sm font-medium text-foreground">Minutes</label>
-                            <div class="mt-2 flex items-center gap-2">
-                                <button type="button" id="countdownMinutesMinus" class="stepper-btn" aria-label="Decrease minutes">−</button>
-                                <span id="countdownMinutesReadout" class="value-readout font-mono text-lg text-foreground" aria-live="polite">1</span>
-                                <button type="button" id="countdownMinutesPlus" class="stepper-btn" aria-label="Increase minutes">+</button>
-                            </div>
-                        </div>
-                        <div>
-                            <label for="countdownSecondsReadout" class="block text-sm font-medium text-foreground">Seconds</label>
-                            <div class="mt-2 flex items-center gap-2">
-                                <button type="button" id="countdownSecondsMinus" class="stepper-btn" aria-label="Decrease seconds">−</button>
-                                <span id="countdownSecondsReadout" class="value-readout font-mono text-lg text-foreground" aria-live="polite">0</span>
-                                <button type="button" id="countdownSecondsPlus" class="stepper-btn" aria-label="Increase seconds">+</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                    <a href="mailto:feedback@timerist.com?subject=Timerist%20Feedback" class="contact-card block text-left">
+                        <span class="contact-label">Feedback 💬</span>
+                        <span class="contact-desc">Suggestions, ideas, comments, or general thoughts on the project.</span>
+                    </a>
 
-                <!-- About Countdown / How to Use This Timer -->
-                <div class="border-t border-border pt-8 mt-8">
-                    <h2 class="text-2xl font-semibold tracking-tight text-foreground mt-10 mb-6">What is a Countdown Timer & How to Use It</h2>
+                    <a href="mailto:sales@timerist.com?subject=Timerist%20Sales%20Inquiry" class="contact-card block text-left">
+                        <span class="contact-label">Sales 🤝</span>
+                        <span class="contact-desc">Partnerships, licensing, bulk use, or business inquiries.</span>
+                    </a>
 
-                    <p class="mt-4 text-base leading-relaxed text-muted-foreground">
-                        A countdown timer counts down from a set duration to zero, signaling the end of a timed effort, hold, set, rest, or test. It's the simplest and most versatile tool for fixed-time activities — no complex intervals, just pure duration focus. Whether you're timing a plank, resting between heavy sets, or drilling a skill for a set length, the workout countdown timer keeps you locked in until the beep.
+                    <a href="mailto:workouts@timerist.com?subject=Timerist%20Workout%20Submission" class="contact-card block text-left">
+                        <span class="contact-label">Workouts 🏋️</span>
+                        <span class="contact-desc">Submit your custom workout ideas or JSON exports for review.</span>
+                    </a>
+
+                    <p class="mt-6 text-sm sm:text-base leading-relaxed text-muted-foreground">
+                        Clicking these opens your default email client. Include your timer name/version, screenshots, or details for the fastest response.
                     </p>
-
-                    <p class="mt-4 text-base leading-relaxed text-muted-foreground">
-                        Set your minutes and seconds (or use presets like 30s, 60s, or 2 minutes if your timer offers them), hit start, and get visual and audio alerts as time expires. Pause and resume when you need a quick break; reset with <strong class="text-foreground">Clear</strong> when you're done. The large display shows remaining time at a glance. Ideal for single efforts, plank holds, rest periods between sets, or skill practice — the countdown timer guide you need is right here.
-                    </p>
-
-                    <p class="mt-4 text-base leading-relaxed text-muted-foreground">
-                        A countdown builds discipline and mental focus under time pressure. It's perfect for measuring progress: hold that plank 10 seconds longer next week, or shave 5 seconds off your rest and watch your work capacity grow. Set once, execute fully — no decision fatigue. Use it in the gym, at home, in yoga, or for running drills. Pair it with a <a href="stopwatch-timer-about.html" class="text-foreground underline underline-offset-2 hover:opacity-80">Stopwatch</a> for elapsed time, an <a href="interval-timer-about.html" class="text-foreground underline underline-offset-2 hover:opacity-80">Interval</a> timer for repeating work/rest cycles, or the <a href="mobility-timer-about.html" class="text-foreground underline underline-offset-2 hover:opacity-80">Mobility</a> timer for timed holds in stretches — hybrid workouts have never been easier.
-                    </p>
-
-                    <p class="mt-4 text-base leading-relaxed text-muted-foreground">
-                        Use presets for common times (e.g. 30s, 60s, 2 min) to save setup. Add a 5–10 second buffer for transitions if you need it. Visualize success as the clock ticks — stay present. Track sessions to set new personal bests, and combine with notes (e.g. reps achieved in time) for full logs. Timed hold examples and fitness countdowns become second nature.
-                    </p>
-
-                    <p class="mt-4 text-base leading-relaxed text-muted-foreground">Simple example workouts you can run with this countdown:</p>
-                    <ul class="mt-4 space-y-3 list-disc pl-6 text-muted-foreground">
-                        <li><strong class="text-foreground">Core hold:</strong> 60-second plank countdown — hold perfect form to zero.</li>
-                        <li><strong class="text-foreground">Rest timing:</strong> 90-second rest between heavy sets — start countdown immediately.</li>
-                        <li><strong class="text-foreground">Mobility stretch:</strong> 45-second hold per side — deep lunge or pigeon pose.</li>
-                        <li><strong class="text-foreground">Skill drill:</strong> 2-minute handstand practice — aim to stay up longer each attempt.</li>
-                    </ul>
-                </div>
+                </section>
             </div>
         </main>
 
         <footer class="border-t border-border bg-card px-4 py-4 sm:px-6">
             <div class="mx-auto max-w-2xl w-full text-center text-sm text-muted-foreground">
-                Part of <a href="/" class="font-medium text-foreground underline underline-offset-4 hover:opacity-80">Timerist Fitness Timers</a> collection.
+                <a href="index.html" class="font-medium text-foreground underline underline-offset-4 hover:opacity-80">Home</a>
+                <span class="mx-2">|</span>
+                <a href="faq.html" class="font-medium text-foreground underline underline-offset-4 hover:opacity-80">FAQ</a>
+                <span class="mx-2">|</span>
+                <a href="import-export.html" class="font-medium text-foreground underline underline-offset-4 hover:opacity-80">Import/Export</a>
+                <span class="mx-2">|</span>
+                <a href="downloads.html" class="font-medium text-foreground underline underline-offset-4 hover:opacity-80">Downloads</a>
+                <span class="mx-2">|</span>
+                <a href="submit-workout.html" class="font-medium text-foreground underline underline-offset-4 hover:opacity-80">Submit Workout</a>
+                <span class="mx-2">|</span>
+                <span>VERSION 1.0</span>
             </div>
         </footer>
     </div>
@@ -562,8 +519,6 @@
     <script>
         (function () {
             'use strict';
-
-            // Blog header: theme toggle (class "dark" on html) + hamburger (toggle nav on mobile)
             const themeKey = 'timerist-theme';
             function getBlogTheme() {
                 var saved = localStorage.getItem(themeKey);
@@ -581,17 +536,17 @@
                 var isDark = document.documentElement.classList.contains('dark');
                 icon.textContent = isDark ? '☀️' : '🌙';
             }
-            applyBlogTheme(getBlogTheme());
+            var theme = getBlogTheme();
+            applyBlogTheme(theme);
             updateBlogThemeIcon();
             document.getElementById('blogThemeBtn')?.addEventListener('click', function () {
-                var isDark = document.documentElement.classList.contains('dark');
-                applyBlogTheme(isDark ? 'light' : 'dark');
+                theme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+                applyBlogTheme(theme);
                 updateBlogThemeIcon();
             });
-            // Hamburger: open drawer (same menu as horizontal nav, vertical list)
             function openBlogMenu() {
                 document.body.classList.add('blog-menu-open');
-                document.getElementById('blogMenuOverlay')?.setAttribute('aria-hidden', 'false');
+                document.getElementById('blogMenuOverlay')?.removeAttribute('aria-hidden');
                 document.getElementById('blogMenuDrawer')?.setAttribute('aria-hidden', 'false');
             }
             function closeBlogMenu() {
@@ -605,82 +560,6 @@
             document.querySelectorAll('.blog-menu-drawer .blog-menu-content a').forEach(function (a) {
                 a.addEventListener('click', closeBlogMenu);
             });
-
-            // Countdown timer state and DOM refs (display + steppers; full countdown logic can be added later).
-            const state = {
-                minutes: 1,
-                seconds: 0,
-                totalSeconds: 60,
-                isRunning: false,
-            };
-
-            const display = document.getElementById('countdownDisplay');
-            const statusEl = document.getElementById('countdownStatus');
-            const minutesReadout = document.getElementById('countdownMinutesReadout');
-            const secondsReadout = document.getElementById('countdownSecondsReadout');
-
-            function formatTime(seconds) {
-                const m = Math.floor(seconds / 60);
-                const s = seconds % 60;
-                return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
-            }
-
-            function totalFromState() {
-                return state.minutes * 60 + state.seconds;
-            }
-
-            function render() {
-                var total = totalFromState();
-                if (display) display.textContent = formatTime(total);
-                if (statusEl) statusEl.textContent = state.isRunning ? 'Running' : 'Ready';
-                if (minutesReadout) minutesReadout.textContent = state.minutes;
-                if (secondsReadout) secondsReadout.textContent = state.seconds;
-            }
-
-            function clampMinutes(v) { return Math.max(0, Math.min(99, v)); }
-            function clampSeconds(v) { return Math.max(0, Math.min(59, v)); }
-
-            document.getElementById('countdownMinutesMinus')?.addEventListener('click', function () {
-                state.minutes = clampMinutes(state.minutes - 1);
-                render();
-            });
-            document.getElementById('countdownMinutesPlus')?.addEventListener('click', function () {
-                state.minutes = clampMinutes(state.minutes + 1);
-                render();
-            });
-            document.getElementById('countdownSecondsMinus')?.addEventListener('click', function () {
-                if (state.seconds === 0 && state.minutes > 0) {
-                    state.minutes--;
-                    state.seconds = 59;
-                } else {
-                    state.seconds = clampSeconds(state.seconds - 1);
-                }
-                render();
-            });
-            document.getElementById('countdownSecondsPlus')?.addEventListener('click', function () {
-                if (state.seconds === 59) {
-                    state.minutes = clampMinutes(state.minutes + 1);
-                    state.seconds = 0;
-                } else {
-                    state.seconds = clampSeconds(state.seconds + 1);
-                }
-                render();
-            });
-
-            document.getElementById('countdownClearBtn')?.addEventListener('click', function () {
-                state.minutes = 1;
-                state.seconds = 0;
-                state.isRunning = false;
-                render();
-            });
-
-            document.getElementById('countdownStartBtn')?.addEventListener('click', function () {
-                // Teaser: redirect to main countdown timer or start in-page countdown later.
-                window.location.href = 'countdown.html';
-            });
-
-            render();
-            console.log('Countdown Timer about page loaded');
         })();
     </script>
 </body>

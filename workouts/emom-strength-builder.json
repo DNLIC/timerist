@@ -1,0 +1,8 @@
+{
+  "format": "timerist_emom",
+  "version": "1.0",
+  "name": "EMOM Strength Builder",
+  "description": "Every minute on the minute: 5 reps, 12 minutes—clean and press focus",
+  "durationMinutes": 12,
+  "repTarget": 5
+}

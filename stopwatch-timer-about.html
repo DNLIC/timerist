@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Stopwatch - Timerist | Workout Stopwatch</title>
-    <meta name="description" content="Stopwatch for timing workouts and rounds. Part of Timerist Fitness Timers.">
+    <meta name="description" content="Stopwatch timer guide: fitness stopwatch with splits, lap tracking, and stopwatch workout timing examples. Part of Timerist Fitness Timers.">
     <!-- If your site already uses Tailwind (e.g. built with PostCSS), remove the next script and rely on your global config. -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -469,19 +469,16 @@
         </aside>
 
         <!-- ========== HERO SECTION (template for other timer pages: Tabata, HIIT, AMRAP, etc.) ========== -->
-        <!-- Duplicate this block for new timer articles; change headline, subhead, and optional border/background. -->
         <header class="border-b border-border bg-background px-4 py-12 sm:py-16 md:py-20 sm:px-6">
             <div class="mx-auto max-w-4xl w-full text-center">
                 <h1 class="hero-headline text-5xl sm:text-6xl md:text-7xl tracking-tight leading-tight">
-                    The Stopwatch Guide
+                    Time Every Second: The Stopwatch Timer Guide
                 </h1>
                 <p class="hero-subhead text-xl sm:text-2xl md:text-3xl mt-4 sm:mt-6 leading-relaxed max-w-3xl mx-auto">
-                    Build unbreakable endurance and efficiency — one timed minute at a time.
+                    Capture performance, track splits, measure progress — precise timing for every rep, round, or run
                 </p>
-                <!-- Hero metadata/credit (matches reference "Inspired by..." block — base size, leading-7) -->
-                <p class="mt-6 text-base leading-7 text-muted-foreground text-center max-w-2xl mx-auto">
-                    Brought to you by Timerist • Questions or suggestions? Reach out at <a href="mailto:hello@timerist.com" class="text-foreground underline underline-offset-2 hover:opacity-80">hello@timerist.com</a> or on X <a href="https://x.com/timeristapp" target="_blank" rel="noopener noreferrer" class="text-foreground underline underline-offset-2 hover:opacity-80">@timeristapp</a>
-                </p>
+                <p class="mt-4 text-base text-foreground text-center">Ready to time your efforts? Jump to the <a href="stopwatch.html" class="underline underline-offset-4 hover:opacity-80">Stopwatch Timer</a>, or track laps with <a href="stopwatch-splits.html" class="underline underline-offset-4 hover:opacity-80">Stopwatch Splits</a> for detailed breakdowns.</p>
+                <p class="mt-6 text-base leading-7 text-muted-foreground text-center">Brought to you by Timerist • Questions or suggestions? Reach out at <a href="mailto:hello@timerist.com" class="text-foreground underline underline-offset-2 hover:opacity-80">hello@timerist.com</a> or on X <a href="https://x.com/timeristapp" target="_blank" rel="noopener noreferrer" class="text-foreground underline underline-offset-2 hover:opacity-80">@timeristapp</a>.</p>
             </div>
         </header>
         <!-- ========== END HERO SECTION ========== -->
@@ -530,38 +527,39 @@
                     </div>
                 </div>
 
-                <!-- About EMOM / How to Use This Timer -->
+                <!-- About Stopwatch / How to Use This Timer -->
                 <div class="border-t border-border pt-8 mt-8">
-                    <h2 class="text-2xl font-semibold tracking-tight text-foreground mt-10 mb-6">What is an EMOM Timer & How to Use It</h2>
+                    <h2 class="text-2xl font-semibold tracking-tight text-foreground mt-10 mb-6">What is a Stopwatch Timer & How to Use It</h2>
 
-                    <p class="mt-4 text-base leading-relaxed text-foreground">
-                        <strong class="text-foreground">EMOM</strong> stands for <em>Every Minute On the Minute</em>. It’s a popular high-intensity interval training (HIIT) format: at the start of each minute you begin a set of exercises, complete the prescribed reps or work as quickly as you can with good form, then rest for whatever time is left in that 60-second window. The cycle repeats for your chosen number of rounds, making it simple to structure and easy to scale.
+                    <p class="mt-4 text-base leading-relaxed text-muted-foreground">
+                        A stopwatch measures elapsed time from the moment you start until you stop — with lap and split functionality so you can mark segments (e.g., round times, set durations) without resetting the clock. It's the go-to for open-ended timing: testing personal bests, logging workout components, or any session where you don't need predefined intervals. Whether you're chasing a faster mile or timing each round of a circuit, a fitness stopwatch with splits gives you the flexibility and data you need.
                     </p>
 
                     <h3 class="mt-6 text-lg font-semibold text-foreground">How This Timer Works</h3>
                     <p class="mt-4 text-base leading-relaxed text-muted-foreground">
-                        Set <strong class="text-foreground">Minutes per round</strong> (work window length, usually 1 minute), <strong class="text-foreground">Rounds</strong> (how many minutes/cycles), and optionally <strong class="text-foreground">Reps per minute</strong> as a target to aim for or to track pace. The large display counts down the current minute. Finish your reps early and you get more rest; struggle to finish and you get less rest and higher intensity. Use <strong class="text-foreground">Set Up</strong> to lock in your settings and start, and <strong class="text-foreground">Clear</strong> to reset.
+                        Start the clock, hit lap (or split) at each segment — for example after every round or exercise — and pause or resume as needed. The display shows total elapsed time plus the current lap. Use splits to see how each segment compares and to track progress within a single session. <strong class="text-foreground">Start</strong> begins timing; <strong class="text-foreground">Clear</strong> resets everything. No setup required: ideal for free-form workouts, runs, or manual interval logging. For fixed-duration work, pair with a <a href="countdown-timer-about.html" class="text-foreground underline underline-offset-2 hover:opacity-80">Countdown</a> timer; for structured on/off blocks, use an <a href="interval-timer-about.html" class="text-foreground underline underline-offset-2 hover:opacity-80">Interval</a> timer; for timed max-effort rounds, try <a href="amrap-timer-about.html" class="text-foreground underline underline-offset-2 hover:opacity-80">AMRAP</a>.
                     </p>
 
                     <h3 class="mt-6 text-lg font-semibold text-foreground">Benefits</h3>
                     <p class="mt-4 text-base leading-relaxed text-muted-foreground">
-                        EMOM builds work capacity, endurance, and mental toughness. It improves pacing and efficiency under fatigue and is highly time-efficient — you can get a full-body or strength-focused workout in 10–30 minutes. It scales from beginners (lower reps, more rest) to advanced (complex movements, heavier loads), and supports cardiovascular fitness, strength, and metabolic conditioning. It’s a staple of the Timerist fitness timers collection for good reason.
+                        A stopwatch gives you accurate, real-time feedback so you can pace yourself or push for a PR. Split tracking lets you analyze pacing and consistency — see which laps slowed down or where you surged. It's versatile for any workout: cardio, strength, skill drills, or mixed sessions. Over time, you can benchmark improvements (e.g., faster laps, shorter rest) and keep your training honest. Best of all, it's simple and intuitive: no setup required for basic use.
                     </p>
 
                     <h3 class="mt-6 text-lg font-semibold text-foreground">Tips for Best Results</h3>
                     <ul class="mt-4 space-y-2 text-base leading-relaxed text-muted-foreground list-disc pl-6">
-                        <li>Choose exercises you can perform consistently with good form.</li>
-                        <li>Start conservative with reps and rounds to avoid burnout.</li>
-                        <li>Track your pace over time — faster completion means more rest and clear progress.</li>
-                        <li>Pair with bodyweight, dumbbells, barbells, or cardio moves depending on your goals.</li>
+                        <li>Hit lap at consistent points — for example at the end of each set or round — so your splits are meaningful and comparable.</li>
+                        <li>Use total time for overall session length and splits for a clear breakdown of where time went.</li>
+                        <li>Combine the stopwatch with quick notes (e.g., reps per lap) to log full workouts without extra apps.</li>
+                        <li>For structured work/rest timing, pair with an <a href="interval-timer-about.html" class="text-foreground underline underline-offset-2 hover:opacity-80">Interval</a> or <a href="countdown-timer-about.html" class="text-foreground underline underline-offset-2 hover:opacity-80">Countdown</a> timer.</li>
+                        <li>Review splits after the workout to spot weak points or celebrate new PRs.</li>
                     </ul>
 
-                    <h3 class="mt-6 text-lg font-semibold text-foreground">Example Workouts</h3>
-                    <ul class="mt-4 space-y-3 text-base leading-relaxed text-muted-foreground list-disc pl-6">
-                        <li><strong class="text-foreground">Beginner:</strong> 10 rounds EMOM — 8–12 air squats (rest the remainder of each minute).</li>
-                        <li><strong class="text-foreground">Strength:</strong> 12 rounds EMOM — 5 deadlifts or push presses at moderate weight.</li>
-                        <li><strong class="text-foreground">Conditioning:</strong> 20 rounds EMOM alternating — Minute 1: 10 burpees, Minute 2: 15 kettlebell swings.</li>
-                        <li><strong class="text-foreground">Skill/Endurance:</strong> 15 rounds EMOM — 10 pull-ups or ring rows + 20 double-unders (scale as needed).</li>
+                    <h3 class="mt-6 text-lg font-semibold text-foreground">Simple Example Workouts</h3>
+                    <ul class="mt-4 space-y-3 list-disc pl-6 text-base leading-relaxed text-muted-foreground">
+                        <li><strong class="text-foreground">Run tracking:</strong> Start the stopwatch, lap every mile or kilometre, stop at the finish. Total time = session length; splits = pace per segment.</li>
+                        <li><strong class="text-foreground">Circuit timing:</strong> Lap after each exercise (e.g., push-ups → squats → burpees) and note reps per lap for a full picture of effort and pace.</li>
+                        <li><strong class="text-foreground">Skill drill:</strong> Time five attempts at a movement (e.g., handstand hold or L-sit); split each try to see improvement or consistency.</li>
+                        <li><strong class="text-foreground">Endurance test:</strong> Run the stopwatch for a 20-minute AMRAP-style effort and lap each round to compare pacing and total rounds over time.</li>
                     </ul>
                 </div>
             </div>

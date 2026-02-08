@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+<!-- Add class "dark" to <html> for dark mode when your site uses a theme toggle. -->
 <html lang="en" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FAQ - Timerist | Fitness Timers</title>
-    <meta name="description" content="Frequently asked questions about Timerist fitness timers.">
+    <title>Frequently Asked Questions - Timerist | Fitness Timers FAQ</title>
+    <meta name="description" content="FAQ for Timerist: what timers are available, how to customize, apps roadmap, audio, import/export. Quick answers for workout timers.">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,56 +35,332 @@
         };
     </script>
     <style>
-        :root { --background: 250 250 250; --foreground: 10 10 10; --card: 255 255 255; --card-foreground: 10 10 10; --primary: 24 24 27; --primary-foreground: 250 250 250; --secondary: 244 244 245; --secondary-foreground: 24 24 27; --muted: 244 244 245; --muted-foreground: 100 116 139; --accent: 244 244 245; --accent-foreground: 24 24 27; --destructive: 239 68 68; --destructive-foreground: 250 250 250; --border: 228 228 231; --input: 228 228 231; --ring: 24 24 27; --radius: 0.5rem; }
-        .dark { --background: 10 10 10; --foreground: 250 250 250; --card: 24 24 27; --card-foreground: 250 250 250; --primary: 250 250 250; --primary-foreground: 24 24 27; --secondary: 39 39 42; --secondary-foreground: 250 250 250; --muted: 39 39 42; --muted-foreground: 161 161 170; --accent: 39 39 42; --accent-foreground: 250 250 250; --destructive: 239 68 68; --destructive-foreground: 250 250 250; --border: 39 39 42; --input: 39 39 42; --ring: 212 212 216; }
+        :root {
+            --background: 250 250 250;
+            --foreground: 10 10 10;
+            --card: 255 255 255;
+            --card-foreground: 10 10 10;
+            --primary: 24 24 27;
+            --primary-foreground: 250 250 250;
+            --secondary: 244 244 245;
+            --secondary-foreground: 24 24 27;
+            --muted: 244 244 245;
+            --muted-foreground: 100 116 139;
+            --accent: 244 244 245;
+            --accent-foreground: 24 24 27;
+            --destructive: 239 68 68;
+            --destructive-foreground: 250 250 250;
+            --border: 228 228 231;
+            --input: 228 228 231;
+            --ring: 24 24 27;
+            --radius: 0.5rem;
+        }
+        .dark {
+            --background: 10 10 10;
+            --foreground: 250 250 250;
+            --card: 24 24 27;
+            --card-foreground: 250 250 250;
+            --primary: 250 250 250;
+            --primary-foreground: 24 24 27;
+            --secondary: 39 39 42;
+            --secondary-foreground: 250 250 250;
+            --muted: 39 39 42;
+            --muted-foreground: 161 161 170;
+            --accent: 39 39 42;
+            --accent-foreground: 250 250 250;
+            --destructive: 239 68 68;
+            --destructive-foreground: 250 250 250;
+            --border: 39 39 42;
+            --input: 39 39 42;
+            --ring: 212 212 216;
+        }
         * { box-sizing: border-box; }
-        body { background-color: rgb(var(--background)); color: rgb(var(--foreground)); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-        .hero-headline { font-weight: 900; background: linear-gradient(180deg, rgb(0 0 0) 0%, rgb(24 24 27) 35%, rgb(63 63 70) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
-        .dark .hero-headline { background: linear-gradient(180deg, rgb(250 250 250) 0%, rgb(212 212 216) 40%, rgb(161 161 170) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
-        .hero-subhead { font-weight: 800; letter-spacing: -0.02em; background: linear-gradient(90deg, rgb(148 163 184) 0%, rgb(100 116 139) 25%, rgb(51 65 85) 50%, rgb(30 41 59) 85%, rgb(15 23 42) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
-        .dark .hero-subhead { background: linear-gradient(90deg, rgb(248 250 252) 0%, rgb(203 213 225) 35%, rgb(148 163 184) 65%, rgb(71 85 105) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
-        .blog-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 1rem; padding: 0.75rem 1rem; border-bottom: 1px solid rgb(var(--border)); background: rgb(var(--card)); }
-        .blog-nav a, .blog-nav .nav-summary { font-size: 0.875rem; font-weight: 500; color: rgb(var(--muted-foreground)); text-decoration: none; padding: 0.25rem 0.5rem; border-radius: var(--radius); transition: color 0.2s, background 0.2s; }
-        .blog-nav a:hover, .blog-nav .nav-summary:hover { color: rgb(var(--foreground)); background: rgb(var(--accent)); }
-        .blog-nav .nav-summary { cursor: pointer; list-style: none; border: none; background: none; font-family: inherit; }
+        body {
+            background-color: rgb(var(--background));
+            color: rgb(var(--foreground));
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .hero-headline {
+            font-weight: 900;
+            background: linear-gradient(180deg, rgb(0 0 0) 0%, rgb(24 24 27) 35%, rgb(63 63 70) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+        }
+        .dark .hero-headline {
+            background: linear-gradient(180deg, rgb(250 250 250) 0%, rgb(212 212 216) 40%, rgb(161 161 170) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+        }
+        .blog-nav {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.25rem 1rem;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgb(var(--border));
+            background: rgb(var(--card));
+        }
+        .blog-nav a, .blog-nav .nav-summary {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: rgb(var(--muted-foreground));
+            text-decoration: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius);
+            transition: color 0.2s, background 0.2s;
+        }
+        .blog-nav a:hover, .blog-nav .nav-summary:hover {
+            color: rgb(var(--foreground));
+            background: rgb(var(--accent));
+        }
+        .blog-nav .nav-summary {
+            cursor: pointer;
+            list-style: none;
+            border: none;
+            background: none;
+            font-family: inherit;
+        }
         .blog-nav .nav-summary::-webkit-details-marker { display: none; }
         .blog-nav details[open] .nav-summary { color: rgb(var(--foreground)); }
-        .blog-nav .nav-dropdown { position: absolute; top: 100%; left: 0; min-width: 10rem; margin-top: 0.25rem; padding: 0.5rem 0; background: rgb(var(--card)); border: 1px solid rgb(var(--border)); border-radius: var(--radius); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); z-index: 50; }
-        .blog-nav .nav-dropdown a { display: block; padding: 0.5rem 1rem; white-space: nowrap; }
+        .blog-nav .nav-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            min-width: 10rem;
+            margin-top: 0.25rem;
+            padding: 0.5rem 0;
+            background: rgb(var(--card));
+            border: 1px solid rgb(var(--border));
+            border-radius: var(--radius);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            z-index: 50;
+        }
+        .blog-nav .nav-dropdown a {
+            display: block;
+            padding: 0.5rem 1rem;
+            white-space: nowrap;
+        }
         .blog-nav details { position: relative; }
-        .blog-header-top { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; gap: 0.5rem; min-width: 0; border-bottom: 1px solid rgb(var(--border)); background: rgb(var(--card)); }
-        .blog-header-top > div:first-child { display: flex; align-items: center; gap: 0.75rem; min-width: 0; flex-shrink: 1; overflow: hidden; }
+        .blog-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            gap: 0.5rem;
+            min-width: 0;
+            border-bottom: 1px solid rgb(var(--border));
+            background: rgb(var(--card));
+        }
+        .blog-header-top > div:first-child {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 0;
+            flex-shrink: 1;
+            overflow: hidden;
+        }
         .blog-header-top .header-sep { color: rgb(var(--muted-foreground)); }
         .blog-header-top a { transition: opacity 0.2s ease; text-decoration: none; }
         .blog-header-top a:hover { opacity: 0.7; }
         .blog-header-actions { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
-        .blog-header-top .blog-mode-btn, .blog-header-top .blog-hamburger { width: 44px; height: 44px; flex-shrink: 0; background: transparent; border: none; cursor: pointer; padding: 0.5rem; display: flex; align-items: center; justify-content: center; color: rgb(var(--foreground)); font-size: 1.25rem; transition: opacity 0.2s; border-radius: var(--radius); min-width: 44px; -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none; }
-        .blog-header-top .blog-mode-btn:hover, .blog-header-top .blog-hamburger:hover { opacity: 0.7; background-color: rgba(var(--accent), 0.5); }
+        .blog-header-top .blog-mode-btn,
+        .blog-header-top .blog-hamburger {
+            width: 44px; height: 44px; flex-shrink: 0;
+            background: transparent; border: none; cursor: pointer; padding: 0.5rem;
+            display: flex; align-items: center; justify-content: center;
+            color: rgb(var(--foreground)); font-size: 1.25rem; transition: opacity 0.2s;
+            border-radius: var(--radius); min-width: 44px;
+            -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none;
+        }
+        .blog-header-top .blog-mode-btn:hover, .blog-header-top .blog-mode-btn:active,
+        .blog-header-top .blog-hamburger:hover, .blog-header-top .blog-hamburger:active {
+            opacity: 0.7; background-color: rgba(var(--accent), 0.5);
+        }
+        .blog-header-top .blog-mode-btn:focus, .blog-header-top .blog-hamburger:focus {
+            outline: 2px solid rgb(var(--ring)); outline-offset: 2px;
+        }
         #blog-timerist-logo { display: block; width: 40px; height: 40px; color: rgb(var(--foreground)); }
         #blog-timerist-logo circle, #blog-timerist-logo line { stroke: currentColor; stroke-width: 2.5; }
-        @media (max-width: 390px) { .blog-header-top .header-sep, .blog-header-top .blog-page-title { display: none; } }
-        @media (max-width: 768px) { body:not(.blog-nav-open) .blog-nav { display: none; } }
-        .blog-menu-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); z-index: 40; opacity: 0; visibility: hidden; transition: opacity 0.2s, visibility 0.2s; }
-        body.blog-menu-open .blog-menu-overlay { opacity: 1; visibility: visible; }
-        .blog-menu-drawer { position: fixed; top: 0; right: 0; width: min(280px, 85vw); max-width: 280px; height: 100vh; background: rgb(var(--card)); border-left: 1px solid rgb(var(--border)); box-shadow: -4px 0 12px rgba(0,0,0,0.1); z-index: 50; transform: translateX(100%); transition: transform 0.25s ease; overflow-y: auto; display: flex; flex-direction: column; }
-        body.blog-menu-open .blog-menu-drawer { transform: translateX(0); }
-        .blog-menu-drawer .blog-menu-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid rgb(var(--border)); }
-        .blog-menu-drawer .blog-menu-header h2 { font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: rgb(var(--foreground)); margin: 0; }
-        .blog-menu-drawer .blog-menu-close { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: none; background: transparent; color: rgb(var(--foreground)); font-size: 1.5rem; cursor: pointer; border-radius: var(--radius); }
-        .blog-menu-drawer .blog-menu-content a { display: block; padding: 0.625rem 1.25rem; font-size: 0.9375rem; font-weight: 500; color: rgb(var(--foreground)); text-decoration: none; }
-        .blog-menu-drawer .blog-menu-content a:hover { background: rgb(var(--accent)); }
-        .blog-menu-drawer .blog-menu-content .blog-menu-sub { padding-left: 1.25rem; border-left: 2px solid rgb(var(--border)); margin-left: 1.25rem; margin-top: 0.25rem; margin-bottom: 0.5rem; }
-        .blog-menu-drawer .blog-menu-content .blog-menu-sub a { padding: 0.5rem 1rem; font-size: 0.875rem; color: rgb(var(--muted-foreground)); }
-        .blog-menu-drawer .blog-menu-content .blog-menu-sub a:hover { color: rgb(var(--foreground)); }
-        .blog-menu-drawer .blog-menu-label { padding: 0.5rem 1.25rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: rgb(var(--muted-foreground)); }
+        .dark #blog-timerist-logo { color: rgb(var(--foreground)); }
+        @media (max-width: 390px) {
+            .blog-header-top { padding: 0 0.75rem; }
+            .blog-header-top .header-sep, .blog-header-top .blog-page-title { display: none; }
+            .blog-header-actions .blog-mode-btn, .blog-header-actions .blog-hamburger { width: 40px; height: 40px; font-size: 1.125rem; }
+        }
+        @media (max-width: 768px) {
+            body:not(.blog-nav-open) .blog-nav { display: none; }
+        }
+        .blog-menu-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 40;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+        }
+        body.blog-menu-open .blog-menu-overlay {
+            opacity: 1;
+            visibility: visible;
+        }
+        .blog-menu-drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: min(280px, 85vw);
+            max-width: 280px;
+            height: 100vh;
+            background: rgb(var(--card));
+            border-left: 1px solid rgb(var(--border));
+            box-shadow: -4px 0 12px rgba(0,0,0,0.1);
+            z-index: 50;
+            transform: translateX(100%);
+            transition: transform 0.25s ease;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        body.blog-menu-open .blog-menu-drawer {
+            transform: translateX(0);
+        }
+        .blog-menu-drawer .blog-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid rgb(var(--border));
+        }
+        .blog-menu-drawer .blog-menu-header h2 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: rgb(var(--foreground));
+            margin: 0;
+        }
+        .blog-menu-drawer .blog-menu-close {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: transparent;
+            color: rgb(var(--foreground));
+            font-size: 1.5rem;
+            cursor: pointer;
+            border-radius: var(--radius);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .blog-menu-drawer .blog-menu-close:hover {
+            background: rgb(var(--accent));
+        }
+        .blog-menu-drawer .blog-menu-content {
+            padding: 1rem 0;
+        }
+        .blog-menu-drawer .blog-menu-content a {
+            display: block;
+            padding: 0.625rem 1.25rem;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: rgb(var(--foreground));
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .blog-menu-drawer .blog-menu-content a:hover {
+            background: rgb(var(--accent));
+        }
+        .blog-menu-drawer .blog-menu-content .blog-menu-sub {
+            padding-left: 1.25rem;
+            border-left: 2px solid rgb(var(--border));
+            margin-left: 1.25rem;
+            margin-top: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+        .blog-menu-drawer .blog-menu-content .blog-menu-sub a {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            color: rgb(var(--muted-foreground));
+        }
+        .blog-menu-drawer .blog-menu-content .blog-menu-sub a:hover {
+            color: rgb(var(--foreground));
+        }
+        .blog-menu-drawer .blog-menu-label {
+            padding: 0.5rem 1.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: rgb(var(--muted-foreground));
+        }
+        /* FAQ accordion: details/summary */
+        .faq-list details {
+            border: 1px solid rgb(var(--border));
+            border-radius: var(--radius);
+            background: rgb(var(--card));
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+        }
+        .faq-list details:last-child { margin-bottom: 0; }
+        .faq-list summary {
+            padding: 1rem 1.25rem;
+            font-weight: 600;
+            color: rgb(var(--foreground));
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.2s;
+        }
+        .faq-list summary::-webkit-details-marker { display: none; }
+        .faq-list summary::after {
+            content: '+';
+            margin-left: auto;
+            font-weight: 400;
+            color: rgb(var(--muted-foreground));
+        }
+        .faq-list details[open] summary::after {
+            content: '-';
+        }
+        .faq-list summary:hover {
+            background: rgb(var(--accent));
+        }
+        .faq-list details[open] summary {
+            border-bottom: 1px solid rgb(var(--border));
+        }
+        .faq-list .faq-answer {
+            padding: 1rem 1.25rem 1.25rem;
+            color: rgb(var(--muted-foreground));
+            line-height: 1.6;
+            font-size: 0.9375rem;
+        }
+        .faq-list .faq-answer a {
+            color: rgb(var(--foreground));
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+        .faq-list .faq-answer a:hover {
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body class="min-h-screen font-sans antialiased">
     <div class="flex flex-col min-h-screen">
+        <!-- ========== BLOG HEADER ========== -->
         <div class="blog-header-top mx-auto w-full max-w-4xl px-4 sm:px-6">
             <div class="flex items-center gap-2 sm:gap-3">
                 <a href="index.html" class="flex items-center shrink-0" aria-label="Timerist home">
-                    <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" id="blog-timerist-logo"><circle cx="20" cy="20" r="15" fill="none" stroke="currentColor" stroke-width="2.5"/><line x1="20" y1="20" x2="20" y2="8" stroke="currentColor" stroke-width="2.5"/><line x1="20" y1="20" x2="30" y2="20" stroke="currentColor" stroke-width="2.5"/></svg>
+                    <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" id="blog-timerist-logo">
+                        <circle cx="20" cy="20" r="15" fill="none" stroke="currentColor" stroke-width="2.5" class="logo-circle"/>
+                        <line x1="20" y1="20" x2="20" y2="8" stroke="currentColor" stroke-width="2.5" class="logo-line"/>
+                        <line x1="20" y1="20" x2="30" y2="20" stroke="currentColor" stroke-width="2.5" class="logo-line"/>
+                    </svg>
                 </a>
                 <a href="index.html" class="font-semibold text-foreground" style="font-size: clamp(1rem, 3vw, 1.25rem);">timerist.com</a>
                 <span class="header-sep">|</span>
@@ -94,19 +371,24 @@
                 <button type="button" class="blog-hamburger" id="blogMenuBtn" aria-label="Open menu">☰</button>
             </div>
         </div>
+        <!-- ========== END BLOG HEADER ========== -->
 
+        <!-- ========== BLOG NAV ========== -->
         <nav class="blog-nav mx-auto w-full max-w-4xl px-4 sm:px-6" id="blogNav" aria-label="Main">
             <a href="index.html">Home</a>
             <details class="inline-block">
                 <summary class="nav-summary">About</summary>
                 <div class="nav-dropdown">
                     <a href="about.html">About Timerist</a>
+                    <a href="amrap-timer-about.html">AMRAP</a>
                     <a href="clock-timer-about.html">Clock</a>
                     <a href="countdown-timer-about.html">Countdown</a>
                     <a href="emon-timer-about.html">EMOM</a>
                     <a href="hiit-timer-about.html">HIIT</a>
                     <a href="interval-timer-about.html">Interval</a>
                     <a href="mobility-timer-about.html">Mobility</a>
+                    <a href="preset-countdowns-about.html">Preset Countdowns</a>
+                    <a href="preset-intervals-about.html">Preset Intervals</a>
                     <a href="pyramid-timer-about.html">Pyramid</a>
                     <a href="stopwatch-timer-about.html">Stopwatch</a>
                     <a href="tabata-timer-about.html">Tabata</a>
@@ -119,18 +401,22 @@
             <details class="inline-block">
                 <summary class="nav-summary">Timers</summary>
                 <div class="nav-dropdown">
+                    <a href="amrap.html">AMRAP</a>
                     <a href="clock.html">Clock</a>
                     <a href="countdown.html">Countdown</a>
                     <a href="emom.html">EMOM</a>
                     <a href="hiit.html">HIIT</a>
                     <a href="interval.html">Interval</a>
                     <a href="mobility.html">Mobility</a>
+                    <a href="preset-countdown.html">Preset Countdown</a>
+                    <a href="preset-interval.html">Preset Interval</a>
                     <a href="pyramid.html">Pyramid</a>
                     <a href="stopwatch.html">Stopwatch</a>
                     <a href="tabata.html">Tabata</a>
                 </div>
             </details>
         </nav>
+        <!-- ========== END BLOG NAV ========== -->
 
         <div class="blog-menu-overlay" id="blogMenuOverlay" aria-hidden="true"></div>
         <aside class="blog-menu-drawer" id="blogMenuDrawer" role="dialog" aria-label="Menu">
@@ -143,12 +429,15 @@
                 <span class="blog-menu-label">About</span>
                 <div class="blog-menu-sub">
                     <a href="about.html">About Timerist</a>
+                    <a href="amrap-timer-about.html">AMRAP</a>
                     <a href="clock-timer-about.html">Clock</a>
                     <a href="countdown-timer-about.html">Countdown</a>
                     <a href="emon-timer-about.html">EMOM</a>
                     <a href="hiit-timer-about.html">HIIT</a>
                     <a href="interval-timer-about.html">Interval</a>
                     <a href="mobility-timer-about.html">Mobility</a>
+                    <a href="preset-countdowns-about.html">Preset Countdowns</a>
+                    <a href="preset-intervals-about.html">Preset Intervals</a>
                     <a href="pyramid-timer-about.html">Pyramid</a>
                     <a href="stopwatch-timer-about.html">Stopwatch</a>
                     <a href="tabata-timer-about.html">Tabata</a>
@@ -159,12 +448,15 @@
                 <a href="subscribe.html">Subscribe</a>
                 <span class="blog-menu-label">Timers</span>
                 <div class="blog-menu-sub">
+                    <a href="amrap.html">AMRAP</a>
                     <a href="clock.html">Clock</a>
                     <a href="countdown.html">Countdown</a>
                     <a href="emom.html">EMOM</a>
                     <a href="hiit.html">HIIT</a>
                     <a href="interval.html">Interval</a>
                     <a href="mobility.html">Mobility</a>
+                    <a href="preset-countdown.html">Preset Countdown</a>
+                    <a href="preset-interval.html">Preset Interval</a>
                     <a href="pyramid.html">Pyramid</a>
                     <a href="stopwatch.html">Stopwatch</a>
                     <a href="tabata.html">Tabata</a>
@@ -172,35 +464,111 @@
             </div>
         </aside>
 
+        <!-- ========== HERO ========== -->
         <header class="border-b border-border bg-background px-4 py-12 sm:py-16 md:py-20 sm:px-6">
             <div class="mx-auto max-w-4xl w-full text-center">
-                <h1 class="hero-headline text-5xl sm:text-6xl md:text-7xl tracking-tight leading-tight">FAQ</h1>
-                <p class="hero-subhead text-xl sm:text-2xl md:text-3xl mt-4 sm:mt-6 leading-relaxed max-w-3xl mx-auto">Frequently asked questions about Timerist.</p>
+                <h1 class="hero-headline text-5xl sm:text-6xl md:text-7xl tracking-tight leading-tight">
+                    Frequently Asked Questions
+                </h1>
+                <p class="mt-4 text-base leading-7 text-muted-foreground text-center max-w-2xl mx-auto">
+                    Quick answers about Timerist timers, customization, apps, and more.
+                </p>
             </div>
         </header>
+        <!-- ========== END HERO ========== -->
 
-        <main class="flex-1 px-4 py-8 sm:px-6">
+        <main class="flex-1 px-4 py-10 sm:px-6">
             <div class="mx-auto max-w-2xl w-full">
-                <p class="text-base leading-relaxed text-muted-foreground">Content coming soon. For questions in the meantime, reach out at <a href="mailto:hello@timerist.com" class="text-foreground underline underline-offset-2 hover:opacity-80">hello@timerist.com</a>.</p>
+                <div class="faq-list">
+                    <details>
+                        <summary>⏱️ What timers are available?</summary>
+                        <div class="faq-answer">
+                            Timerist includes: <strong>Countdown</strong>, <strong>Preset Countdowns</strong>, <strong>Preset Intervals</strong>, <strong>Interval</strong>, <strong>EMOM</strong>, <strong>HIIT</strong>, <strong>Tabata</strong>, <strong>Pyramid</strong>, <strong>Mobility</strong>, <strong>AMRAP</strong>, <strong>Stopwatch</strong>, and <strong>Clock</strong>. Pick any from <a href="index.html">Home</a> or the Timers menu.
+                        </div>
+                    </details>
+                    <details>
+                        <summary>⚙️ How do I customize?</summary>
+                        <div class="faq-answer">
+                            Use each timer’s setup form to set work/rest times, rounds, duration, and labels. Preset timers offer one-tap common durations; custom timers (e.g. Interval, EMOM, Countdown) let you dial in exact values. No account required — adjust and start.
+                        </div>
+                    </details>
+                    <details>
+                        <summary>📱 Will these become apps?</summary>
+                        <div class="faq-answer">
+                            Yes. The same HTML timers will ship as App Store / Play Store apps via Capacitor or as installable PWAs, so you get one codebase and native distribution.
+                        </div>
+                    </details>
+                    <details>
+                        <summary>🔊 Audio issues?</summary>
+                        <div class="faq-answer">
+                            Browsers often block sound until you interact with the page (tap/click). Allow audio when prompted, or tap “Start” / the screen once to unmute. If beeps still don’t play, check site permissions in your browser settings and ensure device volume is up.
+                        </div>
+                    </details>
+                    <details>
+                        <summary>📥 Import/export?</summary>
+                        <div class="faq-answer">
+                            Customizable timers (e.g. Interval, EMOM, Presets) support saving and loading configs as JSON. Use <a href="import-export.html">Import/Export</a> to backup, share, or move setups between devices.
+                        </div>
+                    </details>
+                </div>
             </div>
         </main>
 
         <footer class="border-t border-border bg-card px-4 py-4 sm:px-6">
             <div class="mx-auto max-w-2xl w-full text-center text-sm text-muted-foreground">
-                Part of <a href="index.html" class="font-medium text-foreground underline underline-offset-4 hover:opacity-80">Timerist Fitness Timers</a> collection.
+                <a href="index.html" class="font-medium text-foreground underline underline-offset-4 hover:opacity-80">Home</a>
+                <span class="mx-2" aria-hidden="true">·</span>
+                <a href="contact-form.html" class="font-medium text-foreground underline underline-offset-4 hover:opacity-80">Contact</a>
+                <span class="mx-2" aria-hidden="true">·</span>
+                <a href="import-export.html" class="font-medium text-foreground underline underline-offset-4 hover:opacity-80">Import/Export</a>
             </div>
         </footer>
     </div>
+
     <script>
-        (function(){const themeKey='timerist-theme';function getBlogTheme(){var s=localStorage.getItem(themeKey);if(s==='dark'||s==='light')return s;return window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}
-        function applyBlogTheme(t){if(t==='dark')document.documentElement.classList.add('dark');else document.documentElement.classList.remove('dark');localStorage.setItem(themeKey,t);}
-        function updateBlogThemeIcon(){var i=document.getElementById('blog-theme-icon');if(i)i.textContent=document.documentElement.classList.contains('dark')?'☀️':'🌙';}
-        applyBlogTheme(getBlogTheme());updateBlogThemeIcon();
-        document.getElementById('blogThemeBtn')?.addEventListener('click',function(){var d=document.documentElement.classList.contains('dark');applyBlogTheme(d?'light':'dark');updateBlogThemeIcon();});
-        function openBlogMenu(){document.body.classList.add('blog-menu-open');document.getElementById('blogMenuOverlay')?.setAttribute('aria-hidden','false');document.getElementById('blogMenuDrawer')?.setAttribute('aria-hidden','false');}
-        function closeBlogMenu(){document.body.classList.remove('blog-menu-open');document.getElementById('blogMenuOverlay')?.setAttribute('aria-hidden','true');document.getElementById('blogMenuDrawer')?.setAttribute('aria-hidden','true');}
-        document.getElementById('blogMenuBtn')?.addEventListener('click',openBlogMenu);document.getElementById('blogMenuClose')?.addEventListener('click',closeBlogMenu);document.getElementById('blogMenuOverlay')?.addEventListener('click',closeBlogMenu);
-        document.querySelectorAll('.blog-menu-drawer .blog-menu-content a').forEach(function(a){a.addEventListener('click',closeBlogMenu);});})();
+        (function () {
+            'use strict';
+            const themeKey = 'timerist-theme';
+            function getBlogTheme() {
+                var saved = localStorage.getItem(themeKey);
+                if (saved === 'dark' || saved === 'light') return saved;
+                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            function applyBlogTheme(theme) {
+                if (theme === 'dark') document.documentElement.classList.add('dark');
+                else document.documentElement.classList.remove('dark');
+                localStorage.setItem(themeKey, theme);
+            }
+            function updateBlogThemeIcon() {
+                var icon = document.getElementById('blog-theme-icon');
+                if (!icon) return;
+                var isDark = document.documentElement.classList.contains('dark');
+                icon.textContent = isDark ? '☀️' : '🌙';
+            }
+            applyBlogTheme(getBlogTheme());
+            updateBlogThemeIcon();
+            document.getElementById('blogThemeBtn')?.addEventListener('click', function () {
+                var isDark = document.documentElement.classList.contains('dark');
+                applyBlogTheme(isDark ? 'light' : 'dark');
+                updateBlogThemeIcon();
+            });
+            function openBlogMenu() {
+                document.body.classList.add('blog-menu-open');
+                document.getElementById('blogMenuOverlay')?.setAttribute('aria-hidden', 'false');
+                document.getElementById('blogMenuDrawer')?.setAttribute('aria-hidden', 'false');
+            }
+            function closeBlogMenu() {
+                document.body.classList.remove('blog-menu-open');
+                document.getElementById('blogMenuOverlay')?.setAttribute('aria-hidden', 'true');
+                document.getElementById('blogMenuDrawer')?.setAttribute('aria-hidden', 'true');
+            }
+            document.getElementById('blogMenuBtn')?.addEventListener('click', openBlogMenu);
+            document.getElementById('blogMenuClose')?.addEventListener('click', closeBlogMenu);
+            document.getElementById('blogMenuOverlay')?.addEventListener('click', closeBlogMenu);
+            document.querySelectorAll('.blog-menu-drawer .blog-menu-content a').forEach(function (a) {
+                a.addEventListener('click', closeBlogMenu);
+            });
+        })();
     </script>
 </body>
 </html>

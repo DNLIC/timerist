@@ -1,0 +1,8 @@
+{
+  "format": "timerist_interval",
+  "version": "1.0",
+  "name": "8-Round Fat Burner",
+  "description": "8-round high-intensity circuit with 40s work / 20s rest",
+  "intervals": [{"work": 40, "rest": 20}],
+  "rounds": 8
+}
