@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Timerist Icons Full Demo – Emojis + Lucide Controls + Sizes</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#6366f1',    // indigo
+            accent: '#10b981',     // emerald green
+            danger: '#ef4444',     // red
+            warning: '#f59e0b',    // amber
+            neutral: '#6b7280',    // gray
+            preset: '#8b5cf6',     // violet
+            presetAlt: '#f97316',  // orange
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+
+  <!-- Header with Theme Toggle -->
+  <header class="bg-white dark:bg-gray-900 shadow sticky top-0 z-10">
+    <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+      <h1 class="text-2xl font-bold">Timerist Icons Demo – Fitness Timer Project</h1>
+      <button id="theme-toggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition">
+        <span class="sr-only">Toggle dark mode</span>
+        <i data-lucide="moon" class="w-6 h-6 dark:hidden"></i>
+        <i data-lucide="sun" class="w-6 h-6 hidden dark:block"></i>
+      </button>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-6 py-10 space-y-16">
+
+    <!-- 1. Current Timerist Homepage Emojis – Size Comparison -->
+    <section>
+      <h2 class="text-3xl font-semibold mb-6">Current Timerist Homepage Emojis – Size Comparison</h2>
+      <p class="text-gray-600 dark:text-gray-400 mb-8">
+        Exact Unicode emojis from timerist.com, shown in small (16px), medium (32px), and large (64px).
+      </p>
+
+      <div class="space-y-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+            <div class="flex flex-col items-center gap-4">
+              <span class="text-[16px]">⚡</span>
+              <span class="text-[32px]">⚡</span>
+              <span class="text-[64px]">⚡</span>
+            </div>
+            <p class="mt-4 font-medium">Lightning Bolt (Preset marker)</p>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+            <div class="flex flex-col items-center gap-4">
+              <span class="text-[16px]">⏲️</span>
+              <span class="text-[32px]">⏲️</span>
+              <span class="text-[64px]">⏲️</span>
+            </div>
+            <p class="mt-4 font-medium">Timer Face (Countdown)</p>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+            <div class="flex flex-col items-center gap-4">
+              <span class="text-[16px]">🔄</span>
+              <span class="text-[32px]">🔄</span>
+              <span class="text-[64px]">🔄</span>
+            </div>
+            <p class="mt-4 font-medium">Arrows (Intervals)</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+            <div class="flex flex-col items-center gap-4">
+              <span class="text-[16px]">⏱️</span>
+              <span class="text-[32px]">⏱️</span>
+              <span class="text-[64px]">⏱️</span>
+            </div>
+            <p class="mt-4 font-medium">Stopwatch</p>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+            <div class="flex flex-col items-center gap-4">
+              <span class="text-[16px]">🏁</span>
+              <span class="text-[32px]">🏁</span>
+              <span class="text-[64px]">🏁</span>
+            </div>
+            <p class="mt-4 font-medium">Chequered Flag (Splits)</p>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+            <div class="flex flex-col items-center gap-4">
+              <span class="text-[16px]">⏰</span>
+              <span class="text-[32px]">⏰</span>
+              <span class="text-[64px]">⏰</span>
+            </div>
+            <p class="mt-4 font-medium">Alarm Clock (EMOM)</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+            <div class="flex flex-col items-center gap-4">
+              <span class="text-[16px]">💥</span>
+              <span class="text-[32px]">💥</span>
+              <span class="text-[64px]">💥</span>
+            </div>
+            <p class="mt-4 font-medium">Explosion (HIIT)</p>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+            <div class="flex flex-col items-center gap-4">
+              <span class="text-[16px]">💪</span>
+              <span class="text-[32px]">💪</span>
+              <span class="text-[64px]">💪</span>
+            </div>
+            <p class="mt-4 font-medium">Flexed Biceps (AMRAP)</p>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+            <div class="flex flex-col items-center gap-4">
+              <span class="text-[16px]">🔥</span>
+              <span class="text-[32px]">🔥</span>
+              <span class="text-[64px]">🔥</span>
+            </div>
+            <p class="mt-4 font-medium">Fire (Tabata)</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Lucide Icons – Main Page / Presets -->
+    <section>
+      <h2 class="text-3xl font-semibold mb-6">Lucide Icons – Main Page / Presets</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow hover:shadow-lg transition text-center">
+          <i data-lucide="bookmark" class="w-12 h-12 mx-auto mb-3 text-preset"></i>
+          <p class="font-medium">Preset Intervals</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow hover:shadow-lg transition text-center">
+          <i data-lucide="flame" class="w-12 h-12 mx-auto mb-3 text-presetAlt"></i>
+          <p class="font-medium">Preset HIIT</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow hover:shadow-lg transition text-center">
+          <i data-lucide="clock-arrow-down" class="w-12 h-12 mx-auto mb-3 text-primary"></i>
+          <p class="font-medium">Preset Countdown</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow hover:shadow-lg transition text-center">
+          <i data-lucide="book-open" class="w-12 h-12 mx-auto mb-3 text-neutral"></i>
+          <p class="font-medium">Presets Library</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow hover:shadow-lg transition text-center">
+          <i data-lucide="activity" class="w-12 h-12 mx-auto mb-3 text-accent"></i>
+          <p class="font-medium">Mobility / AMRAP</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Timer Controls (Large icons row + mock timer face with small edge icons) -->
+    <section class="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 rounded-2xl p-10 relative">
+      <h2 class="text-3xl font-semibold mb-6 text-center">Timer Controls + Sound Toggle</h2>
+      
+      <div class="flex flex-wrap justify-center gap-10 mb-12">
+        <div class="text-center">
+          <i data-lucide="circle-play" class="w-10 h-10 text-accent"></i>
+          <p class="mt-2 font-medium">Start</p>
+        </div>
+        <div class="text-center">
+          <i data-lucide="circle-pause" class="w-10 h-10 text-warning"></i>
+          <p class="mt-2 font-medium">Pause</p>
+        </div>
+        <div class="text-center">
+          <i data-lucide="circle-stop" class="w-10 h-10 text-danger"></i>
+          <p class="mt-2 font-medium">Stop</p>
+        </div>
+        <div class="text-center">
+          <i data-lucide="rotate-ccw" class="w-10 h-10 text-neutral"></i>
+          <p class="mt-2 font-medium">Reset</p>
+        </div>
+        <div class="text-center">
+          <i data-lucide="cog" class="w-10 h-10 text-primary"></i>
+          <p class="mt-2 font-medium">Setup</p>
+        </div>
+        <div class="text-center">
+          <i data-lucide="volume-2" class="w-10 h-10 text-primary"></i>
+          <p class="mt-2 font-medium">Sound On</p>
+        </div>
+        <div class="text-center">
+          <i data-lucide="volume-x" class="w-10 h-10 text-neutral"></i>
+          <p class="mt-2 font-medium">Sound Off</p>
+        </div>
+      </div>
+
+      <div class="mt-8 mx-auto w-64 h-64 bg-white dark:bg-gray-800 rounded-full shadow-2xl flex items-center justify-center border-8 border-gray-300 dark:border-gray-700 relative">
+        <div class="text-5xl font-mono font-bold">12:34</div>
+        <div class="absolute right-3 top-1/2 -translate-y-1/2 flex flex-col gap-4">
+          <i data-lucide="circle-play" class="w-6 h-6 text-accent opacity-90 hover:opacity-100 cursor-pointer"></i>
+          <i data-lucide="circle-pause" class="w-6 h-6 text-warning opacity-90 hover:opacity-100 cursor-pointer"></i>
+          <i data-lucide="rotate-ccw" class="w-6 h-6 text-neutral opacity-90 hover:opacity-100 cursor-pointer"></i>
+          <i data-lucide="volume-2" class="w-6 h-6 text-primary opacity-90 hover:opacity-100 cursor-pointer" title="Sound On – click to mute"></i>
+        </div>
+      </div>
+
+      <p class="text-center mt-6 text-sm text-gray-500 dark:text-gray-400">
+        Edge controls use <code>w-6 h-6</code> (medium). Sound toggle shows volume-2 (on) by default.
+      </p>
+    </section>
+
+    <!-- 4. Timer Control Icons – Size Comparison (Large / Medium / Small) -->
+    <section>
+      <h2 class="text-3xl font-semibold mb-6">Timer Control Icons – Size Comparison</h2>
+      <p class="text-gray-600 dark:text-gray-400 mb-8">
+        All controls (including sound) shown at three sizes:<br>
+        <strong>Large</strong>: <code>w-10 h-10</code> (40px – top row demo)<br>
+        <strong>Medium</strong>: <code>w-6 h-6</code> (24px – current edge controls)<br>
+        <strong>Small</strong>: <code>w-4 h-4</code> (16px – compact option)
+      </p>
+
+      <div class="space-y-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+            <div class="space-y-6">
+              <div class="flex flex-col items-center gap-3">
+                <i data-lucide="circle-play" class="w-10 h-10 text-accent"></i>
+                <i data-lucide="circle-play" class="w-6 h-6 text-accent"></i>
+                <i data-lucide="circle-play" class="w-4 h-4 text-accent"></i>
+              </div>
+            </div>
+            <p class="mt-4 font-medium">Start (circle-play)</p>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+            <div class="space-y-6">
+              <div class="flex flex-col items-center gap-3">
+                <i data-lucide="circle-pause" class="w-10 h-10 text-warning"></i>
+                <i data-lucide="circle-pause" class="w-6 h-6 text-warning"></i>
+                <i data-lucide="circle-pause" class="w-4 h-4 text-warning"></i>
+              </div>
+            </div>
+            <p class="mt-4 font-medium">Pause (circle-pause)</p>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+            <div class="space-y-6">
+              <div class="flex flex-col items-center gap-3">
+                <i data-lucide="circle-stop" class="w-10 h-10 text-danger"></i>
+                <i data-lucide="circle-stop" class="w-6 h-6 text-danger"></i>
+                <i data-lucide="circle-stop" class="w-4 h-4 text-danger"></i>
+              </div>
+            </div>
+            <p class="mt-4 font-medium">Stop (circle-stop)</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+            <div class="space-y-6">
+              <div class="flex flex-col items-center gap-3">
+                <i data-lucide="rotate-ccw" class="w-10 h-10 text-neutral"></i>
+                <i data-lucide="rotate-ccw" class="w-6 h-6 text-neutral"></i>
+                <i data-lucide="rotate-ccw" class="w-4 h-4 text-neutral"></i>
+              </div>
+            </div>
+            <p class="mt-4 font-medium">Reset (rotate-ccw)</p>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+            <div class="space-y-6">
+              <div class="flex flex-col items-center gap-3">
+                <i data-lucide="cog" class="w-10 h-10 text-primary"></i>
+                <i data-lucide="cog" class="w-6 h-6 text-primary"></i>
+                <i data-lucide="cog" class="w-4 h-4 text-primary"></i>
+              </div>
+            </div>
+            <p class="mt-4 font-medium">Setup (cog)</p>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center">
+            <div class="space-y-6">
+              <div class="flex flex-col items-center gap-3">
+                <i data-lucide="volume-2" class="w-10 h-10 text-primary"></i>
+                <i data-lucide="volume-2" class="w-6 h-6 text-primary"></i>
+                <i data-lucide="volume-2" class="w-4 h-4 text-primary"></i>
+              </div>
+            </div>
+            <p class="mt-4 font-medium">Sound On (volume-2)</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center md:col-start-2">
+            <div class="space-y-6">
+              <div class="flex flex-col items-center gap-3">
+                <i data-lucide="volume-x" class="w-10 h-10 text-neutral"></i>
+                <i data-lucide="volume-x" class="w-6 h-6 text-neutral"></i>
+                <i data-lucide="volume-x" class="w-4 h-4 text-neutral"></i>
+              </div>
+            </div>
+            <p class="mt-4 font-medium">Sound Off (volume-x)</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-center mt-8 text-sm text-gray-500 dark:text-gray-400">
+        Default stroke-width: 2. Medium (w-6 h-6) is currently used on the timer face edge.
+      </p>
+    </section>
+
+  </main>
+
+  <script>
+    lucide.createIcons();
+    const toggle = document.getElementById('theme-toggle');
+    toggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+    });
+  </script>
+</body>
+</html>
