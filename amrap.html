@@ -314,6 +314,27 @@
             max-width: 100%;
             box-sizing: border-box;
         }
+        /* iOS sound banner: two buttons same cushion as Set Up / Clear */
+        .ios-sound-banner-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            min-width: 0;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        .ios-sound-banner-buttons .control-btn {
+            flex: 1 1 0;
+            min-width: 0;
+        }
+        @media (min-width: 390px) {
+            .ios-sound-banner-buttons { gap: 0.75rem; }
+        }
+        @media (min-width: 640px) {
+            .ios-sound-banner-buttons { gap: 1rem; }
+        }
         
         @media (min-width: 390px) {
             .control-buttons-container {
@@ -461,6 +482,35 @@
             color: rgb(0, 0, 0);
         }
         
+        /* Timer setup sheet: button groups that must wrap on small screens (cycle suggest, export/import) */
+        .sheet-button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: stretch;
+        }
+        .sheet-button-group .control-btn {
+            flex: 1 1 auto;
+            min-width: 0;
+            min-height: 44px;
+            white-space: normal;
+            text-align: center;
+        }
+        @media (max-width: 430px) {
+            .sheet-button-group .control-btn {
+                min-width: 140px;
+                flex: 1 1 140px;
+                padding: 0.5rem 0.75rem;
+                font-size: 0.8125rem;
+            }
+        }
+        @media (max-width: 360px) {
+            .sheet-button-group .control-btn {
+                min-width: 100%;
+                flex: 1 1 100%;
+            }
+        }
+
         .control-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
@@ -1235,10 +1285,13 @@
                     <p id="workoutDescriptionText" class="text-sm text-[rgb(var(--muted-foreground))] leading-relaxed m-0 text-left whitespace-pre-wrap break-words"></p>
                 </div>
             </div>
-            <!-- iOS: tap to enable sound (shown until audio unlocked) -->
+            <!-- iOS: enable sound or dismiss (shown until audio unlocked or user chooses Silent) -->
             <div id="iosSoundBanner" class="p-3 rounded-xl bg-[rgb(var(--accent))] border border-[rgb(var(--border))] mb-3 text-center hidden" role="region" aria-label="Enable sound">
                 <p class="text-sm font-medium text-[rgb(var(--foreground))] mb-2 m-0">On iPhone/iPad, tap below to enable sound before starting.</p>
-                <button type="button" class="control-btn btn-primary" id="iosUnlockSoundBtn" aria-label="Tap to enable sound">Tap to enable sound</button>
+                <div class="ios-sound-banner-buttons">
+                    <button type="button" class="control-btn btn-primary" id="iosUnlockSoundBtn" aria-label="Enable sound">Enable Sound</button>
+                    <button type="button" class="control-btn btn-secondary" id="iosSilentBtn" aria-label="Silent – do not enable sound">Silent</button>
+                </div>
             </div>
             <!-- Controls -->
             <div class="control-buttons-card p-4 rounded-2xl bg-[rgb(var(--card))] border border-[rgb(var(--border))] shadow-lg">
@@ -1314,7 +1367,7 @@
                     </div>
                     <div class="input-group" style="margin-top: 0.75rem;">
                         <label for="prepPhaseLabelInput">Prep phase announcement (spoken and shown)</label>
-                        <input type="text" id="prepPhaseLabelInput" class="shadcn-input" maxlength="20" value="Prepare" placeholder="e.g. Prepare, Setup, Countdown" aria-label="Prep phase label">
+                        <input type="text" id="prepPhaseLabelInput" class="shadcn-input" maxlength="20" value="Countdown" placeholder="e.g. Countdown, Prepare, Setup" aria-label="Prep phase label">
                     </div>
                 </div>
                 
@@ -1412,10 +1465,10 @@
                         <div id="cycleTimeWarningBanner" style="display: none; padding: 0.5rem 0.75rem; border-radius: var(--radius); background-color: rgb(var(--destructive)); color: rgb(var(--destructive-foreground)); font-size: 0.875rem; font-weight: 500; margin-bottom: 0.75rem;" role="alert">
                             <span id="cycleTimeWarningMessage">Cycle time exceeds total workout time — you may complete 0 full cycles.</span>
                         </div>
-                        <div id="cycleTimeSuggestButtons" style="display: none; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
-                            <button type="button" id="setRealisticWorkTimeBtn" class="control-btn btn-secondary" style="font-size: 0.8125rem; padding: 0.4rem 0.75rem;" title="Sets work time per exercise so total time fits your target cycles (or ~4 if unlimited)">Set realistic work time</button>
-                            <button type="button" id="setRealisticTotalTimeBtn" class="control-btn btn-secondary" style="font-size: 0.8125rem; padding: 0.4rem 0.75rem;" title="Sets total AMRAP time for your target cycles + 1 min buffer (or 3 cycles if unlimited)">Set realistic total time</button>
-                            <button type="button" id="dismissCycleWarningBtn" class="control-btn" style="font-size: 0.8125rem; padding: 0.4rem 0.75rem; background-color: rgb(var(--muted)); color: rgb(var(--muted-foreground));" title="Hide warning for this session">Ignore</button>
+                        <div id="cycleTimeSuggestButtons" class="sheet-button-group" style="display: none;">
+                            <button type="button" id="setRealisticWorkTimeBtn" class="control-btn btn-secondary" title="Sets work time per exercise so total time fits your target cycles (or ~4 if unlimited)">Set realistic work time</button>
+                            <button type="button" id="setRealisticTotalTimeBtn" class="control-btn btn-secondary" title="Sets total AMRAP time for your target cycles + 1 min buffer (or 3 cycles if unlimited)">Set realistic total time</button>
+                            <button type="button" id="dismissCycleWarningBtn" class="control-btn" style="background-color: rgb(var(--muted)); color: rgb(var(--muted-foreground));" title="Hide warning for this session">Ignore</button>
                         </div>
                         <p id="cycleTimeToast" role="status" aria-live="polite" class="text-xs font-medium text-muted-foreground" style="margin: 0.5rem 0 0 0; min-height: 1.25rem; opacity: 0;"></p>
                     </div>
@@ -1424,9 +1477,9 @@
     
             <div class="sheet-section">
                 <h3>Export / Import</h3>
-                <div style="display: flex; gap: 0.5rem;">
-                    <button type="button" id="exportWorkoutBtn" class="control-btn btn-primary" style="flex: 1;">Export AMRAP</button>
-                    <button type="button" id="importWorkoutBtn" class="control-btn btn-secondary" style="flex: 1;">Import AMRAP</button>
+                <div class="sheet-button-group">
+                    <button type="button" id="exportWorkoutBtn" class="control-btn btn-primary">Export AMRAP</button>
+                    <button type="button" id="importWorkoutBtn" class="control-btn btn-secondary">Import AMRAP</button>
                 </div>
                 <input type="file" id="importFileInput" accept=".json" style="display: none;">
             </div>
@@ -1440,7 +1493,7 @@
 
             <div class="sheet-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v1.07</p>
+                <p><strong>Version:</strong> v1.08</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2026-01-28</span></p>
             </div>
         </div>
@@ -1526,7 +1579,7 @@
         const reminder2MinEl = document.getElementById('reminder2Min');
         const reminder1MinEl = document.getElementById('reminder1Min');
         
-        function getPrepPhaseLabel() { return (prepPhaseLabelInput && prepPhaseLabelInput.value.trim()) ? prepPhaseLabelInput.value.trim() : 'Prepare'; }
+        function getPrepPhaseLabel() { return (prepPhaseLabelInput && prepPhaseLabelInput.value.trim()) ? prepPhaseLabelInput.value.trim() : 'Countdown'; }
         function updateReminderDisplays() {
             var total = readDurationFromInputs();
             var reminderSection = document.getElementById('reminderSection');
@@ -1937,7 +1990,7 @@
                 durationSeconds: durationSeconds,
                 prepTimeSeconds: prepTimeInput ? Math.min(300, Math.max(0, parseTime(prepTimeInput.value))) : prepTimeSeconds,
                 doneMessage: (doneMessageInput && doneMessageInput.value) ? doneMessageInput.value.trim() || 'Completed' : 'Completed',
-                prepPhaseLabel: (prepPhaseLabelInput && prepPhaseLabelInput.value.trim()) ? prepPhaseLabelInput.value.trim() : 'Prepare',
+                prepPhaseLabel: (prepPhaseLabelInput && prepPhaseLabelInput.value.trim()) ? prepPhaseLabelInput.value.trim() : 'Countdown',
                 targetRounds: getTargetRounds(),
                 restBetweenRoundsSeconds: restBetweenRoundsSeconds,
                 exercises: amrapType === 'rounds'
@@ -1988,7 +2041,7 @@
             if (prepTimeInput) prepTimeInput.value = formatTime(prepSecs);
             if (prepTimeSlider) prepTimeSlider.value = String(prepSecs);
             if (doneMessageInput) doneMessageInput.value = (w.doneMessage != null ? String(w.doneMessage) : '') || 'Completed';
-            if (prepPhaseLabelInput && w.prepPhaseLabel != null) prepPhaseLabelInput.value = String(w.prepPhaseLabel).trim() || 'Prepare';
+            if (prepPhaseLabelInput && w.prepPhaseLabel != null) prepPhaseLabelInput.value = String(w.prepPhaseLabel).trim() || 'Countdown';
             if (roundsInput) roundsInput.value = String(Math.min(999, Math.max(0, Number(w.targetRounds) || 0)));
             const restRounds = Number(w.restBetweenRoundsSeconds) || 0;
             if (restBetweenRoundsInput) restBetweenRoundsInput.value = String(Math.min(600, Math.max(0, restRounds)));
@@ -2026,6 +2079,8 @@
             updateCharCounts();
             updateReminderDisplays();
             updateDisplay();
+            // Replicate "Tap to enable sound" so imported workouts have audio ready on iPhone/iPad (user gesture = file pick)
+            if (typeof unlockAudioForIOS === 'function') unlockAudioForIOS();
         }
         
         function importWorkoutFromJson() {
@@ -2247,6 +2302,10 @@
             }).catch(function() {
                 updateDisplay();
             });
+        }
+        function dismissIOSSoundBannerSilent() {
+            var banner = document.getElementById('iosSoundBanner');
+            if (banner) { banner.classList.add('hidden'); banner.style.display = 'none'; }
         }
         function hideIOSSoundBannerIfUnlocked() {
             if (audioStarted) {
@@ -2702,6 +2761,8 @@
             if (iosBanner) { iosBanner.classList.remove('hidden'); iosBanner.style.display = ''; }
             var iosUnlockBtn = document.getElementById('iosUnlockSoundBtn');
             if (iosUnlockBtn) iosUnlockBtn.addEventListener('click', function() { unlockAudioForIOS(); });
+            var iosSilentBtn = document.getElementById('iosSilentBtn');
+            if (iosSilentBtn) iosSilentBtn.addEventListener('click', function() { dismissIOSSoundBannerSilent(); });
         }
         startPauseBtn.addEventListener('click', toggleStartPause);
         resetBtn.addEventListener('click', resetTimer);
