@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Timerist Audio Preview & Test Page</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; padding: 20px; background: #f8f9fa; }
+    h1 { text-align: center; color: #333; }
+    .section { margin: 30px 0; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    button { padding: 12px 24px; margin: 10px; font-size: 16px; cursor: pointer; border: none; border-radius: 6px; color: white; }
+    .beep-btn { background: #007bff; }
+    .work-btn { background: #28a745; }
+    .rest-btn { background: #ffc107; color: #333; }
+    .complete-btn { background: #dc3545; }
+    .voice-btn { background: #6f42c1; }
+    .status { margin-top: 10px; font-style: italic; color: #555; min-height: 1.5em; }
+    #voice-select { margin: 10px; padding: 8px; }
+  </style>
+</head>
+<body>
+
+  <h1>Timerist Audio Preview</h1>
+  <p>This page lets you test our planned audio cues. We'll use these in the browser timers (and later map to native iOS sounds).</p>
+
+  <div class="section">
+    <h2>Settings / Toggle</h2>
+    <label>
+      <input type="checkbox" id="enableAudio" checked> Enable All Audio Cues
+    </label>
+    <br><br>
+    <label>Voice (if available): 
+      <select id="voice-select"></select>
+    </label>
+    <p class="status" id="voice-status">Checking browser voice support...</p>
+  </div>
+
+  <div class="section">
+    <h2>Beep & Tone Previews (using Howler.js)</h2>
+    <button class="beep-btn" onclick="playSound('beepShort')">Preview Beep (Countdown/Transition)</button>
+    <button class="work-btn" onclick="playSound('workStartChime')">Preview Work Start Chime</button>
+    <button class="rest-btn" onclick="playSound('restStartTone')">Preview Rest Start Tone</button>
+    <button class="complete-btn" onclick="playSound('workoutCompleteFanfare')">Preview Workout Completed Fanfare</button>
+    <div class="status" id="beep-status"></div>
+  </div>
+
+  <div class="section">
+    <h2>Verbal Cue Previews (using Web Speech API)</h2>
+    <button class="voice-btn" onclick="speak('Work')">Say "Work"</button>
+    <button class="voice-btn" onclick="speak('Rest')">Say "Rest"</button>
+    <button class="voice-btn" onclick="speak('Completed')">Say "Completed"</button>
+    <button class="voice-btn" onclick="speak('Three... Two... One... Go!')">Say "3-2-1-Go!" Countdown</button>
+    <div class="status" id="voice-play-status"></div>
+  </div>
+
+  <script>
+    // Howler.js sound definitions (reference names for Cursor prompts)
+    const sounds = {
+      beepShort: new Howl({ src: ['https://www.soundjay.com/buttons/beep-01a.mp3'] }),  // short beep (SoundJay free)
+      workStartChime: new Howl({ src: ['https://assets.mixkit.co/sfx/preview/mixkit-notification-bell-01-484.mp3'] }),  // gentle bell (Mixkit free)
+      restStartTone: new Howl({ src: ['https://www.soundjay.com/buttons/beep-02.mp3'] }),  // softer beep (SoundJay free)
+      workoutCompleteFanfare: new Howl({ src: ['https://cdn.pixabay.com/download/audio/2022/03/15/audio_3d3d3d3d3d.mp3?filename=success-fanfare-trumpets-6185.mp3'] })  // short victory (Pixabay-style; replace with exact if needed)
+    };
+
+    // Global audio enable toggle
+    const enableAudio = document.getElementById('enableAudio');
+    function playSound(key) {
+      if (!enableAudio.checked) return;
+      if (sounds[key]) {
+        sounds[key].play();
+        document.getElementById('beep-status').textContent = `Playing: ${key}`;
+      }
+    }
+
+    // Web Speech API setup
+    const synth = window.speechSynthesis;
+    const voiceSelect = document.getElementById('voice-select');
+    const voiceStatus = document.getElementById('voice-status');
+    let voices = [];
+
+    function populateVoices() {
+      voices = synth.getVoices();
+      voiceSelect.innerHTML = '';
+      if (voices.length === 0) {
+        voiceStatus.textContent = 'No voices available in this browser.';
+        return;
+      }
+      voiceStatus.textContent = `Found ${voices.length} voices.`;
+      voices.forEach((voice, i) => {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = `${voice.name} (${voice.lang})`;
+        voiceSelect.appendChild(option);
+      });
+    }
+
+    if (synth.onvoiceschanged !== undefined) {
+      synth.onvoiceschanged = populateVoices;
+    }
+    populateVoices(); // Initial call (some browsers load async)
+
+    function speak(text) {
+      if (!enableAudio.checked) return;
+      if (synth.speaking) synth.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      const selected = voiceSelect.value;
+      if (selected !== '' && voices[selected]) {
+        utterance.voice = voices[selected];
+      }
+      utterance.rate = 1.1;
+      utterance.pitch = 1.0;
+      synth.speak(utterance);
+      document.getElementById('voice-play-status').textContent = `Speaking: "${text}"`;
+    }
+  </script>
+
+</body>
+</html>

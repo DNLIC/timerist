@@ -1,0 +1,22 @@
+{
+  "format": "timerist_amrap_enhanced",
+  "version": "1.0",
+  "exportedAt": "2026-02-09T00:00:00.000Z",
+  "workout": {
+    "title": "AMRAP Audio Test",
+    "description": "Short preset (≤20s) to test audio/voice/haptic: prep beeps + Work, 10s warning, Rest chime, completion = three beeps then word (no countdown). Use Pause/Resume to test.",
+    "amrapType": "reps",
+    "durationSeconds": 20,
+    "prepTimeSeconds": 5,
+    "doneMessage": "Completed",
+    "targetRounds": 0,
+    "restBetweenRoundsSeconds": 0,
+    "exercises": [
+      { "name": "Ex 1" },
+      { "name": "Ex 2" }
+    ],
+    "cycleExercises": true,
+    "restBetweenExercises": 5,
+    "workTimePerExerciseSeconds": 5
+  }
+}

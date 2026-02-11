@@ -33,6 +33,11 @@
   
   --radius: 0.5rem;
   
+  /* Timerist accent (optional – use for timer digits and primary actions) */
+  --timer-primary: 212 90% 59%;   /* blue #4A90E2 */
+  --timer-success: 142 69% 55%;   /* green for Clear / success */
+  --timer-phase: 0 0% 45.1%;      /* muted for WORK/REST phase label */
+  
   /* Shadows */
   --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.15);
@@ -74,6 +79,10 @@
   --input: 0 0% 14.9%;
   --ring: 0 0% 83.1%;
   
+  --timer-primary: 212 90% 65%;
+  --timer-success: 142 69% 45%;
+  --timer-phase: 0 0% 63.9%;
+  
   --shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
   --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.7);
   --shadow-large: 0 8px 24px rgba(0, 0, 0, 0.8);
@@ -103,6 +112,11 @@ body {
 .bg-destructive { background-color: hsl(var(--destructive)); }
 .bg-muted { background-color: hsl(var(--muted)); }
 .bg-accent { background-color: hsl(var(--accent)); }
+.bg-timer-primary { background-color: hsl(var(--timer-primary)); }
+.bg-timer-success { background-color: hsl(var(--timer-success)); }
+
+.text-timer-primary { color: hsl(var(--timer-primary)); }
+.text-timer-success { color: hsl(var(--timer-success)); }
 
 .text-foreground { color: hsl(var(--foreground)); }
 .text-card-foreground { color: hsl(var(--card-foreground)); }
@@ -177,6 +191,15 @@ body {
 
 .btn-destructive:hover:not(:disabled) {
   background-color: hsl(var(--destructive) / 0.9);
+}
+
+.btn-success {
+  background-color: hsl(var(--timer-success));
+  color: white;
+}
+
+.btn-success:hover:not(:disabled) {
+  background-color: hsl(var(--timer-success) / 0.9);
 }
 
 .btn-outline {
@@ -299,9 +322,23 @@ body {
   font-size: 4rem;
   font-weight: 700;
   font-family: 'Courier New', monospace;
+  font-variant-numeric: tabular-nums;
   color: hsl(var(--primary));
   line-height: 1;
   margin-bottom: 1rem;
+}
+
+/* Timer primary (blue) – use when timer should stand out like AMRAP screenshot */
+.timer-time-accent {
+  color: hsl(var(--timer-primary));
+}
+
+.timer-phase {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: hsl(var(--timer-phase));
 }
 
 @media (max-width: 480px) {

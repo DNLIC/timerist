@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Timerist Audio Preview with Tone.js</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; padding: 20px; background: #f8f9fa; }
+    h1 { text-align: center; color: #333; }
+    .section { margin: 30px 0; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    button { padding: 12px 24px; margin: 10px; font-size: 16px; cursor: pointer; border: none; border-radius: 6px; color: white; }
+    .start-btn { background: #17a2b8; }
+    .beep-btn { background: #007bff; }
+    .work-btn { background: #28a745; }
+    .rest-btn { background: #ffc107; color: #333; }
+    .complete-btn { background: #dc3545; }
+    .voice-btn { background: #6f42c1; }
+    .status { margin-top: 10px; font-style: italic; color: #555; min-height: 1.5em; }
+    #voice-select { margin: 10px; padding: 8px; }
+  </style>
+</head>
+<body>
+
+  <h1>Timerist Audio Preview (Dynamic with Tone.js)</h1>
+  <p>This page tests dynamically generated cues. No sound files needed—customize in code.</p>
+
+  <div class="section">
+    <h2>Initialize Audio Context</h2>
+    <button class="start-btn" id="start-audio">Start Audio</button>
+    <p class="status" id="context-status">Click to enable sounds (required for browsers).</p>
+  </div>
+
+  <div class="section">
+    <h2>Settings / Toggle</h2>
+    <label>
+      <input type="checkbox" id="enableAudio" checked> Enable All Audio Cues
+    </label>
+    <br><br>
+    <label>Voice (if available): 
+      <select id="voice-select"></select>
+    </label>
+    <p class="status" id="voice-status">Checking browser voice support...</p>
+  </div>
+
+  <div class="section">
+    <h2>Tone & Chime Previews (Dynamic via Tone.js)</h2>
+    <button class="beep-btn" onclick="playBeepShort()">Preview Beep (Countdown/Transition)</button>
+    <button class="work-btn" onclick="playWorkStartChime()">Preview Work Start Chime</button>
+    <button class="rest-btn" onclick="playRestStartTone()">Preview Rest Start Tone</button>
+    <button class="complete-btn" onclick="playWorkoutCompleteFanfare()">Preview Workout Completed Fanfare</button>
+    <div class="status" id="tone-status"></div>
+  </div>
+
+  <div class="section">
+    <h2>Verbal Cue Previews (using Web Speech API)</h2>
+    <button class="voice-btn" onclick="speak('Work')">Say "Work"</button>
+    <button class="voice-btn" onclick="speak('Rest')">Say "Rest"</button>
+    <button class="voice-btn" onclick="speak('Completed')">Say "Completed"</button>
+    <button class="voice-btn" onclick="speak('Three... Two... One... Go!')">Say "3-2-1-Go!" Countdown</button>
+    <div class="status" id="voice-play-status"></div>
+  </div>
+
+  <script>
+    // Handle AudioContext start (best practice)
+    const startButton = document.getElementById('start-audio');
+    const contextStatus = document.getElementById('context-status');
+    let audioStarted = false;
+    startButton.addEventListener('click', async () => {
+      if (!audioStarted) {
+        await Tone.start();
+        audioStarted = true;
+        contextStatus.textContent = 'Audio ready!';
+        startButton.disabled = true;
+      }
+    });
+
+    // Global audio enable toggle
+    const enableAudio = document.getElementById('enableAudio');
+
+    // Dynamic sound functions (reference names for Cursor prompts)
+    function playBeepShort() {
+      if (!enableAudio.checked || !audioStarted) return;
+      const synth = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
+      synth.triggerAttackRelease('A5', '16n'); // High short beep (880Hz, 1/16 note ~0.1s)
+      document.getElementById('tone-status').textContent = 'Playing: beepShort';
+    }
+
+    function playWorkStartChime() {
+      if (!enableAudio.checked || !audioStarted) return;
+      const fmSynth = new Tone.FMSynth({ harmonicity: 3, modulationIndex: 10, envelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.5 } }).toDestination();
+      fmSynth.triggerAttackRelease('C5', '8n'); // Bell-like chime (523Hz, ~0.25s)
+      document.getElementById('tone-status').textContent = 'Playing: workStartChime';
+    }
+
+    function playRestStartTone() {
+      if (!enableAudio.checked || !audioStarted) return;
+      const synth = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.05, decay: 0.3, sustain: 0, release: 0.2 } }).toDestination();
+      synth.triggerAttackRelease('E4', '8n'); // Softer mid-tone (330Hz, ~0.25s)
+      document.getElementById('tone-status').textContent = 'Playing: restStartTone';
+    }
+
+    function playWorkoutCompleteFanfare() {
+      if (!enableAudio.checked || !audioStarted) return;
+      const synth = new Tone.Synth({ oscillator: { type: 'sawtooth' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.2, release: 0.2 } }).toDestination();
+      const seq = new Tone.Sequence((time, note) => {
+        synth.triggerAttackRelease(note, '16n', time);
+      }, ['C5', 'E5', 'G5'], '16n').start(0);
+      seq.loop = false; // Play once
+      Tone.Transport.start();
+      setTimeout(() => Tone.Transport.stop(), 500); // Short fanfare ~0.5s
+      document.getElementById('tone-status').textContent = 'Playing: workoutCompleteFanfare';
+    }
+
+    // Web Speech API setup (same as before)
+    const synth = window.speechSynthesis;
+    const voiceSelect = document.getElementById('voice-select');
+    const voiceStatus = document.getElementById('voice-status');
+    let voices = [];
+
+    function populateVoices() {
+      voices = synth.getVoices();
+      voiceSelect.innerHTML = '';
+      if (voices.length === 0) {
+        voiceStatus.textContent = 'No voices available in this browser.';
+        return;
+      }
+      voiceStatus.textContent = `Found ${voices.length} voices.`;
+      voices.forEach((voice, i) => {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = `${voice.name} (${voice.lang})`;
+        voiceSelect.appendChild(option);
+      });
+    }
+
+    if (synth.onvoiceschanged !== undefined) {
+      synth.onvoiceschanged = populateVoices;
+    }
+    populateVoices(); // Initial call
+
+    function speak(text) {
+      if (!enableAudio.checked) return;
+      if (synth.speaking) synth.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      const selected = voiceSelect.value;
+      if (selected !== '' && voices[selected]) {
+        utterance.voice = voices[selected];
+      }
+      utterance.rate = 1.1;
+      utterance.pitch = 1.0;
+      synth.speak(utterance);
+      document.getElementById('voice-play-status').textContent = `Speaking: "${text}"`;
+    }
+  </script>
+
+</body>
+</html>

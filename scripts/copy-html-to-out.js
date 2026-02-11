@@ -27,6 +27,7 @@ const htmlFiles = [
   'custom.html',
   'mobility.html',
   'Component_Demo.html',
+  'Sample_Audio_3.html',
   // Timer about / article pages
   'clock-timer-about.html',
   'countdown-timer-about.html',

@@ -30,7 +30,9 @@
             }
         };
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
     <style>
+        .hidden { display: none; }
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
@@ -261,22 +263,56 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
             white-space: nowrap;
-            flex-shrink: 1;
+            flex: 1 1 0;
+            min-width: 0;
+            text-align: center;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
-        
-        @media (max-width: 390px) {
+        /* Narrow viewport: smaller buttons so 3 across fit; 2×2 only when 4 buttons visible (class added by JS) */
+        @media (max-width: 430px) {
+            .control-buttons-container {
+                flex-wrap: nowrap;
+                gap: 0.5rem;
+            }
             .control-btn {
-                padding: 0.4rem 0.75rem;
-                font-size: 0.75rem;
+                flex: 1 1 0;
+                min-width: 0;
+                padding: 0.5rem 0.375rem;
+                font-size: 0.8125rem;
+                min-height: 48px;
+                border-radius: 0.75rem;
+                text-align: center;
+            }
+            .control-buttons-container.four-buttons {
+                flex-wrap: wrap;
+            }
+            .control-buttons-container.four-buttons .control-btn {
+                flex: 1 1 calc(50% - 0.25rem);
+                min-width: calc(50% - 0.25rem);
             }
         }
-        
+        @media (max-width: 390px) {
+            .control-btn { min-height: 44px; border-radius: 0.75rem; font-size: 0.75rem; padding: 0.45rem 0.25rem; }
+            .control-buttons-container:not(.four-buttons) .control-btn { min-width: 0; }
+            .control-buttons-container.four-buttons .control-btn { min-width: calc(50% - 0.25rem); padding: 0.45rem 0.25rem; }
+        }
+        /* Allow card and container to shrink so buttons wrap instead of overflowing; respect left/right margins */
+        .control-buttons-card {
+            min-width: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
         .control-buttons-container {
             display: flex;
             gap: 0.5rem;
             justify-content: center;
             align-items: center;
             flex-wrap: nowrap;
+            width: 100%;
+            min-width: 0;
+            max-width: 100%;
+            box-sizing: border-box;
         }
         
         @media (min-width: 390px) {
@@ -288,6 +324,15 @@
         @media (min-width: 640px) {
             .control-buttons-container {
                 gap: 1rem;
+            }
+        }
+        
+        @media (min-width: 431px) {
+            .control-buttons-container {
+                flex-wrap: nowrap;
+            }
+            .control-btn {
+                min-width: 0;
             }
         }
         
@@ -987,7 +1032,7 @@
             flex: 1;
         }
         
-        /* Exercise list styles */
+        /* Exercise list styles – name field shrinks so number + × button stay visible (no truncation) */
         .exercise-item {
             display: flex;
             gap: 0.5rem;
@@ -997,10 +1042,12 @@
             border: 1px solid rgb(var(--border));
             border-radius: var(--radius);
             background-color: rgb(var(--card));
+            min-width: 0;
         }
         
         .exercise-item input[type="text"] {
-            flex: 1;
+            flex: 1 1 0;
+            min-width: 0;
             padding: 0.5rem;
             border: 1px solid rgb(var(--input));
             border-radius: var(--radius);
@@ -1011,6 +1058,8 @@
         
         .exercise-item input[type="number"] {
             width: 80px;
+            min-width: 80px;
+            flex-shrink: 0;
             padding: 0.5rem;
             border: 1px solid rgb(var(--input));
             border-radius: var(--radius);
@@ -1021,6 +1070,7 @@
         }
         
         .exercise-item button {
+            flex-shrink: 0;
             padding: 0.5rem;
             border: none;
             background-color: rgb(var(--destructive));
@@ -1185,9 +1235,14 @@
                     <p id="workoutDescriptionText" class="text-sm text-[rgb(var(--muted-foreground))] leading-relaxed m-0 text-left whitespace-pre-wrap break-words"></p>
                 </div>
             </div>
+            <!-- iOS: tap to enable sound (shown until audio unlocked) -->
+            <div id="iosSoundBanner" class="p-3 rounded-xl bg-[rgb(var(--accent))] border border-[rgb(var(--border))] mb-3 text-center hidden" role="region" aria-label="Enable sound">
+                <p class="text-sm font-medium text-[rgb(var(--foreground))] mb-2 m-0">On iPhone/iPad, tap below to enable sound before starting.</p>
+                <button type="button" class="control-btn btn-primary" id="iosUnlockSoundBtn" aria-label="Tap to enable sound">Tap to enable sound</button>
+            </div>
             <!-- Controls -->
-            <div class="p-4 rounded-2xl bg-[rgb(var(--card))] border border-[rgb(var(--border))] shadow-lg">
-                <div class="control-buttons-container">
+            <div class="control-buttons-card p-4 rounded-2xl bg-[rgb(var(--card))] border border-[rgb(var(--border))] shadow-lg">
+                <div class="control-buttons-container" id="controlButtonsContainer">
                     <button class="control-btn btn-primary" id="startPauseBtn" style="display: none;" aria-label="Start timer">Start</button>
                     <button class="control-btn btn-primary" id="setupBtn" style="display: none;" aria-label="Set up timer">Set Up</button>
                     <button class="control-btn btn-destructive" id="resetBtn" style="display: none;" aria-label="Reset timer">Reset</button>
@@ -1257,6 +1312,10 @@
                         <input type="text" id="prepTimeInput" class="custom-time-input" value="00:30" placeholder="MM:SS" aria-label="Prep countdown">
                         <button type="button" class="stepper-btn" id="prepTimeIncreaseBtn" aria-label="Increase prep time 10s">+10</button>
                     </div>
+                    <div class="input-group" style="margin-top: 0.75rem;">
+                        <label for="prepPhaseLabelInput">Prep phase announcement (spoken and shown)</label>
+                        <input type="text" id="prepPhaseLabelInput" class="shadcn-input" maxlength="20" value="Prepare" placeholder="e.g. Prepare, Setup, Countdown" aria-label="Prep phase label">
+                    </div>
                 </div>
                 
                 <!-- Number of Rounds / Rest Between Rounds (Reps mode only: cycles and rest between cycles) -->
@@ -1287,6 +1346,22 @@
                     <label for="doneMessageInputDrawer">Completion Message (14 characters max)</label>
                     <input type="text" id="doneMessageInputDrawer" class="shadcn-input" maxlength="14" value="Completed" placeholder="Completed" aria-label="Completion message">
                     <p class="text-xs text-[rgb(var(--muted-foreground))] mt-1 text-right"><span id="doneMessageCharCount">9</span>/14</p>
+                </div>
+                
+                <div class="sheet-section">
+                    <h3>Audio &amp; Feedback</h3>
+                    <label><input type="checkbox" id="enableTones" checked> Enable Audio Cues (tones)</label><br>
+                    <label><input type="checkbox" id="enableVoice" checked> Enable Audio Cues (voice)</label><br>
+                    <label><input type="checkbox" id="enableHaptic" checked> Enable Haptics (where supported)</label>
+                    <p class="text-xs text-[rgb(var(--muted-foreground))] mt-2">After you set workout duration above, choose when to hear an audible reminder.</p>
+                    <div id="reminderSection" style="display: none;" class="mt-3">
+                        <p class="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--muted-foreground))] mb-2">Audible reminders</p>
+                        <div class="flex flex-col gap-2">
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="reminderMinutesRemain" aria-label="1/2 workout point"> 1/2 Workout Point <span id="reminderHalfwayText" class="text-[rgb(var(--muted-foreground))]">— alerts at — min remaining</span></label>
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="reminder2Min" aria-label="2 minutes remain"> 2 Minutes Remain</label>
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="reminder1Min" aria-label="1 minute remains"> 1 Minute Remains</label>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Rounds Mode Fields -->
@@ -1365,11 +1440,13 @@
 
             <div class="sheet-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v1.06</p>
+                <p><strong>Version:</strong> v1.07</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2026-01-28</span></p>
             </div>
         </div>
     </div>
+    
+    <div class="hidden"><input type="checkbox" id="haptic-switch" switch><label for="haptic-switch" id="haptic-label"></label></div>
     
     <script>
         // Timer state
@@ -1441,6 +1518,41 @@
         const repsOnlyRoundsOptions = document.getElementById('repsOnlyRoundsOptions');
         const restBetweenRoundsContainer = document.getElementById('restBetweenRoundsContainer');
         const restBetweenRoundsInput = document.getElementById('restBetweenRoundsInput');
+        const enableTonesEl = document.getElementById('enableTones');
+        const enableVoiceEl = document.getElementById('enableVoice');
+        const enableHapticEl = document.getElementById('enableHaptic');
+        const prepPhaseLabelInput = document.getElementById('prepPhaseLabelInput');
+        const reminderMinutesRemainEl = document.getElementById('reminderMinutesRemain');
+        const reminder2MinEl = document.getElementById('reminder2Min');
+        const reminder1MinEl = document.getElementById('reminder1Min');
+        
+        function getPrepPhaseLabel() { return (prepPhaseLabelInput && prepPhaseLabelInput.value.trim()) ? prepPhaseLabelInput.value.trim() : 'Prepare'; }
+        function updateReminderDisplays() {
+            var total = readDurationFromInputs();
+            var reminderSection = document.getElementById('reminderSection');
+            if (reminderSection) reminderSection.style.display = total > 0 ? 'block' : 'none';
+            var halfwayEl = document.getElementById('reminderHalfwayText');
+            if (halfwayEl && total > 0) {
+                var halfSec = Math.round(total / 2);
+                var halfMin = Math.round(halfSec / 60);
+                if (halfMin === 1) halfwayEl.textContent = '— alerts at 1 min remaining';
+                else halfwayEl.textContent = '— alerts at ' + halfMin + ' min remaining';
+            } else if (halfwayEl) halfwayEl.textContent = '— alerts at — min remaining';
+        }
+        
+        // Audio & feedback: load from localStorage
+        if (enableTonesEl) { try { enableTonesEl.checked = localStorage.getItem('enableTones') !== 'false'; } catch (e) {} }
+        if (enableVoiceEl) { try { enableVoiceEl.checked = localStorage.getItem('enableVoice') !== 'false'; } catch (e) {} }
+        if (enableHapticEl) { try { enableHapticEl.checked = localStorage.getItem('enableHaptic') !== 'false'; } catch (e) {} }
+        if (enableTonesEl) enableTonesEl.addEventListener('change', function() { try { localStorage.setItem('enableTones', enableTonesEl.checked); } catch (e) {} });
+        if (enableVoiceEl) enableVoiceEl.addEventListener('change', function() { try { localStorage.setItem('enableVoice', enableVoiceEl.checked); } catch (e) {} });
+        if (enableHapticEl) enableHapticEl.addEventListener('change', function() { try { localStorage.setItem('enableHaptic', enableHapticEl.checked); } catch (e) {} });
+        if (reminderMinutesRemainEl) { try { reminderMinutesRemainEl.checked = localStorage.getItem('reminderMinutesRemain') === 'true'; } catch (e) {} }
+        if (reminder2MinEl) { try { reminder2MinEl.checked = localStorage.getItem('reminder2Min') === 'true'; } catch (e) {} }
+        if (reminder1MinEl) { try { reminder1MinEl.checked = localStorage.getItem('reminder1Min') === 'true'; } catch (e) {} }
+        if (reminderMinutesRemainEl) reminderMinutesRemainEl.addEventListener('change', function() { try { localStorage.setItem('reminderMinutesRemain', reminderMinutesRemainEl.checked); } catch (e) {} });
+        if (reminder2MinEl) reminder2MinEl.addEventListener('change', function() { try { localStorage.setItem('reminder2Min', reminder2MinEl.checked); } catch (e) {} });
+        if (reminder1MinEl) reminder1MinEl.addEventListener('change', function() { try { localStorage.setItem('reminder1Min', reminder1MinEl.checked); } catch (e) {} });
         
         function clampInt(value, min, max) {
             const n = Number.parseInt(String(value), 10);
@@ -1716,13 +1828,19 @@
                 }
             } else if (amrapType === 'reps' && cycleExercises && exercises.length > 0) {
                 if (roundsDisplay) {
-                    roundsDisplay.style.display = 'block';
-                    const tCycles = getTargetRounds();
-                    const exName = exercises[currentExerciseIndex]?.name || 'Exercise';
-                    if (tCycles >= 1) {
-                        roundsDisplay.textContent = `Cycle ${currentCycle} of ${tCycles} | Exercise: ${exName}`;
+                    // When cleared (e.g. after Clear button), hide cycle/exercise line; show only when timer has time or is running
+                    if (cleared) {
+                        roundsDisplay.style.display = 'none';
+                        roundsDisplay.textContent = '';
                     } else {
-                        roundsDisplay.textContent = `Cycle ${currentCycle} | Exercise: ${exName}`;
+                        roundsDisplay.style.display = 'block';
+                        const tCycles = getTargetRounds();
+                        const exName = exercises[currentExerciseIndex]?.name || 'Exercise';
+                        if (tCycles >= 1) {
+                            roundsDisplay.textContent = `Cycle ${currentCycle} of ${tCycles} | Exercise: ${exName}`;
+                        } else {
+                            roundsDisplay.textContent = `Cycle ${currentCycle} | Exercise: ${exName}`;
+                        }
                     }
                 }
             } else {
@@ -1819,6 +1937,7 @@
                 durationSeconds: durationSeconds,
                 prepTimeSeconds: prepTimeInput ? Math.min(300, Math.max(0, parseTime(prepTimeInput.value))) : prepTimeSeconds,
                 doneMessage: (doneMessageInput && doneMessageInput.value) ? doneMessageInput.value.trim() || 'Completed' : 'Completed',
+                prepPhaseLabel: (prepPhaseLabelInput && prepPhaseLabelInput.value.trim()) ? prepPhaseLabelInput.value.trim() : 'Prepare',
                 targetRounds: getTargetRounds(),
                 restBetweenRoundsSeconds: restBetweenRoundsSeconds,
                 exercises: amrapType === 'rounds'
@@ -1869,6 +1988,7 @@
             if (prepTimeInput) prepTimeInput.value = formatTime(prepSecs);
             if (prepTimeSlider) prepTimeSlider.value = String(prepSecs);
             if (doneMessageInput) doneMessageInput.value = (w.doneMessage != null ? String(w.doneMessage) : '') || 'Completed';
+            if (prepPhaseLabelInput && w.prepPhaseLabel != null) prepPhaseLabelInput.value = String(w.prepPhaseLabel).trim() || 'Prepare';
             if (roundsInput) roundsInput.value = String(Math.min(999, Math.max(0, Number(w.targetRounds) || 0)));
             const restRounds = Number(w.restBetweenRoundsSeconds) || 0;
             if (restBetweenRoundsInput) restBetweenRoundsInput.value = String(Math.min(600, Math.max(0, restRounds)));
@@ -1904,6 +2024,7 @@
             updateRoundsDisplay();
             updateWorkoutDisplay();
             updateCharCounts();
+            updateReminderDisplays();
             updateDisplay();
         }
         
@@ -1932,6 +2053,9 @@
             if (prepTimeInput) prepTimeInput.disabled = disabled;
             if (prepTimeSlider) prepTimeSlider.disabled = disabled;
             document.querySelectorAll('#amrapTimeDecreaseBtn, #amrapTimeIncreaseBtn, #prepTimeDecreaseBtn, #prepTimeIncreaseBtn, #workTimePerExerciseDecreaseBtn, #workTimePerExerciseIncreaseBtn, #restBetweenExercisesDecreaseBtn, #restBetweenExercisesIncreaseBtn').forEach(el => { if (el) el.disabled = disabled; });
+            if (reminderMinutesRemainEl) reminderMinutesRemainEl.disabled = disabled;
+            if (reminder2MinEl) reminder2MinEl.disabled = disabled;
+            if (reminder1MinEl) reminder1MinEl.disabled = disabled;
             if (workTimePerExerciseSlider) workTimePerExerciseSlider.disabled = disabled;
             if (restBetweenExercisesSlider) restBetweenExercisesSlider.disabled = disabled;
             if (roundsInput) roundsInput.disabled = disabled;
@@ -1947,7 +2071,7 @@
                 display.textContent = formatTime(currentPrepTime);
                 display.classList.remove('warning', 'danger', 'done-message');
                 display.classList.add('prepare');
-                statusLabel.textContent = 'Prepare';
+                statusLabel.textContent = getPrepPhaseLabel();
             } else if (isRestPeriod) {
                 display.textContent = formatTime(currentRestTime);
                 display.classList.remove('warning', 'danger', 'prepare', 'done-message');
@@ -1974,11 +2098,11 @@
                 document.body.classList.add('timer-running');
                 setInputsDisabled(true);
                 if (isPrepPhase) {
-                    statusLabel.textContent = 'Prepare';
+                    statusLabel.textContent = getPrepPhaseLabel();
                 } else if (isRestPeriod) {
                     statusLabel.textContent = 'Rest';
                 } else {
-                    statusLabel.textContent = 'Running';
+                    statusLabel.textContent = 'Work';
                 }
                 startPauseBtn.textContent = 'Pause';
                 startPauseBtn.classList.remove('paused');
@@ -1998,7 +2122,7 @@
                 document.body.classList.remove('timer-running');
                 setInputsDisabled(true);
                 if (isPrepPhase) {
-                    statusLabel.textContent = 'Prepare (Paused)';
+                    statusLabel.textContent = getPrepPhaseLabel() + ' (Paused)';
                 } else if (isRestPeriod) {
                     statusLabel.textContent = 'Rest (Paused)';
                 } else {
@@ -2027,7 +2151,7 @@
                     clearBtn.style.display = 'inline-block';
                     completeRoundBtn.style.display = 'none';
                 } else if (totalSeconds > 0) {
-                    statusLabel.textContent = 'Ready';
+                    statusLabel.textContent = (readPrepTimeFromInput() > 0 ? getPrepPhaseLabel() : 'Ready');
                     startPauseBtn.textContent = 'Start';
                     startPauseBtn.classList.remove('paused');
                     startPauseBtn.setAttribute('aria-label', 'Start timer');
@@ -2044,6 +2168,12 @@
                     clearBtn.style.display = 'inline-block';
                     completeRoundBtn.style.display = 'none';
                 }
+            }
+            // Toggle 2×2 layout when exactly 4 buttons visible (e.g. paused: Resume, Reset, Clear, Set Up)
+            const controlContainer = document.getElementById('controlButtonsContainer');
+            if (controlContainer) {
+                const visibleCount = Array.from(controlContainer.querySelectorAll('.control-btn')).filter(function(b) { return getComputedStyle(b).display !== 'none'; }).length;
+                controlContainer.classList.toggle('four-buttons', visibleCount === 4);
             }
         }
 
@@ -2067,6 +2197,127 @@
             } catch (e) {
                 // ignore
             }
+        }
+
+        // Platform detection
+        function isIOS() { return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream; }
+        function isSafari() { return /^((?!chrome|android).)*safari/i.test(navigator.userAgent); }
+
+        // Haptic trigger (iOS Safari checkbox workaround, navigator.vibrate fallback)
+        function triggerHaptic(style) {
+            style = style || 'short';
+            if (!enableHapticEl || !enableHapticEl.checked) return;
+            if (isIOS() && isSafari()) {
+                const input = document.getElementById('haptic-switch');
+                const label = document.getElementById('haptic-label');
+                if (!input || !label) return;
+                const toggle = function() { input.checked = !input.checked; label.click(); };
+                if (style === 'short') toggle();
+                else if (style === 'double') { toggle(); setTimeout(toggle, 80); }
+                else if (style === 'long') { toggle(); setTimeout(toggle, 100); setTimeout(toggle, 200); }
+                else if (style === 'complete') { toggle(); setTimeout(toggle, 60); setTimeout(toggle, 120); setTimeout(toggle, 180); }
+            } else if (navigator.vibrate) {
+                if (style === 'short') navigator.vibrate(50);
+                else if (style === 'double') navigator.vibrate([50, 30, 50]);
+                else if (style === 'long') navigator.vibrate(150);
+                else if (style === 'complete') navigator.vibrate([100, 50, 100, 50, 100]);
+            }
+        }
+
+        let audioStarted = false;
+        function ensureToneStarted() {
+            if (audioStarted || typeof Tone === 'undefined') return Promise.resolve();
+            if (typeof Tone !== 'undefined' && Tone.context && Tone.context.state === 'suspended') {
+                Tone.context.resume();
+            }
+            return Tone.start().then(function() {
+                audioStarted = true;
+                hideIOSSoundBannerIfUnlocked();
+            });
+        }
+        function unlockAudioForIOS() {
+            if (typeof Tone === 'undefined') return;
+            var banner = document.getElementById('iosSoundBanner');
+            if (banner) banner.style.display = 'none';
+            if (Tone.context && Tone.context.state === 'suspended') Tone.context.resume();
+            Tone.start().then(function() {
+                audioStarted = true;
+                if (enableTonesEl && enableTonesEl.checked) playBeepShort();
+                updateDisplay();
+            }).catch(function() {
+                updateDisplay();
+            });
+        }
+        function hideIOSSoundBannerIfUnlocked() {
+            if (audioStarted) {
+                var banner = document.getElementById('iosSoundBanner');
+                if (banner) banner.style.display = 'none';
+            }
+        }
+
+        function playBeepShort() {
+            if (!enableTonesEl || !enableTonesEl.checked || !audioStarted || typeof Tone === 'undefined') return;
+            try {
+                const synth = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
+                synth.triggerAttackRelease('A5', '16n');
+            } catch (e) {}
+        }
+        function playWorkStartChime() {
+            if (!enableTonesEl || !enableTonesEl.checked || !audioStarted || typeof Tone === 'undefined') return;
+            try {
+                const fmSynth = new Tone.FMSynth({ harmonicity: 3, modulationIndex: 10, envelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.5 } }).toDestination();
+                fmSynth.triggerAttackRelease('C5', '8n');
+            } catch (e) {}
+        }
+        function playRestStartTone() {
+            if (!enableTonesEl || !enableTonesEl.checked || !audioStarted || typeof Tone === 'undefined') return;
+            try {
+                const synth = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.05, decay: 0.3, sustain: 0, release: 0.2 } }).toDestination();
+                synth.triggerAttackRelease('E4', '8n');
+            } catch (e) {}
+        }
+        function playWorkoutCompleteFanfare() {
+            if (!enableTonesEl || !enableTonesEl.checked || !audioStarted || typeof Tone === 'undefined') return;
+            try {
+                const synth = new Tone.Synth({ oscillator: { type: 'sawtooth' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.2, release: 0.2 } }).toDestination();
+                const seq = new Tone.Sequence(function(time, note) { synth.triggerAttackRelease(note, '16n', time); }, ['C5', 'E5', 'G5'], '16n').start(0);
+                seq.loop = false;
+                Tone.Transport.start();
+                setTimeout(function() { Tone.Transport.stop(); }, 500);
+            } catch (e) {}
+        }
+        function playThreeBeeps() {
+            if (!enableTonesEl || !enableTonesEl.checked || !audioStarted || typeof Tone === 'undefined') return;
+            playBeepShort();
+            setTimeout(playBeepShort, 1000);
+            setTimeout(playBeepShort, 2000);
+        }
+        function playDoubleBeep() {
+            if (!enableTonesEl || !enableTonesEl.checked || !audioStarted || typeof Tone === 'undefined') return;
+            playBeepShort();
+            setTimeout(playBeepShort, 150);
+        }
+
+        // Web Speech: Samantha en-US default, fallback first en-US
+        const speechSynth = window.speechSynthesis;
+        let speechVoices = [];
+        let defaultSpeechVoice = null;
+        function populateVoices() {
+            speechVoices = speechSynth.getVoices();
+            defaultSpeechVoice = speechVoices.find(function(v) { return v.lang === 'en-US' && (v.name.indexOf('Samantha') !== -1 || (v.voiceURI && v.voiceURI.indexOf('Samantha') !== -1)); });
+            if (!defaultSpeechVoice) defaultSpeechVoice = speechVoices.find(function(v) { return v.lang === 'en-US'; });
+        }
+        if (speechSynth.onvoiceschanged !== undefined) speechSynth.onvoiceschanged = populateVoices;
+        populateVoices();
+        function speak(text) {
+            if (!enableVoiceEl || !enableVoiceEl.checked || !text) return;
+            if (speechSynth.speaking) speechSynth.cancel();
+            var utterance = new SpeechSynthesisUtterance(text);
+            if (defaultSpeechVoice) utterance.voice = defaultSpeechVoice;
+            utterance.rate = 1.1;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+            speechSynth.speak(utterance);
         }
 
         function showDoneMessage() {
@@ -2102,6 +2353,9 @@
                 isRestPeriod = true;
                 currentRestTime = restBetweenExercises;
                 if (statusLabel) statusLabel.textContent = 'Rest';
+                if (enableTonesEl && enableTonesEl.checked) playRestStartTone();
+                if (enableVoiceEl && enableVoiceEl.checked) setTimeout(function() { speak('Rest'); }, 800);
+                if (enableHapticEl && enableHapticEl.checked) triggerHaptic('double');
             } else {
                 currentExerciseIndex = (currentExerciseIndex + 1) % exercises.length;
                 if (currentExerciseIndex === 0) {
@@ -2157,8 +2411,19 @@
                 }
                 updateRoundsDisplay();
             }
-            interval = setInterval(() => {
+            if (!resuming && prepTimeSeconds === 0) {
+                if (enableTonesEl && enableTonesEl.checked) playThreeBeeps();
+                if (enableVoiceEl && enableVoiceEl.checked) setTimeout(function() { speak('Start'); }, 800);
+                if (enableHapticEl && enableHapticEl.checked) triggerHaptic('short');
+            }
+            if (!resuming && isPrepPhase && enableVoiceEl && enableVoiceEl.checked) {
+                setTimeout(function() { speak(getPrepPhaseLabel()); }, 800);
+            }
+            interval = setInterval(function() {
                 if (isPrepPhase) {
+                    if (currentPrepTime >= 1 && currentPrepTime <= 3) {
+                        if (enableTonesEl && enableTonesEl.checked) playBeepShort();
+                    }
                     currentPrepTime--;
                     if (currentPrepTime <= 0) {
                         currentPrepTime = 0;
@@ -2169,19 +2434,29 @@
                             workTimeRemaining = workTimePerExerciseSeconds;
                         }
                         updateRoundsDisplay();
-                        playSound();
+                        if (enableTonesEl && enableTonesEl.checked) playWorkStartChime();
+                        else playSound();
+                        if (enableVoiceEl && enableVoiceEl.checked) setTimeout(function() { speak('Work'); }, 800);
+                        if (enableHapticEl && enableHapticEl.checked) triggerHaptic('short');
                         updateDisplay();
                         return;
                     }
                 } else if (isRestPeriod) {
+                    if (currentRestTime >= 1 && currentRestTime <= 3) {
+                        if (enableTonesEl && enableTonesEl.checked) playBeepShort();
+                    }
                     currentRestTime--;
-                    // Total time is sole authority: count down during rest in both modes.
                     currentTime--;
                     if (currentTime <= 0) {
                         currentTime = 0;
                         stopTimer();
-                        playSound();
+                        if (enableTonesEl && enableTonesEl.checked) playThreeBeeps();
+                        else playSound();
+                        if (enableVoiceEl && enableVoiceEl.checked) setTimeout(function() { speak(doneMessageInput && doneMessageInput.value.trim() ? doneMessageInput.value.trim() : 'Completed'); }, 3300);
+                        if (enableHapticEl && enableHapticEl.checked) triggerHaptic('complete');
                         showDoneMessage();
+                        if (amrapType === 'rounds') completeRoundBtn.disabled = true;
+                        updateDisplay();
                         return;
                     }
                     if (currentRestTime <= 0) {
@@ -2191,7 +2466,7 @@
                             currentRound++;
                             updateRoundsDisplay();
                             completeRoundBtn.disabled = false;
-                            if (statusLabel) statusLabel.textContent = 'Running';
+                            if (statusLabel) statusLabel.textContent = 'Work';
                         } else if (cycleExercises && exercises.length > 0) {
                             currentExerciseIndex = (currentExerciseIndex + 1) % exercises.length;
                             if (currentExerciseIndex === 0) {
@@ -2212,13 +2487,30 @@
                         return;
                     }
                 } else {
+                    var halfSec = Math.round(totalSeconds / 2);
+                    var msg = null;
+                    if (reminderMinutesRemainEl && reminderMinutesRemainEl.checked && currentTime === halfSec) {
+                        msg = (Math.round(currentTime / 60) === 1 ? '1 minute remaining' : Math.round(currentTime / 60) + ' minutes remaining');
+                    } else if (reminder2MinEl && reminder2MinEl.checked && currentTime === 120) {
+                        msg = '2 minutes remaining';
+                    } else if (reminder1MinEl && reminder1MinEl.checked && currentTime === 60) {
+                        msg = '1 minute remains';
+                    }
+                    if (msg) {
+                        if (enableTonesEl && enableTonesEl.checked) playDoubleBeep();
+                        if (enableVoiceEl && enableVoiceEl.checked) setTimeout(function() { speak(msg); }, 800);
+                        if (enableHapticEl && enableHapticEl.checked) triggerHaptic('double');
+                    }
                     currentTime--;
-                    const isRepsCycling = amrapType === 'reps' && cycleExercises && exercises.length > 0;
+                    var isRepsCycling = amrapType === 'reps' && cycleExercises && exercises.length > 0;
                     if (isRepsCycling) workTimeRemaining--;
                     if (currentTime <= 0) {
                         currentTime = 0;
                         stopTimer();
-                        playSound();
+                        if (enableTonesEl && enableTonesEl.checked) playThreeBeeps();
+                        else playSound();
+                        if (enableVoiceEl && enableVoiceEl.checked) setTimeout(function() { speak(doneMessageInput && doneMessageInput.value.trim() ? doneMessageInput.value.trim() : 'Completed'); }, 3300);
+                        if (enableHapticEl && enableHapticEl.checked) triggerHaptic('complete');
                         showDoneMessage();
                         if (amrapType === 'rounds') completeRoundBtn.disabled = true;
                         updateDisplay();
@@ -2230,7 +2522,8 @@
                     }
                     if (isRepsCycling && workTimeRemaining <= 0) {
                         advanceToNextExerciseOrCycle();
-                        playSound();
+                        if (enableTonesEl && enableTonesEl.checked) playRestStartTone();
+                        else playSound();
                     }
                 }
                 updateDisplay();
@@ -2245,6 +2538,9 @@
             clearInterval(interval);
             interval = null;
             completeRoundBtn.disabled = true;
+            if (enableTonesEl && enableTonesEl.checked) playBeepShort();
+            if (enableVoiceEl && enableVoiceEl.checked) setTimeout(function() { speak('Pause'); }, 800);
+            if (enableHapticEl && enableHapticEl.checked) triggerHaptic('long');
             updateDisplay();
         }
 
@@ -2255,7 +2551,12 @@
             }
 
             if (isPaused) {
-                startTimer();
+                ensureToneStarted().then(function() {
+                    if (enableTonesEl && enableTonesEl.checked) playBeepShort();
+                    if (enableVoiceEl && enableVoiceEl.checked) setTimeout(function() { speak('Resume'); }, 800);
+                    if (enableHapticEl && enableHapticEl.checked) triggerHaptic('short');
+                    startTimer();
+                });
                 return;
             }
 
@@ -2267,7 +2568,10 @@
             prepTimeSeconds = readPrepTimeFromInput();
             isPrepPhase = prepTimeSeconds > 0;
             currentPrepTime = prepTimeSeconds;
-            startTimer();
+            ensureToneStarted().then(function() {
+                if (isIOS() && enableTonesEl && enableTonesEl.checked) playBeepShort();
+                startTimer();
+            });
         }
 
         function resetTimer() {
@@ -2389,10 +2693,16 @@
             totalSeconds = readDurationFromInputs();
             currentTime = totalSeconds;
             updateCycleTimeSummary();
+            updateReminderDisplays();
             updateDisplay();
         }
         
-        // Event listeners
+        if (isIOS()) {
+            var iosBanner = document.getElementById('iosSoundBanner');
+            if (iosBanner) { iosBanner.classList.remove('hidden'); iosBanner.style.display = ''; }
+            var iosUnlockBtn = document.getElementById('iosUnlockSoundBtn');
+            if (iosUnlockBtn) iosUnlockBtn.addEventListener('click', function() { unlockAudioForIOS(); });
+        }
         startPauseBtn.addEventListener('click', toggleStartPause);
         resetBtn.addEventListener('click', resetTimer);
         clearBtn.addEventListener('click', clearTimer);
@@ -2683,6 +2993,7 @@
         prepTimeSeconds = readPrepTimeFromInput();
         currentPrepTime = prepTimeSeconds;
         updateRoundsDisplay();
+        updateReminderDisplays();
         updateDisplay();
         
         document.getElementById('releaseDate').textContent = new Date().toISOString().split('T')[0];
@@ -2695,12 +3006,20 @@
                         if (drawerEl.classList.contains('open')) {
                             updateRestBetweenRoundsVisibility();
                             updateCycleTimeSummary();
+                            updateReminderDisplays();
                         }
                     }
                 });
             });
             observer.observe(drawerEl, { attributes: true, attributeFilter: ['class'] });
         }
+
+        // --- Shared audio/haptic (for HIIT, Tabata, etc.): consider extracting to timerist-audio.js ---
+        // Export: isIOS, isSafari, triggerHaptic(style), ensureToneStarted(), playBeepShort, playWorkStartChime,
+        // playRestStartTone, playWorkoutCompleteFanfare, playThreeBeeps, playDoubleBeep, populateVoices, speak(text).
+        // Integration points: call ensureToneStarted() before first start; in startTimer (!resuming) fire start cues;
+        // in interval: prep 3,2,1 + Work at 0; rest 3,2,1; work phase 30/10s warning; at workout end fanfare + speak;
+        // in pauseTimer: beep + speak("Pause") + haptic long; on resume: beep + speak("Resume") + haptic short.
     </script>
 </body>
 </html>

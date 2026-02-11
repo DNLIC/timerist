@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Timerist Audio + Haptic Preview</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; padding: 20px; background: #f8f9fa; }
+    h1 { text-align: center; color: #333; }
+    .section { margin: 30px 0; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    button { padding: 12px 24px; margin: 10px; font-size: 16px; cursor: pointer; border: none; border-radius: 6px; color: white; }
+    .start-btn { background: #17a2b8; }
+    .beep-btn { background: #007bff; }
+    .work-btn { background: #28a745; }
+    .rest-btn { background: #ffc107; color: #333; }
+    .complete-btn { background: #dc3545; }
+    .voice-btn { background: #6f42c1; }
+    .haptic-btn { background: #fd7e14; }
+    .status { margin-top: 10px; font-style: italic; color: #555; min-height: 1.5em; }
+    #voice-select, #haptic-note { margin: 10px; padding: 8px; font-size: 14px; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+  <h1>Timerist Audio + Haptic Preview</h1>
+  <p>Tests dynamic Tone.js sounds and iOS Safari haptic workaround (checkbox switch toggle). Best felt on iPhone in Safari.</p>
+
+  <div class="section">
+    <h2>Initialize Audio & Haptics</h2>
+    <button class="start-btn" id="start-audio">Start Audio Context</button>
+    <p class="status" id="context-status">Click to enable sounds (required). Haptics may need a tap gesture on iOS.</p>
+    <p id="haptic-note">On iPhone: Expect subtle single-tap feel per trigger (iOS 18+ Safari only). Limited to light feedback—no patterns.</p>
+  </div>
+
+  <div class="section">
+    <h2>Settings / Toggle</h2>
+    <label>
+      <input type="checkbox" id="enableAudio" checked> Enable Audio Cues
+    </label>
+    <br><br>
+    <label>
+      <input type="checkbox" id="enableHaptic" checked> Enable Haptics (where supported)
+    </label>
+    <br><br>
+    <label>Voice: <select id="voice-select"></select></label>
+    <p class="status" id="voice-status">Checking voice support...</p>
+  </div>
+
+  <div class="section">
+    <h2>Audio Previews (Tone.js Dynamic)</h2>
+    <button class="beep-btn" onclick="playBeepShort()">Beep (Countdown/Transition)</button>
+    <button class="work-btn" onclick="playWorkStartChime()">Work Start Chime</button>
+    <button class="rest-btn" onclick="playRestStartTone()">Rest Start Tone</button>
+    <button class="complete-btn" onclick="playWorkoutCompleteFanfare()">Completed Fanfare</button>
+    <div class="status" id="tone-status"></div>
+  </div>
+
+  <div class="section">
+    <h2>Haptic Previews (iOS Safari Workaround)</h2>
+    <button class="haptic-btn" onclick="triggerHaptic('short')">Short Tap (e.g., phase start)</button>
+    <button class="haptic-btn" onclick="triggerHaptic('double')">Double Tap (e.g., warning/countdown tick)</button>
+    <button class="haptic-btn" onclick="triggerHaptic('long')">Longer Feel (rapid toggles)</button>
+    <button class="haptic-btn" onclick="triggerHaptic('complete')">Completion Buzz (multi-tap)</button>
+    <div class="status" id="haptic-status"></div>
+  </div>
+
+  <div class="section">
+    <h2>Verbal Cues (Web Speech)</h2>
+    <button class="voice-btn" onclick="speak('Work')">Say "Work"</button>
+    <button class="voice-btn" onclick="speak('Rest')">Say "Rest"</button>
+    <button class="voice-btn" onclick="speak('Completed')">Say "Completed"</button>
+    <button class="voice-btn" onclick="speak('Three... Two... One... Go!')">3-2-1-Go!</button>
+    <div class="status" id="voice-play-status"></div>
+  </div>
+
+  <!-- Hidden elements for haptic trick -->
+  <div class="hidden">
+    <input type="checkbox" id="haptic-switch" switch>
+    <label for="haptic-switch" id="haptic-label"></label>
+  </div>
+
+  <script>
+    // AudioContext start
+    const startButton = document.getElementById('start-audio');
+    const contextStatus = document.getElementById('context-status');
+    let audioStarted = false;
+    startButton.addEventListener('click', async () => {
+      if (!audioStarted) {
+        await Tone.start();
+        audioStarted = true;
+        contextStatus.textContent = 'Audio ready! (Haptics use separate mechanism)';
+        startButton.disabled = true;
+      }
+    });
+
+    // Enable toggles
+    const enableAudio = document.getElementById('enableAudio');
+    const enableHaptic = document.getElementById('enableHaptic');
+
+    // Platform detection
+    function isIOS() {
+      return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    }
+    function isSafari() {
+      return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    }
+    if (isIOS()) {
+      document.getElementById('haptic-note').textContent += ' (Detected iOS – testing haptic workaround)';
+    } else if (navigator.vibrate) {
+      document.getElementById('haptic-note').textContent += ' (Non-iOS device with vibrate support)';
+    }
+
+    // Haptic trigger function
+    function triggerHaptic(style = 'short') {
+      if (!enableHaptic.checked) return;
+      const status = document.getElementById('haptic-status');
+      let message = 'Triggered haptic: ' + style;
+
+      if (isIOS() && isSafari()) {
+        // iOS Safari workaround: Toggle hidden switch via label click
+        const input = document.getElementById('haptic-switch');
+        const label = document.getElementById('haptic-label');
+
+        const toggle = () => {
+          input.checked = !input.checked;
+          // Some versions need label.click() for reliable haptic
+          label.click();
+        };
+
+        if (style === 'short') {
+          toggle();
+        } else if (style === 'double') {
+          toggle(); setTimeout(toggle, 80); // Quick double
+        } else if (style === 'long') {
+          toggle(); setTimeout(toggle, 100); setTimeout(toggle, 200); // Rapid
+        } else if (style === 'complete') {
+          toggle(); setTimeout(toggle, 60); setTimeout(toggle, 120); setTimeout(toggle, 180);
+        }
+      } else if (navigator.vibrate) {
+        // Android / others fallback
+        if (style === 'short') navigator.vibrate(50);
+        else if (style === 'double') navigator.vibrate([50, 30, 50]);
+        else if (style === 'long') navigator.vibrate(150);
+        else if (style === 'complete') navigator.vibrate([100, 50, 100, 50, 100]);
+        message += ' (via navigator.vibrate)';
+      } else {
+        message = 'Haptics not supported on this device/browser';
+      }
+
+      status.textContent = message;
+    }
+
+    // Tone.js sounds (same as before)
+    function playBeepShort() {
+      if (!enableAudio.checked || !audioStarted) return;
+      const synth = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
+      synth.triggerAttackRelease('A5', '16n');
+      document.getElementById('tone-status').textContent = 'Playing: beepShort';
+    }
+
+    function playWorkStartChime() {
+      if (!enableAudio.checked || !audioStarted) return;
+      const fmSynth = new Tone.FMSynth({ harmonicity: 3, modulationIndex: 10, envelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.5 } }).toDestination();
+      fmSynth.triggerAttackRelease('C5', '8n');
+      document.getElementById('tone-status').textContent = 'Playing: workStartChime';
+    }
+
+    function playRestStartTone() {
+      if (!enableAudio.checked || !audioStarted) return;
+      const synth = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.05, decay: 0.3, sustain: 0, release: 0.2 } }).toDestination();
+      synth.triggerAttackRelease('E4', '8n');
+      document.getElementById('tone-status').textContent = 'Playing: restStartTone';
+    }
+
+    function playWorkoutCompleteFanfare() {
+      if (!enableAudio.checked || !audioStarted) return;
+      const synth = new Tone.Synth({ oscillator: { type: 'sawtooth' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.2, release: 0.2 } }).toDestination();
+      const seq = new Tone.Sequence((time, note) => {
+        synth.triggerAttackRelease(note, '16n', time);
+      }, ['C5', 'E5', 'G5'], '16n').start(0);
+      seq.loop = false;
+      Tone.Transport.start();
+      setTimeout(() => Tone.Transport.stop(), 500);
+      document.getElementById('tone-status').textContent = 'Playing: workoutCompleteFanfare';
+    }
+
+    // Web Speech (unchanged)
+    const synth = window.speechSynthesis;
+    const voiceSelect = document.getElementById('voice-select');
+    const voiceStatus = document.getElementById('voice-status');
+    let voices = [];
+
+    function populateVoices() {
+      voices = synth.getVoices();
+      voiceSelect.innerHTML = '';
+      if (voices.length === 0) {
+        voiceStatus.textContent = 'No voices available.';
+        return;
+      }
+      voiceStatus.textContent = `Found ${voices.length} voices.`;
+      voices.forEach((voice, i) => {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = `${voice.name} (${voice.lang})`;
+        voiceSelect.appendChild(option);
+      });
+    }
+
+    if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = populateVoices;
+    populateVoices();
+
+    function speak(text) {
+      if (!enableAudio.checked) return;
+      if (synth.speaking) synth.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      const selected = voiceSelect.value;
+      if (selected !== '' && voices[selected]) utterance.voice = voices[selected];
+      utterance.rate = 1.1;
+      utterance.pitch = 1.0;
+      synth.speak(utterance);
+      document.getElementById('voice-play-status').textContent = `Speaking: "${text}"`;
+    }
+  </script>
+
+</body>
+</html>
