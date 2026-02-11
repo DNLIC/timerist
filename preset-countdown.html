@@ -705,6 +705,7 @@
         
         // Toggle play/pause
         function togglePlayPause() {
+            primeSpeechForIOS();
             if (isRunning && !isPaused) {
                 pauseTimer();
             } else if (isPaused) {
@@ -870,6 +871,7 @@
                 if (enableTonesEl && enableTonesEl.checked) playBeepShort();
                 updateDisplay();
             }).catch(function() { updateDisplay(); });
+            primeSpeechForIOS();
         }
         function dismissIOSSoundBannerSilent() {
             const banner = document.getElementById('iosSoundBanner');
@@ -915,6 +917,7 @@
         const speechSynth = window.speechSynthesis;
         let speechVoices = [];
         let defaultSpeechVoice = null;
+        let speechPrimed = false;
         function populateVoices() {
             speechVoices = speechSynth.getVoices();
             defaultSpeechVoice = speechVoices.find(function(v) { return v.lang === 'en-US' && (v.name.indexOf('Samantha') !== -1 || (v.voiceURI && v.voiceURI.indexOf('Samantha') !== -1)); });
@@ -922,6 +925,14 @@
         }
         if (speechSynth.onvoiceschanged !== undefined) speechSynth.onvoiceschanged = populateVoices;
         populateVoices();
+        function primeSpeechForIOS() {
+            if (speechPrimed || !enableVoiceEl || !enableVoiceEl.checked) return;
+            try {
+                speechSynth.cancel();
+                speechSynth.speak(new SpeechSynthesisUtterance(''));
+                speechPrimed = true;
+            } catch (e) {}
+        }
         function speak(text) {
             if (!enableVoiceEl || !enableVoiceEl.checked || !text) return;
             if (speechSynth.speaking) speechSynth.cancel();
@@ -974,6 +985,7 @@
         
         presetSelectButtons.forEach(btn => {
             btn.addEventListener('click', function() {
+                primeSpeechForIOS();
                 const seconds = parseInt(this.getAttribute('data-seconds'));
                 const now = Date.now();
                 const isOverride = (now - lastPresetSelectTapTime) < DOUBLE_TAP_MS;

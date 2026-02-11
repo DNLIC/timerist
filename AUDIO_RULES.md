@@ -10,8 +10,12 @@
 |------|------|
 | **amrap.html** | AMRAP timer with full audio: tones, voice, haptics, iOS banner, reminders, localStorage, import triggers unlock |
 | **amrap-splits.html** | Same as above + export/import of audio preferences in workout JSON |
+| **countdown.html** | Countdown timer with full audio; includes iOS voice priming (§6.3) |
+| **preset-countdown.html** | Preset countdown with full audio; includes iOS voice priming (§6.3) |
+| **interval.html** | Preset interval timer with full audio; Tabata preset (20s work, 10s rest, 8 rounds); prep phase, 3-2-1 at work/rest, work cues on every round (§14) |
+| **emom.html** | EMOM (Every Minute On the Minute) timer with full audio; prep phase, work cues on every round, 3-2-1 at end of each minute, no rest phase, reminder section when total duration &gt; 0 (§14.6) |
 
-When adding or changing audio behavior, keep these two in sync and use them as the source of truth.
+When adding or changing audio behavior, keep amrap.html and amrap-splits.html in sync and use them as the source of truth. For countdown-style timers, use countdown.html and preset-countdown.html as reference. For interval/work-rest timers (including Tabata), use **interval.html** as reference. For every-minute style timers with no rest phase (EMOM), use **emom.html** as reference.
 
 ---
 
@@ -156,7 +160,7 @@ if (reminder1MinEl) { try { reminder1MinEl.checked = localStorage.getItem('remin
 
 ### 3.3 Disabling During Run
 
-When the timer is running or paused, disable the **Audio & Feedback** and **Reminder** inputs (and any other setup inputs) so the user cannot change them mid-session. Re-enable when the timer is cleared or reset to setup state.
+When the timer is running or paused, disable the **Audio & Feedback**, **Reminder**, and **all other setup inputs** (including prep countdown, work/rest times, rounds, etc.) so the user cannot change them mid-session. Re-enable when the timer is cleared or reset to setup state.
 
 ---
 
@@ -212,7 +216,7 @@ Reuse the same layout as other control buttons (e.g. Set Up / Clear):
 
 ### 4.5 Unlock and Dismiss
 
-- **Enable Sound button:** Call `unlockAudioForIOS()`. That should: hide banner, resume Tone.context if suspended, call `Tone.start()`, set `audioStarted = true`, optionally play one short beep if tones enabled, then update UI.
+- **Enable Sound button:** Call `unlockAudioForIOS()`. That should: hide banner, resume Tone.context if suspended, call `Tone.start()`, set `audioStarted = true`, optionally play one short beep if tones enabled, call `primeSpeechForIOS()` for voice (see §6.3), then update UI.
 - **Silent button:** Call `dismissIOSSoundBannerSilent()`: add `hidden` and `display: none` to the banner. Do **not** set `audioStarted = true`, so no sounds will play until the user unlocks on a later gesture (e.g. Import).
 
 ### 4.6 When to Call Unlock (user gesture)
@@ -224,7 +228,7 @@ Reuse the same layout as other control buttons (e.g. Set Up / Clear):
 ### 4.7 ensureToneStarted vs unlockAudioForIOS
 
 - **ensureToneStarted()** – Idempotent; if already started or Tone missing, resolve immediately. Otherwise call `Tone.start()`, set `audioStarted = true`, hide iOS banner. Use this on **Start** / **Resume** before playing any tone.
-- **unlockAudioForIOS()** – Explicit unlock from “Enable Sound” or Import; hide banner, resume context, `Tone.start()`, set `audioStarted = true`, optionally play a short beep. Use on button click or after file import.
+- **unlockAudioForIOS()** – Explicit unlock from “Enable Sound” or Import; hide banner, resume context, `Tone.start()`, set `audioStarted = true`, optionally play a short beep, call `primeSpeechForIOS()`. Use on button click or after file import.
 
 ---
 
@@ -267,6 +271,35 @@ Prefer **Samantha** (en-US) if available; otherwise first en-US voice. Load voic
 - Cancel any current utterance: `speechSynthesis.cancel()`.
 - Use `SpeechSynthesisUtterance` with rate ~1.1, pitch 1.0, volume 1.0.
 - Delay voice slightly after tones (e.g. 800 ms) so the beep is heard first.
+
+### 6.3 iOS Voice Priming (Required for Mobile Safari)
+
+**Problem:** iOS Safari requires the first `speechSynthesis.speak()` call to happen **during a user gesture**. If voice is only triggered from `setTimeout` or `setInterval` (e.g. 800 ms after Start), the utterance is silently blocked and no speech plays—even though tones work. No error is reported.
+
+**Solution:** Call `primeSpeechForIOS()` during a user gesture to “prime” the speech synthesis. This plays an empty utterance immediately, which enables subsequent utterances from timeouts/intervals for the rest of the session.
+
+**Implementation:**
+
+```js
+let speechPrimed = false;
+function primeSpeechForIOS() {
+    if (speechPrimed || !enableVoiceEl || !enableVoiceEl.checked) return;
+    try {
+        speechSynth.cancel();
+        speechSynth.speak(new SpeechSynthesisUtterance(''));
+        speechPrimed = true;
+    } catch (e) {}
+}
+```
+
+**When to call (during user gesture):**
+
+- **unlockAudioForIOS()** – When user taps “Enable Sound” on the iOS banner.
+- **Start button / Start action** – When user taps Start (e.g. at start of `toggleStartPause` or equivalent).
+- **Preset tap** – When user taps a preset button to start (e.g. at start of preset click handler, before any `setTimeout`).
+- **Resume/Pause button** – When user taps the main play/pause control.
+
+Call `primeSpeechForIOS()` at the **beginning** of these handlers (synchronously, before any async or `setTimeout`), so it runs within the user gesture context. Reference: **countdown.html**, **preset-countdown.html**.
 
 ---
 
@@ -362,11 +395,12 @@ Use this when adding sound to HIIT, Tabata, EMOM, Interval, Countdown, Stopwatch
 - [ ] **Unlock:** Implement `unlockAudioForIOS()` and `ensureToneStarted()`; call ensure/unlock on Start (and Import if applicable).
 - [ ] **Hidden haptic switch:** Add `#haptic-switch` and `#haptic-label`; implement `triggerHaptic(style)` with iOS checkbox workaround and `navigator.vibrate` fallback.
 - [ ] **Voice:** Implement `populateVoices()` and `speak(text)` with Samantha/en-US default; guard with `enableVoice`.
+- [ ] **iOS voice priming:** Implement `primeSpeechForIOS()` and call it from unlock, Start, preset tap, and Resume/Pause handlers (see §6.3).
 - [ ] **Tone helpers:** Implement `playBeepShort`, `playWorkStartChime`, `playRestStartTone`, `playWorkoutCompleteFanfare`, `playThreeBeeps`, `playDoubleBeep` (or subset) with the standard guard; add `playSound()` fallback if desired.
 - [ ] **Map events:** For that timer type, trigger the right tone/voice/haptic at: start, pause, resume, work start, rest start, completion, round/segment, reminders (if applicable).
 - [ ] **Reminder section:** If the timer has a total duration, show `#reminderSection` and update `reminderHalfwayText`; in tick, fire reminder at ½, 2 min, 1 min when checkboxes are set.
 - [ ] **Export/import:** If the timer has workout export/import, add `enableTones`, `enableVoice`, `enableHaptic` to payload and apply on import; call `unlockAudioForIOS()` after import.
-- [ ] **Testing:** Verify on iOS Safari: banner appears, “Enable Sound” unlocks and plays beep, “Silent” hides banner and no sound; Start after unlock plays cues; Import unlocks audio.
+- [ ] **Testing:** Verify on iOS Safari: banner appears, “Enable Sound” unlocks and plays beep, “Silent” hides banner and no sound; Start after unlock plays cues; Import unlocks audio; **voice** plays (“Start”, “Pause”, “Resume”, completion message, reminders) after priming.
 
 ---
 
@@ -462,3 +496,53 @@ If you need tighter spacing on very narrow portrait (e.g. &lt; 390px), you can a
 ### 13.4 Sheet container
 
 The list lives inside the bottom sheet (`.sheet-content`), which has `max-height: 85vh` and `overflow-y: auto`, so many exercises scroll vertically while each row stays within the visible width.
+
+---
+
+## 14. Interval Timer: Tabata Preset and Work/Rest Flow
+
+For **interval-style timers** (work/rest rounds, e.g. Tabata 20s work / 10s rest × 8 rounds), use **interval.html** as the reference. The Tabata preset also appears in the HIIT timer as an option.
+
+### 14.1 Prep Phase (Workout PREP Countdown)
+
+- **Duration:** MM:SS format, 0–300 seconds (5 min), with slider and ±10s stepper.
+- **Prep phase announcement:** User-configurable label (e.g. "Countdown", "Prepare", "Setup")—spoken at start and shown as phase label during prep.
+- **Flow:** At start, speak the prep label; show countdown; play 3-2-1 beeps at last 3 seconds; transition to work with chime + "Work" + haptic short.
+- **localStorage:** `preset-interval-prepTimeSeconds`, `preset-interval-prepPhaseLabel`.
+
+### 14.2 3-2-1 Beeps Before Phase Transitions
+
+Play `playBeepShort` (and haptic short) at 3, 2, 1 seconds remaining in:
+
+- **Prep countdown** — before first work.
+- **Work phase** — before transitioning to rest (or next round in EMOM).
+- **Rest phase** — before transitioning to next work round (only when restTime &gt; 0).
+
+### 14.3 Work Cues on Every Work Round
+
+Play **work cues** (chime + voice "Work" + haptic short) on **every** work round start, not just the first:
+
+- After prep countdown → first work.
+- After rest → 2nd, 3rd, etc. work rounds.
+
+Avoid only playing work cues on the first round; repeat them on each rest→work transition.
+
+### 14.4 Rest Cues
+
+Play `playRestStartTone` + voice "Rest" + haptic double when transitioning from work to rest.
+
+### 14.5 Total Duration and Reminders
+
+For interval timers with rounds: `totalDuration = totalRounds * workTime + (totalRounds - 1) * restTime`. Show reminder section when totalDuration &gt; 0; fire reminders at ½ point, 2 min, 1 min remaining based on elapsed time across rounds. **Do not fire reminders during prep phase**; only during the actual workout rounds.
+
+### 14.6 EMOM (Every Minute On the Minute) – No Rest Phase
+
+For timers with work-only rounds (no rest, e.g. EMOM):
+
+- **Total duration:** `totalDuration = totalRounds * workTime` (no rest component).
+- **Total remaining:** `elapsed = (currentRound - 1) * workTime + (workTime - currentTime)`; `totalRemaining = totalDuration - elapsed`.
+- **No rest cues:** Omit `playRestStartTone`, voice "Rest", and rest haptics.
+- **Work cues:** Play work cues (chime + "Work" + haptic short) on **every** round start—after prep, and at each minute transition.
+- **3-2-1 beeps:** Play at end of each work period (e.g. last 3 seconds of each minute) before transitioning to the next round.
+- **Prep phase:** Same as §14.1; optional prep countdown with customizable label. Use timer-specific localStorage keys (e.g. `emom-prepTimeSeconds`, `emom-prepPhaseLabel`).
+- **Reference:** **emom.html**.
