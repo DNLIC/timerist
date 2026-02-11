@@ -8,6 +8,7 @@ const htmlFiles = [
   'subscribe.html',
   'faq.html',
   'countdown-presets.html',
+  'preset-countdown.html',
   'hiit-presets.html',
   'interval-presets.html',
   'quick-interval-iphone-shadcn.html',
