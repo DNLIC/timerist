@@ -306,16 +306,27 @@
             border: none;
             font-family: inherit;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            white-space: nowrap;
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
-            white-space: nowrap;
-            flex-shrink: 1;
         }
-        @media (max-width: 390px) {
-            .control-buttons-container { gap: 0.5rem; flex-wrap: nowrap; }
-            .control-btn { min-width: 0; flex: 1 1 0; padding: 0.625rem 0.5rem; font-size: 0.875rem; min-height: 48px; border-radius: 0.75rem; }
+        .control-buttons-container { display: flex; gap: 0.75rem; justify-content: center; align-items: center; flex-wrap: wrap; width: 100%; min-width: 0; box-sizing: border-box; }
+        /* Small screens: wrap to 2 buttons per row so text fits (no truncation) - matches Tabata/interval pattern */
+        @media (max-width: 428px) {
+            .control-buttons-container {
+                gap: 0.5rem;
+                flex-wrap: wrap;
+            }
+            .control-buttons-container .control-btn {
+                flex: 1 1 calc(50% - 0.25rem);
+                min-width: 0;
+                box-sizing: border-box;
+                padding: 0.625rem 0.5rem;
+                font-size: 0.875rem;
+                min-height: 48px;
+                border-radius: 0.75rem;
+            }
         }
-        .control-buttons-container { display: flex; gap: 0.75rem; justify-content: center; align-items: center; flex-wrap: wrap; }
         .control-btn.btn-primary { background: rgb(var(--primary)); color: rgb(var(--primary-foreground)); }
         .control-btn.btn-primary:hover:not(:disabled) { filter: brightness(1.05); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .control-btn.btn-primary.paused, .control-btn.btn-primary.paused:hover { background: rgb(100,100,100) !important; color: #fff !important; }
