@@ -220,9 +220,15 @@
         
         #timerist-logo circle,
         #timerist-logo line {
-            stroke: hsl(var(--foreground));
+            stroke: currentColor;
             stroke-width: 2.5;
             transition: stroke 0.2s ease;
+        }
+        
+        /* Explicit dark mode override so logo stays visible (matches #header-logo pattern) */
+        .dark #timerist-logo,
+        html.dark #timerist-logo {
+            color: #fafafa;
         }
         
         header h1 {
@@ -375,9 +381,9 @@
                     xmlns="http://www.w3.org/2000/svg"
                     id="timerist-logo"
                 >
-                    <circle cx="20" cy="20" r="15" fill="none" stroke="#0a0a0a" stroke-width="2.5" class="logo-circle"/>
-                    <line x1="20" y1="20" x2="20" y2="8" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
-                    <line x1="20" y1="20" x2="30" y2="20" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
+                    <circle cx="20" cy="20" r="15" fill="none" stroke="currentColor" stroke-width="2.5" class="logo-circle"/>
+                    <line x1="20" y1="20" x2="20" y2="8" stroke="currentColor" stroke-width="2.5" class="logo-line"/>
+                    <line x1="20" y1="20" x2="30" y2="20" stroke="currentColor" stroke-width="2.5" class="logo-line"/>
                 </svg>
                 <h1>Timerist</h1>
             </div>

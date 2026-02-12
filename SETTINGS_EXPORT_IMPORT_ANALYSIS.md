@@ -88,9 +88,7 @@
 
 ## 3. Next Steps
 
-1. ~~**Update timer export/import**~~ – Add missing settings to each timer's export payload and import handler (per §1). **DONE**
-2. ~~**Update workout JSON files**~~ – Add missing fields to each file in `workouts/` (per §2). **DONE**
-3. ~~**Update inline presets**~~ – Optionally add default audio/message settings to preset objects (per §2). **DONE** (presets use defaults when missing)
+on t§2). **DONE** (presets use defaults when missing)
 
 ## 4. Changes Applied (2026-02-12)
 
