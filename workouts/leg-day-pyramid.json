@@ -1,7 +1,1 @@
-{
-  "format": "timerist_pyramid",
-  "version": "1.0",
-  "name": "Leg Day Pyramid",
-  "description": "Progressive build-up then drop: 10-20-30-20-10 reps",
-  "steps": [10, 20, 30, 20, 10]
-}
+{"format":"timerist_pyramid","version":"1.0","type":"Pyramid","name":"Leg Day Pyramid","title":"Leg Day Pyramid","description":"Progressive build-up then drop: 10-20-30-20-10 reps","steps":[10,20,30,20,10],"startTime":10,"increment":10,"peakTime":50,"restTime":15,"pyramids":1,"warmupTime":10,"cooldownTime":60,"doneMessage":"Completed","prepPhaseLabel":"Countdown","enableTones":true,"enableVoice":true,"enableHaptic":true}

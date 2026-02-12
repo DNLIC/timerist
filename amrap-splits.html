@@ -1540,11 +1540,11 @@
                 <div class="sheet-section">
                     <h3>Workout PREP Countdown (MM:SS)</h3>
                     <div class="time-slider-wrap">
-                        <input type="range" id="prepTimeSlider" min="0" max="300" step="5" value="30" aria-label="Prep countdown seconds">
+                        <input type="range" id="prepTimeSlider" min="0" max="300" step="5" value="10" aria-label="Prep countdown seconds">
                     </div>
                     <div class="time-stepper-row">
                         <button type="button" class="stepper-btn" id="prepTimeDecreaseBtn" aria-label="Decrease prep time 10s">−10</button>
-                        <input type="text" id="prepTimeInput" class="custom-time-input" value="00:30" placeholder="MM:SS" aria-label="Prep countdown">
+                        <input type="text" id="prepTimeInput" class="custom-time-input" value="00:10" placeholder="MM:SS" aria-label="Prep countdown">
                         <button type="button" class="stepper-btn" id="prepTimeIncreaseBtn" aria-label="Increase prep time 10s">+10</button>
                     </div>
                     <div class="input-group" style="margin-top: 0.75rem;">
@@ -1685,7 +1685,7 @@
         // Timer state
         let currentTime = 0;
         let totalSeconds = 0;
-        let prepTimeSeconds = 30;
+        let prepTimeSeconds = 10;
         let currentPrepTime = 0;
         let interval = null;
         let isRunning = false;
@@ -2194,7 +2194,10 @@
                 enableSplits: !!enableSplits,
                 enableTones: !!(enableTonesEl && enableTonesEl.checked),
                 enableVoice: !!(enableVoiceEl && enableVoiceEl.checked),
-                enableHaptic: !!(enableHapticEl && enableHapticEl.checked)
+                enableHaptic: !!(enableHapticEl && enableHapticEl.checked),
+                reminderMinutesRemain: !!(reminderMinutesRemainEl && reminderMinutesRemainEl.checked),
+                reminder2Min: !!(reminder2MinEl && reminder2MinEl.checked),
+                reminder1Min: !!(reminder1MinEl && reminder1MinEl.checked)
             };
             const results = {
                 rounds: rounds,
@@ -2314,7 +2317,7 @@
             if (r.currentCycle != null) currentCycle = Math.max(1, Number(r.currentCycle) || 1);
             totalSeconds = duration;
             currentTime = totalSeconds;
-            prepTimeSeconds = prepTimeInput ? Math.min(300, Math.max(0, parseTime(prepTimeInput.value))) : 30;
+            prepTimeSeconds = prepTimeInput ? Math.min(300, Math.max(0, parseTime(prepTimeInput.value))) : 10;
             updateAmrapType();
             renderRoundsExercises();
             renderRepsExercises();
@@ -2328,6 +2331,9 @@
             if (enableTonesEl != null && w.enableTones !== undefined) enableTonesEl.checked = !!w.enableTones;
             if (enableVoiceEl != null && w.enableVoice !== undefined) enableVoiceEl.checked = !!w.enableVoice;
             if (enableHapticEl != null && w.enableHaptic !== undefined) enableHapticEl.checked = !!w.enableHaptic;
+            if (reminderMinutesRemainEl != null && w.reminderMinutesRemain !== undefined) reminderMinutesRemainEl.checked = !!w.reminderMinutesRemain;
+            if (reminder2MinEl != null && w.reminder2Min !== undefined) reminder2MinEl.checked = !!w.reminder2Min;
+            if (reminder1MinEl != null && w.reminder1Min !== undefined) reminder1MinEl.checked = !!w.reminder1Min;
             if (typeof unlockAudioForIOS === 'function') unlockAudioForIOS();
         }
         
@@ -3366,14 +3372,14 @@
             
             if (amrapTimeInput) amrapTimeInput.value = '00:00';
             if (amrapTimeSlider) amrapTimeSlider.value = '0';
-            if (prepTimeInput) prepTimeInput.value = '00:30';
-            if (prepTimeSlider) prepTimeSlider.value = '30';
+            if (prepTimeInput) prepTimeInput.value = '00:10';
+            if (prepTimeSlider) prepTimeSlider.value = '10';
             if (roundsInput) roundsInput.value = '0';
             if (restBetweenRoundsInput) restBetweenRoundsInput.value = '0';
             
             totalSeconds = 0;
             currentTime = 0;
-            prepTimeSeconds = 30;
+            prepTimeSeconds = 10;
             currentPrepTime = 0;
             currentRestTime = 0;
             restBetweenRoundsSeconds = 0;
@@ -3425,7 +3431,7 @@
         
         function adjustPrepTime(delta) {
             if (isRunning || isPaused) return;
-            const current = prepTimeInput ? parseTime(prepTimeInput.value) : 30;
+            const current = prepTimeInput ? parseTime(prepTimeInput.value) : 10;
             const newValue = Math.min(300, Math.max(0, current + delta));
             if (prepTimeInput) prepTimeInput.value = formatTime(newValue);
             if (prepTimeSlider) prepTimeSlider.value = String(newValue);

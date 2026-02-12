@@ -1146,11 +1146,11 @@
             <div class="sheet-section">
                 <h3>Workout PREP Countdown (MM:SS)</h3>
                 <div class="time-slider-wrap">
-                    <input type="range" id="prepTimeSlider" min="0" max="300" step="5" value="30" aria-label="Prep countdown seconds">
+                    <input type="range" id="prepTimeSlider" min="0" max="300" step="5" value="10" aria-label="Prep countdown seconds">
                 </div>
                 <div class="time-stepper-row">
                     <button type="button" class="stepper-btn" id="prepTimeDecreaseBtn" aria-label="Decrease prep time 10s">−10</button>
-                    <input type="text" id="prepTimeInput" class="custom-time-input" value="00:30" placeholder="MM:SS" aria-label="Prep countdown">
+                    <input type="text" id="prepTimeInput" class="custom-time-input" value="00:10" placeholder="MM:SS" aria-label="Prep countdown">
                     <button type="button" class="stepper-btn" id="prepTimeIncreaseBtn" aria-label="Increase prep time 10s">+10</button>
                 </div>
                 <div class="input-group" style="margin-top: 0.75rem;">
@@ -1953,7 +1953,7 @@
                 cooldownTimeInput.value = '01:00';
                 setsInput.value = '1';
                 setRestTimeInput.value = '02:00';
-                if (prepTimeInput) prepTimeInput.value = '00:30';
+                if (prepTimeInput) prepTimeInput.value = '00:10';
                 
                 if (workoutTitleInput) workoutTitleInput.value = '';
                 if (workoutDescriptionInput) workoutDescriptionInput.value = '';
@@ -2473,9 +2473,9 @@
             if (restTimeSlider) restTimeSlider.value = 0;
             if (cooldownTimeSlider) cooldownTimeSlider.value = 60;
             if (setRestTimeSlider) setRestTimeSlider.value = 120;
-            if (prepTimeInput) prepTimeInput.value = '00:30';
-            if (prepTimeSlider) prepTimeSlider.value = 30;
-            syncPrepTimeToInputs(30);
+            if (prepTimeInput) prepTimeInput.value = '00:10';
+            if (prepTimeSlider) prepTimeSlider.value = 10;
+            syncPrepTimeToInputs(10);
             syncSlidersFromInputs();
             syncWarmupCooldownSlidersFromInputs();
             syncSetRestSliderFromInput();
@@ -2791,6 +2791,7 @@
                 enableTones: !!(enableTonesEl && enableTonesEl.checked),
                 enableVoice: !!(enableVoiceEl && enableVoiceEl.checked),
                 enableHaptic: !!(enableHapticEl && enableHapticEl.checked),
+                prepPhaseLabel: (prepPhaseLabelInput && prepPhaseLabelInput.value.trim()) ? prepPhaseLabelInput.value.trim() : 'Countdown',
                 exportedAt: new Date().toISOString()
             };
             
@@ -2845,26 +2846,33 @@
                             setDoneMessage(doneMessageInput.value);
                         }
                         
-                        // Load timer settings
+                        // Load timer settings (support workSeconds/restSeconds for backward compat)
                         if (data.workTime !== undefined) {
                             workTime = data.workTime;
+                            workTimeInput.value = formatTime(workTime);
+                        } else if (data.workSeconds !== undefined) {
+                            workTime = data.workSeconds;
                             workTimeInput.value = formatTime(workTime);
                         }
                         if (data.restTime !== undefined) {
                             restTime = data.restTime;
+                            restTimeInput.value = formatTime(restTime);
+                        } else if (data.restSeconds !== undefined) {
+                            restTime = data.restSeconds;
                             restTimeInput.value = formatTime(restTime);
                         }
                         if (data.rounds !== undefined) {
                             totalRounds = data.rounds;
                             roundsInput.value = totalRounds;
                         }
-                        if (data.prepTime !== undefined && prepTimeInput) {
-                            const pt = Math.max(0, Math.min(300, parseInt(data.prepTime, 10) || 0));
+                        if ((data.prepTime !== undefined || data.prepTimeSeconds !== undefined) && prepTimeInput) {
+                            const pt = Math.max(0, Math.min(300, parseInt(data.prepTime !== undefined ? data.prepTime : data.prepTimeSeconds, 10) || 10));
                             syncPrepTimeToInputs(pt);
                         }
                         if (enableTonesEl != null && data.enableTones !== undefined) enableTonesEl.checked = !!data.enableTones;
                         if (enableVoiceEl != null && data.enableVoice !== undefined) enableVoiceEl.checked = !!data.enableVoice;
                         if (enableHapticEl != null && data.enableHaptic !== undefined) enableHapticEl.checked = !!data.enableHaptic;
+                        if (prepPhaseLabelInput != null && data.prepPhaseLabel !== undefined) prepPhaseLabelInput.value = (data.prepPhaseLabel || '').trim() || 'Countdown';
                         unlockAudioForIOS();
                         if (data.cooldownTime !== undefined) {
                             cooldownTime = data.cooldownTime;
@@ -2965,7 +2973,7 @@
         cooldownTime = parseTime(cooldownTimeInput.value);
         totalSets = parseInt(setsInput.value) || 1;
         setRestTime = parseTime(setRestTimeInput.value);
-        const savedPrep = (function() { try { return parseInt(localStorage.getItem('hiit-prepTimeSeconds'), 10); } catch (e) { return 30; } })();
+        const savedPrep = (function() { try { return parseInt(localStorage.getItem('hiit-prepTimeSeconds'), 10); } catch (e) { return 10; } })();
         if (Number.isFinite(savedPrep) && savedPrep >= 0 && savedPrep <= 300) {
             syncPrepTimeToInputs(savedPrep);
         }

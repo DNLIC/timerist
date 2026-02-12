@@ -224,7 +224,7 @@
         }
         .time-stepper-row { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.5rem; }
         .time-stepper-row .custom-time-input { flex: 1; min-width: 0; }
-        /* iOS sound banner */
+        /* iOS sound banner: two buttons same cushion as Set Up / Clear; text centered, font matches control bar */
         .ios-sound-banner-buttons {
             display: flex;
             gap: 0.5rem;
@@ -238,6 +238,8 @@
         .ios-sound-banner-buttons .control-btn {
             flex: 1 1 0;
             min-width: 0;
+            text-align: center;
+            font-size: 0.875rem;
         }
         @media (min-width: 390px) { .ios-sound-banner-buttons { gap: 0.75rem; } }
         @media (min-width: 640px) { .ios-sound-banner-buttons { gap: 1rem; } }
@@ -297,9 +299,9 @@
         .control-btn {
             min-height: 56px;
             min-width: 56px;
-            padding: 0.75rem 1.25rem;
-            border-radius: 1rem;
-            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
             font-weight: 500;
             transition: all 0.2s;
             cursor: pointer;
@@ -307,26 +309,28 @@
             font-family: inherit;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             white-space: nowrap;
+            flex: 1 1 0;
+            min-width: 0;
+            text-align: center;
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
         }
-        .control-buttons-container { display: flex; gap: 0.75rem; justify-content: center; align-items: center; flex-wrap: wrap; width: 100%; min-width: 0; box-sizing: border-box; }
-        /* Small screens: wrap to 2 buttons per row so text fits (no truncation) - matches Tabata/interval pattern */
-        @media (max-width: 428px) {
-            .control-buttons-container {
-                gap: 0.5rem;
-                flex-wrap: wrap;
-            }
-            .control-buttons-container .control-btn {
-                flex: 1 1 calc(50% - 0.25rem);
-                min-width: 0;
-                box-sizing: border-box;
-                padding: 0.625rem 0.5rem;
-                font-size: 0.875rem;
-                min-height: 48px;
-                border-radius: 0.75rem;
-            }
+        .control-buttons-container { display: flex; gap: 0.5rem; justify-content: center; align-items: center; flex-wrap: nowrap; width: 100%; min-width: 0; max-width: 100%; box-sizing: border-box; }
+        @media (min-width: 390px) { .control-buttons-container { gap: 0.75rem; } }
+        @media (min-width: 640px) { .control-buttons-container { gap: 1rem; } }
+        /* Narrow viewport: smaller buttons; 2×2 when exactly 4 visible (class added by JS) - per DEVELOPMENT_GUIDELINES.md */
+        @media (max-width: 430px) {
+            .control-buttons-container { flex-wrap: nowrap; gap: 0.5rem; }
+            .control-btn { flex: 1 1 0; min-width: 0; padding: 0.5rem 0.375rem; font-size: 0.8125rem; min-height: 48px; border-radius: 0.75rem; text-align: center; }
+            .control-buttons-container.four-buttons { flex-wrap: wrap; }
+            .control-buttons-container.four-buttons .control-btn { flex: 1 1 calc(50% - 0.25rem); min-width: calc(50% - 0.25rem); white-space: normal; }
         }
+        @media (max-width: 390px) {
+            .control-btn { min-height: 44px; border-radius: 0.75rem; font-size: 0.75rem; padding: 0.45rem 0.25rem; }
+            .control-buttons-container:not(.four-buttons) .control-btn { min-width: 0; }
+            .control-buttons-container.four-buttons .control-btn { min-width: calc(50% - 0.25rem); padding: 0.45rem 0.25rem; }
+        }
+        .control-buttons-card { min-width: 0; width: 100%; box-sizing: border-box; }
         .control-btn.btn-primary { background: rgb(var(--primary)); color: rgb(var(--primary-foreground)); }
         .control-btn.btn-primary:hover:not(:disabled) { filter: brightness(1.05); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .control-btn.btn-primary.paused, .control-btn.btn-primary.paused:hover { background: rgb(100,100,100) !important; color: #fff !important; }
@@ -873,8 +877,8 @@
             </div>
             
             <!-- Control Buttons -->
-            <div class="p-4 rounded-2xl bg-[rgb(var(--card))] border border-[rgb(var(--border))] shadow-lg">
-                <div class="control-buttons-container">
+            <div class="control-buttons-card p-4 rounded-2xl bg-[rgb(var(--card))] border border-[rgb(var(--border))] shadow-lg">
+                <div class="control-buttons-container" id="controlButtonsContainer">
                     <button class="control-btn btn-secondary" id="minuteCompletedBtn" style="display: none;" aria-label="Round completed" disabled>Round Completed</button>
                     <button class="control-btn btn-primary" id="startBtn" aria-label="Start timer">Start</button>
                     <button class="control-btn btn-primary" id="pauseBtn" style="display: none;" aria-label="Pause timer">Pause</button>
@@ -954,11 +958,11 @@
                 <div class="sheet-section">
                     <h3>Workout PREP Countdown (MM:SS)</h3>
                     <div class="time-slider-wrap">
-                        <input type="range" id="prepTimeSlider" min="0" max="300" step="5" value="30" aria-label="Prep countdown seconds">
+                        <input type="range" id="prepTimeSlider" min="0" max="300" step="5" value="10" aria-label="Prep countdown seconds">
                     </div>
                     <div class="time-stepper-row">
                         <button type="button" class="stepper-btn" id="prepTimeDecreaseBtn" aria-label="Decrease prep time 10s">−10</button>
-                        <input type="text" id="prepTimeInput" class="custom-time-input" value="00:30" placeholder="MM:SS" aria-label="Prep countdown">
+                        <input type="text" id="prepTimeInput" class="custom-time-input" value="00:10" placeholder="MM:SS" aria-label="Prep countdown">
                         <button type="button" class="stepper-btn" id="prepTimeIncreaseBtn" aria-label="Increase prep time 10s">+10</button>
                     </div>
                     <div class="input-group" style="margin-top: 0.75rem;">
@@ -1011,7 +1015,7 @@
         let isPaused = false;
         let currentRound = 0;
         let isPrepPhase = false;
-        let prepTimeSeconds = 30;
+        let prepTimeSeconds = 10;
         let workTime = 60; // EMOM: Fixed at 60 seconds
         let restTime = 0; // EMOM: No rest phase
         let totalRounds = 0;
@@ -1361,6 +1365,12 @@
                     minuteCompletedBtn.style.display = 'none';
                 }
             }
+            // Toggle 2×2 layout when exactly 4 buttons visible (Round Completed, Pause, Reset, Clear)
+            const controlContainer = document.getElementById('controlButtonsContainer');
+            if (controlContainer) {
+                const visibleCount = Array.from(controlContainer.querySelectorAll('.control-btn')).filter(function(b) { return getComputedStyle(b).display !== 'none'; }).length;
+                controlContainer.classList.toggle('four-buttons', visibleCount === 4);
+            }
         }
         
         // Shrink text until it fits on one line (mobile-safe)
@@ -1638,11 +1648,11 @@
             roundsInput.value = '0';
             if (roundsInputMain) roundsInputMain.value = '0';
             
-            // Reset timer state
+            // Reset timer state; display 00:00 until user hits Start (prep countdown, then minute)
             workTime = 60; // EMOM: Fixed at 60 seconds
             restTime = 0; // EMOM: No rest phase
             totalRounds = 0;
-            currentTime = 60; // EMOM: Start at 60 seconds
+            currentTime = 0; // Display 00:00; Start will run prep countdown then begin minute
             currentRound = 0;
             
             // Clear splits and reset recorded minute tracking
@@ -1948,7 +1958,7 @@
         
         function adjustPrepTime(delta) {
             if (isRunning || isPaused) return;
-            const current = prepTimeInput ? parseTime(prepTimeInput.value) : 30;
+            const current = prepTimeInput ? parseTime(prepTimeInput.value) : 10;
             const newSec = Math.min(300, Math.max(0, current + delta));
             syncPrepTimeToInputs(newSec);
         }
@@ -2264,7 +2274,7 @@
             if (roundsInputMain) roundsInputMain.value = '0';
             if (repsInput) repsInput.value = '0';
             if (repsInputMain) repsInputMain.value = '0';
-            if (prepTimeInput) { prepTimeInput.value = '00:30'; syncPrepTimeToInputs(30); }
+            if (prepTimeInput) { prepTimeInput.value = '00:10'; syncPrepTimeToInputs(10); }
             if (prepPhaseLabelInput) { prepPhaseLabelInput.value = 'Countdown'; try { localStorage.setItem('emom-splits-prepPhaseLabel', 'Countdown'); } catch (e) {} }
             if (workoutTitleInput) workoutTitleInput.value = '';
             if (workoutDescriptionInput) workoutDescriptionInput.value = '';
@@ -2297,7 +2307,7 @@
             try {
                 const savedPrep = localStorage.getItem('emom-splits-prepTimeSeconds');
                 if (savedPrep != null) {
-                    const sec = Math.min(300, Math.max(0, parseInt(savedPrep, 10) || 30));
+                    const sec = Math.min(300, Math.max(0, parseInt(savedPrep, 10) || 10));
                     prepTimeInput.value = formatTime(sec);
                     if (prepTimeSlider) prepTimeSlider.value = String(sec);
                 }

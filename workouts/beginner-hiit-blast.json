@@ -1,9 +1,1 @@
-{
-  "format": "timerist_hiit",
-  "version": "1.0",
-  "name": "Beginner HIIT Blast",
-  "description": "20s max effort / 40s rest × 8 rounds",
-  "workSeconds": 20,
-  "restSeconds": 40,
-  "rounds": 8
-}
+{"format":"timerist_hiit","version":"1.0","type":"HIIT","name":"Beginner HIIT Blast","title":"Beginner HIIT Blast","description":"20s max effort / 40s rest × 8 rounds","workTime":20,"restTime":40,"rounds":8,"prepTime":10,"doneMessage":"Completed","prepPhaseLabel":"Countdown","enableTones":true,"enableVoice":true,"enableHaptic":true}

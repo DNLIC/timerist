@@ -1234,7 +1234,7 @@
             <!-- General Info -->
             <div class="drawer-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.18</p>
+                <p><strong>Version:</strong> v0.19</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -5351,6 +5351,7 @@
                 const data = {
                     title: workoutTitle,
                     description: workoutDescription,
+                    doneMessage: (doneMessageInput && doneMessageInput.value.trim()) ? doneMessageInput.value.trim() || 'Completed' : 'Completed',
                     roundGroups: roundGroups || [],
                     exportedAt: new Date().toISOString()
                 };
@@ -5410,6 +5411,11 @@
                         }
                         if (data.description && workoutDescriptionInput) {
                             workoutDescriptionInput.value = data.description;
+                        }
+                        if (doneMessageInput && data.doneMessage !== undefined) {
+                            const importedDone = (data.doneMessage || '').trim();
+                            doneMessageInput.value = importedDone ? importedDone : 'Completed';
+                            if (typeof setDoneMessage === 'function') setDoneMessage(doneMessageInput.value);
                         }
                         updateCharCounts();
                         renderActivities();

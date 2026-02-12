@@ -1,13 +1,1 @@
-{
-  "format": "timerist_mobility",
-  "version": "1.0",
-  "name": "Mobility Flow Sequence",
-  "description": "5-minute yoga-inspired transitions for recovery days",
-  "durationSeconds": 300,
-  "activities": [
-    {"name": "Cat-Cow", "durationSeconds": 30},
-    {"name": "Child's pose", "durationSeconds": 30},
-    {"name": "Hip circles", "durationSeconds": 45},
-    {"name": "Shoulder rolls", "durationSeconds": 30}
-  ]
-}
+{"format":"timerist_mobility","version":"1.0","title":"Mobility Flow Sequence","name":"Mobility Flow Sequence","description":"5-minute yoga-inspired transitions for recovery days","completionMessage":"Completed","roundGroups":[{"name":"Mobility Flow","rounds":1,"restBetweenRounds":0,"activities":[{"name":"Cat-Cow","mode":"time","duration":30,"restBetweenActivities":0,"audioEnabled":true},{"name":"Child's pose","mode":"time","duration":30,"restBetweenActivities":0,"audioEnabled":true},{"name":"Hip circles","mode":"time","duration":45,"restBetweenActivities":0,"audioEnabled":true},{"name":"Shoulder rolls","mode":"time","duration":30,"restBetweenActivities":0,"audioEnabled":true}]}],"enableTones":true,"enableVoice":true,"enableHaptic":true,"prepPhaseLabel":"Countdown"}

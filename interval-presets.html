@@ -1132,11 +1132,11 @@
             <div class="sheet-section">
                 <h3>Workout PREP Countdown (MM:SS)</h3>
                 <div class="time-slider-wrap">
-                    <input type="range" id="prepTimeSlider" min="0" max="300" step="5" value="30" aria-label="Prep countdown seconds">
+                    <input type="range" id="prepTimeSlider" min="0" max="300" step="5" value="10" aria-label="Prep countdown seconds">
                 </div>
                 <div class="time-stepper-row">
                     <button type="button" class="stepper-btn" id="prepTimeDecreaseBtn" aria-label="Decrease prep time 10s">−10</button>
-                    <input type="text" id="prepTimeInput" class="custom-time-input" value="00:30" placeholder="MM:SS" aria-label="Prep countdown">
+                    <input type="text" id="prepTimeInput" class="custom-time-input" value="00:10" placeholder="MM:SS" aria-label="Prep countdown">
                     <button type="button" class="stepper-btn" id="prepTimeIncreaseBtn" aria-label="Increase prep time 10s">+10</button>
                 </div>
                 <div class="input-group" style="margin-top: 0.75rem;">
@@ -1881,8 +1881,8 @@
             if (workTimeSlider) workTimeSlider.value = 0;
             if (restTimeSlider) restTimeSlider.value = 0;
             if (prepTimeInput) {
-                prepTimeInput.value = '00:30';
-                syncPrepTimeToInputs(30);
+                prepTimeInput.value = '00:10';
+                syncPrepTimeToInputs(10);
             }
             if (prepPhaseLabelInput) {
                 prepPhaseLabelInput.value = 'Countdown';
@@ -2347,8 +2347,8 @@
                 prepTimeInput.value = formatTime(savedPrep);
                 if (prepTimeSlider) prepTimeSlider.value = savedPrep;
             } else {
-                prepTimeInput.value = '00:30';
-                syncPrepTimeToInputs(30);
+                prepTimeInput.value = '00:10';
+                syncPrepTimeToInputs(10);
             }
             prepTimeInput.addEventListener('input', function() {
                 if (isRunning) return;

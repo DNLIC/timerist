@@ -1358,11 +1358,11 @@
                 <div class="sheet-section">
                     <h3>Workout PREP Countdown (MM:SS)</h3>
                     <div class="time-slider-wrap">
-                        <input type="range" id="prepTimeSlider" min="0" max="300" step="5" value="30" aria-label="Prep countdown seconds">
+                        <input type="range" id="prepTimeSlider" min="0" max="300" step="5" value="10" aria-label="Prep countdown seconds">
                     </div>
                     <div class="time-stepper-row">
                         <button type="button" class="stepper-btn" id="prepTimeDecreaseBtn" aria-label="Decrease prep time 10s">−10</button>
-                        <input type="text" id="prepTimeInput" class="custom-time-input" value="00:30" placeholder="MM:SS" aria-label="Prep countdown">
+                        <input type="text" id="prepTimeInput" class="custom-time-input" value="00:10" placeholder="MM:SS" aria-label="Prep countdown">
                         <button type="button" class="stepper-btn" id="prepTimeIncreaseBtn" aria-label="Increase prep time 10s">+10</button>
                     </div>
                     <div class="input-group" style="margin-top: 0.75rem;">
@@ -1493,7 +1493,7 @@
 
             <div class="sheet-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v1.08</p>
+                <p><strong>Version:</strong> v1.09</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2026-01-28</span></p>
             </div>
         </div>
@@ -1505,7 +1505,7 @@
         // Timer state
         let currentTime = 0;
         let totalSeconds = 0;
-        let prepTimeSeconds = 30;
+        let prepTimeSeconds = 10;
         let currentPrepTime = 0;
         let interval = null;
         let isRunning = false;
@@ -1998,7 +1998,10 @@
                     : exercises.map(ex => ({ name: ex.name || '' })),
                 cycleExercises: !!cycleExercises,
                 restBetweenExercises: restBetweenExercisesInput ? Math.min(300, Math.max(0, parseTime(restBetweenExercisesInput.value))) : (restBetweenExercises || 0),
-                workTimePerExerciseSeconds: amrapType === 'reps' ? (workTimePerExerciseInput ? Math.min(300, Math.max(10, parseTime(workTimePerExerciseInput.value))) : workTimePerExerciseSeconds) : undefined
+                workTimePerExerciseSeconds: amrapType === 'reps' ? (workTimePerExerciseInput ? Math.min(300, Math.max(10, parseTime(workTimePerExerciseInput.value))) : workTimePerExerciseSeconds) : undefined,
+                enableTones: !!(enableTonesEl && enableTonesEl.checked),
+                enableVoice: !!(enableVoiceEl && enableVoiceEl.checked),
+                enableHaptic: !!(enableHapticEl && enableHapticEl.checked)
             };
             return {
                 format: 'timerist_amrap_enhanced',
@@ -2079,6 +2082,9 @@
             updateCharCounts();
             updateReminderDisplays();
             updateDisplay();
+            if (enableTonesEl != null && w.enableTones !== undefined) enableTonesEl.checked = !!w.enableTones;
+            if (enableVoiceEl != null && w.enableVoice !== undefined) enableVoiceEl.checked = !!w.enableVoice;
+            if (enableHapticEl != null && w.enableHaptic !== undefined) enableHapticEl.checked = !!w.enableHaptic;
             // Replicate "Tap to enable sound" so imported workouts have audio ready on iPhone/iPad (user gesture = file pick)
             if (typeof unlockAudioForIOS === 'function') unlockAudioForIOS();
         }
@@ -2673,14 +2679,14 @@
             }
             if (amrapTimeInput) amrapTimeInput.value = '00:00';
             if (amrapTimeSlider) amrapTimeSlider.value = '0';
-            if (prepTimeInput) prepTimeInput.value = '00:30';
-            if (prepTimeSlider) prepTimeSlider.value = '30';
+            if (prepTimeInput) prepTimeInput.value = '00:10';
+            if (prepTimeSlider) prepTimeSlider.value = '10';
             if (roundsInput) roundsInput.value = '0';
             if (restBetweenRoundsInput) restBetweenRoundsInput.value = '0';
             
             totalSeconds = 0;
             currentTime = 0;
-            prepTimeSeconds = 30;
+            prepTimeSeconds = 10;
             currentPrepTime = 0;
             currentRestTime = 0;
             restBetweenRoundsSeconds = 0;
@@ -2730,7 +2736,7 @@
         
         function adjustPrepTime(delta) {
             if (isRunning || isPaused) return;
-            const current = prepTimeInput ? parseTime(prepTimeInput.value) : 30;
+            const current = prepTimeInput ? parseTime(prepTimeInput.value) : 10;
             const newSec = Math.min(300, Math.max(0, current + delta));
             if (prepTimeInput) prepTimeInput.value = formatTime(newSec);
             if (prepTimeSlider) prepTimeSlider.value = String(newSec);

@@ -1278,16 +1278,16 @@
                 <div class="input-group">
                     <label for="warmupInput">Warm-up Time (MM:SS) - Optional</label>
                     <div class="time-slider-wrap">
-                        <input type="range" id="warmupSlider" min="0" max="600" step="5" value="30" aria-label="Warm-up time seconds">
+                        <input type="range" id="warmupSlider" min="0" max="600" step="5" value="10" aria-label="Warm-up time seconds">
                     </div>
                     <div class="time-stepper-row">
                         <button type="button" class="stepper-btn" id="warmupDecreaseBtn" aria-label="Decrease warm-up by 10 seconds">−10</button>
-                        <input type="text" id="warmupInput" class="custom-time-input" value="00:30" pattern="[0-9]{2}:[0-9]{2}" placeholder="MM:SS" aria-label="Warm-up time (optional)">
+                        <input type="text" id="warmupInput" class="custom-time-input" value="00:10" pattern="[0-9]{2}:[0-9]{2}" placeholder="MM:SS" aria-label="Warm-up time (optional)">
                         <button type="button" class="stepper-btn" id="warmupIncreaseBtn" aria-label="Increase warm-up by 10 seconds">+10</button>
                     </div>
                     <div class="input-group" style="margin-top: 0.75rem;">
-                        <label for="prepPhaseLabelInput">Prep phase announcement (spoken and shown during warm-up)</label>
-                        <input type="text" id="prepPhaseLabelInput" class="custom-time-input" maxlength="20" value="Warm-up" placeholder="e.g. Warm-up, Prepare, Countdown" aria-label="Prep phase label" style="text-align: left;">
+                        <label for="prepPhaseLabelInput">Countdown</label>
+                        <input type="text" id="prepPhaseLabelInput" class="custom-time-input" maxlength="20" value="Countdown" placeholder="e.g. Countdown, Prepare, Get ready" aria-label="Countdown phase label" style="text-align: left;">
                     </div>
                 </div>
                 
@@ -1367,7 +1367,7 @@
             <!-- General Info -->
             <div class="sheet-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.19</p>
+                <p><strong>Version:</strong> v0.20</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -1389,7 +1389,7 @@
         let peakTime = 50; // Peak work time in seconds
         let restTime = 15; // Rest time in seconds
         let numPyramids = 1; // Number of full pyramids
-        let warmupTime = 30; // Warm-up time in seconds
+        let warmupTime = 10; // Warm-up time in seconds
         let cooldownTime = 60; // Cool-down time in seconds
         let reminderFiredHalf = false;
         let reminderFired2Min = false;
@@ -1441,14 +1441,14 @@
         if (reminderMinutesRemainEl) { try { reminderMinutesRemainEl.checked = localStorage.getItem('reminderMinutesRemain') === 'true'; } catch (e) {} }
         if (reminder2MinEl) { try { reminder2MinEl.checked = localStorage.getItem('reminder2Min') === 'true'; } catch (e) {} }
         if (reminder1MinEl) { try { reminder1MinEl.checked = localStorage.getItem('reminder1Min') === 'true'; } catch (e) {} }
-        if (prepPhaseLabelInput) { try { prepPhaseLabelInput.value = localStorage.getItem('pyramid-prepPhaseLabel') || 'Warm-up'; } catch (e) {} }
+        if (prepPhaseLabelInput) { try { prepPhaseLabelInput.value = localStorage.getItem('pyramid-prepPhaseLabel') || 'Countdown'; } catch (e) {} }
         if (enableTonesEl) enableTonesEl.addEventListener('change', function() { try { localStorage.setItem('enableTones', enableTonesEl.checked); } catch (e) {} });
         if (enableVoiceEl) enableVoiceEl.addEventListener('change', function() { try { localStorage.setItem('enableVoice', enableVoiceEl.checked); } catch (e) {} });
         if (enableHapticEl) enableHapticEl.addEventListener('change', function() { try { localStorage.setItem('enableHaptic', enableHapticEl.checked); } catch (e) {} });
         if (reminderMinutesRemainEl) reminderMinutesRemainEl.addEventListener('change', function() { try { localStorage.setItem('reminderMinutesRemain', reminderMinutesRemainEl.checked); } catch (e) {} });
         if (reminder2MinEl) reminder2MinEl.addEventListener('change', function() { try { localStorage.setItem('reminder2Min', reminder2MinEl.checked); } catch (e) {} });
         if (reminder1MinEl) reminder1MinEl.addEventListener('change', function() { try { localStorage.setItem('reminder1Min', reminder1MinEl.checked); } catch (e) {} });
-        if (prepPhaseLabelInput) prepPhaseLabelInput.addEventListener('change', function() { try { localStorage.setItem('pyramid-prepPhaseLabel', prepPhaseLabelInput.value.trim() || 'Warm-up'); } catch (e) {} });
+        if (prepPhaseLabelInput) prepPhaseLabelInput.addEventListener('change', function() { try { localStorage.setItem('pyramid-prepPhaseLabel', prepPhaseLabelInput.value.trim() || 'Countdown'); } catch (e) {} });
         
         // Adjustment buttons - Starting Work Time
         const startTimeDecrease5Btn = document.getElementById('startTimeDecrease5Btn');
@@ -1602,7 +1602,12 @@
         }
         
         function getPrepPhaseLabel() {
-            return (prepPhaseLabelInput && prepPhaseLabelInput.value.trim()) ? prepPhaseLabelInput.value.trim() : 'Warm-up';
+            return (prepPhaseLabelInput && prepPhaseLabelInput.value.trim()) ? prepPhaseLabelInput.value.trim() : 'Countdown';
+        }
+        
+        function getWorkPhaseLabel(duration) {
+            const sec = duration === 1 ? 'Second' : 'Seconds';
+            return 'Work ' + duration + ' ' + sec;
         }
         
         function getTotalDuration() {
@@ -1686,7 +1691,7 @@
             }
             
             if (currentPhase.type === 'warmup') {
-                return `Warm-up • ${getCurrentStepPosition()}`;
+                return `${getPrepPhaseLabel()} • ${getCurrentStepPosition()}`;
             } else if (currentPhase.type === 'cooldown') {
                 return `Cool-down • ${getCurrentStepPosition()}`;
             } else if (currentPhase.type === 'rest') {
@@ -1818,7 +1823,7 @@
                         phaseLabel.classList.add('rest');
                         phaseLabel.style.color = 'rgb(var(--secondary))';
                     } else {
-                        phaseLabel.textContent = 'Work';
+                        phaseLabel.textContent = getWorkPhaseLabel(currentPhase.duration);
                         phaseLabel.classList.remove('rest');
                         phaseLabel.style.color = 'rgb(var(--primary))';
                     }
@@ -1922,9 +1927,11 @@
             
             if (currentTime <= 0) return;
             
-            // Speak prep label at start of warmup
+            // Speak prep label at start of warmup, or work phase label at start of work
             if (currentPhase.type === 'warmup' && enableVoiceEl && enableVoiceEl.checked) {
                 setTimeout(() => speak(getPrepPhaseLabel()), 800);
+            } else if (currentPhase.type === 'work' && enableVoiceEl && enableVoiceEl.checked) {
+                setTimeout(() => speak(getWorkPhaseLabel(currentPhase.duration)), 800);
             }
             
             isRunning = true;
@@ -1996,7 +2003,7 @@
                 if (nextPhase.type === 'work') {
                     if (enableTonesEl && enableTonesEl.checked) playWorkStartChime();
                     else playSound();
-                    if (enableVoiceEl && enableVoiceEl.checked) setTimeout(() => speak('Work'), 800);
+                    if (enableVoiceEl && enableVoiceEl.checked) setTimeout(() => speak(getWorkPhaseLabel(nextPhase.duration)), 800);
                     if (enableHapticEl && enableHapticEl.checked) triggerHaptic('short');
                 }
                 // Rest cues
@@ -2090,16 +2097,16 @@
             peakTimeInput.value = '50';
             restTimeInput.value = '00:15';
             pyramidsInput.value = '1';
-            warmupInput.value = '00:30';
+            warmupInput.value = '00:10';
             cooldownInput.value = '01:00';
-            if (prepPhaseLabelInput) prepPhaseLabelInput.value = 'Warm-up';
+            if (prepPhaseLabelInput) prepPhaseLabelInput.value = 'Countdown';
             
             startTime = 10;
             increment = 10;
             peakTime = 50;
             restTime = 15;
             numPyramids = 1;
-            warmupTime = 30;
+            warmupTime = 10;
             cooldownTime = 60;
             
             // Generate sequence with default settings
@@ -2751,7 +2758,7 @@
                 enableTones: !!(enableTonesEl && enableTonesEl.checked),
                 enableVoice: !!(enableVoiceEl && enableVoiceEl.checked),
                 enableHaptic: !!(enableHapticEl && enableHapticEl.checked),
-                prepPhaseLabel: (prepPhaseLabelInput && prepPhaseLabelInput.value.trim()) || 'Warm-up',
+                prepPhaseLabel: (prepPhaseLabelInput && prepPhaseLabelInput.value.trim()) || 'Countdown',
                 exportedAt: new Date().toISOString()
             };
             
@@ -2838,7 +2845,7 @@
                         if (enableTonesEl != null && data.enableTones !== undefined) enableTonesEl.checked = !!data.enableTones;
                         if (enableVoiceEl != null && data.enableVoice !== undefined) enableVoiceEl.checked = !!data.enableVoice;
                         if (enableHapticEl != null && data.enableHaptic !== undefined) enableHapticEl.checked = !!data.enableHaptic;
-                        if (prepPhaseLabelInput != null && data.prepPhaseLabel !== undefined) prepPhaseLabelInput.value = data.prepPhaseLabel || 'Warm-up';
+                        if (prepPhaseLabelInput != null && data.prepPhaseLabel !== undefined) prepPhaseLabelInput.value = data.prepPhaseLabel || 'Countdown';
                         
                         unlockAudioForIOS();
                         

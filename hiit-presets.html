@@ -1597,7 +1597,7 @@
             <div class="sheet-section">
                 <h3>Prep countdown (MM:SS)</h3>
                 <div class="time-slider-wrap">
-                    <input type="range" id="warmupTimeSlider" min="0" max="600" step="5" value="0" aria-label="Prep countdown seconds">
+                    <input type="range" id="warmupTimeSlider" min="0" max="600" step="5" value="10" aria-label="Prep countdown seconds">
                 </div>
                 <div class="time-input-group">
                     <div class="time-adjust-group">
@@ -1607,7 +1607,7 @@
                             <button class="time-adjust-btn" id="warmupMinIncreaseBtn" type="button" aria-label="Increase prep countdown by 1 minute">+1</button>
                         </div>
                     </div>
-                    <input type="text" id="warmupTimeInput" class="custom-time-input" value="00:00" pattern="[0-9]{2}:[0-9]{2}" placeholder="MM:SS" aria-label="Prep countdown">
+                    <input type="text" id="warmupTimeInput" class="custom-time-input" value="00:10" pattern="[0-9]{2}:[0-9]{2}" placeholder="MM:SS" aria-label="Prep countdown">
                     <div class="time-adjust-group">
                         <div class="time-adjust-group-label">Sec</div>
                         <div class="time-adjust-buttons">
@@ -1747,7 +1747,7 @@
         
         // HIIT ADDITION: New state variables
         let currentPhase = 'work'; // 'warmup', 'work', 'rest', 'setrest', 'cooldown'
-        let warmupTime = 0;
+        let warmupTime = 10;
         let cooldownTime = 0;
         let totalSets = 1;
         let currentSet = 1;
@@ -2777,7 +2777,7 @@
             workTimeInput.value = '00:00';
             restTimeInput.value = '00:00';
             roundsInput.value = '0';
-            warmupTimeInput.value = '00:00';
+            warmupTimeInput.value = '00:10';
             cooldownTimeInput.value = '00:00';
             setsInput.value = '1';
             setRestTimeInput.value = '02:00';
@@ -2801,7 +2801,7 @@
             workTime = 0;
             restTime = 0;
             totalRounds = 0;
-            warmupTime = 0;
+            warmupTime = 10;
             cooldownTime = 0;
             totalSets = 1;
             currentSet = 1;
@@ -3455,6 +3455,10 @@
                 enableTones: !!(enableTonesEl && enableTonesEl.checked),
                 enableVoice: !!(enableVoiceEl && enableVoiceEl.checked),
                 enableHaptic: !!(enableHapticEl && enableHapticEl.checked),
+                prepPhaseLabel: (prepPhaseLabelInput && prepPhaseLabelInput.value.trim()) ? prepPhaseLabelInput.value.trim() : 'Countdown',
+                reminderMinutesRemain: !!(reminderMinutesRemainEl && reminderMinutesRemainEl.checked),
+                reminder2Min: !!(reminder2MinEl && reminder2MinEl.checked),
+                reminder1Min: !!(reminder1MinEl && reminder1MinEl.checked),
                 exportedAt: new Date().toISOString()
             };
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -3530,10 +3534,18 @@
                         if (enableTonesEl != null && data.enableTones !== undefined) enableTonesEl.checked = !!data.enableTones;
                         if (enableVoiceEl != null && data.enableVoice !== undefined) enableVoiceEl.checked = !!data.enableVoice;
                         if (enableHapticEl != null && data.enableHaptic !== undefined) enableHapticEl.checked = !!data.enableHaptic;
+                        if (prepPhaseLabelInput != null && data.prepPhaseLabel !== undefined) prepPhaseLabelInput.value = (data.prepPhaseLabel || '').trim() || 'Countdown';
+                        if (reminderMinutesRemainEl != null && data.reminderMinutesRemain !== undefined) reminderMinutesRemainEl.checked = !!data.reminderMinutesRemain;
+                        if (reminder2MinEl != null && data.reminder2Min !== undefined) reminder2MinEl.checked = !!data.reminder2Min;
+                        if (reminder1MinEl != null && data.reminder1Min !== undefined) reminder1MinEl.checked = !!data.reminder1Min;
                         try {
                             if (enableTonesEl) localStorage.setItem('enableTones', enableTonesEl.checked);
                             if (enableVoiceEl) localStorage.setItem('enableVoice', enableVoiceEl.checked);
                             if (enableHapticEl) localStorage.setItem('enableHaptic', enableHapticEl.checked);
+                            if (prepPhaseLabelInput) localStorage.setItem('preset-hiit-prepPhaseLabel', prepPhaseLabelInput.value.trim() || 'Countdown');
+                            if (reminderMinutesRemainEl) localStorage.setItem('reminderMinutesRemain', reminderMinutesRemainEl.checked);
+                            if (reminder2MinEl) localStorage.setItem('reminder2Min', reminder2MinEl.checked);
+                            if (reminder1MinEl) localStorage.setItem('reminder1Min', reminder1MinEl.checked);
                         } catch (e) {}
                         unlockAudioForIOS();
                         updateSetRestVisibility();
