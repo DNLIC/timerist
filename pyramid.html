@@ -1318,7 +1318,7 @@
             <!-- General Info -->
             <div class="sheet-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.17</p>
+                <p><strong>Version:</strong> v0.18</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -1703,7 +1703,7 @@
                     phaseLabel.textContent = 'Pyramid Complete!';
                     phaseLabel.classList.remove('rest');
                     phaseLabel.style.color = 'rgb(var(--primary))';
-                    pyramidInfo.textContent = 'Workout finished';
+                    pyramidInfo.textContent = getDoneMessage();
                 }
             } else {
                 // Timer is ready (not running) - title in workout area; phase label empty
@@ -1813,7 +1813,7 @@
                         display.classList.add('danger', 'done-message');
                         fitTextToContainer(display, { minPx: 18 });
                         phaseLabel.textContent = 'Pyramid Complete!';
-                        pyramidInfo.textContent = 'Workout finished';
+                        pyramidInfo.textContent = getDoneMessage();
                         return;
                     }
                     

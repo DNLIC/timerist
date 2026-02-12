@@ -14,6 +14,7 @@
 | **preset-countdown.html** | Preset countdown with full audio; includes iOS voice priming (§6.3) |
 | **interval.html** | Preset interval timer with full audio; Tabata preset (20s work, 10s rest, 8 rounds); prep phase, 3-2-1 at work/rest, work cues on every round (§14) |
 | **emom.html** | EMOM (Every Minute On the Minute) timer with full audio; prep phase, work cues on every round, 3-2-1 at end of each minute, no rest phase, reminder section when total duration &gt; 0 (§14.6) |
+| **emom-splits.html** | EMOM with splits/rep tracking; same as emom.html + splits per minute, target reps, Minute Completed button; full audio per §14.6 |
 
 When adding or changing audio behavior, keep amrap.html and amrap-splits.html in sync and use them as the source of truth. For countdown-style timers, use countdown.html and preset-countdown.html as reference. For interval/work-rest timers (including Tabata), use **interval.html** as reference. For every-minute style timers with no rest phase (EMOM), use **emom.html** as reference.
 

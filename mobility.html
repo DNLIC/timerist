@@ -9,7 +9,9 @@
     <title>Mobility Timer - Timerist | Mobility Workout Timer, Multi-Activity Timer</title>
     <meta name="description" content="Mobility workout timer for complex multi-activity workouts. Create time-based and rep-based activities with round groups, rest periods, and more.">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
     <style>
+        .hidden { display: none; }
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
@@ -290,6 +292,27 @@
             min-width: 0;
             width: 100%;
             box-sizing: border-box;
+        }
+        /* iOS sound banner: two buttons same cushion as Set Up / Clear */
+        .ios-sound-banner-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            min-width: 0;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        .ios-sound-banner-buttons .control-btn {
+            flex: 1 1 0;
+            min-width: 0;
+        }
+        @media (min-width: 390px) {
+            .ios-sound-banner-buttons { gap: 0.75rem; }
+        }
+        @media (min-width: 640px) {
+            .ios-sound-banner-buttons { gap: 1rem; }
         }
         .control-buttons-container {
             display: flex;
@@ -800,12 +823,21 @@
         .rounds-stepper .custom-time-input { max-width: 100px; }
         .rounds-adjust-btn { min-width: 48px; min-height: 48px; font-size: 1.25rem; }
         
+        /* Activity card: min-width 0 and input shrink for vertical iPhone (Section 13) */
         .activity-card {
             background-color: rgb(var(--card));
             border: 1px solid rgb(var(--border));
             border-radius: var(--radius);
             padding: 1rem;
             margin-bottom: 1rem;
+            min-width: 0;
+        }
+        .activity-card input[type="text"] {
+            min-width: 0;
+            box-sizing: border-box;
+        }
+        .activities-container {
+            min-width: 0;
         }
         
         .round-group-card {
@@ -1118,6 +1150,15 @@
                 
             </div>
             
+            <!-- iOS: enable sound or dismiss (shown until audio unlocked or user chooses Silent) -->
+            <div id="iosSoundBanner" class="p-3 rounded-xl bg-[rgb(var(--accent))] border border-[rgb(var(--border))] mb-3 text-center hidden" role="region" aria-label="Enable sound">
+                <p class="text-sm font-medium text-[rgb(var(--foreground))] mb-2 m-0">On iPhone/iPad, tap below to enable sound before starting.</p>
+                <div class="ios-sound-banner-buttons">
+                    <button type="button" class="control-btn btn-primary" id="iosUnlockSoundBtn" aria-label="Enable sound">Enable Sound</button>
+                    <button type="button" class="control-btn btn-secondary" id="iosSilentBtn" aria-label="Silent – do not enable sound">Silent</button>
+                </div>
+            </div>
+            
             <!-- Control Buttons -->
             <div class="control-buttons-card p-4 rounded-2xl bg-[rgb(var(--card))] border border-[rgb(var(--border))] shadow-lg">
                 <div class="control-buttons-container" id="controlButtonsContainer">
@@ -1229,6 +1270,40 @@
                 </div>
             </div>
             
+            <!-- Workout PREP Countdown (MM:SS) -->
+            <div class="sheet-section">
+                <h3>Workout PREP Countdown (MM:SS)</h3>
+                <div class="time-slider-wrap">
+                    <input type="range" id="prepTimeSlider" min="0" max="300" step="5" value="0" aria-label="Prep countdown seconds">
+                </div>
+                <div class="time-stepper-row">
+                    <button type="button" class="stepper-btn" id="prepTimeDecreaseBtn" aria-label="Decrease prep time 10s">−10</button>
+                    <input type="text" id="prepTimeInput" class="custom-time-input" value="00:00" placeholder="MM:SS" aria-label="Prep countdown">
+                    <button type="button" class="stepper-btn" id="prepTimeIncreaseBtn" aria-label="Increase prep time 10s">+10</button>
+                </div>
+                <div class="input-group" style="margin-top: 0.75rem;">
+                    <label for="prepPhaseLabelInput">Prep phase announcement (spoken and shown)</label>
+                    <input type="text" id="prepPhaseLabelInput" class="shadcn-input" maxlength="20" value="Countdown" placeholder="e.g. Countdown, Prepare, Setup" aria-label="Prep phase label">
+                </div>
+            </div>
+            
+            <!-- Audio & Feedback -->
+            <div class="sheet-section">
+                <h3>Audio &amp; Feedback</h3>
+                <label><input type="checkbox" id="enableTones" checked> Enable Audio Cues (tones)</label><br>
+                <label><input type="checkbox" id="enableVoice" checked> Enable Audio Cues (voice)</label><br>
+                <label><input type="checkbox" id="enableHaptic" checked> Enable Haptics (where supported)</label>
+                <p class="text-xs text-[rgb(var(--muted-foreground))] mt-2">After you set workout duration above, choose when to hear an audible reminder.</p>
+                <div id="reminderSection" style="display: none;" class="mt-3">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--muted-foreground))] mb-2">Audible reminders</p>
+                    <div class="flex flex-col gap-2">
+                        <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="reminderMinutesRemain" aria-label="1/2 workout point"> 1/2 Workout Point <span id="reminderHalfwayText" class="text-[rgb(var(--muted-foreground))]">— alerts at — min remaining</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="reminder2Min" aria-label="2 minutes remain"> 2 Minutes Remain</label>
+                        <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="reminder1Min" aria-label="1 minute remains"> 1 Minute Remains</label>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Export/Import -->
             <div class="sheet-section">
                 <h3>Export / Import</h3>
@@ -1270,6 +1345,8 @@
             </div>
         </div>
     </div>
+    
+    <div class="hidden"><input type="checkbox" id="haptic-switch" switch><label for="haptic-switch" id="haptic-label"></label></div>
     
     <script>
         // Global state
@@ -1326,6 +1403,40 @@
         const importBtn = document.getElementById('importBtn');
         const importFileInput = document.getElementById('importFileInput');
         const workoutSelect = document.getElementById('workoutSelect');
+        const enableTonesEl = document.getElementById('enableTones');
+        const enableVoiceEl = document.getElementById('enableVoice');
+        const enableHapticEl = document.getElementById('enableHaptic');
+        const reminderMinutesRemainEl = document.getElementById('reminderMinutesRemain');
+        const reminder2MinEl = document.getElementById('reminder2Min');
+        const reminder1MinEl = document.getElementById('reminder1Min');
+        const prepTimeInput = document.getElementById('prepTimeInput');
+        const prepTimeSlider = document.getElementById('prepTimeSlider');
+        const prepTimeDecreaseBtn = document.getElementById('prepTimeDecreaseBtn');
+        const prepTimeIncreaseBtn = document.getElementById('prepTimeIncreaseBtn');
+        const prepPhaseLabelInput = document.getElementById('prepPhaseLabelInput');
+        
+        // Audio & feedback: load from localStorage
+        if (enableTonesEl) { try { enableTonesEl.checked = localStorage.getItem('enableTones') !== 'false'; } catch (e) {} }
+        if (enableVoiceEl) { try { enableVoiceEl.checked = localStorage.getItem('enableVoice') !== 'false'; } catch (e) {} }
+        if (enableHapticEl) { try { enableHapticEl.checked = localStorage.getItem('enableHaptic') !== 'false'; } catch (e) {} }
+        if (enableTonesEl) enableTonesEl.addEventListener('change', function() { try { localStorage.setItem('enableTones', enableTonesEl.checked); } catch (e) {} });
+        if (enableVoiceEl) enableVoiceEl.addEventListener('change', function() { try { localStorage.setItem('enableVoice', enableVoiceEl.checked); } catch (e) {} });
+        if (enableHapticEl) enableHapticEl.addEventListener('change', function() { try { localStorage.setItem('enableHaptic', enableHapticEl.checked); } catch (e) {} });
+        if (reminderMinutesRemainEl) { try { reminderMinutesRemainEl.checked = localStorage.getItem('reminderMinutesRemain') === 'true'; } catch (e) {} }
+        if (reminder2MinEl) { try { reminder2MinEl.checked = localStorage.getItem('reminder2Min') === 'true'; } catch (e) {} }
+        if (reminder1MinEl) { try { reminder1MinEl.checked = localStorage.getItem('reminder1Min') === 'true'; } catch (e) {} }
+        if (reminderMinutesRemainEl) reminderMinutesRemainEl.addEventListener('change', function() { try { localStorage.setItem('reminderMinutesRemain', reminderMinutesRemainEl.checked); } catch (e) {} });
+        if (reminder2MinEl) reminder2MinEl.addEventListener('change', function() { try { localStorage.setItem('reminder2Min', reminder2MinEl.checked); } catch (e) {} });
+        if (reminder1MinEl) reminder1MinEl.addEventListener('change', function() { try { localStorage.setItem('reminder1Min', reminder1MinEl.checked); } catch (e) {} });
+        // Prep phase: load from localStorage
+        if (prepTimeInput) {
+            try {
+                const prepSec = parseInt(localStorage.getItem('mobility-prepTimeSeconds') || '0', 10);
+                prepTimeInput.value = prepSec >= 60 ? formatTime(prepSec) : (prepSec > 0 ? String(prepSec) : '00:00');
+                if (prepTimeSlider) prepTimeSlider.value = Math.min(300, Math.max(0, prepSec));
+            } catch (e) {}
+        }
+        if (prepPhaseLabelInput) { try { prepPhaseLabelInput.value = localStorage.getItem('mobility-prepPhaseLabel') || 'Countdown'; } catch (e) {} }
         
         // Mobility workout presets
         const mobilityWorkouts = {
@@ -2066,13 +2177,69 @@
             return true;
         }
         
+        let reminderFiredHalf = false;
+        let reminderFired2Min = false;
+        let reminderFired1Min = false;
+        
+        function getTotalDuration() {
+            if (currentWorkoutState && currentWorkoutState.phases.length > 0) {
+                return currentWorkoutState.phases.filter(p => p.type !== 'prep').reduce((sum, p) => sum + (p.duration || 0), 0);
+            }
+            const state = buildWorkoutState();
+            return state.phases.filter(p => p.type !== 'prep').reduce((sum, p) => sum + (p.duration || 0), 0);
+        }
+        function getTotalRemaining() {
+            if (!currentWorkoutState || !currentWorkoutState.phases.length) return 0;
+            let elapsed = 0;
+            for (let i = 0; i < currentWorkoutState.currentPhaseIndex; i++) {
+                const p = currentWorkoutState.phases[i];
+                if (p.type !== 'prep') elapsed += p.duration || 0;
+            }
+            const phase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
+            if (phase && phase.type !== 'prep') {
+                elapsed += (phase.duration || 0) - currentTime;
+            }
+            return Math.max(0, getTotalDuration() - elapsed);
+        }
+        function updateReminderDisplays() {
+            const total = getTotalDuration();
+            const reminderSection = document.getElementById('reminderSection');
+            if (reminderSection) reminderSection.style.display = total > 0 ? 'block' : 'none';
+            const halfwayEl = document.getElementById('reminderHalfwayText');
+            if (halfwayEl && total > 0) {
+                const halfSec = Math.round(total / 2);
+                const halfMin = Math.round(halfSec / 60);
+                halfwayEl.textContent = halfMin === 1 ? '— alerts at 1 min remaining' : '— alerts at ' + halfMin + ' min remaining';
+            } else if (halfwayEl) halfwayEl.textContent = '— alerts at — min remaining';
+        }
+        
+        function readPrepTimeFromInput() {
+            if (!prepTimeInput) return 0;
+            const sec = parseTime(prepTimeInput.value);
+            return Math.min(300, Math.max(0, sec));
+        }
+        function getPrepPhaseLabel() {
+            return (prepPhaseLabelInput && prepPhaseLabelInput.value.trim()) ? prepPhaseLabelInput.value.trim() : 'Countdown';
+        }
+        
         // Build workout state
         function buildWorkoutState() {
             const state = {
                 phases: [],
                 currentPhaseIndex: 0
             };
-            
+            const prepSec = readPrepTimeFromInput();
+            if (prepSec > 0) {
+                state.phases.push({
+                    type: 'prep',
+                    roundGroupIndex: -1,
+                    activityIndex: -1,
+                    round: 0,
+                    duration: prepSec,
+                    activity: null,
+                    prepLabel: getPrepPhaseLabel()
+                });
+            }
             for (let rgIndex = 0; rgIndex < roundGroups.length; rgIndex++) {
                 const rg = roundGroups[rgIndex];
                 for (let round = 1; round <= rg.rounds; round++) {
@@ -2256,8 +2423,14 @@
             let displayText = '';
             let phaseText = '';
             
-            // Determine what to show
-            if (phase.type === 'work') {
+            if (phase.type === 'prep') {
+                phaseText = phase.prepLabel || getPrepPhaseLabel();
+                displayText = formatTime(currentTime);
+                roundInfo.textContent = '';
+                display.classList.remove('warning', 'danger');
+                if (currentTime <= 3 && currentTime > 0) display.classList.add('warning');
+                if (currentTime <= 1 && currentTime > 0) display.classList.add('danger');
+            } else if (phase.type === 'work') {
                 // Check if rep-based with no duration
                 const hasNoDuration = (act.duration === 0 || act.duration === null || act.duration === undefined) || 
                                       (phase.duration === 0 || phase.duration === null || phase.duration === undefined);
@@ -2314,7 +2487,9 @@
             display.textContent = displayText;
             
             // Color coding for countdown timers
-            display.classList.remove('warning', 'danger');
+            if (phase.type !== 'prep') {
+                display.classList.remove('warning', 'danger');
+            }
             if (phase.duration > 0 && (phase.type === 'work' || phase.type === 'rest')) {
                 const percentRemaining = currentTime / phase.duration;
                 if (percentRemaining <= 0.1) {
@@ -2431,6 +2606,7 @@
             });
             
             updateWorkoutSteps();
+            updateReminderDisplays();
         }
         
         function createActivityCard(rgIndex, actIndex, act) {
@@ -2688,6 +2864,18 @@
             if (workoutSelect) {
                 workoutSelect.disabled = isRunning && !isPaused;
             }
+            const auditDisabled = isRunning || isPaused;
+            if (enableTonesEl) enableTonesEl.disabled = auditDisabled;
+            if (enableVoiceEl) enableVoiceEl.disabled = auditDisabled;
+            if (enableHapticEl) enableHapticEl.disabled = auditDisabled;
+            if (reminderMinutesRemainEl) reminderMinutesRemainEl.disabled = auditDisabled;
+            if (reminder2MinEl) reminder2MinEl.disabled = auditDisabled;
+            if (reminder1MinEl) reminder1MinEl.disabled = auditDisabled;
+            if (prepTimeInput) prepTimeInput.disabled = auditDisabled;
+            if (prepTimeSlider) prepTimeSlider.disabled = auditDisabled;
+            if (prepTimeDecreaseBtn) prepTimeDecreaseBtn.disabled = auditDisabled;
+            if (prepTimeIncreaseBtn) prepTimeIncreaseBtn.disabled = auditDisabled;
+            if (prepPhaseLabelInput) prepPhaseLabelInput.disabled = auditDisabled;
             
             // Check if Complete/Next button should be visible
             let showCompleteNext = false;
@@ -2869,8 +3057,8 @@
                                 const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
                                 
                                 // If rest phase just ended and next phase is work, play three chimes
-                                if (completedPhase.type === 'rest' && nextPhase && nextPhase.type === 'work') {
-                                    playThreeChimes(completedPhase);
+                                if ((completedPhase.type === 'rest' || completedPhase.type === 'prep') && nextPhase && nextPhase.type === 'work') {
+                                    playThreeChimes(nextPhase);
                                 }
                                 
                                 currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
@@ -2898,9 +3086,29 @@
                     
                     // Handle duration-based completion check
                     {
+                        const currentPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
+                        if (currentPhase && currentPhase.type !== 'prep') {
+                            const totalRem = getTotalRemaining();
+                            const halfSec = Math.round(getTotalDuration() / 2);
+                            let msg = null;
+                            if (reminderMinutesRemainEl && reminderMinutesRemainEl.checked && !reminderFiredHalf && totalRem === halfSec) {
+                                msg = (Math.round(totalRem / 60) === 1 ? '1 minute remaining' : Math.round(totalRem / 60) + ' minutes remaining');
+                                reminderFiredHalf = true;
+                            } else if (reminder2MinEl && reminder2MinEl.checked && !reminderFired2Min && totalRem === 120) {
+                                msg = '2 minutes remaining';
+                                reminderFired2Min = true;
+                            } else if (reminder1MinEl && reminder1MinEl.checked && !reminderFired1Min && totalRem === 60) {
+                                msg = '1 minute remains';
+                                reminderFired1Min = true;
+                            }
+                            if (msg) {
+                                if (enableTonesEl && enableTonesEl.checked) playDoubleBeep();
+                                if (enableVoiceEl && enableVoiceEl.checked) setTimeout(function() { speak(msg); }, 800);
+                                if (enableHapticEl && enableHapticEl.checked) triggerHaptic('double');
+                            }
+                        }
                         // Play countdown beeps at 3, 2, 1 seconds
                         if (currentTime > 0 && currentTime <= 3) {
-                            const currentPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
                             playCountdownBeep(currentPhase, currentTime);
                         }
                         
@@ -2938,9 +3146,8 @@
                             // Auto-advance to next phase (including across activity boundaries for mobility timer)
                             const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
                             
-                            // If rest phase just ended and next phase is work, play three chimes
-                            if (completedPhase.type === 'rest' && nextPhase && nextPhase.type === 'work') {
-                                playThreeChimes(completedPhase);
+                            if ((completedPhase.type === 'rest' || completedPhase.type === 'prep') && nextPhase && nextPhase.type === 'work') {
+                                playThreeChimes(nextPhase);
                             }
                             
                             currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
@@ -2997,6 +3204,9 @@
             currentWorkoutState.currentPhaseIndex = 0;
             const phase = currentWorkoutState.phases[0];
             currentTime = phase.duration;
+            if (phase.type === 'prep' && phase.duration > 0 && enableVoiceEl && enableVoiceEl.checked) {
+                setTimeout(function() { speak(phase.prepLabel || getPrepPhaseLabel()); }, 800);
+            }
             // Initialize EMOM tracking if starting with EMOM phase
             if (phase.type === 'work' && phase.activity && phase.activity.mode === 'emom' && phase.duration > 0) {
                 emomTotalMinutes = Math.floor(phase.duration / 60);
@@ -3012,6 +3222,9 @@
             isRunning = true;
             isPaused = false;
             isArmed = false;
+            reminderFiredHalf = false;
+            reminderFired2Min = false;
+            reminderFired1Min = false;
             
             // Record timestamp when Start button is pressed for initial workout
             recordStartTimestamp();
@@ -3082,9 +3295,8 @@
                             // Auto-advance to next phase (including across activity boundaries for mobility timer)
                             const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
                             
-                            // If rest phase just ended and next phase is work, play three chimes
-                            if (completedPhase.type === 'rest' && nextPhase && nextPhase.type === 'work') {
-                                playThreeChimes(completedPhase);
+                            if ((completedPhase.type === 'rest' || completedPhase.type === 'prep') && nextPhase && nextPhase.type === 'work') {
+                                playThreeChimes(nextPhase);
                             }
                             
                             currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
@@ -3112,19 +3324,34 @@
                 
                 // Handle duration-based completion check
                 {
-                    // Play countdown beeps at 3, 2, 1 seconds
-                    if (currentTime > 0 && currentTime <= 3) {
-                        const currentPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
-                        playCountdownBeep(currentPhase);
+                    const currentPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
+                    if (currentPhase && currentPhase.type !== 'prep') {
+                        const totalRem = getTotalRemaining();
+                        const halfSec = Math.round(getTotalDuration() / 2);
+                        let msg = null;
+                        if (reminderMinutesRemainEl && reminderMinutesRemainEl.checked && !reminderFiredHalf && totalRem === halfSec) {
+                            msg = (Math.round(totalRem / 60) === 1 ? '1 minute remaining' : Math.round(totalRem / 60) + ' minutes remaining');
+                            reminderFiredHalf = true;
+                        } else if (reminder2MinEl && reminder2MinEl.checked && !reminderFired2Min && totalRem === 120) {
+                            msg = '2 minutes remaining';
+                            reminderFired2Min = true;
+                        } else if (reminder1MinEl && reminder1MinEl.checked && !reminderFired1Min && totalRem === 60) {
+                            msg = '1 minute remains';
+                            reminderFired1Min = true;
+                        }
+                        if (msg) {
+                            if (enableTonesEl && enableTonesEl.checked) playDoubleBeep();
+                            if (enableVoiceEl && enableVoiceEl.checked) setTimeout(function() { speak(msg); }, 800);
+                            if (enableHapticEl && enableHapticEl.checked) triggerHaptic('double');
+                        }
                     }
-                    
+                    if (currentTime > 0 && currentTime <= 3) {
+                        playCountdownBeep(currentPhase, currentTime);
+                    }
                     if (currentTime > 0) {
                         currentTime--;
                     }
-                    
-                    // Check if phase is complete (only for non-time-cap rep-based phases)
                     if (currentTime <= 0) {
-                        // Play distinct transition sound at 0
                         const completedPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
                         playTransitionBeep(completedPhase);
                         
@@ -3185,24 +3412,28 @@
         }
         
         function pauseTimer() {
+            primeSpeechForIOS();
             isRunning = false;
             isPaused = true;
             clearInterval(timerInterval);
             timerInterval = null;
             updateTimeOfDayInterval(); // This will clear the interval since we're paused
+            if (enableVoiceEl && enableVoiceEl.checked) setTimeout(function() { speak('Pause'); }, 800);
+            if (enableHapticEl && enableHapticEl.checked) triggerHaptic('long');
             updateButtonStates();
         }
         
         function resumeTimer() {
-            // Prevent multiple intervals
-            if (timerInterval) {
-                return;
-            }
-            
+            primeSpeechForIOS();
+            if (timerInterval) return;
             if (isPaused && currentWorkoutState) {
-                isRunning = true;
-                isPaused = false;
-                updateTimeOfDayInterval();
+                ensureToneStarted().then(function() {
+                    if (enableTonesEl && enableTonesEl.checked) playBeepShort();
+                    if (enableVoiceEl && enableVoiceEl.checked) setTimeout(function() { speak('Resume'); }, 800);
+                    if (enableHapticEl && enableHapticEl.checked) triggerHaptic('short');
+                    isRunning = true;
+                    isPaused = false;
+                    updateTimeOfDayInterval();
                 
                 // Define timer function
                 const timerTick = () => {
@@ -3272,8 +3503,8 @@
                                 const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
                                 
                                 // If rest phase just ended and next phase is work, play three chimes
-                                if (completedPhase.type === 'rest' && nextPhase && nextPhase.type === 'work') {
-                                    playThreeChimes(completedPhase);
+                                if ((completedPhase.type === 'rest' || completedPhase.type === 'prep') && nextPhase && nextPhase.type === 'work') {
+                                    playThreeChimes(nextPhase);
                                 }
                                 
                                 currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
@@ -3301,9 +3532,29 @@
                     
                     // Handle duration-based completion check
                     {
+                        const currentPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
+                        if (currentPhase && currentPhase.type !== 'prep') {
+                            const totalRem = getTotalRemaining();
+                            const halfSec = Math.round(getTotalDuration() / 2);
+                            let msg = null;
+                            if (reminderMinutesRemainEl && reminderMinutesRemainEl.checked && !reminderFiredHalf && totalRem === halfSec) {
+                                msg = (Math.round(totalRem / 60) === 1 ? '1 minute remaining' : Math.round(totalRem / 60) + ' minutes remaining');
+                                reminderFiredHalf = true;
+                            } else if (reminder2MinEl && reminder2MinEl.checked && !reminderFired2Min && totalRem === 120) {
+                                msg = '2 minutes remaining';
+                                reminderFired2Min = true;
+                            } else if (reminder1MinEl && reminder1MinEl.checked && !reminderFired1Min && totalRem === 60) {
+                                msg = '1 minute remains';
+                                reminderFired1Min = true;
+                            }
+                            if (msg) {
+                                if (enableTonesEl && enableTonesEl.checked) playDoubleBeep();
+                                if (enableVoiceEl && enableVoiceEl.checked) setTimeout(function() { speak(msg); }, 800);
+                                if (enableHapticEl && enableHapticEl.checked) triggerHaptic('double');
+                            }
+                        }
                         // Play countdown beeps at 3, 2, 1 seconds
                         if (currentTime > 0 && currentTime <= 3) {
-                            const currentPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
                             playCountdownBeep(currentPhase, currentTime);
                         }
                         
@@ -3341,9 +3592,8 @@
                             // Auto-advance to next phase (including across activity boundaries for mobility timer)
                             const nextPhase = currentWorkoutState.phases[nextPhaseIndex];
                             
-                            // If rest phase just ended and next phase is work, play three chimes
-                            if (completedPhase.type === 'rest' && nextPhase && nextPhase.type === 'work') {
-                                playThreeChimes(completedPhase);
+                            if ((completedPhase.type === 'rest' || completedPhase.type === 'prep') && nextPhase && nextPhase.type === 'work') {
+                                playThreeChimes(nextPhase);
                             }
                             
                             currentWorkoutState.currentPhaseIndex = nextPhaseIndex;
@@ -3383,6 +3633,7 @@
                 // Start interval - it will wait 1 second before first execution, which is correct
                 timerInterval = setInterval(timerTick, 1000);
                 updateButtonStates();
+                });
             }
         }
         
@@ -3477,19 +3728,34 @@
                 
                 // Handle duration-based completion check
                 {
-                    // Play countdown beeps at 3, 2, 1 seconds
-                    if (currentTime > 0 && currentTime <= 3) {
-                        const currentPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
-                        playCountdownBeep(currentPhase);
+                    const currentPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
+                    if (currentPhase && currentPhase.type !== 'prep') {
+                        const totalRem = getTotalRemaining();
+                        const halfSec = Math.round(getTotalDuration() / 2);
+                        let msg = null;
+                        if (reminderMinutesRemainEl && reminderMinutesRemainEl.checked && !reminderFiredHalf && totalRem === halfSec) {
+                            msg = (Math.round(totalRem / 60) === 1 ? '1 minute remaining' : Math.round(totalRem / 60) + ' minutes remaining');
+                            reminderFiredHalf = true;
+                        } else if (reminder2MinEl && reminder2MinEl.checked && !reminderFired2Min && totalRem === 120) {
+                            msg = '2 minutes remaining';
+                            reminderFired2Min = true;
+                        } else if (reminder1MinEl && reminder1MinEl.checked && !reminderFired1Min && totalRem === 60) {
+                            msg = '1 minute remains';
+                            reminderFired1Min = true;
+                        }
+                        if (msg) {
+                            if (enableTonesEl && enableTonesEl.checked) playDoubleBeep();
+                            if (enableVoiceEl && enableVoiceEl.checked) setTimeout(function() { speak(msg); }, 800);
+                            if (enableHapticEl && enableHapticEl.checked) triggerHaptic('double');
+                        }
                     }
-                    
+                    if (currentTime > 0 && currentTime <= 3) {
+                        playCountdownBeep(currentPhase, currentTime);
+                    }
                     if (currentTime > 0) {
                         currentTime--;
                     }
-                    
-                    // Check if phase is complete (only for non-time-cap rep-based phases)
                     if (currentTime <= 0) {
-                        // Play distinct transition sound at 0
                         const completedPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
                         playTransitionBeep(completedPhase);
                         
@@ -3612,451 +3878,240 @@
             loadMobilityWorkout('custom');
         }
         
+        function activityAudioEnabled(phase) {
+            if (!phase || !phase.activity) return true;
+            return phase.activity.audioEnabled !== false;
+        }
+        
         function playSound(phase = null) {
-            // Check if audio is enabled for this phase's activity
-            // If phase is null, use current phase
-            let checkPhase = phase;
-            if (!checkPhase && currentWorkoutState) {
-                checkPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
-            }
-            
-            // If we have a phase, check its activity's audioEnabled
-            if (checkPhase && checkPhase.activity) {
-                // For transition beeps, check the phase that just completed
-                // audioEnabled defaults to true if not set (backward compatibility)
-                if (checkPhase.activity.audioEnabled === false) {
-                    return; // Audio disabled for this activity
-                }
-            }
-            
+            if (!activityAudioEnabled(phase)) return;
+            if (!enableTonesEl || !enableTonesEl.checked) return;
             try {
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 const oscillator = audioContext.createOscillator();
                 const gainNode = audioContext.createGain();
-                
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
-                
                 oscillator.frequency.value = 800;
                 oscillator.type = 'sine';
-                
                 gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-                
                 oscillator.start(audioContext.currentTime);
                 oscillator.stop(audioContext.currentTime + 0.5);
-            } catch (e) {
-                console.log('Audio not available');
+            } catch (e) { /* ignore */ }
+        }
+        
+        function isIOS() { return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream; }
+        function isSafari() { return /^((?!chrome|android).)*safari/i.test(navigator.userAgent); }
+        
+        function triggerHaptic(style) {
+            style = style || 'short';
+            if (!enableHapticEl || !enableHapticEl.checked) return;
+            if (isIOS() && isSafari()) {
+                const input = document.getElementById('haptic-switch');
+                const label = document.getElementById('haptic-label');
+                if (!input || !label) return;
+                const toggle = function() { input.checked = !input.checked; label.click(); };
+                if (style === 'short') toggle();
+                else if (style === 'double') { toggle(); setTimeout(toggle, 80); }
+                else if (style === 'long') { toggle(); setTimeout(toggle, 100); setTimeout(toggle, 200); }
+                else if (style === 'complete') { toggle(); setTimeout(toggle, 60); setTimeout(toggle, 120); setTimeout(toggle, 180); }
+            } else if (navigator.vibrate) {
+                if (style === 'short') navigator.vibrate(50);
+                else if (style === 'double') navigator.vibrate([50, 30, 50]);
+                else if (style === 'long') navigator.vibrate(150);
+                else if (style === 'complete') navigator.vibrate([100, 50, 100, 50, 100]);
             }
+        }
+        
+        let audioStarted = false;
+        function ensureToneStarted() {
+            if (audioStarted || typeof Tone === 'undefined') return Promise.resolve();
+            if (typeof Tone !== 'undefined' && Tone.context && Tone.context.state === 'suspended') Tone.context.resume();
+            return Tone.start().then(function() {
+                audioStarted = true;
+                const banner = document.getElementById('iosSoundBanner');
+                if (banner) banner.style.display = 'none';
+            });
+        }
+        function unlockAudioForIOS() {
+            if (typeof Tone === 'undefined') return;
+            const banner = document.getElementById('iosSoundBanner');
+            if (banner) banner.style.display = 'none';
+            if (Tone.context && Tone.context.state === 'suspended') Tone.context.resume();
+            Tone.start().then(function() {
+                audioStarted = true;
+                if (enableTonesEl && enableTonesEl.checked) playBeepShort();
+                updateDisplay();
+            }).catch(function() { updateDisplay(); });
+            primeSpeechForIOS();
+        }
+        function dismissIOSSoundBannerSilent() {
+            const banner = document.getElementById('iosSoundBanner');
+            if (banner) { banner.classList.add('hidden'); banner.style.display = 'none'; }
+        }
+        
+        function playBeepShort() {
+            if (!enableTonesEl || !enableTonesEl.checked || !audioStarted || typeof Tone === 'undefined') return;
+            try {
+                const synth = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
+                synth.triggerAttackRelease('A5', '16n');
+            } catch (e) {}
+        }
+        function playWorkStartChime() {
+            if (!enableTonesEl || !enableTonesEl.checked || !audioStarted || typeof Tone === 'undefined') return;
+            try {
+                const fmSynth = new Tone.FMSynth({ harmonicity: 3, modulationIndex: 10, envelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.5 } }).toDestination();
+                fmSynth.triggerAttackRelease('C5', '8n');
+            } catch (e) {}
+        }
+        function playRestStartTone() {
+            if (!enableTonesEl || !enableTonesEl.checked || !audioStarted || typeof Tone === 'undefined') return;
+            try {
+                const synth = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.3 } }).toDestination();
+                synth.triggerAttackRelease('A4', '8n');
+            } catch (e) {}
+        }
+        function playWorkoutCompleteFanfare() {
+            if (!enableTonesEl || !enableTonesEl.checked || !audioStarted || typeof Tone === 'undefined') return;
+            try {
+                const synth = new Tone.Synth({ oscillator: { type: 'sawtooth' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.2, release: 0.2 } }).toDestination();
+                const seq = new Tone.Sequence(function(time, note) { synth.triggerAttackRelease(note, '16n', time); }, ['C5', 'E5', 'G5'], '16n').start(0);
+                seq.loop = false;
+                Tone.Transport.start();
+                setTimeout(function() { Tone.Transport.stop(); }, 500);
+            } catch (e) {}
+        }
+        function playThreeBeeps() {
+            if (!enableTonesEl || !enableTonesEl.checked || !audioStarted || typeof Tone === 'undefined') return;
+            playBeepShort();
+            setTimeout(playBeepShort, 1000);
+            setTimeout(playBeepShort, 2000);
+        }
+        function playDoubleBeep() {
+            if (!enableTonesEl || !enableTonesEl.checked || !audioStarted || typeof Tone === 'undefined') return;
+            playBeepShort();
+            setTimeout(playBeepShort, 150);
+        }
+        
+        const speechSynth = window.speechSynthesis;
+        let speechVoices = [];
+        let defaultSpeechVoice = null;
+        let speechPrimed = false;
+        function populateVoices() {
+            speechVoices = speechSynth.getVoices();
+            defaultSpeechVoice = speechVoices.find(function(v) { return v.lang === 'en-US' && (v.name.indexOf('Samantha') !== -1 || (v.voiceURI && v.voiceURI.indexOf('Samantha') !== -1)); });
+            if (!defaultSpeechVoice) defaultSpeechVoice = speechVoices.find(function(v) { return v.lang === 'en-US'; });
+        }
+        if (speechSynth.onvoiceschanged !== undefined) speechSynth.onvoiceschanged = populateVoices;
+        populateVoices();
+        function primeSpeechForIOS() {
+            if (speechPrimed || !enableVoiceEl || !enableVoiceEl.checked) return;
+            try {
+                speechSynth.cancel();
+                speechSynth.speak(new SpeechSynthesisUtterance(''));
+                speechPrimed = true;
+            } catch (e) {}
+        }
+        function speak(text) {
+            if (!enableVoiceEl || !enableVoiceEl.checked || !text) return;
+            if (speechSynth.speaking) speechSynth.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            if (defaultSpeechVoice) utterance.voice = defaultSpeechVoice;
+            utterance.rate = 1.1;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+            speechSynth.speak(utterance);
         }
         
         // Play a short beep for countdown (3, 2, 1 seconds)
         function playCountdownBeep(phase = null, countdownValue = null) {
-            if (!currentWorkoutState) return;
-            
-            // Check if audio is enabled for this phase's activity
-            let checkPhase = phase;
-            if (!checkPhase && currentWorkoutState) {
-                checkPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
-            }
-            
-            if (checkPhase && checkPhase.activity) {
-                if (checkPhase.activity.audioEnabled === false) {
-                    return; // Audio disabled for this activity
-                }
-            }
-            
-            // Prevent double-firing: check if we've beeped for this countdown value recently
+            if (!activityAudioEnabled(phase)) return;
             const now = Date.now();
+            const checkPhase = phase || (currentWorkoutState && currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex]);
             const phaseId = checkPhase ? `${checkPhase.type}-${currentWorkoutState ? currentWorkoutState.currentPhaseIndex : 'unknown'}` : 'unknown';
             const beepKey = `countdown-${phaseId}-${countdownValue !== null ? countdownValue : 'unknown'}`;
-            if (lastBeepTime[beepKey] && (now - lastBeepTime[beepKey]) < 800) {
-                return; // Already beeped recently for this countdown value
-            }
+            if (lastBeepTime[beepKey] && (now - lastBeepTime[beepKey]) < 800) return;
             lastBeepTime[beepKey] = now;
-            
-            // Clean up old entries to prevent memory leak
-            Object.keys(lastBeepTime).forEach(key => {
-                if (now - lastBeepTime[key] > 2000) {
-                    delete lastBeepTime[key];
-                }
-            });
-            
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.frequency.value = 800;
-                oscillator.type = 'sine';
-                
-                // Short beep (0.15 seconds)
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
-                
-                oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.15);
-            } catch (e) {
-                console.log('Audio not available');
-            }
+            Object.keys(lastBeepTime).forEach(key => { if (now - lastBeepTime[key] > 2000) delete lastBeepTime[key]; });
+            playBeepShort();
+            if (enableHapticEl && enableHapticEl.checked) triggerHaptic('short');
         }
         
-        // Play three chime bells to signal work is about to start (after rest)
+        // Play work start cues (chime + "Work" + haptic) - after rest or at workout start
         function playThreeChimes(phase = null) {
-            
-            // Check if audio is enabled for this phase's activity
-            let checkPhase = phase;
-            if (!checkPhase && currentWorkoutState) {
-                checkPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
-            }
-            
-            if (checkPhase && checkPhase.activity) {
-                if (checkPhase.activity.audioEnabled === false) {
-                    return; // Audio disabled for this activity
-                }
-            }
-            
-            // Prevent double-firing
+            if (!activityAudioEnabled(phase)) return;
             const now = Date.now();
+            const checkPhase = phase || (currentWorkoutState && currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex]);
             const phaseId = checkPhase ? `${checkPhase.type}-${currentWorkoutState ? currentWorkoutState.currentPhaseIndex : 'unknown'}` : 'unknown';
             const beepKey = `threechimes-${phaseId}`;
-            if (lastBeepTime[beepKey] && (now - lastBeepTime[beepKey]) < 2000) {
-                return; // Already beeped recently
-            }
+            if (lastBeepTime[beepKey] && (now - lastBeepTime[beepKey]) < 2000) return;
             lastBeepTime[beepKey] = now;
-            
-            // Clean up old entries
-            Object.keys(lastBeepTime).forEach(key => {
-                if (now - lastBeepTime[key] > 2000) {
-                    delete lastBeepTime[key];
-                }
-            });
-            
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                
-                // Play three chime bells in succession
-                for (let i = 0; i < 3; i++) {
-                    setTimeout(() => {
-                        const oscillator = audioContext.createOscillator();
-                        const gainNode = audioContext.createGain();
-                        
-                        oscillator.connect(gainNode);
-                        gainNode.connect(audioContext.destination);
-                        
-                        // Bell-like sound: higher frequency, triangle wave
-                        oscillator.frequency.value = 1000;
-                        oscillator.type = 'triangle';
-                        
-                        // Chime with fade (0.8 seconds each)
-                        gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
-                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.8);
-                        
-                        oscillator.start(audioContext.currentTime);
-                        oscillator.stop(audioContext.currentTime + 0.8);
-                    }, i * 300); // 300ms between chimes for clearer distinction
-                }
-            } catch (e) {
-                console.log('Audio not available');
-            }
+            Object.keys(lastBeepTime).forEach(key => { if (now - lastBeepTime[key] > 2000) delete lastBeepTime[key]; });
+            playWorkStartChime();
+            if (enableVoiceEl && enableVoiceEl.checked) setTimeout(function() { speak('Work'); }, 800);
+            if (enableHapticEl && enableHapticEl.checked) triggerHaptic('short');
         }
         
-        // Play three low tones to signal work session completion
-        function playThreeLowTones(phase = null) {
-            // Check if audio is enabled for this phase's activity
-            let checkPhase = phase;
-            if (!checkPhase && currentWorkoutState) {
-                checkPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
-            }
-            
-            if (checkPhase && checkPhase.activity) {
-                if (checkPhase.activity.audioEnabled === false) {
-                    return; // Audio disabled for this activity
-                }
-            }
-            
-            // Prevent double-firing
+        // Play transition cues: work→rest, work→work, work→complete, or rest→work
+        function playPhaseTransitionCues(completedPhase, nextPhase) {
+            if (!activityAudioEnabled(completedPhase)) return;
             const now = Date.now();
-            const phaseId = checkPhase ? `${checkPhase.type}-${currentWorkoutState ? currentWorkoutState.currentPhaseIndex : 'unknown'}` : 'unknown';
-            const beepKey = `threelowtones-${phaseId}`;
-            if (lastBeepTime[beepKey] && (now - lastBeepTime[beepKey]) < 3000) {
-                return; // Already beeped recently
-            }
-            lastBeepTime[beepKey] = now;
-            
-            // Clean up old entries
-            Object.keys(lastBeepTime).forEach(key => {
-                if (now - lastBeepTime[key] > 2000) {
-                    delete lastBeepTime[key];
-                }
-            });
-            
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                
-                // Play three low tones in succession
-                for (let i = 0; i < 3; i++) {
-                    setTimeout(() => {
-                        const oscillator = audioContext.createOscillator();
-                        const gainNode = audioContext.createGain();
-                        
-                        oscillator.connect(gainNode);
-                        gainNode.connect(audioContext.destination);
-                        
-                        // Low tone: deep completion sound
-                        oscillator.frequency.value = 400;
-                        oscillator.type = 'sine';
-                        
-                        // Low tone with fade (0.8 seconds each)
-                        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.8);
-                        
-                        oscillator.start(audioContext.currentTime);
-                        oscillator.stop(audioContext.currentTime + 0.8);
-                    }, i * 400); // 400ms between tones for clear completion signal
-                }
-            } catch (e) {
-                console.log('Audio not available');
-            }
-        }
-        
-        // Play a distinct longer beep for transition at 0 seconds
-        function playTransitionBeep(phase = null) {
-            
-            // Check if audio is enabled for this phase's activity
-            let checkPhase = phase;
-            if (!checkPhase && currentWorkoutState) {
-                checkPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
-            }
-            
-            if (checkPhase && checkPhase.activity) {
-                if (checkPhase.activity.audioEnabled === false) {
-                    return; // Audio disabled for this activity
-                }
-            }
-            
-            // Prevent double-firing: check if we've beeped for this transition recently
-            const now = Date.now();
-            const phaseId = checkPhase ? `${checkPhase.type}-${currentWorkoutState ? currentWorkoutState.currentPhaseIndex : 'unknown'}` : 'unknown';
+            const phaseId = completedPhase ? `${completedPhase.type}-${currentWorkoutState ? currentWorkoutState.currentPhaseIndex : 'unknown'}` : 'unknown';
             const beepKey = `transition-${phaseId}`;
-            if (lastBeepTime[beepKey] && (now - lastBeepTime[beepKey]) < 800) {
-                return; // Already beeped recently for this transition
-            }
+            if (lastBeepTime[beepKey] && (now - lastBeepTime[beepKey]) < 2000) return;
             lastBeepTime[beepKey] = now;
-            
-            // Clean up old entries to prevent memory leak
-            Object.keys(lastBeepTime).forEach(key => {
-                if (now - lastBeepTime[key] > 2000) {
-                    delete lastBeepTime[key];
+            Object.keys(lastBeepTime).forEach(key => { if (now - lastBeepTime[key] > 2000) delete lastBeepTime[key]; });
+            if (!nextPhase) {
+                if (enableTonesEl && enableTonesEl.checked) { playWorkoutCompleteFanfare(); playThreeBeeps(); } else playSound();
+                const msg = completionMessageInput ? (completionMessageInput.value.trim() || 'Completed') : 'Completed';
+                if (enableVoiceEl && enableVoiceEl.checked) setTimeout(function() { speak(msg); }, 800);
+                if (enableHapticEl && enableHapticEl.checked) triggerHaptic('complete');
+            } else if (nextPhase.type === 'rest') {
+                if (activityAudioEnabled(nextPhase)) {
+                    if (enableTonesEl && enableTonesEl.checked) playRestStartTone(); else playSound();
+                    if (enableVoiceEl && enableVoiceEl.checked) setTimeout(function() { speak('Rest'); }, 800);
+                    if (enableHapticEl && enableHapticEl.checked) triggerHaptic('double');
                 }
-            });
-            
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                // Distinct transition sound: slightly lower frequency, longer duration
-                oscillator.frequency.value = 600;
-                oscillator.type = 'sine';
-                
-                // Longer beep (0.6 seconds) for distinct transition sound
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.6);
-                
-                oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.6);
-            } catch (e) {
-                console.log('Audio not available');
+            } else if (nextPhase.type === 'work') {
+                if (activityAudioEnabled(nextPhase)) {
+                    if (enableTonesEl && enableTonesEl.checked) playWorkStartChime(); else playSound();
+                    if (enableVoiceEl && enableVoiceEl.checked) setTimeout(function() { speak('Work'); }, 800);
+                    if (enableHapticEl && enableHapticEl.checked) triggerHaptic('short');
+                }
             }
         }
         
-        // Alternative sound options for session endings:
-        
-        // Play a chime/bell sound (higher frequency, bell-like)
-        function playChime(phase = null) {
-            let checkPhase = phase;
-            if (!checkPhase && currentWorkoutState) {
-                checkPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
-            }
-            
-            if (checkPhase && checkPhase.activity) {
-                if (checkPhase.activity.audioEnabled === false) {
-                    return;
-                }
-            }
-            
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                // Bell-like sound: higher frequency, triangle wave
-                oscillator.frequency.value = 1000;
-                oscillator.type = 'triangle';
-                
-                // Chime with fade
-                gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.8);
-                
-                oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.8);
-            } catch (e) {
-                console.log('Audio not available');
-            }
+        function playThreeLowTones(phase) {
+            if (!phase) return;
+            const nextIdx = currentWorkoutState ? currentWorkoutState.currentPhaseIndex + 1 : 0;
+            const nextPhase = currentWorkoutState && nextIdx < currentWorkoutState.phases.length ? currentWorkoutState.phases[nextIdx] : null;
+            playPhaseTransitionCues(phase, nextPhase);
         }
         
-        // Play a musical chord (multiple frequencies)
-        function playChord(phase = null) {
-            let checkPhase = phase;
-            if (!checkPhase && currentWorkoutState) {
-                checkPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
-            }
-            
-            if (checkPhase && checkPhase.activity) {
-                if (checkPhase.activity.audioEnabled === false) {
-                    return;
-                }
-            }
-            
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                
-                // Play a major chord (C-E-G)
-                const frequencies = [523.25, 659.25, 783.99]; // C5, E5, G5
-                
-                frequencies.forEach((freq, index) => {
-                    const oscillator = audioContext.createOscillator();
-                    const gainNode = audioContext.createGain();
-                    
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioContext.destination);
-                    
-                    oscillator.frequency.value = freq;
-                    oscillator.type = 'sine';
-                    
-                    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime + index * 0.05);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.6);
-                    
-                    oscillator.start(audioContext.currentTime + index * 0.05);
-                    oscillator.stop(audioContext.currentTime + 0.6);
-                });
-            } catch (e) {
-                console.log('Audio not available');
-            }
+        function playTransitionBeep(phase) {
+            if (!phase) return;
+            const nextIdx = currentWorkoutState ? currentWorkoutState.currentPhaseIndex + 1 : 0;
+            const nextPhase = currentWorkoutState && nextIdx < currentWorkoutState.phases.length ? currentWorkoutState.phases[nextIdx] : null;
+            playPhaseTransitionCues(phase, nextPhase);
         }
         
-        // Play a distinct double beep for EMOM minute start
+        // Play EMOM minute start cues (chime + "Work" + haptic)
         function playMinuteStartBeep(phase = null) {
-            // CRITICAL: Only beep if we're actually in a work phase (not rest)
-            if (!isRunning || isPaused) {
-                return;
-            }
-            
-            // Get current phase - must be work phase
+            if (!isRunning || isPaused) return;
             if (!currentWorkoutState) return;
-            const currentPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
-            if (!currentPhase || currentPhase.type !== 'work') {
-                return; // Not in work phase - don't beep
-            }
-            
-            // Verify it's an EMOM activity
-            if (!currentPhase.activity || currentPhase.activity.mode !== 'emom') {
-                return; // Not EMOM
-            }
-            
-            // Check audio enabled
-            if (currentPhase.activity.audioEnabled === false) {
-                return;
-            }
-            
-            // Prevent double-firing
+            const currentPhase = phase || currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
+            if (!currentPhase || currentPhase.type !== 'work' || !currentPhase.activity || currentPhase.activity.mode !== 'emom') return;
+            if (!activityAudioEnabled(currentPhase)) return;
             const now = Date.now();
             const phaseId = `${currentPhase.roundGroupIndex}-${currentPhase.activityIndex}-${currentPhase.round}`;
             const beepKey = `minutestart-${phaseId}-${emomCurrentMinute}`;
-            if (lastBeepTime[beepKey] && (now - lastBeepTime[beepKey]) < 2000) {
-                return; // Already beeped recently
-            }
+            if (lastBeepTime[beepKey] && (now - lastBeepTime[beepKey]) < 2000) return;
             lastBeepTime[beepKey] = now;
-            
-            // Clean up old beep times
-            Object.keys(lastBeepTime).forEach(key => {
-                if (now - lastBeepTime[key] > 5000) {
-                    delete lastBeepTime[key];
-                }
-            });
-            
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                
-                // Play two beeps in rapid succession
-                for (let i = 0; i < 2; i++) {
-                    const oscillator = audioContext.createOscillator();
-                    const gainNode = audioContext.createGain();
-                    
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioContext.destination);
-                    
-                    // Distinct frequency for minute start
-                    oscillator.frequency.value = 800;
-                    oscillator.type = 'sine';
-                    
-                    // Short beep (0.15 seconds) with slight delay between beeps
-                    const startTime = audioContext.currentTime + (i * 0.2);
-                    gainNode.gain.setValueAtTime(0.3, startTime);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.15);
-                    
-                    oscillator.start(startTime);
-                    oscillator.stop(startTime + 0.15);
-                }
-            } catch (e) {
-                console.log('Audio not available');
-            }
-        }
-        
-        // Play a frequency sweep (whoosh sound)
-        function playSweep(phase = null) {
-            let checkPhase = phase;
-            if (!checkPhase && currentWorkoutState) {
-                checkPhase = currentWorkoutState.phases[currentWorkoutState.currentPhaseIndex];
-            }
-            
-            if (checkPhase && checkPhase.activity) {
-                if (checkPhase.activity.audioEnabled === false) {
-                    return;
-                }
-            }
-            
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                // Sweep from low to high frequency
-                oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
-                oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.5);
-                oscillator.type = 'sine';
-                
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-                
-                oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.5);
-            } catch (e) {
-                console.log('Audio not available');
-            }
+            Object.keys(lastBeepTime).forEach(key => { if (now - lastBeepTime[key] > 5000) delete lastBeepTime[key]; });
+            playWorkStartChime();
+            if (enableVoiceEl && enableVoiceEl.checked) setTimeout(function() { speak('Work'); }, 800);
+            if (enableHapticEl && enableHapticEl.checked) triggerHaptic('short');
         }
         
         // Export/Import
@@ -4072,6 +4127,9 @@
                 description: workoutDescription,
                 completionMessage: completionMessage,
                 roundGroups: roundGroups,
+                enableTones: !!(enableTonesEl && enableTonesEl.checked),
+                enableVoice: !!(enableVoiceEl && enableVoiceEl.checked),
+                enableHaptic: !!(enableHapticEl && enableHapticEl.checked),
                 exportedAt: new Date().toISOString()
             };
             
@@ -4117,6 +4175,13 @@
                         if (completionMessageInput) {
                             completionMessageInput.value = (data.completionMessage && data.completionMessage.trim()) ? data.completionMessage.trim() : 'Completed';
                         }
+                        if (enableTonesEl != null && data.enableTones !== undefined) enableTonesEl.checked = !!data.enableTones;
+                        if (enableVoiceEl != null && data.enableVoice !== undefined) enableVoiceEl.checked = !!data.enableVoice;
+                        if (enableHapticEl != null && data.enableHaptic !== undefined) enableHapticEl.checked = !!data.enableHaptic;
+                        try { if (data.enableTones !== undefined) localStorage.setItem('enableTones', enableTonesEl.checked); } catch (e) {}
+                        try { if (data.enableVoice !== undefined) localStorage.setItem('enableVoice', enableVoiceEl.checked); } catch (e) {}
+                        try { if (data.enableHaptic !== undefined) localStorage.setItem('enableHaptic', enableHapticEl.checked); } catch (e) {}
+                        unlockAudioForIOS();
                         updateCharCounts();
                         updateWorkoutDisplay();
                         renderActivities();
@@ -4188,18 +4253,57 @@
         
         // Mobility workout select dropdown event listener
         workoutSelect.addEventListener('change', function() {
-            // Allow workout changes when not running, or when paused
+            primeSpeechForIOS();
             if (!isRunning || isPaused) {
                 loadMobilityWorkout(this.value);
             }
         });
         
+        // Prep phase handlers
+        function syncPrepTimeFromInput() {
+            const sec = parseTime(prepTimeInput && prepTimeInput.value);
+            const s = Math.min(300, Math.max(0, sec));
+            if (prepTimeSlider) prepTimeSlider.value = s;
+            if (prepTimeInput) prepTimeInput.value = s >= 60 ? formatTime(s) : (s > 0 ? String(s) : '00:00');
+            try { localStorage.setItem('mobility-prepTimeSeconds', String(s)); } catch (e) {}
+            updateReminderDisplays();
+        }
+        function syncPrepTimeFromSlider() {
+            const s = parseInt(prepTimeSlider && prepTimeSlider.value || 0, 10);
+            if (prepTimeInput) prepTimeInput.value = s >= 60 ? formatTime(s) : (s > 0 ? String(s) : '00:00');
+            try { localStorage.setItem('mobility-prepTimeSeconds', String(s)); } catch (e) {}
+            updateReminderDisplays();
+        }
+        if (prepTimeInput) prepTimeInput.addEventListener('input', syncPrepTimeFromInput);
+        if (prepTimeSlider) prepTimeSlider.addEventListener('input', syncPrepTimeFromSlider);
+        if (prepTimeDecreaseBtn) prepTimeDecreaseBtn.addEventListener('click', function() {
+            const sec = readPrepTimeFromInput();
+            const s = Math.max(0, sec - 10);
+            if (prepTimeInput) prepTimeInput.value = s >= 60 ? formatTime(s) : (s > 0 ? String(s) : '00:00');
+            if (prepTimeSlider) prepTimeSlider.value = s;
+            syncPrepTimeFromInput();
+        });
+        if (prepTimeIncreaseBtn) prepTimeIncreaseBtn.addEventListener('click', function() {
+            const sec = readPrepTimeFromInput();
+            const s = Math.min(300, sec + 10);
+            if (prepTimeInput) prepTimeInput.value = s >= 60 ? formatTime(s) : (s > 0 ? String(s) : '00:00');
+            if (prepTimeSlider) prepTimeSlider.value = s;
+            syncPrepTimeFromInput();
+        });
+        if (prepPhaseLabelInput) prepPhaseLabelInput.addEventListener('change', function() {
+            try { localStorage.setItem('mobility-prepPhaseLabel', this.value || 'Countdown'); } catch (e) {}
+        });
+        
         // Event listeners
         startBtn.addEventListener('click', function() {
+            primeSpeechForIOS();
             if (isPaused) {
                 resumeTimer();
             } else {
-                startTimer();
+                ensureToneStarted().then(function() {
+                    if (isIOS() && enableTonesEl && enableTonesEl.checked) playBeepShort();
+                    startTimer();
+                });
             }
         });
         
@@ -4247,8 +4351,18 @@
         // Initialize
         updateCharCounts();
         updateWorkoutDisplay();
+        updateReminderDisplays();
         updateButtonStates();
         updateDisplay();
+        
+        if (isIOS()) {
+            const iosBanner = document.getElementById('iosSoundBanner');
+            if (iosBanner && !audioStarted) { iosBanner.classList.remove('hidden'); iosBanner.style.display = ''; }
+            const iosUnlockBtn = document.getElementById('iosUnlockSoundBtn');
+            if (iosUnlockBtn) iosUnlockBtn.addEventListener('click', function() { unlockAudioForIOS(); });
+            const iosSilentBtn = document.getElementById('iosSilentBtn');
+            if (iosSilentBtn) iosSilentBtn.addEventListener('click', function() { dismissIOSSoundBannerSilent(); });
+        }
         
         // Set release date
         document.getElementById('releaseDate').textContent = new Date().toISOString().split('T')[0];

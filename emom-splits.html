@@ -1892,7 +1892,7 @@
         }
         function speak(text) {
             if (!enableVoiceEl || !enableVoiceEl.checked || !text) return;
-            if (speechSynth.speaking) speechSynth.cancel();
+            speechSynth.cancel();
             const utterance = new SpeechSynthesisUtterance(text);
             if (defaultSpeechVoice) utterance.voice = defaultSpeechVoice;
             utterance.rate = 1.1;

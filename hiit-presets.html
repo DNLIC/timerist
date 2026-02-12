@@ -10,6 +10,7 @@
     <meta name="description" content="HIIT timer with preset protocols (Tabata, 30/30, 4x4 Norwegian) and custom intervals. Includes prep countdown, cool-down, sets, and motivational phase labels for high-intensity workouts.">
     <link rel="stylesheet" href="styles/timerist-design-system.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
     <style>
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
@@ -256,6 +257,23 @@
             align-items: center;
             flex-wrap: nowrap;
         }
+        /* iOS sound banner: two buttons same cushion as Set Up / Clear */
+        .ios-sound-banner-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            min-width: 0;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        .ios-sound-banner-buttons .control-btn {
+            flex: 1 1 0;
+            min-width: 0;
+        }
+        @media (min-width: 390px) { .ios-sound-banner-buttons { gap: 0.75rem; } }
+        @media (min-width: 640px) { .ios-sound-banner-buttons { gap: 1rem; } }
         
         @media (min-width: 390px) {
             .control-buttons-container {
@@ -1404,6 +1422,15 @@
                 </div>
             </div>
             
+            <!-- iOS: enable sound or dismiss (shown until audio unlocked or user chooses Silent) -->
+            <div id="iosSoundBanner" class="p-3 rounded-xl bg-[rgb(var(--accent))] border border-[rgb(var(--border))] mb-3 text-center hidden" role="region" aria-label="Enable sound">
+                <p class="text-sm font-medium text-[rgb(var(--foreground))] mb-2 m-0">On iPhone/iPad, tap below to enable sound before starting.</p>
+                <div class="ios-sound-banner-buttons">
+                    <button type="button" class="control-btn btn-primary" id="iosUnlockSoundBtn" aria-label="Enable sound">Enable Sound</button>
+                    <button type="button" class="control-btn btn-secondary" id="iosSilentBtn" aria-label="Silent – do not enable sound">Silent</button>
+                </div>
+            </div>
+
             <!-- Control Buttons -->
             <div class="p-6 bg-card border border-border rounded-xl shadow-lg">
                 <div class="control-buttons-container">
@@ -1589,6 +1616,10 @@
                         </div>
                     </div>
                 </div>
+                <div class="input-group" style="margin-top: 0.75rem;">
+                    <label for="prepPhaseLabelInput">Prep phase announcement (spoken and shown)</label>
+                    <input type="text" id="prepPhaseLabelInput" class="shadcn-input" maxlength="20" value="Countdown" placeholder="e.g. Countdown, Prepare, Setup" aria-label="Prep phase label">
+                </div>
             </div>
             <div class="sheet-section">
                 <h3>Cool-down Time (MM:SS)</h3>
@@ -1657,6 +1688,21 @@
                 <div class="total-time-display" id="totalTimeDisplay">Total: 00:00</div>
             </div>
             <div class="sheet-section">
+                <h3>Audio &amp; Feedback</h3>
+                <label><input type="checkbox" id="enableTones" checked> Enable Audio Cues (tones)</label><br>
+                <label><input type="checkbox" id="enableVoice" checked> Enable Audio Cues (voice)</label><br>
+                <label><input type="checkbox" id="enableHaptic" checked> Enable Haptics (where supported)</label>
+                <p class="text-xs text-[rgb(var(--muted-foreground))] mt-2">After you set workout duration above, choose when to hear an audible reminder.</p>
+                <div id="reminderSection" style="display: none;" class="mt-3">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--muted-foreground))] mb-2">Audible reminders</p>
+                    <div class="flex flex-col gap-2">
+                        <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="reminderMinutesRemain" aria-label="1/2 workout point"> 1/2 Workout Point <span id="reminderHalfwayText" class="text-[rgb(var(--muted-foreground))]">— alerts at — min remaining</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="reminder2Min" aria-label="2 minutes remain"> 2 Minutes Remain</label>
+                        <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="reminder1Min" aria-label="1 minute remains"> 1 Minute Remains</label>
+                    </div>
+                </div>
+            </div>
+            <div class="sheet-section">
                 <h3>Completion Message (14 chars max)</h3>
                 <input type="text" id="doneMessageInput" class="shadcn-input" maxlength="14" value="Completed" placeholder="Completed" aria-label="Completion message">
                 <p class="text-xs text-[rgb(var(--muted-foreground))] mt-1 text-right"><span id="doneMessageCharCount">0</span>/14</p>
@@ -1684,6 +1730,8 @@
             </div>
         </div>
     </div>
+
+    <div class="hidden"><input type="checkbox" id="haptic-switch" switch><label for="haptic-switch" id="haptic-label"></label></div>
     
     <script>
         // HIIT Timer Logic
@@ -1705,6 +1753,12 @@
         let currentSet = 1;
         let setRestTime = 120; // Default 2 minutes
         let selectedPreset = 'custom'; // 'tabata', '3030', '4x4', 'custom'
+        
+        // Audio: reminder state (fire each at most once per run)
+        let reminderFiredHalf = false;
+        let reminderFired2Min = false;
+        let reminderFired1Min = false;
+        let workoutElapsed = 0; // seconds elapsed in workout portion (work/rest/setrest)
         
         const display = document.getElementById('display');
         const phaseLabel = document.getElementById('phaseLabel');
@@ -1786,6 +1840,15 @@
         const exportBtn = document.getElementById('exportBtn');
         const importBtn = document.getElementById('importBtn');
         const importFileInput = document.getElementById('importFileInput');
+
+        // Audio & Feedback
+        const enableTonesEl = document.getElementById('enableTones');
+        const enableVoiceEl = document.getElementById('enableVoice');
+        const enableHapticEl = document.getElementById('enableHaptic');
+        const reminderMinutesRemainEl = document.getElementById('reminderMinutesRemain');
+        const reminder2MinEl = document.getElementById('reminder2Min');
+        const reminder1MinEl = document.getElementById('reminder1Min');
+        const prepPhaseLabelInput = document.getElementById('prepPhaseLabelInput');
 
         // Completion message storage (match EMOM pattern)
         function getDoneMessage() {
@@ -2011,6 +2074,14 @@
             if (workoutTitleInput) workoutTitleInput.disabled = true;
             if (workoutDescriptionInput) workoutDescriptionInput.disabled = true;
             if (doneMessageInput) doneMessageInput.disabled = true;
+            // Audio & Feedback
+            if (enableTonesEl) enableTonesEl.disabled = true;
+            if (enableVoiceEl) enableVoiceEl.disabled = true;
+            if (enableHapticEl) enableHapticEl.disabled = true;
+            if (reminderMinutesRemainEl) reminderMinutesRemainEl.disabled = true;
+            if (reminder2MinEl) reminder2MinEl.disabled = true;
+            if (reminder1MinEl) reminder1MinEl.disabled = true;
+            if (prepPhaseLabelInput) prepPhaseLabelInput.disabled = true;
         }
         
         // Enable inputs when timer is stopped
@@ -2069,6 +2140,14 @@
             if (workoutTitleInput) workoutTitleInput.disabled = false;
             if (workoutDescriptionInput) workoutDescriptionInput.disabled = false;
             if (doneMessageInput) doneMessageInput.disabled = false;
+            // Audio & Feedback
+            if (enableTonesEl) enableTonesEl.disabled = false;
+            if (enableVoiceEl) enableVoiceEl.disabled = false;
+            if (enableHapticEl) enableHapticEl.disabled = false;
+            if (reminderMinutesRemainEl) reminderMinutesRemainEl.disabled = false;
+            if (reminder2MinEl) reminder2MinEl.disabled = false;
+            if (reminder1MinEl) reminder1MinEl.disabled = false;
+            if (prepPhaseLabelInput) prepPhaseLabelInput.disabled = false;
         }
         
         // HIIT ADDITION: Preset configurations
@@ -2206,6 +2285,36 @@
         function updateTotalTime() {
             const total = calculateTotalTime();
             totalTimeDisplay.textContent = 'Total: ' + formatTime(total);
+            updateReminderDisplays();
+        }
+        
+        // Workout portion duration (work+rest+setrest only; excludes warmup and cooldown) for reminders
+        function getTotalWorkoutDuration() {
+            if (totalRounds <= 0 || workTime <= 0) return 0;
+            const perSet = totalRounds * workTime + Math.max(0, totalRounds - 1) * restTime;
+            return totalSets * perSet + Math.max(0, totalSets - 1) * setRestTime;
+        }
+        
+        function getTotalRemaining() {
+            const total = getTotalWorkoutDuration();
+            if (total <= 0) return 0;
+            return Math.max(0, total - workoutElapsed);
+        }
+        
+        function updateReminderDisplays() {
+            const total = getTotalWorkoutDuration();
+            const reminderSection = document.getElementById('reminderSection');
+            if (reminderSection) reminderSection.style.display = total > 0 ? 'block' : 'none';
+            const halfwayEl = document.getElementById('reminderHalfwayText');
+            if (halfwayEl && total > 0) {
+                const halfSec = Math.round(total / 2);
+                const halfMin = Math.round(halfSec / 60);
+                halfwayEl.textContent = halfMin === 1 ? '— alerts at 1 min remaining' : '— alerts at ' + halfMin + ' min remaining';
+            } else if (halfwayEl) halfwayEl.textContent = '— alerts at — min remaining';
+        }
+        
+        function getPrepPhaseLabel() {
+            return (prepPhaseLabelInput && prepPhaseLabelInput.value.trim()) ? prepPhaseLabelInput.value.trim() : 'Countdown';
         }
         
         // HIIT ADDITION: Update set rest visibility (drawer and main page)
@@ -2300,7 +2409,7 @@
             phaseLabel.classList.remove('rest', 'work-intense', 'warmup', 'cooldown');
             
             if (currentPhase === 'warmup') {
-                phaseLabel.textContent = 'Prep countdown';
+                phaseLabel.textContent = getPrepPhaseLabel();
                 phaseLabel.classList.add('warmup');
                 phaseLabel.style.color = 'rgb(var(--muted-foreground))';
             } else if (currentPhase === 'cooldown') {
@@ -2402,7 +2511,7 @@
         }
         
         // Start timer
-        function startTimer() {
+        function startTimer(resuming) {
             // HIIT ADDITION: Initialize from inputs if not already set
             if (workTime === 0 && restTime === 0) {
                 workTime = parseTime(workTimeInput.value);
@@ -2428,81 +2537,142 @@
             
             if (currentTime <= 0) return;
             
+            if (!resuming) {
+                reminderFiredHalf = false;
+                reminderFired2Min = false;
+                reminderFired1Min = false;
+                workoutElapsed = 0;
+            }
+            
             isRunning = true;
             isPaused = false;
             
+            // Speak prep label at start of warmup (user gesture has already primed voice)
+            if (currentPhase === 'warmup' && warmupTime > 0 && !resuming) {
+                if (enableVoiceEl && enableVoiceEl.checked) setTimeout(() => speak(getPrepPhaseLabel()), 800);
+            }
+            
             interval = setInterval(() => {
+                // Reminders (only during workout portion, not warmup or cooldown)
+                const totalRem = getTotalRemaining();
+                const halfSec = Math.round(getTotalWorkoutDuration() / 2);
+                let msg = null;
+                if (currentPhase === 'work' || currentPhase === 'rest' || currentPhase === 'setrest') {
+                    if (reminderMinutesRemainEl && reminderMinutesRemainEl.checked && !reminderFiredHalf && totalRem === halfSec) {
+                        msg = (Math.round(totalRem / 60) === 1 ? '1 minute remaining' : Math.round(totalRem / 60) + ' minutes remaining');
+                        reminderFiredHalf = true;
+                    } else if (reminder2MinEl && reminder2MinEl.checked && !reminderFired2Min && totalRem === 120) {
+                        msg = '2 minutes remaining';
+                        reminderFired2Min = true;
+                    } else if (reminder1MinEl && reminder1MinEl.checked && !reminderFired1Min && totalRem === 60) {
+                        msg = '1 minute remains';
+                        reminderFired1Min = true;
+                    }
+                    if (msg) {
+                        if (enableTonesEl && enableTonesEl.checked) playDoubleBeep();
+                        if (enableVoiceEl && enableVoiceEl.checked) setTimeout(() => speak(msg), 800);
+                        if (enableHapticEl && enableHapticEl.checked) triggerHaptic('double');
+                    }
+                }
+                
+                // 3-2-1 beeps: warmup
+                if (currentPhase === 'warmup' && (currentTime === 3 || currentTime === 2 || currentTime === 1)) {
+                    if (enableTonesEl && enableTonesEl.checked) playBeepShort();
+                    if (enableHapticEl && enableHapticEl.checked) triggerHaptic('short');
+                }
+                // 3-2-1 beeps: work
+                if (currentPhase === 'work' && (currentTime === 3 || currentTime === 2 || currentTime === 1)) {
+                    if (enableTonesEl && enableTonesEl.checked) playBeepShort();
+                    if (enableHapticEl && enableHapticEl.checked) triggerHaptic('short');
+                }
+                // 3-2-1 beeps: rest
+                if (currentPhase === 'rest' && restTime > 0 && (currentTime === 3 || currentTime === 2 || currentTime === 1)) {
+                    if (enableTonesEl && enableTonesEl.checked) playBeepShort();
+                    if (enableHapticEl && enableHapticEl.checked) triggerHaptic('short');
+                }
+                // 3-2-1 beeps: set rest
+                if (currentPhase === 'setrest' && (currentTime === 3 || currentTime === 2 || currentTime === 1)) {
+                    if (enableTonesEl && enableTonesEl.checked) playBeepShort();
+                    if (enableHapticEl && enableHapticEl.checked) triggerHaptic('short');
+                }
+                
                 currentTime--;
+                if (currentPhase === 'work' || currentPhase === 'rest' || currentPhase === 'setrest') workoutElapsed++;
                 updateDisplay();
                 
                 if (currentTime <= 0) {
-                    // HIIT ADDITION: Enhanced audio with different sounds for work vs rest
-                    if (currentPhase === 'work') {
-                        playWorkSound();
-                    } else {
-                        playSound();
-                    }
-                    
-                    // HIIT ADDITION: Phase transition logic
+                    // Phase transition logic
                     if (currentPhase === 'warmup') {
-                        // Warm-up complete, start first work phase
+                        if (enableTonesEl && enableTonesEl.checked) playWorkStartChime();
+                        else playSound();
+                        if (enableVoiceEl && enableVoiceEl.checked) setTimeout(() => speak('Work'), 800);
+                        if (enableHapticEl && enableHapticEl.checked) triggerHaptic('short');
                         currentPhase = 'work';
                         isWorkPhase = true;
                         currentTime = workTime;
                         currentRound = 1;
                         currentSet = 1;
                     } else if (currentPhase === 'work') {
-                        // Work phase complete, switch to rest
                         currentPhase = 'rest';
                         isWorkPhase = false;
                         currentTime = restTime;
+                        if (restTime > 0) {
+                            if (enableTonesEl && enableTonesEl.checked) playRestStartTone();
+                            else playSound();
+                            if (enableVoiceEl && enableVoiceEl.checked) setTimeout(() => speak('Rest'), 800);
+                            if (enableHapticEl && enableHapticEl.checked) triggerHaptic('double');
+                        }
                     } else if (currentPhase === 'rest') {
-                        // Rest phase complete - check if we've completed all rounds in this set
                         if (currentRound >= totalRounds) {
-                            // Completed all rounds in current set
                             if (currentSet >= totalSets) {
-                                // All sets complete - go to cool-down or finish
                                 if (cooldownTime > 0) {
                                     currentPhase = 'cooldown';
                                     currentTime = cooldownTime;
                                 } else {
-                                    // No cool-down - stop timer
                                     stopTimer();
-                                    const completionMessage = getDoneMessage();
-                                    display.textContent = completionMessage;
+                                    if (enableTonesEl && enableTonesEl.checked) { playWorkoutCompleteFanfare(); playThreeBeeps(); }
+                                    else playSound();
+                                    if (enableVoiceEl && enableVoiceEl.checked) setTimeout(() => speak(getDoneMessage()), 800);
+                                    if (enableHapticEl && enableHapticEl.checked) triggerHaptic('complete');
+                                    display.textContent = getDoneMessage();
                                     display.classList.add('danger', 'done-message');
                                     fitTextToContainer(display, { minPx: 18 });
-                                    playSound();
                                     return;
                                 }
                             } else {
-                                // More sets to go - set rest
                                 currentPhase = 'setrest';
                                 currentTime = setRestTime;
                                 currentSet++;
-                                currentRound = 1; // Reset round for next set
+                                currentRound = 1;
                             }
                         } else {
-                            // More rounds in this set - next work phase
                             currentPhase = 'work';
                             isWorkPhase = true;
                             currentTime = workTime;
                             currentRound++;
+                            if (enableTonesEl && enableTonesEl.checked) playWorkStartChime();
+                            else playSound();
+                            if (enableVoiceEl && enableVoiceEl.checked) setTimeout(() => speak('Work'), 800);
+                            if (enableHapticEl && enableHapticEl.checked) triggerHaptic('short');
                         }
                     } else if (currentPhase === 'setrest') {
-                        // Set rest complete - start next set with work phase
                         currentPhase = 'work';
                         isWorkPhase = true;
                         currentTime = workTime;
                         currentRound = 1;
+                        if (enableTonesEl && enableTonesEl.checked) playWorkStartChime();
+                        else playSound();
+                        if (enableVoiceEl && enableVoiceEl.checked) setTimeout(() => speak('Work'), 800);
+                        if (enableHapticEl && enableHapticEl.checked) triggerHaptic('short');
                     } else if (currentPhase === 'cooldown') {
-                        // Cool-down complete - stop timer
                         stopTimer();
-                        const completionMessage = getDoneMessage();
-                        display.textContent = completionMessage;
+                        if (enableTonesEl && enableTonesEl.checked) { playWorkoutCompleteFanfare(); playThreeBeeps(); }
+                        else playSound();
+                        if (enableVoiceEl && enableVoiceEl.checked) setTimeout(() => speak(getDoneMessage()), 800);
+                        if (enableHapticEl && enableHapticEl.checked) triggerHaptic('complete');
+                        display.textContent = getDoneMessage();
                         display.classList.add('danger', 'done-message');
                         fitTextToContainer(display, { minPx: 18 });
-                        playSound();
                         return;
                     }
                     updateDisplay();
@@ -2514,28 +2684,39 @@
         
         // Pause timer
         function pauseTimer() {
+            primeSpeechForIOS();
             isRunning = false;
             isPaused = true;
             clearInterval(interval);
             interval = null;
+            if (enableVoiceEl && enableVoiceEl.checked) setTimeout(() => speak('Pause'), 800);
+            if (enableHapticEl && enableHapticEl.checked) triggerHaptic('long');
             updateDisplay();
         }
         
         // Resume timer
         function resumeTimer() {
-            if (isPaused) {
-                startTimer();
-            }
+            primeSpeechForIOS();
+            ensureToneStarted().then(() => {
+                if (enableTonesEl && enableTonesEl.checked) playBeepShort();
+                if (enableVoiceEl && enableVoiceEl.checked) setTimeout(() => speak('Resume'), 800);
+                if (enableHapticEl && enableHapticEl.checked) triggerHaptic('short');
+                startTimer(true);
+            });
         }
         
         // Toggle play/pause
         function togglePlayPause() {
+            primeSpeechForIOS();
             if (isRunning && !isPaused) {
                 pauseTimer();
             } else if (isPaused) {
                 resumeTimer();
             } else {
-                startTimer();
+                ensureToneStarted().then(() => {
+                    if (isIOS() && enableTonesEl && enableTonesEl.checked) playBeepShort();
+                    startTimer(false);
+                });
             }
         }
         
@@ -2581,6 +2762,7 @@
             // Update display immediately (this will enable inputs and check validity)
             updateDisplay();
             updateTotalTime();
+            updateReminderDisplays();
         }
         
         // Clear timer: clean slate – stop timer, zero all drawer/settings data and runtime state
@@ -2608,6 +2790,10 @@
             if (workoutTitleInput) workoutTitleInput.value = '';
             if (workoutDescriptionInput) workoutDescriptionInput.value = '';
             if (doneMessageInput) doneMessageInput.value = 'Completed';
+            if (prepPhaseLabelInput) {
+                prepPhaseLabelInput.value = 'Countdown';
+                try { localStorage.setItem('preset-hiit-prepPhaseLabel', 'Countdown'); } catch (e) {}
+            }
             updateCharCounts();
             updateWorkoutDisplay();
             
@@ -2635,65 +2821,146 @@
             updateTotalTime();
         }
         
-        // Play sound when timer completes
+        // Audio helpers (AUDIO_RULES)
         function playSound() {
             try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.frequency.value = 800;
-                oscillator.type = 'sine';
-                
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-                
-                oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.5);
-            } catch (e) {
-                console.log('Audio not available');
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.value = 800;
+                osc.type = 'sine';
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.5);
+            } catch (e) {}
+        }
+        function isIOS() { return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream; }
+        function isSafari() { return /^((?!chrome|android).)*safari/i.test(navigator.userAgent); }
+        function triggerHaptic(style) {
+            style = style || 'short';
+            if (!enableHapticEl || !enableHapticEl.checked) return;
+            if (isIOS() && isSafari()) {
+                const input = document.getElementById('haptic-switch');
+                const label = document.getElementById('haptic-label');
+                if (!input || !label) return;
+                const toggle = () => { input.checked = !input.checked; label.click(); };
+                if (style === 'short') toggle();
+                else if (style === 'double') { toggle(); setTimeout(toggle, 80); }
+                else if (style === 'long') { toggle(); setTimeout(toggle, 100); setTimeout(toggle, 200); }
+                else if (style === 'complete') { toggle(); setTimeout(toggle, 60); setTimeout(toggle, 120); setTimeout(toggle, 180); }
+            } else if (navigator.vibrate) {
+                if (style === 'short') navigator.vibrate(50);
+                else if (style === 'double') navigator.vibrate([50, 30, 50]);
+                else if (style === 'long') navigator.vibrate(150);
+                else if (style === 'complete') navigator.vibrate([100, 50, 100, 50, 100]);
             }
         }
-        
-        // HIIT ADDITION: Enhanced audio for work phase (louder, more intense)
-        function playWorkSound() {
+        let audioStarted = false;
+        function ensureToneStarted() {
+            if (audioStarted || typeof Tone === 'undefined') return Promise.resolve();
+            if (typeof Tone !== 'undefined' && Tone.context && Tone.context.state === 'suspended') Tone.context.resume();
+            return Tone.start().then(() => {
+                audioStarted = true;
+                const banner = document.getElementById('iosSoundBanner');
+                if (banner) banner.style.display = 'none';
+            });
+        }
+        function unlockAudioForIOS() {
+            primeSpeechForIOS();
+            if (typeof Tone === 'undefined') return;
+            const banner = document.getElementById('iosSoundBanner');
+            if (banner) banner.style.display = 'none';
+            if (Tone.context && Tone.context.state === 'suspended') Tone.context.resume();
+            Tone.start().then(() => {
+                audioStarted = true;
+                if (enableTonesEl && enableTonesEl.checked) playBeepShort();
+                updateDisplay();
+            }).catch(() => updateDisplay());
+        }
+        function dismissIOSSoundBannerSilent() {
+            const banner = document.getElementById('iosSoundBanner');
+            if (banner) { banner.classList.add('hidden'); banner.style.display = 'none'; }
+        }
+        function playBeepShort() {
+            if (!enableTonesEl || !enableTonesEl.checked || !audioStarted || typeof Tone === 'undefined') return;
             try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                // Higher frequency, louder for work phase
-                oscillator.frequency.value = 1000;
-                oscillator.type = 'square'; // More intense sound
-                
-                gainNode.gain.setValueAtTime(0.5, audioContext.currentTime); // Louder
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.6);
-                
-                oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.6);
-            } catch (e) {
-                console.log('Audio not available');
-            }
+                const synth = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
+                synth.triggerAttackRelease('A5', '16n');
+            } catch (e) {}
+        }
+        function playWorkStartChime() {
+            if (!enableTonesEl || !enableTonesEl.checked || !audioStarted || typeof Tone === 'undefined') return;
+            try {
+                const fmSynth = new Tone.FMSynth({ harmonicity: 3, modulationIndex: 10, envelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.5 } }).toDestination();
+                fmSynth.triggerAttackRelease('C5', '8n');
+            } catch (e) {}
+        }
+        function playRestStartTone() {
+            if (!enableTonesEl || !enableTonesEl.checked || !audioStarted || typeof Tone === 'undefined') return;
+            try {
+                const synth = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.05, decay: 0.3, sustain: 0, release: 0.2 } }).toDestination();
+                synth.triggerAttackRelease('E4', '8n');
+            } catch (e) {}
+        }
+        function playWorkoutCompleteFanfare() {
+            if (!enableTonesEl || !enableTonesEl.checked || !audioStarted || typeof Tone === 'undefined') return;
+            try {
+                const synth = new Tone.Synth({ oscillator: { type: 'sawtooth' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.2, release: 0.2 } }).toDestination();
+                const seq = new Tone.Sequence((time, note) => synth.triggerAttackRelease(note, '16n', time), ['C5', 'E5', 'G5'], '16n').start(0);
+                seq.loop = false;
+                Tone.Transport.start();
+                setTimeout(() => { Tone.Transport.stop(); }, 500);
+            } catch (e) {}
+        }
+        function playThreeBeeps() {
+            if (!enableTonesEl || !enableTonesEl.checked || !audioStarted || typeof Tone === 'undefined') return;
+            playBeepShort();
+            setTimeout(playBeepShort, 1000);
+            setTimeout(playBeepShort, 2000);
+        }
+        function playDoubleBeep() {
+            if (!enableTonesEl || !enableTonesEl.checked || !audioStarted || typeof Tone === 'undefined') return;
+            playBeepShort();
+            setTimeout(playBeepShort, 150);
+        }
+        // Voice (Web Speech API)
+        const speechSynth = window.speechSynthesis;
+        let speechVoices = [];
+        let defaultSpeechVoice = null;
+        let speechPrimed = false;
+        function populateVoices() {
+            speechVoices = speechSynth.getVoices();
+            defaultSpeechVoice = speechVoices.find(v => v.lang === 'en-US' && (v.name.indexOf('Samantha') !== -1 || (v.voiceURI && v.voiceURI.indexOf('Samantha') !== -1)));
+            if (!defaultSpeechVoice) defaultSpeechVoice = speechVoices.find(v => v.lang === 'en-US');
+        }
+        if (speechSynth.onvoiceschanged !== undefined) speechSynth.onvoiceschanged = populateVoices;
+        populateVoices();
+        function primeSpeechForIOS() {
+            if (speechPrimed || !enableVoiceEl || !enableVoiceEl.checked) return;
+            try {
+                speechSynth.cancel();
+                speechSynth.speak(new SpeechSynthesisUtterance(''));
+                speechPrimed = true;
+            } catch (e) {}
+        }
+        function speak(text) {
+            if (!enableVoiceEl || !enableVoiceEl.checked || !text) return;
+            if (speechSynth.speaking) speechSynth.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            if (defaultSpeechVoice) utterance.voice = defaultSpeechVoice;
+            utterance.rate = 1.1;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+            speechSynth.speak(utterance);
         }
         
         // Event Listeners
-        startBtn.addEventListener('click', function() {
-            if (isRunning && !isPaused) {
-                pauseTimer();
-            } else if (isPaused) {
-                resumeTimer();
-            } else {
-                startTimer();
-            }
-        });
+        startBtn.addEventListener('click', togglePlayPause);
         
-        pauseBtn.addEventListener('click', pauseTimer);
+        pauseBtn.addEventListener('click', togglePlayPause);
         resetBtn.addEventListener('click', resetTimer);
         clearBtn.addEventListener('click', clearTimer);
         setupBtn.addEventListener('click', function() {
@@ -2802,6 +3069,7 @@
         
         presetPresetButtons.forEach(btn => {
             btn.addEventListener('click', function() {
+                primeSpeechForIOS();
                 if (isRunning) return; // Don't allow changing presets while running
                 
                 const workSeconds = parseInt(this.getAttribute('data-work'));
@@ -3184,6 +3452,9 @@
                 cooldownTime: cooldownTime,
                 sets: totalSets,
                 setRestTime: setRestTime,
+                enableTones: !!(enableTonesEl && enableTonesEl.checked),
+                enableVoice: !!(enableVoiceEl && enableVoiceEl.checked),
+                enableHaptic: !!(enableHapticEl && enableHapticEl.checked),
                 exportedAt: new Date().toISOString()
             };
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -3256,6 +3527,15 @@
                             updateCurrentPresetDisplay(selectedPreset);
                             document.querySelectorAll('.preset-select-btn[data-work][data-rest]').forEach(el => el.classList.remove('selected'));
                         }
+                        if (enableTonesEl != null && data.enableTones !== undefined) enableTonesEl.checked = !!data.enableTones;
+                        if (enableVoiceEl != null && data.enableVoice !== undefined) enableVoiceEl.checked = !!data.enableVoice;
+                        if (enableHapticEl != null && data.enableHaptic !== undefined) enableHapticEl.checked = !!data.enableHaptic;
+                        try {
+                            if (enableTonesEl) localStorage.setItem('enableTones', enableTonesEl.checked);
+                            if (enableVoiceEl) localStorage.setItem('enableVoice', enableVoiceEl.checked);
+                            if (enableHapticEl) localStorage.setItem('enableHaptic', enableHapticEl.checked);
+                        } catch (e) {}
+                        unlockAudioForIOS();
                         updateSetRestVisibility();
                         syncSlidersFromInputs();
                         syncWarmupCooldownSetRestSlidersFromInputs();
@@ -3304,6 +3584,24 @@
         if (headerClearBtn) headerClearBtn.addEventListener('click', function() { if (confirmClearSettings()) clearTimer(); closeDrawer(); });
         if (clearAllSettingsBtn) clearAllSettingsBtn.addEventListener('click', function() { if (confirmClearSettings()) clearTimer(); closeDrawer(); });
         
+        // Audio: localStorage load and persist
+        if (enableTonesEl) { try { enableTonesEl.checked = localStorage.getItem('enableTones') !== 'false'; } catch (e) {} }
+        if (enableVoiceEl) { try { enableVoiceEl.checked = localStorage.getItem('enableVoice') !== 'false'; } catch (e) {} }
+        if (enableHapticEl) { try { enableHapticEl.checked = localStorage.getItem('enableHaptic') !== 'false'; } catch (e) {} }
+        if (reminderMinutesRemainEl) { try { reminderMinutesRemainEl.checked = localStorage.getItem('reminderMinutesRemain') === 'true'; } catch (e) {} }
+        if (reminder2MinEl) { try { reminder2MinEl.checked = localStorage.getItem('reminder2Min') === 'true'; } catch (e) {} }
+        if (reminder1MinEl) { try { reminder1MinEl.checked = localStorage.getItem('reminder1Min') === 'true'; } catch (e) {} }
+        if (enableTonesEl) enableTonesEl.addEventListener('change', () => { try { localStorage.setItem('enableTones', enableTonesEl.checked); } catch (e) {} });
+        if (enableVoiceEl) enableVoiceEl.addEventListener('change', () => { try { localStorage.setItem('enableVoice', enableVoiceEl.checked); } catch (e) {} });
+        if (enableHapticEl) enableHapticEl.addEventListener('change', () => { try { localStorage.setItem('enableHaptic', enableHapticEl.checked); } catch (e) {} });
+        if (reminderMinutesRemainEl) reminderMinutesRemainEl.addEventListener('change', () => { try { localStorage.setItem('reminderMinutesRemain', reminderMinutesRemainEl.checked); } catch (e) {} });
+        if (reminder2MinEl) reminder2MinEl.addEventListener('change', () => { try { localStorage.setItem('reminder2Min', reminder2MinEl.checked); } catch (e) {} });
+        if (reminder1MinEl) reminder1MinEl.addEventListener('change', () => { try { localStorage.setItem('reminder1Min', reminder1MinEl.checked); } catch (e) {} });
+        if (prepPhaseLabelInput) {
+            try { const saved = localStorage.getItem('preset-hiit-prepPhaseLabel'); if (saved) prepPhaseLabelInput.value = saved; } catch (e) {}
+            prepPhaseLabelInput.addEventListener('change', () => { try { localStorage.setItem('preset-hiit-prepPhaseLabel', prepPhaseLabelInput.value.trim() || 'Countdown'); } catch (e) {} });
+        }
+
         // Initialize
         workTime = parseTime(workTimeInput.value);
         restTime = parseTime(restTimeInput.value);
@@ -3343,6 +3641,16 @@
         
         // Set release date
         document.getElementById('releaseDate').textContent = new Date().toISOString().split('T')[0];
+        
+        // iOS sound banner
+        if (isIOS()) {
+            const iosBanner = document.getElementById('iosSoundBanner');
+            if (iosBanner) { iosBanner.classList.remove('hidden'); iosBanner.style.display = ''; }
+            const iosUnlockBtn = document.getElementById('iosUnlockSoundBtn');
+            if (iosUnlockBtn) iosUnlockBtn.addEventListener('click', unlockAudioForIOS);
+            const iosSilentBtn = document.getElementById('iosSilentBtn');
+            if (iosSilentBtn) iosSilentBtn.addEventListener('click', dismissIOSSoundBannerSilent);
+        }
     </script>
     <script src="scripts/dark-mode-toggle.js"></script>
     <script>
