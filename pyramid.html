@@ -10,6 +10,7 @@
     <meta name="description" content="Pyramid timer for progressive workouts with ascending and descending work intervals. Automatically builds a pyramid sequence from start to peak and back down.">
     <link rel="stylesheet" href="styles/timerist-design-system.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
     <style>
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
@@ -316,6 +317,24 @@
                 gap: 1rem;
             }
         }
+        
+        /* iOS sound banner: two buttons same cushion as Set Up / Clear */
+        .ios-sound-banner-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            min-width: 0;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        .ios-sound-banner-buttons .control-btn {
+            flex: 1 1 0;
+            min-width: 0;
+        }
+        @media (min-width: 390px) { .ios-sound-banner-buttons { gap: 0.75rem; } }
+        @media (min-width: 640px) { .ios-sound-banner-buttons { gap: 1rem; } }
         
         .control-btn.btn-primary {
             background-color: rgb(var(--primary));
@@ -1089,6 +1108,15 @@
                 </div>
             </div>
             
+            <!-- iOS: enable sound or dismiss (shown until audio unlocked or user chooses Silent) -->
+            <div id="iosSoundBanner" class="p-3 rounded-xl bg-[rgb(var(--accent))] border border-[rgb(var(--border))] mb-3 text-center hidden" role="region" aria-label="Enable sound">
+                <p class="text-sm font-medium text-[rgb(var(--foreground))] mb-2 m-0">On iPhone/iPad, tap below to enable sound before starting.</p>
+                <div class="ios-sound-banner-buttons">
+                    <button type="button" class="control-btn btn-primary" id="iosUnlockSoundBtn" aria-label="Enable sound">Enable Sound</button>
+                    <button type="button" class="control-btn btn-secondary" id="iosSilentBtn" aria-label="Silent – do not enable sound">Silent</button>
+                </div>
+            </div>
+
             <!-- Control Buttons -->
             <div class="p-6 bg-card border border-border rounded-lg shadow-lg">
                 <div class="control-buttons-container">
@@ -1257,6 +1285,10 @@
                         <input type="text" id="warmupInput" class="custom-time-input" value="00:30" pattern="[0-9]{2}:[0-9]{2}" placeholder="MM:SS" aria-label="Warm-up time (optional)">
                         <button type="button" class="stepper-btn" id="warmupIncreaseBtn" aria-label="Increase warm-up by 10 seconds">+10</button>
                     </div>
+                    <div class="input-group" style="margin-top: 0.75rem;">
+                        <label for="prepPhaseLabelInput">Prep phase announcement (spoken and shown during warm-up)</label>
+                        <input type="text" id="prepPhaseLabelInput" class="custom-time-input" maxlength="20" value="Warm-up" placeholder="e.g. Warm-up, Prepare, Countdown" aria-label="Prep phase label" style="text-align: left;">
+                    </div>
                 </div>
                 
                 <!-- Optional: Cool-down (thick slider + −10/+10 stepper) -->
@@ -1277,6 +1309,23 @@
                     <p style="color: rgb(var(--muted-foreground)); font-size: 0.875rem; margin-top: 0.5rem;">
                         <strong>Estimated Total Time:</strong> <span id="estimatedTime">00:00</span>
                     </p>
+                </div>
+                
+                <!-- Audio & Feedback -->
+                <div class="sheet-section">
+                    <h3>Audio &amp; Feedback</h3>
+                    <label><input type="checkbox" id="enableTones" checked> Enable Audio Cues (tones)</label><br>
+                    <label><input type="checkbox" id="enableVoice" checked> Enable Audio Cues (voice)</label><br>
+                    <label><input type="checkbox" id="enableHaptic" checked> Enable Haptics (where supported)</label>
+                    <p class="text-xs text-[rgb(var(--muted-foreground))] mt-2">After you set workout duration above, choose when to hear an audible reminder.</p>
+                    <div id="reminderSection" style="display: none;" class="mt-3">
+                        <p class="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--muted-foreground))] mb-2">Audible reminders</p>
+                        <div class="flex flex-col gap-2">
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="reminderMinutesRemain" aria-label="1/2 workout point"> 1/2 Workout Point <span id="reminderHalfwayText" class="text-[rgb(var(--muted-foreground))]">— alerts at — min remaining</span></label>
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="reminder2Min" aria-label="2 minutes remain"> 2 Minutes Remain</label>
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="reminder1Min" aria-label="1 minute remains"> 1 Minute Remains</label>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Default Settings Button -->
@@ -1318,11 +1367,13 @@
             <!-- General Info -->
             <div class="sheet-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.18</p>
+                <p><strong>Version:</strong> v0.19</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
     </div>
+    
+    <div class="hidden"><input type="checkbox" id="haptic-switch" switch><label for="haptic-switch" id="haptic-label"></label></div>
     
     <script>
         // Pyramid Timer Logic
@@ -1340,6 +1391,9 @@
         let numPyramids = 1; // Number of full pyramids
         let warmupTime = 30; // Warm-up time in seconds
         let cooldownTime = 60; // Cool-down time in seconds
+        let reminderFiredHalf = false;
+        let reminderFired2Min = false;
+        let reminderFired1Min = false;
         
         const display = document.getElementById('display');
         const phaseLabel = document.getElementById('phaseLabel');
@@ -1372,6 +1426,29 @@
         const exportBtn = document.getElementById('exportBtn');
         const importBtn = document.getElementById('importBtn');
         const importFileInput = document.getElementById('importFileInput');
+        const prepPhaseLabelInput = document.getElementById('prepPhaseLabelInput');
+        const enableTonesEl = document.getElementById('enableTones');
+        const enableVoiceEl = document.getElementById('enableVoice');
+        const enableHapticEl = document.getElementById('enableHaptic');
+        const reminderMinutesRemainEl = document.getElementById('reminderMinutesRemain');
+        const reminder2MinEl = document.getElementById('reminder2Min');
+        const reminder1MinEl = document.getElementById('reminder1Min');
+        
+        // Audio prefs: load from localStorage
+        if (enableTonesEl) { try { enableTonesEl.checked = localStorage.getItem('enableTones') !== 'false'; } catch (e) {} }
+        if (enableVoiceEl) { try { enableVoiceEl.checked = localStorage.getItem('enableVoice') !== 'false'; } catch (e) {} }
+        if (enableHapticEl) { try { enableHapticEl.checked = localStorage.getItem('enableHaptic') !== 'false'; } catch (e) {} }
+        if (reminderMinutesRemainEl) { try { reminderMinutesRemainEl.checked = localStorage.getItem('reminderMinutesRemain') === 'true'; } catch (e) {} }
+        if (reminder2MinEl) { try { reminder2MinEl.checked = localStorage.getItem('reminder2Min') === 'true'; } catch (e) {} }
+        if (reminder1MinEl) { try { reminder1MinEl.checked = localStorage.getItem('reminder1Min') === 'true'; } catch (e) {} }
+        if (prepPhaseLabelInput) { try { prepPhaseLabelInput.value = localStorage.getItem('pyramid-prepPhaseLabel') || 'Warm-up'; } catch (e) {} }
+        if (enableTonesEl) enableTonesEl.addEventListener('change', function() { try { localStorage.setItem('enableTones', enableTonesEl.checked); } catch (e) {} });
+        if (enableVoiceEl) enableVoiceEl.addEventListener('change', function() { try { localStorage.setItem('enableVoice', enableVoiceEl.checked); } catch (e) {} });
+        if (enableHapticEl) enableHapticEl.addEventListener('change', function() { try { localStorage.setItem('enableHaptic', enableHapticEl.checked); } catch (e) {} });
+        if (reminderMinutesRemainEl) reminderMinutesRemainEl.addEventListener('change', function() { try { localStorage.setItem('reminderMinutesRemain', reminderMinutesRemainEl.checked); } catch (e) {} });
+        if (reminder2MinEl) reminder2MinEl.addEventListener('change', function() { try { localStorage.setItem('reminder2Min', reminder2MinEl.checked); } catch (e) {} });
+        if (reminder1MinEl) reminder1MinEl.addEventListener('change', function() { try { localStorage.setItem('reminder1Min', reminder1MinEl.checked); } catch (e) {} });
+        if (prepPhaseLabelInput) prepPhaseLabelInput.addEventListener('change', function() { try { localStorage.setItem('pyramid-prepPhaseLabel', prepPhaseLabelInput.value.trim() || 'Warm-up'); } catch (e) {} });
         
         // Adjustment buttons - Starting Work Time
         const startTimeDecrease5Btn = document.getElementById('startTimeDecrease5Btn');
@@ -1521,6 +1598,39 @@
         function updateEstimatedTime() {
             const totalSeconds = calculateEstimatedTime();
             document.getElementById('estimatedTime').textContent = formatTime(totalSeconds);
+            updateReminderDisplays();
+        }
+        
+        function getPrepPhaseLabel() {
+            return (prepPhaseLabelInput && prepPhaseLabelInput.value.trim()) ? prepPhaseLabelInput.value.trim() : 'Warm-up';
+        }
+        
+        function getTotalDuration() {
+            return calculateEstimatedTime();
+        }
+        
+        function getTotalRemaining() {
+            const total = getTotalDuration();
+            if (total <= 0) return 0;
+            if (pyramidSequence.length === 0 || currentSequenceIndex >= pyramidSequence.length) return 0;
+            let elapsed = 0;
+            for (let i = 0; i < currentSequenceIndex; i++) {
+                elapsed += pyramidSequence[i].duration;
+            }
+            elapsed += (pyramidSequence[currentSequenceIndex].duration - currentTime);
+            return Math.max(0, total - elapsed);
+        }
+        
+        function updateReminderDisplays() {
+            const total = getTotalDuration();
+            const reminderSection = document.getElementById('reminderSection');
+            if (reminderSection) reminderSection.style.display = total > 0 ? 'block' : 'none';
+            const halfwayEl = document.getElementById('reminderHalfwayText');
+            if (halfwayEl && total > 0) {
+                const halfSec = Math.round(total / 2);
+                const halfMin = Math.round(halfSec / 60);
+                halfwayEl.textContent = halfMin === 1 ? '— alerts at 1 min remaining' : '— alerts at ' + halfMin + ' min remaining';
+            } else if (halfwayEl) halfwayEl.textContent = '— alerts at — min remaining';
         }
         
         // Get pyramid pattern summary (work times only)
@@ -1629,6 +1739,14 @@
             if (doneMessageInput) doneMessageInput.disabled = true;
             if (exportBtn) exportBtn.disabled = true;
             if (importBtn) importBtn.disabled = true;
+            if (prepPhaseLabelInput) prepPhaseLabelInput.disabled = true;
+            if (enableTonesEl) enableTonesEl.disabled = true;
+            if (enableVoiceEl) enableVoiceEl.disabled = true;
+            if (enableHapticEl) enableHapticEl.disabled = true;
+            if (reminderMinutesRemainEl) reminderMinutesRemainEl.disabled = true;
+            if (reminder2MinEl) reminder2MinEl.disabled = true;
+            if (reminder1MinEl) reminder1MinEl.disabled = true;
+            if (defaultSettingsBtn) defaultSettingsBtn.disabled = true;
             // Disable all adjustment buttons
             [startTimeDecrease5Btn, startTimeDecrease1Btn, startTimeIncrease1Btn, startTimeIncrease5Btn,
              incrementDecrease5Btn, incrementDecrease1Btn, incrementIncrease1Btn, incrementIncrease5Btn,
@@ -1653,6 +1771,14 @@
             if (doneMessageInput) doneMessageInput.disabled = false;
             if (exportBtn) exportBtn.disabled = false;
             if (importBtn) importBtn.disabled = false;
+            if (prepPhaseLabelInput) prepPhaseLabelInput.disabled = false;
+            if (enableTonesEl) enableTonesEl.disabled = false;
+            if (enableVoiceEl) enableVoiceEl.disabled = false;
+            if (enableHapticEl) enableHapticEl.disabled = false;
+            if (reminderMinutesRemainEl) reminderMinutesRemainEl.disabled = false;
+            if (reminder2MinEl) reminder2MinEl.disabled = false;
+            if (reminder1MinEl) reminder1MinEl.disabled = false;
+            if (defaultSettingsBtn) defaultSettingsBtn.disabled = false;
             // Enable all adjustment buttons
             [startTimeDecrease5Btn, startTimeDecrease1Btn, startTimeIncrease1Btn, startTimeIncrease5Btn,
              incrementDecrease5Btn, incrementDecrease1Btn, incrementIncrease1Btn, incrementIncrease5Btn,
@@ -1680,7 +1806,7 @@
                     const currentPhase = pyramidSequence[currentSequenceIndex];
                     
                     if (currentPhase.type === 'warmup') {
-                        phaseLabel.textContent = 'Warm-up';
+                        phaseLabel.textContent = getPrepPhaseLabel();
                         phaseLabel.classList.remove('rest');
                         phaseLabel.style.color = 'rgb(var(--primary))';
                     } else if (currentPhase.type === 'cooldown') {
@@ -1770,6 +1896,7 @@
         
         // Start timer
         function startTimer() {
+            primeSpeechForIOS();
             // Generate sequence if not already done or if settings changed
             if (pyramidSequence.length === 0 || currentSequenceIndex >= pyramidSequence.length) {
                 pyramidSequence = generatePyramidSequence();
@@ -1785,63 +1912,132 @@
                 return;
             }
             
+            reminderFiredHalf = false;
+            reminderFired2Min = false;
+            reminderFired1Min = false;
+            
             const currentPhase = pyramidSequence[currentSequenceIndex];
             currentTime = currentPhase.duration;
             isWorkPhase = currentPhase.type === 'work' || currentPhase.type === 'warmup' || currentPhase.type === 'cooldown';
             
             if (currentTime <= 0) return;
             
+            // Speak prep label at start of warmup
+            if (currentPhase.type === 'warmup' && enableVoiceEl && enableVoiceEl.checked) {
+                setTimeout(() => speak(getPrepPhaseLabel()), 800);
+            }
+            
             isRunning = true;
             isPaused = false;
             
-            interval = setInterval(() => {
-                currentTime--;
+            ensureToneStarted().then(() => {
+                interval = setInterval(tick, 1000);
                 updateDisplay();
-                
-                if (currentTime <= 0) {
-                    playSound();
-                    
-                    // Move to next phase
-                    currentSequenceIndex++;
-                    
-                    if (currentSequenceIndex >= pyramidSequence.length) {
-                        // Pyramid complete!
-                        stopTimer();
-                        playSound(); // Play completion sound
-                        const completionMessage = getDoneMessage();
-                        display.textContent = completionMessage;
-                        display.classList.add('danger', 'done-message');
-                        fitTextToContainer(display, { minPx: 18 });
-                        phaseLabel.textContent = 'Pyramid Complete!';
-                        pyramidInfo.textContent = getDoneMessage();
-                        return;
-                    }
-                    
-                    // Set up next phase
-                    const nextPhase = pyramidSequence[currentSequenceIndex];
-                    currentTime = nextPhase.duration;
-                    isWorkPhase = nextPhase.type === 'work' || nextPhase.type === 'warmup' || nextPhase.type === 'cooldown';
-                    
-                    updateDisplay();
+            });
+        }
+        
+        function tick() {
+            const totalRem = getTotalRemaining();
+            const halfSec = Math.round(getTotalDuration() / 2);
+            const totalDur = getTotalDuration();
+            let msg = null;
+            // Reminders (do not fire during warmup - only during workout phases)
+            const currentPhase = pyramidSequence[currentSequenceIndex];
+            const isInWorkoutPhases = currentPhase && (currentPhase.type === 'work' || currentPhase.type === 'rest');
+            if (totalDur > 0 && isInWorkoutPhases) {
+                if (reminderMinutesRemainEl && reminderMinutesRemainEl.checked && !reminderFiredHalf && totalRem === halfSec) {
+                    msg = (Math.round(totalRem / 60) === 1 ? '1 minute remaining' : Math.round(totalRem / 60) + ' minutes remaining');
+                    reminderFiredHalf = true;
+                } else if (reminder2MinEl && reminder2MinEl.checked && !reminderFired2Min && totalRem === 120) {
+                    msg = '2 minutes remaining';
+                    reminderFired2Min = true;
+                } else if (reminder1MinEl && reminder1MinEl.checked && !reminderFired1Min && totalRem === 60) {
+                    msg = '1 minute remains';
+                    reminderFired1Min = true;
                 }
-            }, 1000);
-            
+                if (msg) {
+                    if (enableTonesEl && enableTonesEl.checked) playDoubleBeep();
+                    if (enableVoiceEl && enableVoiceEl.checked) setTimeout(() => speak(msg), 800);
+                    if (enableHapticEl && enableHapticEl.checked) triggerHaptic('double');
+                }
+            }
+            // 3-2-1 beeps at end of warmup, work, rest, cooldown
+            if (currentTime === 3 || currentTime === 2 || currentTime === 1) {
+                if (currentPhase.type === 'warmup' || currentPhase.type === 'work' || (currentPhase.type === 'rest' && restTime > 0) || currentPhase.type === 'cooldown') {
+                    if (enableTonesEl && enableTonesEl.checked) playBeepShort();
+                    if (enableHapticEl && enableHapticEl.checked) triggerHaptic('short');
+                }
+            }
+            currentTime--;
             updateDisplay();
+            if (currentTime <= 0) {
+                // Phase complete - play cues and transition
+                currentSequenceIndex++;
+                if (currentSequenceIndex >= pyramidSequence.length) {
+                    stopTimer();
+                    if (enableTonesEl && enableTonesEl.checked) {
+                        playWorkoutCompleteFanfare();
+                        playThreeBeeps();
+                    } else playSound();
+                    if (enableVoiceEl && enableVoiceEl.checked) setTimeout(() => speak(getDoneMessage()), 800);
+                    if (enableHapticEl && enableHapticEl.checked) triggerHaptic('complete');
+                    const completionMessage = getDoneMessage();
+                    display.textContent = completionMessage;
+                    display.classList.add('danger', 'done-message');
+                    fitTextToContainer(display, { minPx: 18 });
+                    phaseLabel.textContent = 'Pyramid Complete!';
+                    pyramidInfo.textContent = getDoneMessage();
+                    return;
+                }
+                const nextPhase = pyramidSequence[currentSequenceIndex];
+                currentTime = nextPhase.duration;
+                isWorkPhase = nextPhase.type === 'work' || nextPhase.type === 'warmup' || nextPhase.type === 'cooldown';
+                // Work cues on every work round
+                if (nextPhase.type === 'work') {
+                    if (enableTonesEl && enableTonesEl.checked) playWorkStartChime();
+                    else playSound();
+                    if (enableVoiceEl && enableVoiceEl.checked) setTimeout(() => speak('Work'), 800);
+                    if (enableHapticEl && enableHapticEl.checked) triggerHaptic('short');
+                }
+                // Rest cues
+                else if (nextPhase.type === 'rest') {
+                    if (enableTonesEl && enableTonesEl.checked) playRestStartTone();
+                    else playSound();
+                    if (enableVoiceEl && enableVoiceEl.checked) setTimeout(() => speak('Rest'), 800);
+                    if (enableHapticEl && enableHapticEl.checked) triggerHaptic('double');
+                }
+                // Warmup: speak prep label
+                else if (nextPhase.type === 'warmup' && enableVoiceEl && enableVoiceEl.checked) {
+                    setTimeout(() => speak(getPrepPhaseLabel()), 800);
+                }
+                updateDisplay();
+            }
         }
         
         // Pause timer
         function pauseTimer() {
+            primeSpeechForIOS();
             isRunning = false;
             isPaused = true;
             clearInterval(interval);
             interval = null;
+            if (enableVoiceEl && enableVoiceEl.checked) setTimeout(() => speak('Pause'), 800);
+            if (enableHapticEl && enableHapticEl.checked) triggerHaptic('long');
             updateDisplay();
         }
         
         // Resume timer
         function resumeTimer() {
             if (isPaused) {
-                startTimer();
+                primeSpeechForIOS();
+                ensureToneStarted().then(() => {
+                    if (enableTonesEl && enableTonesEl.checked) playBeepShort();
+                    if (enableVoiceEl && enableVoiceEl.checked) setTimeout(() => speak('Resume'), 800);
+                    if (enableHapticEl && enableHapticEl.checked) triggerHaptic('short');
+                    isPaused = false;
+                    interval = setInterval(tick, 1000);
+                    updateDisplay();
+                });
             }
         }
         
@@ -1854,7 +2050,7 @@
             updateDisplay();
         }
         
-        // Reset timer
+        // Reset timer (regenerate sequence from settings; display stays 00:00 until Start)
         function resetTimer() {
             // Stop the timer
             clearInterval(interval);
@@ -1867,15 +2063,16 @@
             currentSequenceIndex = 0;
             
             if (pyramidSequence.length > 0) {
-                const firstPhase = pyramidSequence[0];
-                currentTime = firstPhase.duration;
-                isWorkPhase = firstPhase.type === 'work' || firstPhase.type === 'warmup' || firstPhase.type === 'cooldown';
+                isWorkPhase = pyramidSequence[0].type === 'work' || pyramidSequence[0].type === 'warmup' || pyramidSequence[0].type === 'cooldown';
             } else {
-                currentTime = 0;
                 isWorkPhase = true;
             }
             
+            // Display 00:00 until Start is clicked
+            currentTime = 0;
+            
             // Update display immediately (this will enable inputs and check validity)
+            updateReminderDisplays();
             updateDisplay();
         }
         
@@ -1895,6 +2092,7 @@
             pyramidsInput.value = '1';
             warmupInput.value = '00:30';
             cooldownInput.value = '01:00';
+            if (prepPhaseLabelInput) prepPhaseLabelInput.value = 'Warm-up';
             
             startTime = 10;
             increment = 10;
@@ -1909,46 +2107,159 @@
             currentSequenceIndex = 0;
             
             if (pyramidSequence.length > 0) {
-                const firstPhase = pyramidSequence[0];
-                currentTime = firstPhase.duration;
-                isWorkPhase = firstPhase.type === 'work' || firstPhase.type === 'warmup' || firstPhase.type === 'cooldown';
+                isWorkPhase = pyramidSequence[0].type === 'work' || pyramidSequence[0].type === 'warmup' || pyramidSequence[0].type === 'cooldown';
             } else {
-                currentTime = 0;
                 isWorkPhase = true;
             }
+            
+            // Display 00:00 until Start is clicked
+            currentTime = 0;
             
             updateEstimatedTime();
             syncPyramidSlidersFromInputs();
             syncWarmupCooldownSlidersFromInputs();
+            updateReminderDisplays();
             updateDisplay();
         }
         
-        // Clear timer (sets to defaults)
+        // Clear timer: reset to default workout, clear display to 00:00
         function clearTimer() {
             resetToDefaultSettings();
         }
         
-        // Play sound when timer completes
+        // Audio helpers (per AUDIO_RULES.md)
         function playSound() {
             try {
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 const oscillator = audioContext.createOscillator();
                 const gainNode = audioContext.createGain();
-                
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
-                
                 oscillator.frequency.value = 800;
                 oscillator.type = 'sine';
-                
                 gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-                
                 oscillator.start(audioContext.currentTime);
                 oscillator.stop(audioContext.currentTime + 0.5);
-            } catch (e) {
-                console.log('Audio not available');
+            } catch (e) {}
+        }
+        function isIOS() { return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream; }
+        function isSafari() { return /^((?!chrome|android).)*safari/i.test(navigator.userAgent); }
+        function triggerHaptic(style) {
+            style = style || 'short';
+            if (!enableHapticEl || !enableHapticEl.checked) return;
+            const input = document.getElementById('haptic-switch');
+            const label = document.getElementById('haptic-label');
+            if (isIOS() && isSafari()) {
+                if (!input || !label) return;
+                const toggle = function() { input.checked = !input.checked; label.click(); };
+                if (style === 'short') toggle();
+                else if (style === 'double') { toggle(); setTimeout(toggle, 80); }
+                else if (style === 'long') { toggle(); setTimeout(toggle, 100); setTimeout(toggle, 200); }
+                else if (style === 'complete') { toggle(); setTimeout(toggle, 60); setTimeout(toggle, 120); setTimeout(toggle, 180); }
+            } else if (navigator.vibrate) {
+                if (style === 'short') navigator.vibrate(50);
+                else if (style === 'double') navigator.vibrate([50, 30, 50]);
+                else if (style === 'long') navigator.vibrate(150);
+                else if (style === 'complete') navigator.vibrate([100, 50, 100, 50, 100]);
             }
+        }
+        let audioStarted = false;
+        function ensureToneStarted() {
+            if (audioStarted || typeof Tone === 'undefined') return Promise.resolve();
+            if (typeof Tone !== 'undefined' && Tone.context && Tone.context.state === 'suspended') Tone.context.resume();
+            return Tone.start().then(function() {
+                audioStarted = true;
+                const banner = document.getElementById('iosSoundBanner');
+                if (banner) banner.style.display = 'none';
+            });
+        }
+        function unlockAudioForIOS() {
+            primeSpeechForIOS();
+            if (typeof Tone === 'undefined') return;
+            const banner = document.getElementById('iosSoundBanner');
+            if (banner) banner.style.display = 'none';
+            if (Tone.context && Tone.context.state === 'suspended') Tone.context.resume();
+            Tone.start().then(function() {
+                audioStarted = true;
+                if (enableTonesEl && enableTonesEl.checked) playBeepShort();
+                updateDisplay();
+            }).catch(function() { updateDisplay(); });
+        }
+        function dismissIOSSoundBannerSilent() {
+            const banner = document.getElementById('iosSoundBanner');
+            if (banner) { banner.classList.add('hidden'); banner.style.display = 'none'; }
+        }
+        function playBeepShort() {
+            if (!enableTonesEl || !enableTonesEl.checked || !audioStarted || typeof Tone === 'undefined') return;
+            try {
+                const synth = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
+                synth.triggerAttackRelease('A5', '16n');
+            } catch (e) {}
+        }
+        function playWorkStartChime() {
+            if (!enableTonesEl || !enableTonesEl.checked || !audioStarted || typeof Tone === 'undefined') return;
+            try {
+                const fmSynth = new Tone.FMSynth({ harmonicity: 3, modulationIndex: 10, envelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.5 } }).toDestination();
+                fmSynth.triggerAttackRelease('C5', '8n');
+            } catch (e) {}
+        }
+        function playRestStartTone() {
+            if (!enableTonesEl || !enableTonesEl.checked || !audioStarted || typeof Tone === 'undefined') return;
+            try {
+                const synth = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.05, decay: 0.3, sustain: 0, release: 0.2 } }).toDestination();
+                synth.triggerAttackRelease('E4', '8n');
+            } catch (e) {}
+        }
+        function playWorkoutCompleteFanfare() {
+            if (!enableTonesEl || !enableTonesEl.checked || !audioStarted || typeof Tone === 'undefined') return;
+            try {
+                const synth = new Tone.Synth({ oscillator: { type: 'sawtooth' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.2, release: 0.2 } }).toDestination();
+                const seq = new Tone.Sequence(function(time, note) { synth.triggerAttackRelease(note, '16n', time); }, ['C5', 'E5', 'G5'], '16n').start(0);
+                seq.loop = false;
+                Tone.Transport.start();
+                setTimeout(function() { Tone.Transport.stop(); }, 500);
+            } catch (e) {}
+        }
+        function playThreeBeeps() {
+            if (!enableTonesEl || !enableTonesEl.checked || !audioStarted || typeof Tone === 'undefined') return;
+            playBeepShort();
+            setTimeout(playBeepShort, 1000);
+            setTimeout(playBeepShort, 2000);
+        }
+        function playDoubleBeep() {
+            if (!enableTonesEl || !enableTonesEl.checked || !audioStarted || typeof Tone === 'undefined') return;
+            playBeepShort();
+            setTimeout(playBeepShort, 150);
+        }
+        const speechSynth = window.speechSynthesis;
+        let speechVoices = [];
+        let defaultSpeechVoice = null;
+        let speechPrimed = false;
+        function populateVoices() {
+            speechVoices = speechSynth.getVoices();
+            defaultSpeechVoice = speechVoices.find(v => v.lang === 'en-US' && (v.name.indexOf('Samantha') !== -1 || (v.voiceURI && v.voiceURI.indexOf('Samantha') !== -1)));
+            if (!defaultSpeechVoice) defaultSpeechVoice = speechVoices.find(v => v.lang === 'en-US');
+        }
+        if (speechSynth.onvoiceschanged !== undefined) speechSynth.onvoiceschanged = populateVoices;
+        populateVoices();
+        function primeSpeechForIOS() {
+            if (speechPrimed || !enableVoiceEl || !enableVoiceEl.checked) return;
+            try {
+                speechSynth.cancel();
+                speechSynth.speak(new SpeechSynthesisUtterance(''));
+                speechPrimed = true;
+            } catch (e) {}
+        }
+        function speak(text) {
+            if (!enableVoiceEl || !enableVoiceEl.checked || !text) return;
+            if (speechSynth.speaking) speechSynth.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            if (defaultSpeechVoice) utterance.voice = defaultSpeechVoice;
+            utterance.rate = 1.1;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+            speechSynth.speak(utterance);
         }
         
         // Adjust numeric input (for seconds-based inputs)
@@ -2241,6 +2552,19 @@
         const drawerCloseBtn = document.getElementById('drawerCloseBtn');
         if (drawerCloseBtn) drawerCloseBtn.addEventListener('click', closeDrawer);
         
+        // iOS banner visibility
+        (function initIOSBanner() {
+            const banner = document.getElementById('iosSoundBanner');
+            if (banner && isIOS() && !audioStarted) {
+                banner.classList.remove('hidden');
+                banner.style.display = '';
+            }
+        })();
+        const iosUnlockBtn = document.getElementById('iosUnlockSoundBtn');
+        const iosSilentBtn = document.getElementById('iosSilentBtn');
+        if (iosUnlockBtn) iosUnlockBtn.addEventListener('click', function() { unlockAudioForIOS(); });
+        if (iosSilentBtn) iosSilentBtn.addEventListener('click', function() { dismissIOSSoundBannerSilent(); });
+        
         // Initialize - load default settings and generate sequence
         startTime = parseInt(startTimeInput.value) || 10;
         increment = parseInt(incrementInput.value) || 10;
@@ -2254,17 +2578,18 @@
         pyramidSequence = generatePyramidSequence();
         currentSequenceIndex = 0;
         
+        // Show 00:00 until Start is clicked; countdown appears only when timer runs
+        currentTime = 0;
         if (pyramidSequence.length > 0) {
-            const firstPhase = pyramidSequence[0];
-            currentTime = firstPhase.duration;
-            isWorkPhase = firstPhase.type === 'work' || firstPhase.type === 'warmup' || firstPhase.type === 'cooldown';
+            isWorkPhase = pyramidSequence[0].type === 'work' || pyramidSequence[0].type === 'warmup' || pyramidSequence[0].type === 'cooldown';
         } else {
-            currentTime = 0;
+            isWorkPhase = true;
         }
         
         updateEstimatedTime();
         syncPyramidSlidersFromInputs();
         syncWarmupCooldownSlidersFromInputs();
+        updateReminderDisplays();
         updateDisplay();
         
         // Update workout title and description display (title in workout area on load, match countdown model)
@@ -2423,6 +2748,10 @@
                 pyramids: pyramidsValue,
                 warmupTime: warmupTimeValue,
                 cooldownTime: cooldownTimeValue,
+                enableTones: !!(enableTonesEl && enableTonesEl.checked),
+                enableVoice: !!(enableVoiceEl && enableVoiceEl.checked),
+                enableHaptic: !!(enableHapticEl && enableHapticEl.checked),
+                prepPhaseLabel: (prepPhaseLabelInput && prepPhaseLabelInput.value.trim()) || 'Warm-up',
                 exportedAt: new Date().toISOString()
             };
             
@@ -2506,6 +2835,12 @@
                             cooldownTime = data.cooldownTime;
                             cooldownInput.value = formatTime(cooldownTime);
                         }
+                        if (enableTonesEl != null && data.enableTones !== undefined) enableTonesEl.checked = !!data.enableTones;
+                        if (enableVoiceEl != null && data.enableVoice !== undefined) enableVoiceEl.checked = !!data.enableVoice;
+                        if (enableHapticEl != null && data.enableHaptic !== undefined) enableHapticEl.checked = !!data.enableHaptic;
+                        if (prepPhaseLabelInput != null && data.prepPhaseLabel !== undefined) prepPhaseLabelInput.value = data.prepPhaseLabel || 'Warm-up';
+                        
+                        unlockAudioForIOS();
                         
                         // Update displays and recalculate
                         updateCharCounts();
