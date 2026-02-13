@@ -1,225 +1,703 @@
 <!DOCTYPE html>
-<html lang="en">
+<!-- Add class "dark" to <html> for dark mode when your site uses a theme toggle. -->
+<html lang="en" class="">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timerist - Health Fitness and Exercise Timers</title>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Timerist Blog | Fitness Timer Guides & Training Insights</title>
+    <meta name="description" content="The official Timerist blog. In-depth guides on every Timerist fitness timer — AMRAP, HIIT, EMOM, Tabata, Mobility, Pyramid, Stopwatch, and more — plus workout tips, performance metrics, and product updates.">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        background: 'rgb(var(--background))',
+                        foreground: 'rgb(var(--foreground))',
+                        card: { DEFAULT: 'rgb(var(--card))', foreground: 'rgb(var(--card-foreground))' },
+                        primary: { DEFAULT: 'rgb(var(--primary))', foreground: 'rgb(var(--primary-foreground))' },
+                        secondary: { DEFAULT: 'rgb(var(--secondary))', foreground: 'rgb(var(--secondary-foreground))' },
+                        muted: { DEFAULT: 'rgb(var(--muted))', foreground: 'rgb(var(--muted-foreground))' },
+                        accent: { DEFAULT: 'rgb(var(--accent))', foreground: 'rgb(var(--accent-foreground))' },
+                        destructive: { DEFAULT: 'rgb(var(--destructive))', foreground: 'rgb(var(--destructive-foreground))' },
+                        border: 'rgb(var(--border))',
+                        input: 'rgb(var(--input))',
+                        ring: 'rgb(var(--ring))',
+                    },
+                    borderRadius: {
+                        lg: 'var(--radius)',
+                        md: 'calc(var(--radius) - 2px)',
+                        sm: 'calc(var(--radius) - 4px)',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+                    },
+                },
+            },
+        };
+    </script>
     <style>
         :root {
-            --background: 245 247 250;
-            --foreground: 51 51 51;
+            --background: 250 250 250;
+            --foreground: 10 10 10;
             --card: 255 255 255;
-            --card-foreground: 51 51 51;
-            --primary: 74 144 226;
-            --primary-foreground: 255 255 255;
-            --secondary: 80 200 120;
-            --secondary-foreground: 255 255 255;
-            --muted: 102 102 102;
-            --muted-foreground: 153 153 153;
-            --accent: 225 232 237;
-            --accent-foreground: 51 51 51;
-            --destructive: 231 76 60;
-            --destructive-foreground: 255 255 255;
-            --border: 225 232 237;
-            --input: 225 232 237;
-            --ring: 74 144 226;
+            --card-foreground: 10 10 10;
+            --primary: 24 24 27;
+            --primary-foreground: 250 250 250;
+            --secondary: 244 244 245;
+            --secondary-foreground: 24 24 27;
+            --muted: 244 244 245;
+            --muted-foreground: 100 116 139;
+            --accent: 244 244 245;
+            --accent-foreground: 24 24 27;
+            --destructive: 239 68 68;
+            --destructive-foreground: 250 250 250;
+            --border: 228 228 231;
+            --input: 228 228 231;
+            --ring: 24 24 27;
             --radius: 0.5rem;
         }
-        
-        [data-theme="style1"] {
-            --background: 0 0 0;
-            --foreground: 255 255 255;
-            --card: 26 26 26;
-            --card-foreground: 255 255 255;
-            --primary: 255 0 0;
-            --primary-foreground: 255 255 255;
-            --secondary: 0 255 0;
-            --secondary-foreground: 0 0 0;
-            --muted: 204 204 204;
-            --muted-foreground: 153 153 153;
-            --accent: 51 51 51;
-            --accent-foreground: 255 255 255;
-            --destructive: 255 0 0;
-            --destructive-foreground: 255 255 255;
-            --border: 51 51 51;
-            --input: 51 51 51;
-            --ring: 255 0 0;
+        .dark {
+            --background: 10 10 10;
+            --foreground: 250 250 250;
+            --card: 24 24 27;
+            --card-foreground: 250 250 250;
+            --primary: 250 250 250;
+            --primary-foreground: 24 24 27;
+            --secondary: 39 39 42;
+            --secondary-foreground: 250 250 250;
+            --muted: 39 39 42;
+            --muted-foreground: 161 161 170;
+            --accent: 39 39 42;
+            --accent-foreground: 250 250 250;
+            --destructive: 239 68 68;
+            --destructive-foreground: 250 250 250;
+            --border: 39 39 42;
+            --input: 39 39 42;
+            --ring: 212 212 216;
         }
-        
+        * { box-sizing: border-box; }
         body {
-            background: rgb(var(--background));
+            background-color: rgb(var(--background));
             color: rgb(var(--foreground));
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
-        
-        .bg-card { background-color: rgb(var(--card)); }
-        .text-foreground { color: rgb(var(--foreground)); }
-        .text-muted-foreground { color: rgb(var(--muted-foreground)); }
-        .bg-primary { background-color: rgb(var(--primary)); }
-        .text-primary-foreground { color: rgb(var(--primary-foreground)); }
-        .bg-secondary { background-color: rgb(var(--secondary)); }
-        .text-secondary-foreground { color: rgb(var(--secondary-foreground)); }
-        .bg-destructive { background-color: rgb(var(--destructive)); }
-        .text-destructive-foreground { color: rgb(var(--destructive-foreground)); }
-        .border-border { border-color: rgb(var(--border)); }
-        .hover\:bg-primary\/90:hover { background-color: rgba(var(--primary), 0.9); }
-        .hover\:bg-secondary\/90:hover { background-color: rgba(var(--secondary), 0.9); }
-        
-        .logo-circle,
-        .logo-line {
-            transition: stroke 0.3s ease;
+        .hero-headline {
+            font-weight: 900;
+            background: linear-gradient(180deg, rgb(0 0 0) 0%, rgb(24 24 27) 35%, rgb(63 63 70) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
         }
-        
-        .logo-text {
-            transition: fill 0.3s ease;
+        .dark .hero-headline {
+            background: linear-gradient(180deg, rgb(250 250 250) 0%, rgb(212 212 216) 40%, rgb(161 161 170) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-subhead {
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(90deg, rgb(148 163 184) 0%, rgb(100 116 139) 25%, rgb(51 65 85) 50%, rgb(30 41 59) 85%, rgb(15 23 42) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+        }
+        .dark .hero-subhead {
+            background: linear-gradient(90deg, rgb(248 250 252) 0%, rgb(203 213 225) 35%, rgb(148 163 184) 65%, rgb(71 85 105) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+        }
+        .blog-nav {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.25rem 1rem;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgb(var(--border));
+            background: rgb(var(--card));
+        }
+        .blog-nav a, .blog-nav .nav-summary {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: rgb(var(--muted-foreground));
+            text-decoration: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius);
+            transition: color 0.2s, background 0.2s;
+        }
+        .blog-nav a:hover, .blog-nav .nav-summary:hover {
+            color: rgb(var(--foreground));
+            background: rgb(var(--accent));
+        }
+        .blog-nav .nav-summary {
+            cursor: pointer;
+            list-style: none;
+            border: none;
+            background: none;
+            font-family: inherit;
+        }
+        .blog-nav .nav-summary::-webkit-details-marker { display: none; }
+        .blog-nav details[open] .nav-summary { color: rgb(var(--foreground)); }
+        .blog-nav .nav-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            min-width: 10rem;
+            margin-top: 0.25rem;
+            padding: 0.5rem 0;
+            background: rgb(var(--card));
+            border: 1px solid rgb(var(--border));
+            border-radius: var(--radius);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            z-index: 50;
+        }
+        .blog-nav .nav-dropdown a {
+            display: block;
+            padding: 0.5rem 1rem;
+            white-space: nowrap;
+        }
+        .blog-nav details { position: relative; }
+        .blog-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            gap: 0.5rem;
+            min-width: 0;
+            border-bottom: 1px solid rgb(var(--border));
+            background: rgb(var(--card));
+        }
+        .blog-header-top > div:first-child {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 0;
+            flex-shrink: 1;
+            overflow: hidden;
+        }
+        .blog-header-top .header-sep { color: rgb(var(--muted-foreground)); }
+        .blog-header-top a { transition: opacity 0.2s ease; text-decoration: none; }
+        .blog-header-top a:hover { opacity: 0.7; }
+        .blog-header-actions { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
+        .blog-header-top .blog-mode-btn,
+        .blog-header-top .blog-hamburger {
+            width: 44px; height: 44px; flex-shrink: 0;
+            background: transparent; border: none; cursor: pointer; padding: 0.5rem;
+            display: flex; align-items: center; justify-content: center;
+            color: rgb(var(--foreground)); font-size: 1.25rem; transition: opacity 0.2s;
+            border-radius: var(--radius); min-width: 44px;
+            -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none;
+        }
+        .blog-header-top .blog-mode-btn:hover, .blog-header-top .blog-mode-btn:active,
+        .blog-header-top .blog-hamburger:hover, .blog-header-top .blog-hamburger:active {
+            opacity: 0.7; background-color: rgba(var(--accent), 0.5);
+        }
+        .blog-header-top .blog-mode-btn:focus, .blog-header-top .blog-hamburger:focus {
+            outline: 2px solid rgb(var(--ring)); outline-offset: 2px;
+        }
+        #blog-timerist-logo { display: block; width: 40px; height: 40px; color: rgb(var(--foreground)); }
+        #blog-timerist-logo circle, #blog-timerist-logo line { stroke: currentColor; stroke-width: 2.5; }
+        .dark #blog-timerist-logo { color: rgb(var(--foreground)); }
+        @media (max-width: 390px) {
+            .blog-header-top { padding: 0 0.75rem; }
+            .blog-header-top .header-sep, .blog-header-top .blog-page-title { display: none; }
+            .blog-header-actions .blog-mode-btn, .blog-header-actions .blog-hamburger { width: 40px; height: 40px; font-size: 1.125rem; }
+        }
+        @media (max-width: 768px) {
+            body:not(.blog-nav-open) .blog-nav { display: none; }
+        }
+        .blog-menu-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 40;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+        }
+        body.blog-menu-open .blog-menu-overlay {
+            opacity: 1;
+            visibility: visible;
+        }
+        .blog-menu-drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: min(280px, 85vw);
+            max-width: 280px;
+            height: 100vh;
+            background: rgb(var(--card));
+            border-left: 1px solid rgb(var(--border));
+            box-shadow: -4px 0 12px rgba(0,0,0,0.1);
+            z-index: 50;
+            transform: translateX(100%);
+            transition: transform 0.25s ease;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        body.blog-menu-open .blog-menu-drawer {
+            transform: translateX(0);
+        }
+        .blog-menu-drawer .blog-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid rgb(var(--border));
+        }
+        .blog-menu-drawer .blog-menu-header h2 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: rgb(var(--foreground));
+            margin: 0;
+        }
+        .blog-menu-drawer .blog-menu-close {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: transparent;
+            color: rgb(var(--foreground));
+            font-size: 1.5rem;
+            cursor: pointer;
+            border-radius: var(--radius);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .blog-menu-drawer .blog-menu-close:hover {
+            background: rgb(var(--accent));
+        }
+        .blog-menu-drawer .blog-menu-content {
+            padding: 1rem 0;
+        }
+        .blog-menu-drawer .blog-menu-content a {
+            display: block;
+            padding: 0.625rem 1.25rem;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: rgb(var(--foreground));
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .blog-menu-drawer .blog-menu-content a:hover {
+            background: rgb(var(--accent));
+        }
+        .blog-menu-drawer .blog-menu-content .blog-menu-sub {
+            padding-left: 1.25rem;
+            border-left: 2px solid rgb(var(--border));
+            margin-left: 1.25rem;
+            margin-top: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+        .blog-menu-drawer .blog-menu-content .blog-menu-sub a {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            color: rgb(var(--muted-foreground));
+        }
+        .blog-menu-drawer .blog-menu-content .blog-menu-sub a:hover {
+            color: rgb(var(--foreground));
+        }
+        .blog-menu-drawer .blog-menu-label {
+            padding: 0.5rem 1.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: rgb(var(--muted-foreground));
+        }
+        .article-card {
+            transition: all 0.2s ease;
+        }
+        .article-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
         }
     </style>
 </head>
-<body>
-    <div id="root"></div>
-    
-    <script type="text/babel">
-        const { useState } = React;
-        
-        // Timer types list with their corresponding HTML files
-        const TIMER_TYPES = [
-            { name: "Preset Countdown", file: "preset-countdown.html" },
-            { name: "Countdown", file: "countdown.html" },
-            { name: "Preset Interval", file: "interval-presets.html" },
-            { name: "Interval", file: "interval.html" },
-            { name: "Tabata", file: "tabata.html" },
-            { name: "EMOM", file: "emom.html" },
-            { name: "StopWatch", file: "stopwatch.html" },
-            { name: "StopWatch Splits", file: "stopwatch-splits.html" },
-            { name: "AMRAP", file: "amrap.html" },
-            { name: "AMRAP Splits", file: "amrap-splits.html" },
-            { name: "HIIT", file: "hiit.html" },
-            { name: "Preset HIIT", file: "hiit-presets.html" },
-            { name: "Pyramid", file: "pyramid.html" }
-        ];
-        
-        function MainPage() {
-            const [selectedTimer, setSelectedTimer] = useState(null);
-            
-            const handleTimerClick = (timerType) => {
-                setSelectedTimer(timerType.name);
-                // Navigate to the timer page
-                window.location.href = timerType.file;
-            };
-            
-            return (
-                <div className="min-h-screen p-4 md:p-8" style={{background: `rgb(var(--background))`}}>
-                    <div className="max-w-4xl mx-auto space-y-8">
-                        <header className="text-center space-y-4">
-                            {/* Timerist Logo */}
-                            <div className="flex justify-center mb-4">
-                                <svg
-                                    width="280"
-                                    height="50"
-                                    viewBox="0 0 280 50"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    style={{display: 'block'}}
-                                >
-                                    <circle 
-                                        cx="20" 
-                                        cy="25" 
-                                        r="15" 
-                                        fill="none" 
-                                        stroke="rgb(var(--foreground))" 
-                                        strokeWidth="2.5" 
-                                        className="logo-circle"
-                                    />
-                                    <line 
-                                        x1="20" 
-                                        y1="25" 
-                                        x2="20" 
-                                        y2="12" 
-                                        stroke="rgb(var(--foreground))" 
-                                        strokeWidth="2.5" 
-                                        className="logo-line"
-                                    />
-                                    <line 
-                                        x1="20" 
-                                        y1="25" 
-                                        x2="32" 
-                                        y2="25" 
-                                        stroke="rgb(var(--foreground))" 
-                                        strokeWidth="2.5" 
-                                        className="logo-line"
-                                    />
-                                    <text 
-                                        x="50" 
-                                        y="35" 
-                                        fontFamily="system-ui, -apple-system, sans-serif" 
-                                        fontSize="24" 
-                                        fill="rgb(var(--foreground))" 
-                                        className="logo-text" 
-                                        style={{fontWeight: 600}}
-                                    >
-                                        Timerist.com
-                                    </text>
-                                </svg>
-                            </div>
-                            <p style={{color: `rgb(var(--muted-foreground))`}}>
-                                Health fitness and exercise timers
-                            </p>
-                        </header>
+<body class="min-h-screen font-sans antialiased">
+    <div class="flex flex-col min-h-screen">
+        <!-- BLOG HEADER -->
+        <div class="blog-header-top mx-auto w-full max-w-4xl px-4 sm:px-6">
+            <div class="flex items-center gap-2 sm:gap-3">
+                <a href="index.html" class="flex items-center shrink-0" aria-label="Timerist home">
+                    <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" id="blog-timerist-logo">
+                        <circle cx="20" cy="20" r="15" fill="none" stroke="currentColor" stroke-width="2.5" class="logo-circle"/>
+                        <line x1="20" y1="20" x2="20" y2="8" stroke="currentColor" stroke-width="2.5" class="logo-line"/>
+                        <line x1="20" y1="20" x2="30" y2="20" stroke="currentColor" stroke-width="2.5" class="logo-line"/>
+                    </svg>
+                </a>
+                <a href="index.html" class="font-semibold text-foreground" style="font-size: clamp(1rem, 3vw, 1.25rem);">timerist.com</a>
+                <span class="header-sep">|</span>
+                <span class="blog-page-title font-semibold text-foreground" style="font-size: clamp(1rem, 3vw, 1.25rem);">Blog</span>
+            </div>
+            <div class="blog-header-actions">
+                <button type="button" class="blog-mode-btn" id="blogThemeBtn" aria-label="Toggle dark mode"><span id="blog-theme-icon">🌙</span></button>
+                <button type="button" class="blog-hamburger" id="blogMenuBtn" aria-label="Open menu">☰</button>
+            </div>
+        </div>
+
+        <!-- BLOG NAV -->
+        <nav class="blog-nav mx-auto w-full max-w-4xl px-4 sm:px-6" id="blogNav" aria-label="Main">
+            <a href="index.html">Home</a>
+            <details class="inline-block">
+                <summary class="nav-summary">About</summary>
+                <div class="nav-dropdown">
+                    <a href="about.html">About Timerist</a>
+                    <a href="amrap-timer-about.html">AMRAP</a>
+                    <a href="clock-timer-about.html">Clock</a>
+                    <a href="countdown-timer-about.html">Countdown</a>
+                    <a href="emom-timer-about.html">EMOM</a>
+                    <a href="hiit-timer-about.html">HIIT</a>
+                    <a href="interval-timer-about.html">Interval</a>
+                    <a href="mobility-timer-about.html">Mobility</a>
+                    <a href="pyramid-timer-about.html">Pyramid</a>
+                    <a href="stopwatch-timer-about.html">Stopwatch</a>
+                    <a href="tabata-timer-about.html">Tabata</a>
+                </div>
+            </details>
+            <a href="apps.html">Apps</a>
+            <a href="blog.html" class="text-foreground font-semibold">Blog</a>
+            <a href="faq.html">FAQ</a>
+            <a href="subscribe.html">Subscribe</a>
+            <details class="inline-block">
+                <summary class="nav-summary">Timers</summary>
+                <div class="nav-dropdown">
+                    <a href="amrap.html">AMRAP</a>
+                    <a href="clock.html">Clock</a>
+                    <a href="countdown.html">Countdown</a>
+                    <a href="emom.html">EMOM</a>
+                    <a href="hiit.html">HIIT</a>
+                    <a href="interval.html">Interval</a>
+                    <a href="mobility.html">Mobility</a>
+                    <a href="pyramid.html">Pyramid</a>
+                    <a href="stopwatch.html">Stopwatch</a>
+                    <a href="tabata.html">Tabata</a>
+                </div>
+            </details>
+        </nav>
+
+        <!-- HAMBURGER MENU -->
+        <div class="blog-menu-overlay" id="blogMenuOverlay" aria-hidden="true"></div>
+        <aside class="blog-menu-drawer" id="blogMenuDrawer" role="dialog" aria-label="Menu">
+            <div class="blog-menu-header">
+                <h2>Menu</h2>
+                <button type="button" class="blog-menu-close" id="blogMenuClose" aria-label="Close menu">×</button>
+            </div>
+            <div class="blog-menu-content">
+                <a href="index.html">Home</a>
+                <span class="blog-menu-label">About</span>
+                <div class="blog-menu-sub">
+                    <a href="about.html">About Timerist</a>
+                    <a href="amrap-timer-about.html">AMRAP</a>
+                    <a href="clock-timer-about.html">Clock</a>
+                    <a href="countdown-timer-about.html">Countdown</a>
+                    <a href="emom-timer-about.html">EMOM</a>
+                    <a href="hiit-timer-about.html">HIIT</a>
+                    <a href="interval-timer-about.html">Interval</a>
+                    <a href="mobility-timer-about.html">Mobility</a>
+                    <a href="pyramid-timer-about.html">Pyramid</a>
+                    <a href="stopwatch-timer-about.html">Stopwatch</a>
+                    <a href="tabata-timer-about.html">Tabata</a>
+                </div>
+                <a href="apps.html">Apps</a>
+                <a href="blog.html">Blog</a>
+                <a href="faq.html">FAQ</a>
+                <a href="subscribe.html">Subscribe</a>
+                <span class="blog-menu-label">Timers</span>
+                <div class="blog-menu-sub">
+                    <a href="amrap.html">AMRAP</a>
+                    <a href="clock.html">Clock</a>
+                    <a href="countdown.html">Countdown</a>
+                    <a href="emom.html">EMOM</a>
+                    <a href="hiit.html">HIIT</a>
+                    <a href="interval.html">Interval</a>
+                    <a href="mobility.html">Mobility</a>
+                    <a href="pyramid.html">Pyramid</a>
+                    <a href="stopwatch.html">Stopwatch</a>
+                    <a href="tabata.html">Tabata</a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- HERO -->
+        <header class="border-b border-border bg-background px-4 py-12 sm:py-16 md:py-20 sm:px-6">
+            <div class="mx-auto max-w-4xl w-full text-center">
+                <h1 class="hero-headline text-5xl sm:text-6xl md:text-7xl tracking-tight leading-tight">
+                    The Timerist Blog
+                </h1>
+                <p class="hero-subhead text-xl sm:text-2xl md:text-3xl mt-4 sm:mt-6 leading-relaxed max-w-3xl mx-auto">
+                    Guides, insights, and the latest on fitness timers, training, and performance
+                </p>
+                <p class="mt-6 text-base leading-7 text-muted-foreground text-center">
+                    Brought to you by Timerist • Questions or suggestions? Reach out at <a href="mailto:hello@timerist.com" class="text-foreground underline underline-offset-2 hover:opacity-80">hello@timerist.com</a>.
+                </p>
+            </div>
+        </header>
+
+        <main class="flex-1 px-4 py-12 sm:px-6">
+            <div class="mx-auto max-w-4xl w-full">
+                <!-- Intro -->
+                <div class="prose prose-zinc dark:prose-invert max-w-none">
+                    <p class="text-lg leading-relaxed text-muted-foreground">
+                        Welcome to the Timerist blog. This is where we share in-depth articles about fitness, fitness metrics, exercise techniques, and the latest product news and updates for the entire Timerist line of fitness timers. 
+                        We’ll update it from time to time with fresh content to help you train smarter, measure better, and get stronger — one timed session at a time.
+                    </p>
+                </div>
+
+                <!-- All Articles -->
+                <div class="mt-16">
+                    <h2 class="text-3xl font-semibold tracking-tight mb-10">All Timer Guides</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-14">
                         
-                        {/* Section 1: Timer Types */}
-                        <div className="p-6 bg-card border border-border rounded-lg shadow-lg">
-                            <h2 className="text-2xl font-semibold mb-4" style={{color: `rgb(var(--foreground))`}}>Timer Types</h2>
-                            <div className="flex flex-wrap gap-2">
-                                {TIMER_TYPES.map((timerType) => (
-                                    <button
-                                        key={timerType.name}
-                                        onClick={() => handleTimerClick(timerType)}
-                                        className="px-4 py-2 rounded-md text-sm font-medium transition-colors min-w-[120px] hover:opacity-90"
-                                        style={{
-                                            background: selectedTimer === timerType.name 
-                                                ? `rgb(var(--primary))` 
-                                                : "transparent",
-                                            color: selectedTimer === timerType.name 
-                                                ? `rgb(var(--primary-foreground))` 
-                                                : `rgb(var(--foreground))`,
-                                            border: selectedTimer === timerType.name 
-                                                ? "none" 
-                                                : `1px solid rgb(var(--border))`,
-                                            cursor: "pointer"
-                                        }}
-                                    >
-                                        {timerType.name}
-                                    </button>
-                                ))}
+                        <!-- AMRAP -->
+                        <div class="article-card group">
+                            <a href="amrap-timer-about.html" class="block">
+                                <div class="text-xs uppercase tracking-widest text-muted-foreground mb-2">TIMER GUIDE</div>
+                                <h3 class="hero-subhead text-lg sm:text-xl md:text-2xl leading-tight">How Many Can You Crush? The AMRAP Timer Guide</h3>
+                                <p class="mt-4 text-base text-muted-foreground line-clamp-3">AMRAP (As Many Rounds As Possible) is the ultimate test of work capacity and mental grit. Learn how to use the Timerist AMRAP timer, track splits, and build unstoppable endurance.</p>
+                            </a>
+                            <div class="mt-6 flex items-center gap-3 text-xs text-muted-foreground">
+                                <span>AMRAP</span>
+                                <span class="w-1 h-1 bg-muted-foreground rounded-full"></span>
+                                <span>8 min read</span>
                             </div>
                         </div>
                         
-                        {/* Section 2: About Timerist */}
-                        <div className="p-6 bg-card border border-border rounded-lg shadow-lg">
-                            <h2 className="text-2xl font-semibold mb-4" style={{color: `rgb(var(--foreground))`}}>About Timerist</h2>
-                            <p style={{color: `rgb(var(--foreground))`}}>
-                                A Collection of Fitness Timers for Health, Fitness & Exercise Enthusiasts and Trainers.
-                            </p>
+                        <!-- Clock -->
+                        <div class="article-card group">
+                            <a href="clock-timer-about.html" class="block">
+                                <div class="text-xs uppercase tracking-widest text-muted-foreground mb-2">TIMER GUIDE</div>
+                                <h3 class="hero-subhead text-lg sm:text-xl md:text-2xl leading-tight">Always On Time: The Clock Timer Guide</h3>
+                                <p class="mt-4 text-base text-muted-foreground line-clamp-3">Real-time awareness for open workouts, class pacing, and ambient timing. Keep sessions flowing without the pressure of a countdown.</p>
+                            </a>
+                            <div class="mt-6 flex items-center gap-3 text-xs text-muted-foreground">
+                                <span>Clock</span>
+                                <span class="w-1 h-1 bg-muted-foreground rounded-full"></span>
+                                <span>6 min read</span>
+                            </div>
                         </div>
                         
-                        {/* Section 3: Footer */}
-                        <div className="p-6 bg-card border border-border rounded-lg shadow-lg" style={{textAlign: 'center', padding: '20px 0', fontSize: '0.9em', color: '#666', borderTop: '1px solid #eee', marginTop: '40px'}}>
-                            <p>
-                                © {new Date().getFullYear()} Timerist™. All rights reserved.<br />
-                                Timerist™ is part of the Workoutist Fitness Network.<br />
-                                Made by <a href="https://bigfactory.com" target="_blank" rel="noopener noreferrer" style={{color: '#007bff', textDecoration: 'none'}}>BigFactory™</a>.
-                            </p>
+                        <!-- Countdown -->
+                        <div class="article-card group">
+                            <a href="countdown-timer-about.html" class="block">
+                                <div class="text-xs uppercase tracking-widest text-muted-foreground mb-2">TIMER GUIDE</div>
+                                <h3 class="hero-subhead text-lg sm:text-xl md:text-2xl leading-tight">Count Down to Greatness: The Countdown Timer Guide</h3>
+                                <p class="mt-4 text-base text-muted-foreground line-clamp-3">Set it, start it, own it — simple, reliable timing for holds, sets, tests, and focused efforts.</p>
+                            </a>
+                            <div class="mt-6 flex items-center gap-3 text-xs text-muted-foreground">
+                                <span>Countdown</span>
+                                <span class="w-1 h-1 bg-muted-foreground rounded-full"></span>
+                                <span>7 min read</span>
+                            </div>
+                        </div>
+                        
+                        <!-- EMOM -->
+                        <div class="article-card group">
+                            <a href="emom-timer-about.html" class="block">
+                                <div class="text-xs uppercase tracking-widest text-muted-foreground mb-2">TIMER GUIDE</div>
+                                <h3 class="hero-subhead text-lg sm:text-xl md:text-2xl leading-tight">Master Every Minute: The EMOM Timer Guide</h3>
+                                <p class="mt-4 text-base text-muted-foreground line-clamp-3">Build unbreakable endurance and efficiency — one timed minute at a time.</p>
+                            </a>
+                            <div class="mt-6 flex items-center gap-3 text-xs text-muted-foreground">
+                                <span>EMOM</span>
+                                <span class="w-1 h-1 bg-muted-foreground rounded-full"></span>
+                                <span>9 min read</span>
+                            </div>
+                        </div>
+                        
+                        <!-- HIIT -->
+                        <div class="article-card group">
+                            <a href="hiit-timer-about.html" class="block">
+                                <div class="text-xs uppercase tracking-widest text-muted-foreground mb-2">TIMER GUIDE</div>
+                                <h3 class="hero-subhead text-lg sm:text-xl md:text-2xl leading-tight">Why So Brutal? The HIIT Timer Guide</h3>
+                                <p class="mt-4 text-base text-muted-foreground line-clamp-3">High-Intensity Interval Training in its purest form. Custom work/rest ratios, presets, and everything you need to torch calories and build power in record time.</p>
+                            </a>
+                            <div class="mt-6 flex items-center gap-3 text-xs text-muted-foreground">
+                                <span>HIIT</span>
+                                <span class="w-1 h-1 bg-muted-foreground rounded-full"></span>
+                                <span>10 min read</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Interval -->
+                        <div class="article-card group">
+                            <a href="interval-timer-about.html" class="block">
+                                <div class="text-xs uppercase tracking-widest text-muted-foreground mb-2">TIMER GUIDE</div>
+                                <h3 class="hero-subhead text-lg sm:text-xl md:text-2xl leading-tight">Why So Custom? The Interval Timer Guide</h3>
+                                <p class="mt-4 text-base text-muted-foreground line-clamp-3">Shape your perfect workout rhythm — work hard, recover smart, repeat stronger.</p>
+                            </a>
+                            <div class="mt-6 flex items-center gap-3 text-xs text-muted-foreground">
+                                <span>Interval</span>
+                                <span class="w-1 h-1 bg-muted-foreground rounded-full"></span>
+                                <span>8 min read</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Mobility -->
+                        <div class="article-card group">
+                            <a href="mobility-timer-about.html" class="block">
+                                <div class="text-xs uppercase tracking-widest text-muted-foreground mb-2">TIMER GUIDE</div>
+                                <h3 class="hero-subhead text-lg sm:text-xl md:text-2xl leading-tight">Unlock Your Range: The Mobility Timer Guide</h3>
+                                <p class="mt-4 text-base text-muted-foreground line-clamp-3">Flow through stretches, build control, and move better every day — recovery that feels like progress.</p>
+                            </a>
+                            <div class="mt-6 flex items-center gap-3 text-xs text-muted-foreground">
+                                <span>Mobility</span>
+                                <span class="w-1 h-1 bg-muted-foreground rounded-full"></span>
+                                <span>7 min read</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Pyramid -->
+                        <div class="article-card group">
+                            <a href="pyramid-timer-about.html" class="block">
+                                <div class="text-xs uppercase tracking-widest text-muted-foreground mb-2">TIMER GUIDE</div>
+                                <h3 class="hero-subhead text-lg sm:text-xl md:text-2xl leading-tight">Build Up, Break Down: The Pyramid Timer Guide</h3>
+                                <p class="mt-4 text-base text-muted-foreground line-clamp-3">Progressive overload in motion — ramp up intensity, then descend stronger and smarter.</p>
+                            </a>
+                            <div class="mt-6 flex items-center gap-3 text-xs text-muted-foreground">
+                                <span>Pyramid</span>
+                                <span class="w-1 h-1 bg-muted-foreground rounded-full"></span>
+                                <span>8 min read</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Stopwatch -->
+                        <div class="article-card group">
+                            <a href="stopwatch-timer-about.html" class="block">
+                                <div class="text-xs uppercase tracking-widest text-muted-foreground mb-2">TIMER GUIDE</div>
+                                <h3 class="hero-subhead text-lg sm:text-xl md:text-2xl leading-tight">Time Every Second: The Stopwatch Timer Guide</h3>
+                                <p class="mt-4 text-base text-muted-foreground line-clamp-3">Capture performance, track splits, measure progress — precise timing for every rep, round, or run.</p>
+                            </a>
+                            <div class="mt-6 flex items-center gap-3 text-xs text-muted-foreground">
+                                <span>Stopwatch</span>
+                                <span class="w-1 h-1 bg-muted-foreground rounded-full"></span>
+                                <span>7 min read</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Tabata -->
+                        <div class="article-card group">
+                            <a href="tabata-timer-about.html" class="block">
+                                <div class="text-xs uppercase tracking-widest text-muted-foreground mb-2">TIMER GUIDE</div>
+                                <h3 class="hero-subhead text-lg sm:text-xl md:text-2xl leading-tight">Why So Intense? The Tabata Timer Guide</h3>
+                                <p class="mt-4 text-base text-muted-foreground line-clamp-3">Ignite your metabolism and push limits in just 4 minutes — high-intensity intervals redefined.</p>
+                            </a>
+                            <div class="mt-6 flex items-center gap-3 text-xs text-muted-foreground">
+                                <span>Tabata</span>
+                                <span class="w-1 h-1 bg-muted-foreground rounded-full"></span>
+                                <span>7 min read</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            );
-        }
-        
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<MainPage />);
+
+                <!-- Utilities & More -->
+                <div class="mt-20">
+                    <h2 class="text-3xl font-semibold tracking-tight mb-10">Utilities & More</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-14">
+                        
+                        <!-- Import / Export -->
+                        <div class="article-card group">
+                            <a href="import-export.html" class="block">
+                                <div class="text-xs uppercase tracking-widest text-muted-foreground mb-2">PRODUCT FEATURE</div>
+                                <h3 class="hero-subhead text-lg sm:text-xl md:text-2xl leading-tight">Save & Share: Import / Export Timer Setups</h3>
+                                <p class="mt-4 text-base text-muted-foreground line-clamp-3">Backup your custom timers, presets, and workout libraries. Import from friends or export to take your routines anywhere. Never lose a great timer configuration again.</p>
+                            </a>
+                            <div class="mt-6 flex items-center gap-3 text-xs text-muted-foreground">
+                                <span>Tools</span>
+                                <span class="w-1 h-1 bg-muted-foreground rounded-full"></span>
+                                <span>Coming soon</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Future placeholder -->
+                        <div class="article-card group opacity-60">
+                            <div class="block">
+                                <div class="text-xs uppercase tracking-widest text-muted-foreground mb-2">COMING SOON</div>
+                                <h3 class="hero-subhead text-lg sm:text-xl md:text-2xl leading-tight">Training Logs & Analytics</h3>
+                                <p class="mt-4 text-base text-muted-foreground line-clamp-3">Track your progress over time, see trends in your workouts, and get insights from every session.</p>
+                            </div>
+                            <div class="mt-6 flex items-center gap-3 text-xs text-muted-foreground">
+                                <span>Analytics</span>
+                                <span class="w-1 h-1 bg-muted-foreground rounded-full"></span>
+                                <span>Coming soon</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer style="text-align: center; padding: 20px 0; font-size: 0.9em; color: #666; border-top: 1px solid #eee; margin-top: 40px;">
+            <p>© <script>document.write(new Date().getFullYear());</script> Timerist™. All rights reserved.<br>
+            Timerist™ is part of the Workoutist Fitness Network.<br>
+            Made by <a href="https://bigfactory.com" target="_blank" rel="noopener noreferrer" style="color: #007bff; text-decoration: none;">BigFactory™</a>.</p>
+        </footer>
+    </div>
+
+    <script>
+        (function () {
+            'use strict';
+
+            const themeKey = 'timerist-theme';
+            function getBlogTheme() {
+                var saved = localStorage.getItem(themeKey);
+                if (saved === 'dark' || saved === 'light') return saved;
+                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            function applyBlogTheme(theme) {
+                if (theme === 'dark') document.documentElement.classList.add('dark');
+                else document.documentElement.classList.remove('dark');
+                localStorage.setItem(themeKey, theme);
+            }
+            function updateBlogThemeIcon() {
+                var icon = document.getElementById('blog-theme-icon');
+                if (!icon) return;
+                var isDark = document.documentElement.classList.contains('dark');
+                icon.textContent = isDark ? '☀️' : '🌙';
+            }
+            applyBlogTheme(getBlogTheme());
+            updateBlogThemeIcon();
+            document.getElementById('blogThemeBtn')?.addEventListener('click', function () {
+                var isDark = document.documentElement.classList.contains('dark');
+                applyBlogTheme(isDark ? 'light' : 'dark');
+                updateBlogThemeIcon();
+            });
+
+            function openBlogMenu() {
+                document.body.classList.add('blog-menu-open');
+                document.getElementById('blogMenuOverlay')?.setAttribute('aria-hidden', 'false');
+                document.getElementById('blogMenuDrawer')?.setAttribute('aria-hidden', 'false');
+            }
+            function closeBlogMenu() {
+                document.body.classList.remove('blog-menu-open');
+                document.getElementById('blogMenuOverlay')?.setAttribute('aria-hidden', 'true');
+                document.getElementById('blogMenuDrawer')?.setAttribute('aria-hidden', 'true');
+            }
+            document.getElementById('blogMenuBtn')?.addEventListener('click', openBlogMenu);
+            document.getElementById('blogMenuClose')?.addEventListener('click', closeBlogMenu);
+            document.getElementById('blogMenuOverlay')?.addEventListener('click', closeBlogMenu);
+            document.querySelectorAll('.blog-menu-drawer .blog-menu-content a').forEach(function (a) {
+                a.addEventListener('click', closeBlogMenu);
+            });
+        })();
     </script>
 </body>
 </html>

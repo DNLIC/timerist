@@ -308,17 +308,27 @@
             flex: 1;
         }
         
-        .read-full-guide {
+        .card-links {
             font-size: 0.875rem;
-            color: hsl(var(--primary));
-            text-decoration: none;
             margin-top: 0.5rem;
-            display: block;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
         
-        .read-full-guide:hover {
+        .card-links a {
+            color: hsl(var(--primary));
+            text-decoration: none;
+        }
+        
+        .card-links a:hover {
             text-decoration: underline;
+        }
+        
+        .card-links .link-separator {
+            color: hsl(var(--muted-foreground));
+            user-select: none;
         }
         
         footer {
@@ -420,7 +430,11 @@
                         <h2>Countdown Timer</h2>
                         <p>Simple countdown timer for your workouts</p>
                     </a>
-                    <a href="countdown-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                    <div class="card-links">
+                        <a href="countdown.html">Timer</a>
+                        <span class="link-separator">|</span>
+                        <a href="countdown-timer-about.html">Timer Guide</a>
+                    </div>
                 </div>
                 
                 <div class="timer-card">
@@ -429,7 +443,11 @@
                         <h2>Preset Countdowns</h2>
                         <p>Tap a preset time to start instantly</p>
                     </a>
-                    <a href="preset-countdowns-about.html" class="read-full-guide">Read Full Guide</a>
+                    <div class="card-links">
+                        <a href="preset-countdown.html">Timer</a>
+                        <span class="link-separator">|</span>
+                        <a href="preset-countdowns-about.html">Timer Guide</a>
+                    </div>
                 </div>
                 
                 <div class="timer-card">
@@ -438,7 +456,11 @@
                         <h2>Interval Timer</h2>
                         <p>Work and rest intervals for circuit training</p>
                     </a>
-                    <a href="interval-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                    <div class="card-links">
+                        <a href="interval.html">Timer</a>
+                        <span class="link-separator">|</span>
+                        <a href="interval-timer-about.html">Timer Guide</a>
+                    </div>
                 </div>
                 
                 <div class="timer-card">
@@ -447,7 +469,11 @@
                         <h2>Preset Intervals</h2>
                         <p>Tap preset intervals to start instantly</p>
                     </a>
-                    <a href="preset-intervals-about.html" class="read-full-guide">Read Full Guide</a>
+                    <div class="card-links">
+                        <a href="interval-presets.html">Timer</a>
+                        <span class="link-separator">|</span>
+                        <a href="preset-intervals-about.html">Timer Guide</a>
+                    </div>
                 </div>
                 
                 <div class="timer-card">
@@ -456,7 +482,11 @@
                         <h2>Stopwatch</h2>
                         <p>Track your workout duration</p>
                     </a>
-                    <a href="stopwatch-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                    <div class="card-links">
+                        <a href="stopwatch.html">Timer</a>
+                        <span class="link-separator">|</span>
+                        <a href="stopwatch-timer-about.html">Timer Guide</a>
+                    </div>
                 </div>
                 
                 <div class="timer-card">
@@ -465,7 +495,11 @@
                         <h2>Stopwatch Splits</h2>
                         <p>Track time with split intervals</p>
                     </a>
-                    <a href="stopwatch-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                    <div class="card-links">
+                        <a href="stopwatch-splits.html">Timer</a>
+                        <span class="link-separator">|</span>
+                        <a href="stopwatch-timer-about.html">Timer Guide</a>
+                    </div>
                 </div>
                 
                 <div class="timer-card">
@@ -474,7 +508,11 @@
                         <h2>EMOM Timer</h2>
                         <p>Every Minute On the Minute workouts</p>
                     </a>
-                    <a href="emom-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                    <div class="card-links">
+                        <a href="emom.html">Timer</a>
+                        <span class="link-separator">|</span>
+                        <a href="emom-timer-about.html">Timer Guide</a>
+                    </div>
                 </div>
                 
                 <div class="timer-card">
@@ -483,7 +521,11 @@
                         <h2>EMOM Rep Splits</h2>
                         <p>Every Minute On Minute & Rep Splits</p>
                     </a>
-                    <a href="emom-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                    <div class="card-links">
+                        <a href="emom-splits.html">Timer</a>
+                        <span class="link-separator">|</span>
+                        <a href="emom-timer-about.html">Timer Guide</a>
+                    </div>
                 </div>
                 
                 <div class="timer-card">
@@ -492,7 +534,11 @@
                         <h2>HIIT</h2>
                         <p>High Intensity Interval Training</p>
                     </a>
-                    <a href="hiit-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                    <div class="card-links">
+                        <a href="hiit.html">Timer</a>
+                        <span class="link-separator">|</span>
+                        <a href="hiit-timer-about.html">Timer Guide</a>
+                    </div>
                 </div>
                 
                 <div class="timer-card">
@@ -501,7 +547,11 @@
                         <h2>HIIT Presets</h2>
                         <p>Tap preset intervals to start instantly</p>
                     </a>
-                    <a href="hiit-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                    <div class="card-links">
+                        <a href="hiit-presets.html">Timer</a>
+                        <span class="link-separator">|</span>
+                        <a href="hiit-timer-about.html">Timer Guide</a>
+                    </div>
                 </div>
                 
                 <div class="timer-card">
@@ -510,7 +560,11 @@
                         <h2>AMRAP</h2>
                         <p>As Many Rounds As Possible</p>
                     </a>
-                    <a href="amrap-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                    <div class="card-links">
+                        <a href="amrap.html">Timer</a>
+                        <span class="link-separator">|</span>
+                        <a href="amrap-timer-about.html">Timer Guide</a>
+                    </div>
                 </div>
                 
                 <div class="timer-card">
@@ -519,7 +573,11 @@
                         <h2>AMRAP Splits</h2>
                         <p>AMRAP with split tracking</p>
                     </a>
-                    <a href="amrap-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                    <div class="card-links">
+                        <a href="amrap-splits.html">Timer</a>
+                        <span class="link-separator">|</span>
+                        <a href="amrap-timer-about.html">Timer Guide</a>
+                    </div>
                 </div>
                 
                 <div class="timer-card">
@@ -528,7 +586,11 @@
                         <h2>Mobility Timer</h2>
                         <p>Zen and mobility exercises</p>
                     </a>
-                    <a href="mobility-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                    <div class="card-links">
+                        <a href="mobility.html">Timer</a>
+                        <span class="link-separator">|</span>
+                        <a href="mobility-timer-about.html">Timer Guide</a>
+                    </div>
                 </div>
                 
                 <div class="timer-card">
@@ -537,7 +599,11 @@
                         <h2>Tabata Timer</h2>
                         <p>20 seconds on, 10 seconds off intervals</p>
                     </a>
-                    <a href="tabata-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                    <div class="card-links">
+                        <a href="tabata.html">Timer</a>
+                        <span class="link-separator">|</span>
+                        <a href="tabata-timer-about.html">Timer Guide</a>
+                    </div>
                 </div>
                 
                 <div class="timer-card">
@@ -546,7 +612,11 @@
                         <h2>Pyramid</h2>
                         <p>Progressive interval training</p>
                     </a>
-                    <a href="pyramid-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                    <div class="card-links">
+                        <a href="pyramid.html">Timer</a>
+                        <span class="link-separator">|</span>
+                        <a href="pyramid-timer-about.html">Timer Guide</a>
+                    </div>
                 </div>
                 
                 <div class="timer-card">
@@ -555,7 +625,11 @@
                         <h2>Clock</h2>
                         <p>Digital clock display</p>
                     </a>
-                    <a href="clock-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                    <div class="card-links">
+                        <a href="clock.html">Timer</a>
+                        <span class="link-separator">|</span>
+                        <a href="clock-timer-about.html">Timer Guide</a>
+                    </div>
                 </div>
                 
                 <div class="timer-card">
