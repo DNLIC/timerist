@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Timerist Card Demo – 3 Tabs</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Optional: lucide icons (if you want to use real icons instead of emojis) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Small shadcn-like customizations */
+    :root {
+      --radius: 0.75rem;
+    }
+    .card {
+      border-radius: var(--radius);
+    }
+    .tabs-trigger {
+      @apply inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm;
+    }
+    .tabs-list {
+      @apply inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground;
+    }
+    .tabs-content {
+      @apply mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen flex items-center justify-center p-8">
+
+  <!-- Single timer card example – AMRAP -->
+  <div class="w-full max-w-sm">
+
+    <!-- Tabs wrapper -->
+    <div class="w-full">
+
+      <!-- Tabs list (header) -->
+      <div role="tablist" class="tabs-list grid w-full grid-cols-3">
+        <button
+          role="tab"
+          aria-selected="true"
+          data-state="active"
+          class="tabs-trigger data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:shadow"
+          onclick="showTab('about')"
+        >
+          About
+        </button>
+        <button
+          role="tab"
+          aria-selected="false"
+          data-state="inactive"
+          disabled
+          class="tabs-trigger opacity-50 cursor-not-allowed"
+        >
+          Get the App
+        </button>
+        <button
+          role="tab"
+          aria-selected="false"
+          data-state="inactive"
+          disabled
+          class="tabs-trigger opacity-50 cursor-not-allowed"
+        >
+          Workouts
+        </button>
+      </div>
+
+      <!-- Tab contents -->
+      <div class="tabs-content">
+
+        <!-- About tab – this one is clickable / links to about page -->
+        <div id="about" class="tab-panel block">
+          <a href="amrap-timer-about.html" class="block focus:outline-none group">
+            <div class="card bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-md hover:border-orange-500/50 transition-all duration-200 overflow-hidden">
+
+              <div class="p-6 flex flex-col items-center text-center">
+
+                <!-- Icon -->
+                <div class="text-5xl mb-4">💪</div>
+
+                <!-- Title -->
+                <h3 class="text-xl font-semibold mb-2 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                  AMRAP
+                </h3>
+
+                <!-- Description -->
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+                  As Many Rounds As Possible – classic CrossFit-style timer
+                </p>
+
+                <!-- Optional features / badges (you can add more) -->
+                <div class="flex flex-wrap gap-2 justify-center mb-6">
+                  <span class="px-2.5 py-0.5 text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300 rounded-full">
+                    Rounds
+                  </span>
+                  <span class="px-2.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300 rounded-full">
+                    Timer
+                  </span>
+                </div>
+
+                <!-- Click hint -->
+                <div class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+                  <span>Read full guide →</span>
+                </div>
+
+              </div>
+
+            </div>
+          </a>
+        </div>
+
+        <!-- Placeholder for future tabs -->
+        <div id="app" class="tab-panel hidden">
+          <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-8 text-center">
+            <p class="text-gray-500 dark:text-gray-400">
+              Native iOS & Android apps coming soon…
+            </p>
+          </div>
+        </div>
+
+        <div id="workouts" class="tab-panel hidden">
+          <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-8 text-center">
+            <p class="text-gray-500 dark:text-gray-400">
+              Sample workouts will appear here
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Very simple tab switching (no external library needed) -->
+  <script>
+    function showTab(tabId) {
+      // Hide all panels
+      document.querySelectorAll('.tab-panel').forEach(el => {
+        el.classList.add('hidden');
+      });
+      // Show selected
+      document.getElementById(tabId).classList.remove('hidden');
+
+      // Update tab styles (active state)
+      document.querySelectorAll('[role="tab"]').forEach(tab => {
+        tab.setAttribute('data-state', 'inactive');
+        tab.classList.remove('bg-white', 'dark:bg-gray-800', 'shadow');
+      });
+      const activeTab = Array.from(document.querySelectorAll('[role="tab"]'))
+        .find(tab => tab.textContent.trim().toLowerCase() === tabId);
+      if (activeTab) {
+        activeTab.setAttribute('data-state', 'active');
+        activeTab.classList.add('bg-white', 'dark:bg-gray-800', 'shadow');
+      }
+    }
+
+    // Init
+    document.addEventListener('DOMContentLoaded', () => {
+      showTab('about');
+      lucide.createIcons(); // if you use lucide icons later
+    });
+  </script>
+
+</body>
+</html>

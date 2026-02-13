@@ -296,7 +296,7 @@ Use this list and the checklists above when doing the **shadcn design pass** on 
 
 ## Blog / Article Page Hero Section (Timerist Blog Posts)
 
-Use this pattern for **blog-style article pages** (e.g. EMOM Timer guide, Tabata guide, HIIT guide). Reference: [shadcn-ui Theme Explorer](https://shadcn-ui-theme-explorer.vercel.app/default) (“Why so bland?” / “Color the web with beautifully designed themes”). Implemented in **emon-timer-about.html**; the hero block is wrapped in `<!-- ========== HERO SECTION ... ========== -->` comments so it can be copied to other timer article pages.
+Use this pattern for **blog-style article pages** (e.g. EMOM Timer guide, Tabata guide, HIIT guide). Reference: [shadcn-ui Theme Explorer](https://shadcn-ui-theme-explorer.vercel.app/default) (“Why so bland?” / “Color the web with beautifully designed themes”). Implemented in **emom-timer-about.html**; the hero block is wrapped in `<!-- ========== HERO SECTION ... ========== -->` comments so it can be copied to other timer article pages.
 
 ### 1. Headline
 
@@ -357,4 +357,4 @@ Use this pattern for **blog-style article pages** (e.g. EMOM Timer guide, Tabata
 
 ---
 
-*Document version: 1.5. Section "Blog / Article Page Hero Section": headline, subhead, metadata line; reference emon-timer-about.html. v1.4: Section 1.1: Main page header must remain left-justified; reference interval.html and countdown.html; checklist to verify header format after any layout change. v1.3: Section 5 “Modified” message; Section 14 presets table. v1.2: Time data entry: single MM:SS control per duration. v1.1: quick-countdown pass. Use interval.html, countdown.html, quick-interval.html, and quick-countdown.html as references.*
+*Document version: 1.5. Section "Blog / Article Page Hero Section": headline, subhead, metadata line; reference emom-timer-about.html. v1.4: Section 1.1: Main page header must remain left-justified; reference interval.html and countdown.html; checklist to verify header format after any layout change. v1.3: Section 5 “Modified” message; Section 14 presets table. v1.2: Time data entry: single MM:SS control per duration. v1.1: quick-countdown pass. Use interval.html, countdown.html, quick-interval.html, and quick-countdown.html as references.*

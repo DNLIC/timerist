@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AMRAP Timer – Timerist</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide icons (optional upgrade from emojis) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      --radius: 0.75rem;
+    }
+    .card {
+      border-radius: var(--radius);
+    }
+    .tabs-list {
+      @apply inline-flex h-10 items-center justify-center rounded-md bg-gray-100 dark:bg-gray-800 p-1 text-gray-600 dark:text-gray-300;
+    }
+    .tabs-trigger {
+      @apply inline-flex items-center justify-center whitespace-nowrap rounded-md px-4 py-1.5 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm;
+    }
+    .tabs-content {
+      @apply mt-6 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+    }
+    .badge-hover:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen">
+
+  <div class="max-w-4xl mx-auto px-4 py-12">
+
+    <!-- Timer Title & Navigation Tabs -->
+    <div class="text-center mb-10">
+      <h1 class="text-4xl font-bold mb-3">AMRAP Timer</h1>
+      <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">As Many Rounds As Possible</p>
+
+      <!-- Tabs header -->
+      <div role="tablist" class="tabs-list grid grid-cols-4 w-full max-w-xl mx-auto">
+        <button
+          role="tab"
+          data-state="active"
+          class="tabs-trigger"
+          onclick="showTab('timer')"
+        >
+          Timer
+        </button>
+        <button
+          role="tab"
+          data-state="inactive"
+          class="tabs-trigger"
+          onclick="showTab('about')"
+        >
+          About
+        </button>
+        <button
+          role="tab"
+          data-state="inactive"
+          class="tabs-trigger"
+          onclick="showTab('app')"
+        >
+          Get The App
+        </button>
+        <button
+          role="tab"
+          data-state="inactive"
+          class="tabs-trigger"
+          onclick="showTab('workouts')"
+        >
+          Workouts
+        </button>
+      </div>
+    </div>
+
+    <!-- Tab contents -->
+    <div class="tabs-content">
+
+      <!-- 1. Timer tab (just a link / embed placeholder) -->
+      <div id="timer" class="tab-panel hidden text-center">
+        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-12 shadow-sm">
+          <p class="text-xl text-gray-600 dark:text-gray-300 mb-8">
+            Ready to train? Start the AMRAP timer now.
+          </p>
+          <a
+            href="amrap.html"
+            class="inline-flex items-center px-8 py-4 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg text-lg transition-colors"
+          >
+            <i data-lucide="timer" class="mr-2 w-6 h-6"></i>
+            Launch Timer
+          </a>
+          <p class="mt-6 text-sm text-gray-500 dark:text-gray-400">
+            Opens the browser-based AMRAP timer
+          </p>
+        </div>
+      </div>
+
+      <!-- 2. About tab (card-like + extended text) -->
+      <div id="about" class="tab-panel">
+        <a href="#" class="block focus:outline-none group"> <!-- self-link or remove <a> if not needed -->
+          <div class="card bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-md hover:border-orange-500/50 transition-all duration-200 overflow-hidden">
+
+            <div class="p-8 flex flex-col items-center text-center">
+
+              <div class="text-6xl mb-6">💪</div>
+
+              <h2 class="text-3xl font-bold mb-4 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                AMRAP
+              </h2>
+
+              <p class="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-2xl">
+                As Many Rounds As Possible – a classic high-intensity format used in CrossFit and functional fitness. Set a time (usually 10–20 minutes) and complete as many rounds of the prescribed exercises as possible before time runs out.
+              </p>
+
+              <div class="flex flex-wrap gap-3 justify-center mb-8">
+                <span class="px-4 py-1.5 text-sm font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300 rounded-full">Rounds based</span>
+                <span class="px-4 py-1.5 text-sm font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300 rounded-full">AMRAP</span>
+                <span class="px-4 py-1.5 text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 rounded-full">Metcon</span>
+              </div>
+
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                Read full instructions and tips →
+              </p>
+
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- 3. Get The App tab – mock badges + QR -->
+      <div id="app" class="tab-panel hidden">
+        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-10 shadow-sm text-center">
+          <h3 class="text-2xl font-semibold mb-6">Get Timerist on Your Phone</h3>
+          <p class="text-gray-600 dark:text-gray-300 mb-10 max-w-xl mx-auto">
+            Enjoy offline timers, voice cues, better haptic feedback and Apple Watch support in the native app.
+          </p>
+
+          <div class="flex flex-col md:flex-row items-center justify-center gap-10 mb-10">
+            <!-- App Store badge -->
+            <a href="#" class="badge-hover transition-transform">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg"
+                alt="Download on the App Store"
+                class="h-14"
+              />
+            </a>
+
+            <!-- Google Play badge -->
+            <a href="#" class="badge-hover transition-transform">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
+                alt="Get it on Google Play"
+                class="h-14"
+              />
+            </a>
+          </div>
+
+          <div class="max-w-xs mx-auto mb-8">
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Or scan this QR code</p>
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg"
+              alt="QR code – scan to download Timerist app"
+              class="w-full rounded-lg shadow-md"
+            />
+          </div>
+
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Coming soon – native apps for iOS and Android
+          </p>
+        </div>
+      </div>
+
+      <!-- 4. Workouts tab – gallery of presets -->
+      <div id="workouts" class="tab-panel hidden">
+        <h3 class="text-2xl font-semibold text-center mb-10">Sample AMRAP Workouts</h3>
+
+        <div class="grid md:grid-cols-2 gap-6">
+
+          <!-- Preset 1 -->
+          <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+            <h4 class="text-xl font-bold mb-3">Classic 20-min AMRAP</h4>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">20:00 time cap</p>
+            <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+              <li>10 Burpees</li>
+              <li>15 Kettlebell Swings (24/16 kg)</li>
+              <li>20 Air Squats</li>
+            </ul>
+            <div class="mt-6 flex justify-center">
+              <a href="#" class="inline-flex items-center px-5 py-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-sm font-medium">
+                Load Preset in Timer →
+              </a>
+            </div>
+          </div>
+
+          <!-- Preset 2 -->
+          <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+            <h4 class="text-xl font-bold mb-3">Bodyweight Chipper AMRAP</h4>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">15:00 time cap</p>
+            <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+              <li>5 Pull-ups (or jumping pull-ups)</li>
+              <li>10 Push-ups</li>
+              <li>15 Sit-ups</li>
+              <li>20 Jump Lunges (10/leg)</li>
+            </ul>
+            <div class="mt-6 flex justify-center">
+              <a href="#" class="inline-flex items-center px-5 py-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-sm font-medium">
+                Load Preset in Timer →
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+        <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-10">
+          More workouts added regularly – suggest your favorite via email!
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Simple tab switching script -->
+  <script>
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-panel').forEach(el => el.classList.add('hidden'));
+      document.getElementById(tabId).classList.remove('hidden');
+
+      document.querySelectorAll('[role="tab"]').forEach(tab => {
+        tab.setAttribute('data-state', 'inactive');
+      });
+      const active = Array.from(document.querySelectorAll('[role="tab"]'))
+        .find(t => t.getAttribute('onclick')?.includes(tabId));
+      if (active) active.setAttribute('data-state', 'active');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      showTab('about'); // default tab
+      lucide.createIcons();
+    });
+  </script>
+
+</body>
+</html>

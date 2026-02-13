@@ -262,6 +262,7 @@
             border: 1px solid hsl(var(--border));
             border-radius: var(--radius);
             padding: 2rem 1.5rem;
+            text-decoration: none;
             color: hsl(var(--card-foreground));
             transition: all var(--transition-normal);
             display: flex;
@@ -296,29 +297,6 @@
             font-size: 0.875rem;
             color: hsl(var(--muted-foreground));
             margin: 0;
-        }
-        
-        .timer-card-link {
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            flex: 1;
-        }
-        
-        .read-full-guide {
-            font-size: 0.875rem;
-            color: hsl(var(--primary));
-            text-decoration: none;
-            margin-top: 0.5rem;
-            display: block;
-            text-align: center;
-        }
-        
-        .read-full-guide:hover {
-            text-decoration: underline;
         }
         
         footer {
@@ -414,165 +392,113 @@
         
         <main>
             <div class="timer-grid">
-                <div class="timer-card">
-                    <a href="countdown.html" class="timer-card-link">
-                        <div class="card-icon">⏲️</div>
-                        <h2>Countdown Timer</h2>
-                        <p>Simple countdown timer for your workouts</p>
-                    </a>
-                    <a href="countdown-timer-about.html" class="read-full-guide">Read Full Guide</a>
-                </div>
+                <a href="countdown.html" class="timer-card">
+                    <div class="card-icon">⏲️</div>
+                    <h2>Countdown Timer</h2>
+                    <p>Simple countdown timer for your workouts</p>
+                </a>
                 
-                <div class="timer-card">
-                    <a href="preset-countdown.html" class="timer-card-link">
-                        <div class="card-icon" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">📋⏲️</div>
-                        <h2>Preset Countdowns</h2>
-                        <p>Tap a preset time to start instantly</p>
-                    </a>
-                    <a href="preset-countdowns-about.html" class="read-full-guide">Read Full Guide</a>
-                </div>
+                <a href="preset-countdown.html" class="timer-card">
+                    <div class="card-icon" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">📋⏲️</div>
+                    <h2>Preset Countdowns</h2>
+                    <p>Tap a preset time to start instantly</p>
+                </a>
                 
-                <div class="timer-card">
-                    <a href="interval.html" class="timer-card-link">
-                        <div class="card-icon">🔄</div>
-                        <h2>Interval Timer</h2>
-                        <p>Work and rest intervals for circuit training</p>
-                    </a>
-                    <a href="interval-timer-about.html" class="read-full-guide">Read Full Guide</a>
-                </div>
+                <a href="interval.html" class="timer-card">
+                    <div class="card-icon">🔄</div>
+                    <h2>Interval Timer</h2>
+                    <p>Work and rest intervals for circuit training</p>
+                </a>
                 
-                <div class="timer-card">
-                    <a href="interval-presets.html" class="timer-card-link">
-                        <div class="card-icon">📋🔄</div>
-                        <h2>Preset Intervals</h2>
-                        <p>Tap preset intervals to start instantly</p>
-                    </a>
-                    <a href="preset-intervals-about.html" class="read-full-guide">Read Full Guide</a>
-                </div>
+                <a href="interval-presets.html" class="timer-card">
+                    <div class="card-icon">📋🔄</div>
+                    <h2>Preset Intervals</h2>
+                    <p>Tap preset intervals to start instantly</p>
+                </a>
                 
-                <div class="timer-card">
-                    <a href="stopwatch.html" class="timer-card-link">
-                        <div class="card-icon">⏱️</div>
-                        <h2>Stopwatch</h2>
-                        <p>Track your workout duration</p>
-                    </a>
-                    <a href="stopwatch-timer-about.html" class="read-full-guide">Read Full Guide</a>
-                </div>
+                <a href="stopwatch.html" class="timer-card">
+                    <div class="card-icon">⏱️</div>
+                    <h2>Stopwatch</h2>
+                    <p>Track your workout duration</p>
+                </a>
                 
-                <div class="timer-card">
-                    <a href="stopwatch-splits.html" class="timer-card-link">
-                        <div class="card-icon" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">⏱️🏁</div>
-                        <h2>Stopwatch Splits</h2>
-                        <p>Track time with split intervals</p>
-                    </a>
-                    <a href="stopwatch-timer-about.html" class="read-full-guide">Read Full Guide</a>
-                </div>
+                <a href="stopwatch-splits.html" class="timer-card">
+                    <div class="card-icon" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">⏱️🏁</div>
+                    <h2>Stopwatch Splits</h2>
+                    <p>Track time with split intervals</p>
+                </a>
                 
-                <div class="timer-card">
-                    <a href="emom.html" class="timer-card-link">
-                        <div class="card-icon">⏰</div>
-                        <h2>EMOM Timer</h2>
-                        <p>Every Minute On the Minute workouts</p>
-                    </a>
-                    <a href="emom-timer-about.html" class="read-full-guide">Read Full Guide</a>
-                </div>
+                <a href="emom.html" class="timer-card">
+                    <div class="card-icon">⏰</div>
+                    <h2>EMOM Timer</h2>
+                    <p>Every Minute On the Minute workouts</p>
+                </a>
                 
-                <div class="timer-card">
-                    <a href="emom-splits.html" class="timer-card-link">
-                        <div class="card-icon" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">⏰🏁</div>
-                        <h2>EMOM Rep Splits</h2>
-                        <p>Every Minute On Minute & Rep Splits</p>
-                    </a>
-                    <a href="emom-timer-about.html" class="read-full-guide">Read Full Guide</a>
-                </div>
+                <a href="emom-splits.html" class="timer-card">
+                    <div class="card-icon" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">⏰🏁</div>
+                    <h2>EMOM Rep Splits</h2>
+                    <p>Every Minute On Minute & Rep Splits</p>
+                </a>
                 
-                <div class="timer-card">
-                    <a href="hiit.html" class="timer-card-link">
-                        <div class="card-icon">💥</div>
-                        <h2>HIIT</h2>
-                        <p>High Intensity Interval Training</p>
-                    </a>
-                    <a href="hiit-timer-about.html" class="read-full-guide">Read Full Guide</a>
-                </div>
+                <a href="hiit.html" class="timer-card">
+                    <div class="card-icon">💥</div>
+                    <h2>HIIT</h2>
+                    <p>High Intensity Interval Training</p>
+                </a>
                 
-                <div class="timer-card">
-                    <a href="hiit-presets.html" class="timer-card-link">
-                        <div class="card-icon" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">📋💥</div>
-                        <h2>HIIT Presets</h2>
-                        <p>Tap preset intervals to start instantly</p>
-                    </a>
-                    <a href="hiit-timer-about.html" class="read-full-guide">Read Full Guide</a>
-                </div>
+                <a href="hiit-presets.html" class="timer-card">
+                    <div class="card-icon" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">📋💥</div>
+                    <h2>HIIT Presets</h2>
+                    <p>Tap preset intervals to start instantly</p>
+                </a>
                 
-                <div class="timer-card">
-                    <a href="amrap.html" class="timer-card-link">
-                        <div class="card-icon">💪</div>
-                        <h2>AMRAP</h2>
-                        <p>As Many Rounds As Possible</p>
-                    </a>
-                    <a href="amrap-timer-about.html" class="read-full-guide">Read Full Guide</a>
-                </div>
+                <a href="amrap.html" class="timer-card">
+                    <div class="card-icon">💪</div>
+                    <h2>AMRAP</h2>
+                    <p>As Many Rounds As Possible</p>
+                </a>
                 
-                <div class="timer-card">
-                    <a href="amrap-splits.html" class="timer-card-link">
-                        <div class="card-icon" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">💪🏁</div>
-                        <h2>AMRAP Splits</h2>
-                        <p>AMRAP with split tracking</p>
-                    </a>
-                    <a href="amrap-timer-about.html" class="read-full-guide">Read Full Guide</a>
-                </div>
+                <a href="amrap-splits.html" class="timer-card">
+                    <div class="card-icon" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">💪🏁</div>
+                    <h2>AMRAP Splits</h2>
+                    <p>AMRAP with split tracking</p>
+                </a>
                 
-                <div class="timer-card">
-                    <a href="mobility.html" class="timer-card-link">
-                        <div class="card-icon">🧘</div>
-                        <h2>Mobility Timer</h2>
-                        <p>Zen and mobility exercises</p>
-                    </a>
-                    <a href="mobility-timer-about.html" class="read-full-guide">Read Full Guide</a>
-                </div>
+                <a href="mobility.html" class="timer-card">
+                    <div class="card-icon">🧘</div>
+                    <h2>Mobility Timer</h2>
+                    <p>Zen and mobility exercises</p>
+                </a>
                 
-                <div class="timer-card">
-                    <a href="tabata.html" class="timer-card-link">
-                        <div class="card-icon">🔥</div>
-                        <h2>Tabata Timer</h2>
-                        <p>20 seconds on, 10 seconds off intervals</p>
-                    </a>
-                    <a href="tabata-timer-about.html" class="read-full-guide">Read Full Guide</a>
-                </div>
+                <a href="tabata.html" class="timer-card">
+                    <div class="card-icon">🔥</div>
+                    <h2>Tabata Timer</h2>
+                    <p>20 seconds on, 10 seconds off intervals</p>
+                </a>
                 
-                <div class="timer-card">
-                    <a href="pyramid.html" class="timer-card-link">
-                        <div class="card-icon">📈</div>
-                        <h2>Pyramid</h2>
-                        <p>Progressive interval training</p>
-                    </a>
-                    <a href="pyramid-timer-about.html" class="read-full-guide">Read Full Guide</a>
-                </div>
+                <a href="pyramid.html" class="timer-card">
+                    <div class="card-icon">📈</div>
+                    <h2>Pyramid</h2>
+                    <p>Progressive interval training</p>
+                </a>
                 
-                <div class="timer-card">
-                    <a href="clock.html" class="timer-card-link">
-                        <div class="card-icon">🕐</div>
-                        <h2>Clock</h2>
-                        <p>Digital clock display</p>
-                    </a>
-                    <a href="clock-timer-about.html" class="read-full-guide">Read Full Guide</a>
-                </div>
+                <a href="clock.html" class="timer-card">
+                    <div class="card-icon">🕐</div>
+                    <h2>Clock</h2>
+                    <p>Digital clock display</p>
+                </a>
                 
-                <div class="timer-card">
-                    <a href="about.html" class="timer-card-link">
-                        <div class="card-icon">📝</div>
-                        <h2>Blog</h2>
-                        <p>Read our latest articles</p>
-                    </a>
-                </div>
+                <a href="blog.html" class="timer-card">
+                    <div class="card-icon">📝</div>
+                    <h2>Blog</h2>
+                    <p>Read our latest articles</p>
+                </a>
                 
-                <div class="timer-card">
-                    <a href="apps.html" class="timer-card-link">
-                        <div class="card-icon" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">🍎🤖</div>
-                        <h2>Apps</h2>
-                        <p>Download for iOS and Android</p>
-                    </a>
-                </div>
+                <a href="apps.html" class="timer-card">
+                    <div class="card-icon" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">🍎🤖</div>
+                    <h2>Apps</h2>
+                    <p>Download for iOS and Android</p>
+                </a>
             </div>
         </main>
         

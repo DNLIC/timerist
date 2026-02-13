@@ -32,7 +32,7 @@ const htmlFiles = [
   // Timer about / article pages
   'clock-timer-about.html',
   'countdown-timer-about.html',
-  'emon-timer-about.html',
+  'emom-timer-about.html',
   'hiit-timer-about.html',
   'interval-timer-about.html',
   'mobility-timer-about.html',

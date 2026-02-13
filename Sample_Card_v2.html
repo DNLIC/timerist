@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Timerist – Fitness Timers</title>
+  <style>
+    :root {
+      --primary: #e63946;
+      --primary-dark: #b32d38;
+      --text: #1d3557;
+      --light: #f1faee;
+      --gray: #457b9d;
+      --border: #e0e0e0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--light);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .nav-container {
+      background: white;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .tab-list {
+      display: flex;
+      list-style: none;
+      height: 64px;
+    }
+
+    .tab-item {
+      flex: 1;
+      text-align: center;
+      position: relative;
+    }
+
+    .tab-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1.05rem;
+      transition: all 0.22s ease;
+    }
+
+    .tab-link:hover {
+      color: var(--primary);
+      background: rgba(230, 57, 70, 0.04);
+    }
+
+    .tab-link.active {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .tab-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 3px 3px 0 0;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 2.5rem auto;
+      padding: 0 1.5rem;
+      text-align: center;
+    }
+
+    .preview-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      padding: 3rem 2rem;
+      margin: 2rem auto;
+      max-width: 700px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: #555;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+    }
+
+    @media (max-width: 640px) {
+      .tab-list {
+        height: 56px;
+      }
+      .tab-link {
+        font-size: 0.97rem;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      .preview-card {
+        padding: 2rem 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav-container">
+    <div class="nav">
+      <ul class="tab-list">
+        <li class="tab-item">
+          <a href="index.html" class="tab-link active">Timer</a>
+        </li>
+        <li class="tab-item">
+          <a href="about.html" class="tab-link">About</a>
+        </li>
+        <li class="tab-item">
+          <a href="get-the-app.html" class="tab-link">Get The App</a>
+        </li>
+        <li class="tab-item">
+          <a href="workouts.html" class="tab-link">Workouts</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <div class="preview-card">
+      <h1>Timerist</h1>
+      <p>Powerful browser-based fitness timers built for HIIT, Tabata, EMOM, AMRAP, circuits, and more.<br>Coming soon to the App Store — start timing right now in your browser.</p>
+    </div>
+
+    <!-- Placeholder for actual timer UI when we build it -->
+    <div style="height: 400px; background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: #777;">
+      [ Timer Interface Coming Here – e.g. large countdown, mode selector, start/pause/reset ]
+    </div>
+  </main>
+
+</body>
+</html>
