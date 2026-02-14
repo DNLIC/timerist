@@ -2010,7 +2010,7 @@
         const drawerCloseBtn = document.getElementById('drawerCloseBtn');
         const headerClearBtn = document.getElementById('headerClearBtn');
         const clearAllSettingsBtn = document.getElementById('clearAllSettingsBtn');
-        const timerDisplayBlock = document.getElementById('timerDisplayBlock');
+        const displayEl = document.getElementById('display');
         
         if (menuBtn) menuBtn.addEventListener('click', openSheet);
         if (drawerCloseBtn) drawerCloseBtn.addEventListener('click', closeSheet);
@@ -2026,10 +2026,11 @@
         if (headerClearBtn) headerClearBtn.addEventListener('click', confirmClearThenClear);
         if (clearAllSettingsBtn) clearAllSettingsBtn.addEventListener('click', confirmClearThenClear);
         
-        // Double-tap on timer block opens sheet (avoids accidental open)
-        if (timerDisplayBlock) {
+        // Double-tap on timer numbers opens sheet (avoids accidental open)
+        if (displayEl) {
             let lastTap = 0;
-            timerDisplayBlock.addEventListener('click', function(e) {
+            displayEl.addEventListener('dblclick', openSheet);
+            displayEl.addEventListener('touchend', function(e) {
                 const now = Date.now();
                 if (now - lastTap < 400) {
                     e.preventDefault();
@@ -2038,7 +2039,7 @@
                 } else {
                     lastTap = now;
                 }
-            });
+            }, { passive: false });
         }
         
         // Countdown before start: init from localStorage, +/- buttons, persist on change

@@ -100,28 +100,28 @@
             max-width: 100%;
             margin: 0 auto;
             overflow-x: hidden;
-            margin-top: clamp(4rem, 8vw, 5rem);
+            margin-top: 0.75rem;
             width: 100%;
         }
         
-        /* iPad vertical (portrait) - position timer below header */
+        /* iPad vertical (portrait) - position timer below intro */
         @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
             .timer-container {
-                margin-top: clamp(4rem, 6vw, 5rem);
+                margin-top: 0.75rem;
             }
         }
         
-        /* iPad horizontal (landscape) - position timer below header */
+        /* iPad horizontal (landscape) - position timer below intro */
         @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
             .timer-container {
-                margin-top: clamp(4.5rem, 7vw, 5.5rem);
+                margin-top: 0.75rem;
             }
         }
         
         /* Smartphone landscape spacing fix (tighten vertical space) */
         @media (orientation: landscape) and (max-height: 500px) {
             .timer-container {
-                margin-top: clamp(3.5rem, 6vw, 4.25rem) !important;
+                margin-top: 0.5rem !important;
                 gap: 0.5rem !important;
             }
             
@@ -161,10 +161,10 @@
             }
         }
         
-        /* Desktop - position timer below header */
+        /* Desktop - position timer below intro */
         @media (min-width: 1025px) {
             .timer-container {
-                margin-top: clamp(4rem, 6vw, 5rem);
+                margin-top: 0.75rem;
             }
         }
         
@@ -995,6 +995,28 @@
                 font-size: 1rem;
             }
         }
+        /* Intro help phrase */
+        .intro-help { text-align: center; padding: 0.5rem 1rem 0.5rem; font-size: 1rem; color: rgb(var(--muted-foreground)); margin-top: 2.75rem; }
+        .intro-help strong { color: rgb(var(--foreground)); }
+        .intro-help .intro-setup-link { color: rgb(var(--foreground)); font-weight: 600; text-decoration: none; cursor: pointer; border-bottom: 1px solid currentColor; }
+        .intro-help .intro-setup-link:hover { text-decoration: underline; }
+        /* Guide panel */
+        #guide-panel {
+            position: fixed; top: 0; right: 0; width: 320px; height: 100%;
+            background: rgb(var(--card)); border-left: 1px solid rgb(var(--border));
+            transform: translateX(100%); transition: transform 0.3s ease; z-index: 1000;
+            box-shadow: -4px 0 20px rgba(0,0,0,0.15); overflow-y: auto;
+        }
+        #guide-panel.open { transform: translateX(0); }
+        #guide-panel h2 { margin: 0; padding: 1.25rem 1.5rem 0.75rem; font-size: 1.25rem; font-weight: 600; color: rgb(var(--primary)); border-bottom: 1px solid rgb(var(--border)); }
+        #guide-panel .content { padding: 1.25rem 1.5rem 2rem; font-size: 0.95rem; line-height: 1.55; color: rgb(var(--foreground)); }
+        #guide-panel ul { padding-left: 1.25rem; margin: 0.75rem 0 1.25rem; }
+        #guide-panel li { margin-bottom: 0.75rem; }
+        #guide-panel .guide-section { margin-top: 1.25rem; }
+        #guide-panel .guide-section-title { font-weight: 600; margin-bottom: 0.5rem; color: rgb(var(--primary)); }
+        #close-guide { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.8rem; color: rgb(var(--muted-foreground)); cursor: pointer; }
+        #dont-show-again { margin: 1.5rem 1.5rem 1rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; }
+        @media (max-width: 640px) { #guide-panel { width: 85%; } }
     </style>
 </head>
 <body class="font-sans">
@@ -1016,9 +1038,12 @@
                 <button class="mode-toggle-btn mode-toggle" id="themeToggleBtn" aria-label="Toggle dark mode">
                     <span id="theme-icon">🌙</span>
                 </button>
+                <button type="button" class="hamburger-menu" id="guide-btn" aria-label="Open guide">?</button>
                 <button type="button" class="hamburger-menu" id="menuBtn" aria-label="Open setup">☰</button>
             </div>
         </div>
+
+        <div class="intro-help">High-Intensity Interval Training timer supports preset workouts &amp; custom intervals &amp; rounds. Tap <a href="#" id="intro-setup-link" class="intro-setup-link">Set Up</a>, configure, then Start.</div>
         
         <div class="timer-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
             <div class="timer-display-block bg-card border border-border rounded-xl shadow-lg text-center p-4" id="timerDisplayBlock">
@@ -1053,6 +1078,23 @@
     </div>
     
     <div class="sheet-overlay" id="drawerOverlay" aria-hidden="true"></div>
+    <div id="guide-panel">
+        <button id="close-guide">×</button>
+        <h2>HIIT Timer Help</h2>
+        <div class="content">
+            <ul>
+                <li><strong>Quick start with presets:</strong> Tap any preset chip (Tabata, 30/30, 60/30, Norwegian 4×4, etc.) — it auto-fills work/rest/rounds/title — then press Start.</li>
+                <li><strong>Custom workout:</strong> Tap Set Up (or tap anywhere on the timer display) to open the setup drawer. Adjust work time, rest time, number of rounds/sets, warm-up/cool-down, title/notes, audio/voice options, warning beeps.</li>
+                <li><strong>During the session:</strong> Use Pause / Resume / Reset / Clear buttons as needed. Clear resets everything to defaults.</li>
+                <li><strong>Sound on iPhone/iPad:</strong> Tap Enable Sound in the banner before starting — required for beeps and voice announcements.</li>
+                <li><strong>Pro tip:</strong> Works offline and in full-screen mode — perfect for gym or home workouts. Add to home screen for app-like feel.</li>
+            </ul>
+            <div id="dont-show-again">
+                <input type="checkbox" id="never-show-guide" />
+                <label for="never-show-guide">Don't show this guide again</label>
+            </div>
+        </div>
+    </div>
     <div class="bottom-sheet" id="settingsDrawer" role="dialog" aria-label="Timer setup">
         <div class="sheet-grabber" aria-hidden="true"></div>
         <div class="sheet-header">
@@ -2963,6 +3005,8 @@
         }
         if (menuBtn) menuBtn.addEventListener('click', openSheet);
         if (drawerOverlay) drawerOverlay.addEventListener('click', closeSheet);
+        var introSetupLink = document.getElementById('intro-setup-link');
+        if (introSetupLink) introSetupLink.addEventListener('click', function(e) { e.preventDefault(); openSheet(); });
         if (drawerCloseBtn) drawerCloseBtn.addEventListener('click', closeSheet);
         function confirmClearSettings() {
             return confirm('Clear timer and reset all settings to defaults? Work time, rest time, rounds, presets, title, notes, prep time, cool-down, sets, and completion message will be reset.');
@@ -3017,6 +3061,32 @@
             if (iosUnlockBtn) iosUnlockBtn.addEventListener('click', function() { unlockAudioForIOS(); });
             const iosSilentBtn = document.getElementById('iosSilentBtn');
             if (iosSilentBtn) iosSilentBtn.addEventListener('click', function() { dismissIOSSoundBannerSilent(); });
+        }
+    </script>
+    <script>
+        /* Guide panel */
+        var guidePanel = document.getElementById('guide-panel');
+        var guideBtn = document.getElementById('guide-btn');
+        var closeBtn = document.getElementById('close-guide');
+        var neverShow = document.getElementById('never-show-guide');
+
+        function openGuide() { if (guidePanel) guidePanel.classList.add('open'); }
+        function closeGuide() { if (guidePanel) guidePanel.classList.remove('open'); }
+
+        if (guideBtn) guideBtn.addEventListener('click', openGuide);
+        if (closeBtn) closeBtn.addEventListener('click', closeGuide);
+
+        if (neverShow) {
+            neverShow.addEventListener('change', function() {
+                if (neverShow.checked) {
+                    localStorage.setItem('timerist_hiit_guide_seen', 'true');
+                    closeGuide();
+                }
+            });
+        }
+
+        if (!localStorage.getItem('timerist_hiit_guide_seen')) {
+            setTimeout(openGuide, 1000);
         }
     </script>
     <script>

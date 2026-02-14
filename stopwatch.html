@@ -970,18 +970,23 @@
         document.getElementById('menuBtn').addEventListener('click', openSheet);
         document.getElementById('drawerCloseBtn').addEventListener('click', closeSheet);
         document.getElementById('drawerOverlay').addEventListener('click', closeSheet);
-        // Double-tap on timer block to open sheet (avoids accidental open)
+        // Double-tap on timer numbers to open sheet (avoids accidental open)
         (function() {
-            var lastTap = 0;
-            document.getElementById('timerDisplayBlock').addEventListener('click', function() {
-                var now = Date.now();
-                if (now - lastTap < 400) {
-                    openSheet();
-                    lastTap = 0;
-                } else {
-                    lastTap = now;
-                }
-            });
+            var displayEl = document.getElementById('timer-display');
+            if (displayEl) {
+                var lastTap = 0;
+                displayEl.addEventListener('dblclick', openSheet);
+                displayEl.addEventListener('touchend', function(e) {
+                    var now = Date.now();
+                    if (now - lastTap < 400) {
+                        e.preventDefault();
+                        openSheet();
+                        lastTap = 0;
+                    } else {
+                        lastTap = now;
+                    }
+                }, { passive: false });
+            }
         })();
         // Clear all settings (with confirm) - used by header clear and Clear All Settings button
         function clearAllSettingsWithConfirm() {

@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timerist - Fitness Timers</title>
+    <link rel="stylesheet" href="styles/timerist-design-system.css">
+    <style>
+        /* Header with logo on left and menu on right */
+        .container {
+            position: relative;
+        }
+        
+        .header-top {
+            position: absolute;
+            top: clamp(1rem, 3vw, 2rem);
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 clamp(1rem, 3vw, 2rem);
+            z-index: 10;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        #header-logo {
+            display: block;
+            width: 40px;
+            height: 40px;
+            color: #0a0a0a;
+        }
+        
+        #header-logo circle,
+        #header-logo line {
+            stroke: #0a0a0a;
+            stroke-width: 2.5;
+        }
+        
+        .dark #header-logo {
+            color: #fafafa;
+        }
+        
+        .dark #header-logo circle,
+        .dark #header-logo line {
+            stroke: #fafafa;
+        }
+        
+        html.dark #header-logo .logo-circle,
+        html.dark #header-logo .logo-line {
+            stroke: #fafafa !important;
+        }
+        
+        .header-top a {
+            transition: opacity 0.2s ease;
+        }
+        
+        .header-top a:hover {
+            opacity: 0.7;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+        
+        .header-top .mode-toggle-btn {
+            position: relative;
+            top: auto;
+            right: auto;
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+        }
+        
+        .hamburger-menu {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: hsl(var(--foreground));
+            font-size: 1.5rem;
+            transition: opacity 0.2s;
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+        }
+        
+        .hamburger-menu:hover {
+            opacity: 0.7;
+        }
+        
+        .settings-drawer {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            background: hsl(var(--card));
+            border-left: 1px solid hsl(var(--border));
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            z-index: 1002;
+            overflow-y: auto;
+        }
+        
+        .settings-drawer.open {
+            right: 0;
+        }
+        
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 999;
+        }
+        
+        .drawer-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .drawer-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid hsl(var(--border));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .drawer-content {
+            padding: 1.5rem;
+        }
+        
+        .drawer-close {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: hsl(var(--foreground));
+            padding: 0.25rem;
+        }
+        
+        .drawer-section {
+            margin-bottom: 2rem;
+        }
+        
+        .drawer-section h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: hsl(var(--foreground));
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .drawer-section p {
+            color: hsl(var(--muted-foreground));
+            line-height: 1.6;
+            margin: 0.5rem 0;
+        }
+        
+        .drawer-section a {
+            color: hsl(var(--primary));
+            text-decoration: none;
+        }
+        
+        .drawer-section a:hover {
+            text-decoration: underline;
+        }
+        
+        .version-info {
+            font-family: monospace;
+            font-size: 0.875rem;
+            color: hsl(var(--muted-foreground));
+            line-height: 1.8;
+        }
+        
+        .version-info strong {
+            color: hsl(var(--foreground));
+            font-weight: 600;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            margin-top: clamp(4rem, 8vw, 6rem);
+        }
+        
+        .header-title-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        #timerist-logo {
+            display: block;
+            width: 50px;
+            height: 50px;
+            flex-shrink: 0;
+            color: hsl(var(--foreground));
+        }
+        
+        #timerist-logo circle,
+        #timerist-logo line {
+            stroke: currentColor;
+            stroke-width: 2.5;
+            transition: stroke 0.2s ease;
+        }
+        
+        /* Explicit dark mode override so logo stays visible (matches #header-logo pattern) */
+        .dark #timerist-logo,
+        html.dark #timerist-logo {
+            color: #fafafa;
+        }
+        
+        header h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin: 0;
+            color: hsl(var(--foreground));
+        }
+        
+        header .subtitle {
+            font-size: 1rem;
+            color: hsl(var(--muted-foreground));
+        }
+        
+        .timer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        @media (max-width: 390px) {
+            .timer-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+        
+        .timer-card {
+            background-color: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            padding: 2rem 1.5rem;
+            color: hsl(var(--card-foreground));
+            transition: all var(--transition-normal);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: var(--shadow);
+            min-height: 180px;
+            justify-content: center;
+        }
+        
+        .timer-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+            border-color: hsl(var(--primary));
+        }
+        
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            line-height: 1;
+        }
+        
+        .timer-card h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: hsl(var(--foreground));
+        }
+        
+        .timer-card p {
+            font-size: 0.875rem;
+            color: hsl(var(--muted-foreground));
+            margin: 0;
+        }
+        
+        .timer-card-link {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .read-full-guide {
+            font-size: 0.875rem;
+            color: hsl(var(--primary));
+            text-decoration: none;
+            margin-top: 0.5rem;
+            display: block;
+            text-align: center;
+        }
+        
+        .read-full-guide:hover {
+            text-decoration: underline;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-top: 3rem;
+            border-top: 1px solid hsl(var(--border));
+            color: hsl(var(--muted-foreground));
+            font-size: 0.875rem;
+        }
+        
+        footer a {
+            color: hsl(var(--primary));
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 390px) {
+            .header-title-container {
+                gap: 0.75rem;
+            }
+            
+            #timerist-logo {
+                width: 40px;
+                height: 40px;
+            }
+            
+            header h1 {
+                font-size: 1.875rem;
+            }
+            
+            .timer-card {
+                padding: 1.5rem 1rem;
+                min-height: 160px;
+            }
+            
+            .card-icon {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-top">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <a href="index.html" style="display: flex; align-items: center; text-decoration: none; cursor: pointer;">
+                    <svg
+                        width="40"
+                        height="40"
+                        viewBox="0 0 40 40"
+                        xmlns="http://www.w3.org/2000/svg"
+                        id="header-logo"
+                    >
+                        <circle cx="20" cy="20" r="15" fill="none" stroke="#0a0a0a" stroke-width="2.5" class="logo-circle"/>
+                        <line x1="20" y1="20" x2="20" y2="8" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
+                        <line x1="20" y1="20" x2="30" y2="20" stroke="#0a0a0a" stroke-width="2.5" class="logo-line"/>
+                    </svg>
+                </a>
+                <span style="font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 600; color: hsl(var(--foreground));">timerist.com</span>
+            </div>
+            
+            <div class="header-actions">
+                <button class="mode-toggle-btn mode-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="hamburger-menu" onclick="toggleDrawer()" aria-label="Open menu">
+                    ☰
+                </button>
+            </div>
+        </div>
+        
+        <header>
+            <div class="header-title-container">
+                <svg
+                    width="50"
+                    height="50"
+                    viewBox="0 0 40 40"
+                    xmlns="http://www.w3.org/2000/svg"
+                    id="timerist-logo"
+                >
+                    <circle cx="20" cy="20" r="15" fill="none" stroke="currentColor" stroke-width="2.5" class="logo-circle"/>
+                    <line x1="20" y1="20" x2="20" y2="8" stroke="currentColor" stroke-width="2.5" class="logo-line"/>
+                    <line x1="20" y1="20" x2="30" y2="20" stroke="currentColor" stroke-width="2.5" class="logo-line"/>
+                </svg>
+                <h1>Timerist</h1>
+            </div>
+            <p class="subtitle">Fitness Timers for Your Workouts</p>
+        </header>
+        
+        <main>
+            <div class="timer-grid">
+                <div class="timer-card">
+                    <a href="countdown.html" class="timer-card-link">
+                        <div class="card-icon">⏲️</div>
+                        <h2>Countdown Timer</h2>
+                        <p>Simple countdown timer for your workouts</p>
+                    </a>
+                    <a href="countdown-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                </div>
+                
+                <div class="timer-card">
+                    <a href="preset-countdown.html" class="timer-card-link">
+                        <div class="card-icon" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">📋⏲️</div>
+                        <h2>Preset Countdowns</h2>
+                        <p>Tap a preset time to start instantly</p>
+                    </a>
+                    <a href="preset-countdowns-about.html" class="read-full-guide">Read Full Guide</a>
+                </div>
+                
+                <div class="timer-card">
+                    <a href="interval.html" class="timer-card-link">
+                        <div class="card-icon">🔄</div>
+                        <h2>Interval Timer</h2>
+                        <p>Work and rest intervals for circuit training</p>
+                    </a>
+                    <a href="interval-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                </div>
+                
+                <div class="timer-card">
+                    <a href="interval-presets.html" class="timer-card-link">
+                        <div class="card-icon">📋🔄</div>
+                        <h2>Preset Intervals</h2>
+                        <p>Tap preset intervals to start instantly</p>
+                    </a>
+                    <a href="preset-intervals-about.html" class="read-full-guide">Read Full Guide</a>
+                </div>
+                
+                <div class="timer-card">
+                    <a href="stopwatch.html" class="timer-card-link">
+                        <div class="card-icon">⏱️</div>
+                        <h2>Stopwatch</h2>
+                        <p>Track your workout duration</p>
+                    </a>
+                    <a href="stopwatch-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                </div>
+                
+                <div class="timer-card">
+                    <a href="stopwatch-splits.html" class="timer-card-link">
+                        <div class="card-icon" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">⏱️🏁</div>
+                        <h2>Stopwatch Splits</h2>
+                        <p>Track time with split intervals</p>
+                    </a>
+                    <a href="stopwatch-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                </div>
+                
+                <div class="timer-card">
+                    <a href="emom.html" class="timer-card-link">
+                        <div class="card-icon">⏰</div>
+                        <h2>EMOM Timer</h2>
+                        <p>Every Minute On the Minute workouts</p>
+                    </a>
+                    <a href="emom-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                </div>
+                
+                <div class="timer-card">
+                    <a href="emom-splits.html" class="timer-card-link">
+                        <div class="card-icon" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">⏰🏁</div>
+                        <h2>EMOM Rep Splits</h2>
+                        <p>Every Minute On Minute & Rep Splits</p>
+                    </a>
+                    <a href="emom-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                </div>
+                
+                <div class="timer-card">
+                    <a href="hiit.html" class="timer-card-link">
+                        <div class="card-icon">💥</div>
+                        <h2>HIIT</h2>
+                        <p>High Intensity Interval Training</p>
+                    </a>
+                    <a href="hiit-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                </div>
+                
+                <div class="timer-card">
+                    <a href="hiit-presets.html" class="timer-card-link">
+                        <div class="card-icon" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">📋💥</div>
+                        <h2>HIIT Presets</h2>
+                        <p>Tap preset intervals to start instantly</p>
+                    </a>
+                    <a href="hiit-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                </div>
+                
+                <div class="timer-card">
+                    <a href="amrap.html" class="timer-card-link">
+                        <div class="card-icon">💪</div>
+                        <h2>AMRAP</h2>
+                        <p>As Many Rounds As Possible</p>
+                    </a>
+                    <a href="amrap-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                </div>
+                
+                <div class="timer-card">
+                    <a href="amrap-splits.html" class="timer-card-link">
+                        <div class="card-icon" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">💪🏁</div>
+                        <h2>AMRAP Splits</h2>
+                        <p>AMRAP with split tracking</p>
+                    </a>
+                    <a href="amrap-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                </div>
+                
+                <div class="timer-card">
+                    <a href="mobility.html" class="timer-card-link">
+                        <div class="card-icon">🧘</div>
+                        <h2>Mobility Timer</h2>
+                        <p>Zen and mobility exercises</p>
+                    </a>
+                    <a href="mobility-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                </div>
+                
+                <div class="timer-card">
+                    <a href="tabata.html" class="timer-card-link">
+                        <div class="card-icon">🔥</div>
+                        <h2>Tabata Timer</h2>
+                        <p>20 seconds on, 10 seconds off intervals</p>
+                    </a>
+                    <a href="tabata-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                </div>
+                
+                <div class="timer-card">
+                    <a href="pyramid.html" class="timer-card-link">
+                        <div class="card-icon">📈</div>
+                        <h2>Pyramid</h2>
+                        <p>Progressive interval training</p>
+                    </a>
+                    <a href="pyramid-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                </div>
+                
+                <div class="timer-card">
+                    <a href="clock.html" class="timer-card-link">
+                        <div class="card-icon">🕐</div>
+                        <h2>Clock</h2>
+                        <p>Digital clock display</p>
+                    </a>
+                    <a href="clock-timer-about.html" class="read-full-guide">Read Full Guide</a>
+                </div>
+                
+                <div class="timer-card">
+                    <a href="about.html" class="timer-card-link">
+                        <div class="card-icon">📝</div>
+                        <h2>Blog</h2>
+                        <p>Read our latest articles</p>
+                    </a>
+                </div>
+                
+                <div class="timer-card">
+                    <a href="apps.html" class="timer-card-link">
+                        <div class="card-icon" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">🍎🤖</div>
+                        <h2>Apps</h2>
+                        <p>Download for iOS and Android</p>
+                    </a>
+                </div>
+            </div>
+        </main>
+        
+        <footer style="text-align: center; padding: 20px 0; font-size: 0.9em; color: #666; border-top: 1px solid #eee; margin-top: 40px;">
+  <p>© <script>document.write(new Date().getFullYear());</script> Timerist™. All rights reserved.<br>
+  Timerist™ is part of the Workoutist Fitness Network.<br>
+  Made by <a href="https://bigfactory.com" target="_blank" rel="noopener noreferrer" style="color: #007bff; text-decoration: none;">BigFactory™</a>.</p>
+</footer>
+    </div>
+    
+    <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+    <div class="settings-drawer" id="settingsDrawer">
+        <div class="drawer-header">
+            <h2 style="font-size: 1.25rem; font-weight: 600; color: hsl(var(--foreground));">Menu</h2>
+            <button class="drawer-close" onclick="closeDrawer()">×</button>
+        </div>
+        <div class="drawer-content">
+            <div class="drawer-section">
+                <h3>About</h3>
+                <p>"Fitness Timers for Your Workouts"</p>
+            </div>
+            
+            <div class="drawer-section">
+                <h3>Contact</h3>
+                <p>
+                    <a href="mailto:timerist@timerist.com">timerist@timerist.com</a><br>
+                    <a href="http://timerist.com" target="_blank" rel="noopener">http://timerist.com</a>
+                </p>
+            </div>
+            
+            <div class="drawer-section">
+                <h3>General Info</h3>
+                <div class="version-info" id="versionInfo">
+                    <div><strong>VERSION</strong><br><span id="version">Loading...</span></div>
+                    <div style="margin-top: 1rem;"><strong>BUILD DATE & TIME</strong><br><span id="buildDate">Loading...</span><br><span id="buildTime">Loading...</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="scripts/dark-mode-toggle.js"></script>
+    <script>
+        function toggleDrawer() {
+            const drawer = document.getElementById('settingsDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+            drawer.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+        
+        function closeDrawer() {
+            const drawer = document.getElementById('settingsDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+            drawer.classList.remove('open');
+            overlay.classList.remove('open');
+        }
+        
+        // Load version info
+        async function loadVersionInfo() {
+            try {
+                // Try /version.json first (for Firebase hosting), then version.json (relative)
+                let response = await fetch('/version.json?t=' + Date.now());
+                if (!response.ok) {
+                    response = await fetch('version.json?t=' + Date.now());
+                }
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('version').textContent = data.version || 'N/A';
+                    document.getElementById('buildDate').textContent = data.buildDate || 'N/A';
+                    document.getElementById('buildTime').textContent = data.buildTime || 'N/A';
+                } else {
+                    document.getElementById('version').textContent = 'N/A';
+                    document.getElementById('buildDate').textContent = 'N/A';
+                    document.getElementById('buildTime').textContent = 'N/A';
+                }
+            } catch (error) {
+                console.warn('Could not load version info:', error);
+                document.getElementById('version').textContent = 'N/A';
+                document.getElementById('buildDate').textContent = 'N/A';
+                document.getElementById('buildTime').textContent = 'N/A';
+            }
+        }
+        
+        // Load version info on page load
+        loadVersionInfo();
+    </script>
+    <script>
+        // Update theme icon
+        function updateThemeIcon() {
+            const icon = document.getElementById('theme-icon');
+            const isDark = document.documentElement.classList.contains('dark');
+            icon.textContent = isDark ? '☀️' : '🌙';
+        }
+        
+        // Initial icon update
+        updateThemeIcon();
+        
+        // Watch for theme changes
+        const observer = new MutationObserver(updateThemeIcon);
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+        
+        // Override toggleTheme to also update icon
+        const originalToggle = window.toggleTheme;
+        window.toggleTheme = function() {
+            originalToggle();
+            setTimeout(() => {
+                updateThemeIcon();
+                updateLogoColors();
+            }, 10);
+        };
+        
+        // Function to update logo colors based on theme
+        function updateLogoColors() {
+            const logos = document.querySelectorAll('#timerist-logo, #header-logo');
+            if (!logos.length) return;
+            
+            const isDark = document.documentElement.classList.contains('dark');
+            const lightColor = '#0a0a0a';
+            const darkColor = '#fafafa';
+            const color = isDark ? darkColor : lightColor;
+            
+            logos.forEach(logo => {
+                const circles = logo.querySelectorAll('.logo-circle');
+                const lines = logo.querySelectorAll('.logo-line');
+                
+                circles.forEach(el => el.setAttribute('stroke', color));
+                lines.forEach(el => el.setAttribute('stroke', color));
+            });
+        }
+        
+        // Watch for theme changes on logo
+        const logoObserver = new MutationObserver(() => {
+            updateLogoColors();
+        });
+        logoObserver.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+        
+        // Initial logo color update
+        updateLogoColors();
+    </script>
+</body>
+</html>
+<!-- Test commit for version increment -->

@@ -1570,8 +1570,23 @@
             else openSheet();
         }
 
-        document.getElementById('timerDisplayBlock').addEventListener('click', function() { openSheet(); });
-        document.getElementById('timerDisplayBlock').addEventListener('touchend', function(e) { e.preventDefault(); openSheet(); }, { passive: false });
+        (function() {
+            var displayEl = document.getElementById('display');
+            if (displayEl) {
+                displayEl.addEventListener('dblclick', openSheet);
+                var lastTap = 0;
+                displayEl.addEventListener('touchend', function(e) {
+                    var now = Date.now();
+                    if (now - lastTap < 400) {
+                        e.preventDefault();
+                        openSheet();
+                        lastTap = 0;
+                    } else {
+                        lastTap = now;
+                    }
+                }, { passive: false });
+            }
+        })();
         document.getElementById('menuBtn').addEventListener('click', toggleDrawer);
         document.getElementById('drawerOverlay').addEventListener('click', closeSheet);
         document.getElementById('drawerCloseBtn').addEventListener('click', closeSheet);

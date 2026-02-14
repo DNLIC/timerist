@@ -1151,25 +1151,21 @@
         document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
         document.getElementById('drawerCloseBtn').addEventListener('click', closeDrawer);
 
-        // Double-tap on timer block opens bottom sheet (like preset-interval)
+        // Double-tap on timer numbers opens bottom sheet (like preset-interval)
         (function() {
-            var timerBlock = document.getElementById('timerDisplayBlock');
+            var displayEl = document.getElementById('display');
             var lastTap = 0;
-            var doubleTapDelay = 400;
-            function openSheetOnDoubleTap() {
-                var now = Date.now();
-                if (now - lastTap <= doubleTapDelay) {
-                    lastTap = 0;
-                    toggleDrawer();
-                } else {
-                    lastTap = now;
-                }
-            }
-            if (timerBlock) {
-                timerBlock.addEventListener('dblclick', function() { toggleDrawer(); });
-                timerBlock.addEventListener('touchend', function(e) {
-                    e.preventDefault();
-                    openSheetOnDoubleTap();
+            if (displayEl) {
+                displayEl.addEventListener('dblclick', function() { toggleDrawer(); });
+                displayEl.addEventListener('touchend', function(e) {
+                    var now = Date.now();
+                    if (now - lastTap < 400) {
+                        e.preventDefault();
+                        toggleDrawer();
+                        lastTap = 0;
+                    } else {
+                        lastTap = now;
+                    }
                 }, { passive: false });
             }
         })();

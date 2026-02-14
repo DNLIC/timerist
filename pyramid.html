@@ -1367,7 +1367,7 @@
             <!-- General Info -->
             <div class="sheet-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.20</p>
+                <p><strong>Version:</strong> v0.21</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -2539,12 +2539,12 @@
             else openSheet();
         }
         
-        // Double-click (or double-tap on mobile) on timer panel opens setup sheet
-        const timerDisplayBlock = document.getElementById('timerDisplayBlock');
-        if (timerDisplayBlock) {
-            timerDisplayBlock.addEventListener('dblclick', openSheet);
+        // Double-click (or double-tap on mobile) on timer numbers opens setup sheet
+        const displayEl = document.getElementById('display');
+        if (displayEl) {
+            displayEl.addEventListener('dblclick', openSheet);
             var lastTap = 0;
-            timerDisplayBlock.addEventListener('touchend', function(e) {
+            displayEl.addEventListener('touchend', function(e) {
                 var now = Date.now();
                 if (now - lastTap < 400) {
                     e.preventDefault();

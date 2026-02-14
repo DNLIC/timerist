@@ -3472,12 +3472,23 @@
             const banner = document.getElementById('iosSoundBanner');
             if (banner) { banner.classList.remove('hidden'); banner.style.display = 'block'; }
         }
-        const timerDisplayBlock = document.getElementById('timerDisplayBlock');
-        if (timerDisplayBlock) {
-            timerDisplayBlock.addEventListener('dblclick', function(e) {
+        const displayEl = document.getElementById('display');
+        if (displayEl) {
+            displayEl.addEventListener('dblclick', function(e) {
                 e.preventDefault();
                 toggleDrawer();
             });
+            var lastTap = 0;
+            displayEl.addEventListener('touchend', function(e) {
+                var now = Date.now();
+                if (now - lastTap < 400) {
+                    e.preventDefault();
+                    toggleDrawer();
+                    lastTap = 0;
+                } else {
+                    lastTap = now;
+                }
+            }, { passive: false });
         }
         const drawerCloseBtn = document.getElementById('drawerCloseBtn');
         if (drawerCloseBtn) drawerCloseBtn.addEventListener('click', closeDrawer);

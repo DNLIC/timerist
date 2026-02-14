@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HIIT Timer – Timerist | High-Intensity Interval Training</title>
+  <meta name="description" content="HIIT Timer for Tabata, 30/30, 4x4 Norwegian and custom high-intensity interval workouts. Free browser-based fitness timer."/>
+  
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --text: #e0e0e0;
+      --accent: #ff3366;
+      --panel-bg: #1a1a1a;
+      --border: #333;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header {
+      width: 100%;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      box-sizing: border-box;
+    }
+    .home-link {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 1.1rem;
+    }
+    .home-link:hover { text-decoration: underline; }
+    #guide-btn {
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      font-size: 1.3rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    #guide-btn:hover { background: rgba(255,51,102,0.2); }
+
+    .intro {
+      text-align: center;
+      padding: 16px 20px 8px;
+      max-width: 640px;
+    }
+    .intro h1 {
+      margin: 0 0 8px;
+      font-size: 1.8rem;
+      color: var(--accent);
+    }
+    .intro p {
+      margin: 0;
+      font-size: 1.05rem;
+      opacity: 0.9;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    #timer {
+      font-size: 8rem;
+      font-weight: bold;
+      letter-spacing: -4px;
+      margin: 0;
+      text-align: center;
+      line-height: 1;
+    }
+    #round-info {
+      font-size: 1.6rem;
+      margin: 8px 0 24px;
+      opacity: 0.8;
+    }
+
+    .sound-note {
+      font-size: 0.95rem;
+      opacity: 0.7;
+      margin: 16px 0 8px;
+      text-align: center;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin: 16px 0;
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #222;
+      color: white;
+      transition: all 0.2s;
+    }
+    button:hover { background: #333; }
+    button.accent { background: var(--accent); }
+    button.accent:hover { background: #ff1a53; }
+
+    /* Slide-in Guide Panel */
+    #guide-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 320px;
+      height: 100%;
+      background: var(--panel-bg);
+      border-left: 1px solid var(--border);
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+      padding: 24px;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+    #guide-panel.open {
+      transform: translateX(0);
+    }
+    #guide-panel h2 {
+      margin-top: 0;
+      color: var(--accent);
+    }
+    #guide-panel ul {
+      padding-left: 20px;
+      line-height: 1.6;
+    }
+    #close-guide {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 1.6rem;
+      cursor: pointer;
+    }
+    #dont-show-again {
+      margin-top: 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    @media (max-width: 600px) {
+      #timer { font-size: 6rem; }
+      #guide-panel { width: 85%; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="home-link">timerist.com</a>
+    <button id="guide-btn" aria-label="Open guide">?</button>
+  </header>
+
+  <div class="intro">
+    <h1>HIIT Timer</h1>
+    <p>High-Intensity Interval Training timer supporting Tabata, 30/30, 4×4 Norwegian, custom work/rest intervals and rounds. Tap "Set Up" below to configure, then press Start.</p>
+  </div>
+
+  <main>
+    <h2 id="mode">HIIT</h2>
+    <div id="timer">00:00</div>
+    <div id="round-info">Round 0 of 0</div>
+
+    <div class="sound-note">
+      On iPhone/iPad, tap "Enable Sound" below before starting.
+    </div>
+
+    <div class="controls">
+      <button id="enable-sound">Enable Sound</button>
+      <button id="silent">Silent</button>
+      <button id="clear">Clear</button>
+      <button id="setup" class="accent">Set Up</button>
+      <!-- Add your original Start/Pause/Resume buttons here when they appear via JS -->
+    </div>
+  </main>
+
+  <!-- Guide Slide-in Panel -->
+  <div id="guide-panel">
+    <button id="close-guide">&times;</button>
+    <h2>How to Use This HIIT Timer</h2>
+    <ul>
+      <li><strong>Configure:</strong> Tap <strong>Set Up</strong> to choose work/rest times, rounds, total sets, warmup, cooldown, and more.</li>
+      <li><strong>Start:</strong> After setup, tap the big <strong>Start</strong> button to begin the countdown.</li>
+      <li><strong>Controls during workout:</strong> Pause to rest, Reset/Clear to start over.</li>
+      <li><strong>Sound & cues:</strong> Enable sound for beeps and voice announcements (important on iOS — tap "Enable Sound" first).</li>
+      <li><strong>Pro tip:</strong> Use full-screen mode in the gym for distraction-free timing.</li>
+    </ul>
+
+    <div id="dont-show-again">
+      <input type="checkbox" id="never-show-guide" />
+      <label for="never-show-guide">Don't show this guide again</label>
+    </div>
+  </div>
+
+  <script>
+    // Guide panel logic
+    const guidePanel = document.getElementById('guide-panel');
+    const guideBtn   = document.getElementById('guide-btn');
+    const closeBtn   = document.getElementById('close-guide');
+    const neverShow  = document.getElementById('never-show-guide');
+
+    function openGuide() {
+      guidePanel.classList.add('open');
+    }
+    function closeGuide() {
+      guidePanel.classList.remove('open');
+    }
+
+    guideBtn.addEventListener('click', openGuide);
+    closeBtn.addEventListener('click', closeGuide);
+
+    // Auto-open on first visit only
+    if (!localStorage.getItem('timerist_hiit_guide_seen')) {
+      openGuide();
+    }
+
+    // "Don't show again" saves preference
+    neverShow.addEventListener('change', () => {
+      if (neverShow.checked) {
+        localStorage.setItem('timerist_hiit_guide_seen', 'true');
+        closeGuide();
+      }
+    });
+
+    // ========================
+    //   YOUR ORIGINAL TIMER JS
+    // ========================
+    // Paste ALL your existing JavaScript code here (the part that handles timer logic,
+    // countdown, rounds, sound, setup modal, etc.)
+    //
+    // For example:
+    // const timerDisplay = document.getElementById('timer');
+    // ... your full script ...
+    //
+    // If you share your current <script> content from hiit.html,
+    // I can help integrate it perfectly into this structure.
+
+    // Placeholder comment so the page doesn't break
+    console.log("HIIT timer logic goes here – add your original JS below this line");
+  </script>
+
+</body>
+</html>

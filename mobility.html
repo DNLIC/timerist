@@ -4326,10 +4326,20 @@
         var drawerOverlayEl = document.getElementById('drawerOverlay');
         if (drawerCloseBtnEl) drawerCloseBtnEl.addEventListener('click', window.closeDrawer);
         if (drawerOverlayEl) drawerOverlayEl.addEventListener('click', window.closeDrawer);
-        var timerDisplayBlockEl = document.getElementById('timerDisplayBlock');
-        if (timerDisplayBlockEl) {
-            timerDisplayBlockEl.addEventListener('click', openSheet);
-            timerDisplayBlockEl.addEventListener('touchend', function(e) { e.preventDefault(); openSheet(); }, { passive: false });
+        var displayEl = document.getElementById('display');
+        if (displayEl) {
+            displayEl.addEventListener('dblclick', openSheet);
+            var lastTap = 0;
+            displayEl.addEventListener('touchend', function(e) {
+                var now = Date.now();
+                if (now - lastTap < 400) {
+                    e.preventDefault();
+                    openSheet();
+                    lastTap = 0;
+                } else {
+                    lastTap = now;
+                }
+            }, { passive: false });
         }
         var menuBtnEl = document.getElementById('menuBtn');
         if (menuBtnEl) menuBtnEl.addEventListener('click', window.toggleDrawer);

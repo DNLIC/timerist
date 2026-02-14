@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="Timerist – Simple, powerful fitness timers for real workouts. Works offline.">
+    <title>Timerist – Fitness Timers</title>
+    <link rel="stylesheet" href="styles/timerist-design-system.css">
+    <style>
+        /* ====================== HERO (exact match to your screenshot) ====================== */
+        .hero {
+            min-height: 85vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: #ffffff;
+            padding: 0 1.5rem;
+            position: relative;
+        }
+        .hero-content {
+            max-width: 720px;
+        }
+        .hero h1 {
+            font-size: clamp(2.75rem, 8.5vw, 4.75rem);
+            line-height: 1.05;
+            font-weight: 800;
+            color: #0a0a0a;
+            margin-bottom: 1.25rem;
+        }
+        .hero .subtitle {
+            font-size: clamp(1.125rem, 4vw, 1.35rem);
+            color: #666;
+            max-width: 520px;
+            margin: 0 auto 3rem;
+        }
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 0.95rem 2.25rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .btn-primary {
+            background: #0a0a0a;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: #222;
+            transform: translateY(-2px);
+        }
+        .btn-outline {
+            border: 2.5px solid #0a0a0a;
+            color: #0a0a0a;
+        }
+        .btn-outline:hover {
+            background: #f8f8f8;
+        }
+
+        /* ====================== SECTION STYLING ====================== */
+        .section {
+            padding: 5rem 1.5rem;
+        }
+        .section-header h2 {
+            font-size: clamp(2.25rem, 6vw, 3.25rem);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #0a0a0a;
+        }
+
+        /* ====================== CARD (exact match to your other pages) ====================== */
+        .timer-card {
+            background: #fff;
+            border: 1px solid #f0f0f0;
+            border-radius: 20px;
+            padding: 2.75rem 2rem 2rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .timer-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        }
+        .card-icon {
+            font-size: 4.75rem;
+            margin-bottom: 1.75rem;
+            line-height: 1;
+        }
+        .accent-line {
+            width: 52px;
+            height: 4px;
+            background: hsl(var(--primary));
+            margin: 0 auto 1.5rem;
+            border-radius: 999px;
+        }
+        .card-title {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: hsl(var(--primary));
+            margin-bottom: 0.75rem;
+        }
+        .card-desc {
+            color: #555;
+            font-size: 1rem;
+            line-height: 1.55;
+            flex-grow: 1;
+        }
+        .card-footer {
+            margin-top: 2rem;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.65rem;
+            color: #888;
+        }
+        .card-footer a {
+            color: hsl(var(--primary));
+            font-weight: 500;
+            text-decoration: none;
+        }
+        .card-footer a:hover {
+            text-decoration: underline;
+        }
+        .card-footer .separator {
+            color: #ddd;
+        }
+
+        /* ====================== CATEGORY CHIPS (exact match) ====================== */
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+        }
+        .category-chip {
+            padding: 0.65rem 1.75rem;
+            border-radius: 9999px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            background: #f4f4f4;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .category-chip.active {
+            background: #0a0a0a;
+            color: #fff;
+        }
+
+        /* ====================== GRID ====================== */
+        .timer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        /* ====================== FOOTER ====================== */
+        footer {
+            padding: 3.5rem 1.5rem 2.5rem;
+            text-align: center;
+            background: #f9f9f9;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        footer a {
+            color: hsl(var(--primary));
+        }
+    </style>
+</head>
+<body class="bg-white">
+
+    <!-- FIXED HEADER (matches your other pages) -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index_v2.html" class="flex items-center gap-3">
+                <svg width="42" height="42" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" id="header-logo">
+                    <circle cx="20" cy="20" r="15" fill="none" stroke="#0a0a0a" stroke-width="2.8"/>
+                    <line x1="20" y1="20" x2="20" y2="8" stroke="#0a0a0a" stroke-width="2.8"/>
+                    <line x1="20" y1="20" x2="30" y2="20" stroke="#0a0a0a" stroke-width="2.8"/>
+                </svg>
+                <span class="text-2xl font-semibold tracking-tight">Timerist</span>
+            </a>
+            <div class="flex items-center gap-4">
+                <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center text-2xl">🌙</button>
+                <button onclick="toggleDrawer()" class="text-3xl">☰</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HERO (you liked this) -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Timers that help you train harder</h1>
+            <p class="subtitle">Simple. Focused. No ads. Built for real workouts — works offline, ready for your phone.</p>
+            <div class="btn-group">
+                <a href="interval.html" class="btn btn-primary">Start Interval Timer</a>
+                <a href="hiit.html" class="btn btn-outline">Try HIIT Now</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- MOST USED -->
+    <section class="section bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="section-header">
+                <h2>Most Used by Athletes</h2>
+            </div>
+            <div class="timer-grid">
+                <div class="timer-card">
+                    <div class="card-icon">🔄</div>
+                    <div class="accent-line"></div>
+                    <div class="card-title">Interval Timer</div>
+                    <div class="card-desc">Custom work/rest cycles for circuits, tabata-style, or any timed workout</div>
+                    <div class="card-footer">
+                        <a href="interval.html">Timer</a>
+                        <span class="separator">•</span>
+                        <a href="interval-timer-about.html">Guide</a>
+                    </div>
+                </div>
+                <div class="timer-card">
+                    <div class="card-icon">💥</div>
+                    <div class="accent-line"></div>
+                    <div class="card-title">HIIT Timer</div>
+                    <div class="card-desc">High-intensity protocols with built-in presets</div>
+                    <div class="card-footer">
+                        <a href="hiit.html">Timer</a>
+                        <span class="separator">•</span>
+                        <a href="hiit-timer-about.html">Guide</a>
+                    </div>
+                </div>
+                <div class="timer-card">
+                    <div class="card-icon">⏰</div>
+                    <div class="accent-line"></div>
+                    <div class="card-title">EMOM</div>
+                    <div class="card-desc">Every Minute On the Minute – perfect for strength & skill work</div>
+                    <div class="card-footer">
+                        <a href="emom.html">Timer</a>
+                        <span class="separator">•</span>
+                        <a href="emom-timer-about.html">Guide</a>
+                    </div>
+                </div>
+                <div class="timer-card">
+                    <div class="card-icon">💪</div>
+                    <div class="accent-line"></div>
+                    <div class="card-title">AMRAP</div>
+                    <div class="card-desc">As Many Rounds/Reps As Possible – track rounds & splits</div>
+                    <div class="card-footer">
+                        <a href="amrap.html">Timer</a>
+                        <span class="separator">•</span>
+                        <a href="amrap-timer-about.html">Guide</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ALL TIMERS -->
+    <section class="section" style="background:#f9f9f9;">
+        <div class="max-w-7xl mx-auto">
+            <div class="section-header">
+                <h2>All Fitness Timers</h2>
+            </div>
+            <div class="categories">
+                <div class="category-chip active">All</div>
+                <div class="category-chip">Countdown</div>
+                <div class="category-chip">Interval</div>
+                <div class="category-chip">Specialty</div>
+                <div class="category-chip">Tracking</div>
+            </div>
+            <div class="timer-grid">
+                <!-- All your timers, now styled exactly like the rest of the site -->
+                <div class="timer-card">
+                    <div class="card-icon">⏲️</div>
+                    <div class="accent-line"></div>
+                    <div class="card-title">Countdown</div>
+                    <div class="card-desc">Simple countdown timer for your workouts</div>
+                    <div class="card-footer">
+                        <a href="countdown.html">Timer</a>
+                        <span class="separator">•</span>
+                        <a href="countdown-timer-about.html">Guide</a>
+                    </div>
+                </div>
+                <div class="timer-card">
+                    <div class="card-icon">📋⏲️</div>
+                    <div class="accent-line"></div>
+                    <div class="card-title">Preset Countdowns</div>
+                    <div class="card-desc">Tap a preset time to start instantly</div>
+                    <div class="card-footer">
+                        <a href="preset-countdown.html">Timer</a>
+                        <span class="separator">•</span>
+                        <a href="preset-countdowns-about.html">Guide</a>
+                    </div>
+                </div>
+                <div class="timer-card">
+                    <div class="card-icon">🔄</div>
+                    <div class="accent-line"></div>
+                    <div class="card-title">Interval Timer</div>
+                    <div class="card-desc">Work and rest intervals for circuit training</div>
+                    <div class="card-footer">
+                        <a href="interval.html">Timer</a>
+                        <span class="separator">•</span>
+                        <a href="interval-timer-about.html">Guide</a>
+                    </div>
+                </div>
+                <div class="timer-card">
+                    <div class="card-icon">📋🔄</div>
+                    <div class="accent-line"></div>
+                    <div class="card-title">Preset Intervals</div>
+                    <div class="card-desc">Tap preset intervals to start instantly</div>
+                    <div class="card-footer">
+                        <a href="interval-presets.html">Timer</a>
+                        <span class="separator">•</span>
+                        <a href="preset-intervals-about.html">Guide</a>
+                    </div>
+                </div>
+                <div class="timer-card">
+                    <div class="card-icon">⏱️</div>
+                    <div class="accent-line"></div>
+                    <div class="card-title">Stopwatch</div>
+                    <div class="card-desc">Track your workout duration</div>
+                    <div class="card-footer">
+                        <a href="stopwatch.html">Timer</a>
+                        <span class="separator">•</span>
+                        <a href="stopwatch-timer-about.html">Guide</a>
+                    </div>
+                </div>
+                <div class="timer-card">
+                    <div class="card-icon">⏱️🏁</div>
+                    <div class="accent-line"></div>
+                    <div class="card-title">Stopwatch Splits</div>
+                    <div class="card-desc">Track time with split intervals</div>
+                    <div class="card-footer">
+                        <a href="stopwatch-splits.html">Timer</a>
+                        <span class="separator">•</span>
+                        <a href="stopwatch-timer-about.html">Guide</a>
+                    </div>
+                </div>
+                <div class="timer-card">
+                    <div class="card-icon">⏰</div>
+                    <div class="accent-line"></div>
+                    <div class="card-title">EMOM Timer</div>
+                    <div class="card-desc">Every Minute On the Minute workouts</div>
+                    <div class="card-footer">
+                        <a href="emom.html">Timer</a>
+                        <span class="separator">•</span>
+                        <a href="emom-timer-about.html">Guide</a>
+                    </div>
+                </div>
+                <div class="timer-card">
+                    <div class="card-icon">⏰🏁</div>
+                    <div class="accent-line"></div>
+                    <div class="card-title">EMOM Rep Splits</div>
+                    <div class="card-desc">Every Minute On Minute & Rep Splits</div>
+                    <div class="card-footer">
+                        <a href="emom-splits.html">Timer</a>
+                        <span class="separator">•</span>
+                        <a href="emom-timer-about.html">Guide</a>
+                    </div>
+                </div>
+                <div class="timer-card">
+                    <div class="card-icon">💥</div>
+                    <div class="accent-line"></div>
+                    <div class="card-title">HIIT</div>
+                    <div class="card-desc">High Intensity Interval Training</div>
+                    <div class="card-footer">
+                        <a href="hiit.html">Timer</a>
+                        <span class="separator">•</span>
+                        <a href="hiit-timer-about.html">Guide</a>
+                    </div>
+                </div>
+                <div class="timer-card">
+                    <div class="card-icon">📋💥</div>
+                    <div class="accent-line"></div>
+                    <div class="card-title">HIIT Presets</div>
+                    <div class="card-desc">Tap preset intervals to start instantly</div>
+                    <div class="card-footer">
+                        <a href="hiit-presets.html">Timer</a>
+                        <span class="separator">•</span>
+                        <a href="hiit-timer-about.html">Guide</a>
+                    </div>
+                </div>
+                <div class="timer-card">
+                    <div class="card-icon">💪</div>
+                    <div class="accent-line"></div>
+                    <div class="card-title">AMRAP</div>
+                    <div class="card-desc">As Many Rounds As Possible</div>
+                    <div class="card-footer">
+                        <a href="amrap.html">Timer</a>
+                        <span class="separator">•</span>
+                        <a href="amrap-timer-about.html">Guide</a>
+                    </div>
+                </div>
+                <div class="timer-card">
+                    <div class="card-icon">💪🏁</div>
+                    <div class="accent-line"></div>
+                    <div class="card-title">AMRAP Splits</div>
+                    <div class="card-desc">AMRAP with split tracking</div>
+                    <div class="card-footer">
+                        <a href="amrap-splits.html">Timer</a>
+                        <span class="separator">•</span>
+                        <a href="amrap-timer-about.html">Guide</a>
+                    </div>
+                </div>
+                <div class="timer-card">
+                    <div class="card-icon">🧘</div>
+                    <div class="accent-line"></div>
+                    <div class="card-title">Mobility Timer</div>
+                    <div class="card-desc">Zen and mobility exercises</div>
+                    <div class="card-footer">
+                        <a href="mobility.html">Timer</a>
+                        <span class="separator">•</span>
+                        <a href="mobility-timer-about.html">Guide</a>
+                    </div>
+                </div>
+                <div class="timer-card">
+                    <div class="card-icon">🔥</div>
+                    <div class="accent-line"></div>
+                    <div class="card-title">Tabata Timer</div>
+                    <div class="card-desc">20 seconds on, 10 seconds off intervals</div>
+                    <div class="card-footer">
+                        <a href="tabata.html">Timer</a>
+                        <span class="separator">•</span>
+                        <a href="tabata-timer-about.html">Guide</a>
+                    </div>
+                </div>
+                <div class="timer-card">
+                    <div class="card-icon">📈</div>
+                    <div class="accent-line"></div>
+                    <div class="card-title">Pyramid</div>
+                    <div class="card-desc">Progressive interval training</div>
+                    <div class="card-footer">
+                        <a href="pyramid.html">Timer</a>
+                        <span class="separator">•</span>
+                        <a href="pyramid-timer-about.html">Guide</a>
+                    </div>
+                </div>
+                <div class="timer-card">
+                    <div class="card-icon">🕐</div>
+                    <div class="accent-line"></div>
+                    <div class="card-title">Clock</div>
+                    <div class="card-desc">Digital clock display</div>
+                    <div class="card-footer">
+                        <a href="clock.html">Timer</a>
+                        <span class="separator">•</span>
+                        <a href="clock-timer-about.html">Guide</a>
+                    </div>
+                </div>
+                <div class="timer-card">
+                    <div class="card-icon">📝</div>
+                    <div class="accent-line"></div>
+                    <div class="card-title">Blog</div>
+                    <div class="card-desc">Read our latest articles</div>
+                    <div class="card-footer">
+                        <a href="about.html">Read</a>
+                    </div>
+                </div>
+                <div class="timer-card">
+                    <div class="card-icon">🍎🤖</div>
+                    <div class="accent-line"></div>
+                    <div class="card-title">Apps</div>
+                    <div class="card-desc">Download for iOS and Android</div>
+                    <div class="card-footer">
+                        <a href="apps.html">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER (exact match) -->
+    <footer>
+        <p>© <script>document.write(new Date().getFullYear());</script> Timerist™ • Part of the Workoutist Fitness Network</p>
+        <p>Made with focus by <a href="https://bigfactory.com" target="_blank">BigFactory™</a></p>
+    </footer>
+
+    <!-- DRAWER (kept from your original) -->
+    <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+    <div class="settings-drawer" id="settingsDrawer">
+        <!-- Paste your original drawer content here if you want it identical -->
+        <div class="drawer-header">
+            <h2>Menu</h2>
+            <button onclick="closeDrawer()">×</button>
+        </div>
+        <div class="drawer-content">
+            <!-- your original drawer sections -->
+        </div>
+    </div>
+
+    <script src="scripts/dark-mode-toggle.js"></script>
+    <script>
+        // Your original drawer + theme scripts here (copy from index.html)
+        function toggleDrawer() { /* ... */ }
+        function closeDrawer() { /* ... */ }
+        // ... rest of your scripts
+    </script>
+</body>
+</html>

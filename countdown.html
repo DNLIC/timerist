@@ -1237,23 +1237,19 @@
         document.getElementById('drawerCloseBtn').addEventListener('click', closeSheet);
 
         (function() {
-            const timerBlock = document.getElementById('timerDisplayBlock');
+            const displayEl = document.getElementById('display');
             let lastTap = 0;
-            const doubleTapDelay = 400;
-            function openSheetOnDoubleTap() {
-                const now = Date.now();
-                if (now - lastTap <= doubleTapDelay) {
-                    lastTap = 0;
-                    toggleDrawer();
-                } else {
-                    lastTap = now;
-                }
-            }
-            if (timerBlock) {
-                timerBlock.addEventListener('dblclick', () => toggleDrawer());
-                timerBlock.addEventListener('touchend', (e) => {
-                    e.preventDefault();
-                    openSheetOnDoubleTap();
+            if (displayEl) {
+                displayEl.addEventListener('dblclick', () => toggleDrawer());
+                displayEl.addEventListener('touchend', (e) => {
+                    const now = Date.now();
+                    if (now - lastTap < 400) {
+                        e.preventDefault();
+                        toggleDrawer();
+                        lastTap = 0;
+                    } else {
+                        lastTap = now;
+                    }
                 }, { passive: false });
             }
         })();

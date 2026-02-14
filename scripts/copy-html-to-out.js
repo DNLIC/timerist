@@ -73,6 +73,27 @@ htmlFiles.forEach(file => {
   }
 });
 
+// Copy v2 test files (source may have space in filename)
+const v2Files = [
+  { src: 'interval _v2.html', dest: 'interval_v2.html' },
+  { src: 'hiit_v2.html', dest: 'hiit_v2.html' }
+];
+// Copy v3 test files
+const v3Files = [
+  { src: 'interval_v3.html', dest: 'interval_v3.html' },
+  { src: 'hiit_v3.html', dest: 'hiit_v3.html' }
+];
+[...v2Files, ...v3Files].forEach(({ src, dest }) => {
+  const srcPath = path.join(rootDir, src);
+  const destPath = path.join(outDir, dest);
+  if (fs.existsSync(srcPath)) {
+    fs.copyFileSync(srcPath, destPath);
+    console.log(`✓ Copied ${src} → ${dest}`);
+  } else {
+    console.warn(`⚠ File not found: ${src}`);
+  }
+});
+
 // Copy JSON files from public directory
 const publicDir = path.join(rootDir, 'public');
 jsonFiles.forEach(file => {
