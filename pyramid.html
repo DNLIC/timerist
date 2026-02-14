@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <title>Pyramid Timer - Timerist | Pyramid Workout Timer, Ascending Descending Interval Timer</title>
     <meta name="description" content="Pyramid timer for progressive workouts with ascending and descending work intervals. Automatically builds a pyramid sequence from start to peak and back down.">
-    <link rel="stylesheet" href="styles/timerist-design-system.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
     <style>
@@ -179,6 +178,7 @@
         .hover\:bg-primary\/90:hover { background-color: rgba(var(--primary), 0.9); }
         .hover\:bg-secondary\/90:hover { background-color: rgba(var(--secondary), 0.9); }
         
+        /* Timer display: blue in light mode, red in dark mode (explicit to avoid overrides) */
         .timer-display-large {
             font-size: 4rem; /* Smaller for mobile */
             font-weight: 700; /* font-bold */
@@ -186,11 +186,14 @@
             font-variant-numeric: tabular-nums;
             line-height: 1;
             letter-spacing: -0.02em; /* tracking-tight */
-            color: rgb(var(--primary));
+            color: rgb(74, 144, 226); /* daylight blue - default */
             transition: color 0.3s ease;
             margin-bottom: 1rem; /* mb-4 */
             word-break: keep-all;
             overflow-wrap: normal;
+        }
+        html[data-theme="style1"] .timer-display-large {
+            color: rgb(255, 0, 0); /* nighttime red */
         }
         
         @media (min-width: 390px) {
@@ -235,14 +238,18 @@
             }
         }
         
+        /* Phase label: blue in light mode, red in dark mode */
         .phase-label {
             font-size: 1.25rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             margin-bottom: 0.5rem;
-            color: rgb(var(--primary));
+            color: rgb(74, 144, 226); /* daylight blue */
             transition: color 0.3s ease;
+        }
+        html[data-theme="style1"] .phase-label {
+            color: rgb(255, 0, 0); /* nighttime red */
         }
         
         @media (min-width: 768px) {
@@ -252,7 +259,10 @@
         }
         
         .phase-label.rest {
-            color: rgb(var(--secondary));
+            color: rgb(80, 200, 120); /* green - rest phase */
+        }
+        html[data-theme="style1"] .phase-label.rest {
+            color: rgb(0, 255, 0); /* green in dark mode */
         }
         
         .round-info {
@@ -1055,6 +1065,36 @@
             stroke: #fafafa !important;
         }
     </style>
+    <script>
+        (function() {
+            var themeKey = 'timerist-theme';
+            var darkThemeValue = 'style1';
+            function getInitialTheme() {
+                var saved = localStorage.getItem(themeKey);
+                if (saved) return saved;
+                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            function isDarkMode() {
+                return document.documentElement.getAttribute('data-theme') === darkThemeValue;
+            }
+            function applyTheme(theme) {
+                var root = document.documentElement;
+                if (theme === 'dark') {
+                    root.setAttribute('data-theme', darkThemeValue);
+                } else {
+                    root.removeAttribute('data-theme');
+                }
+                localStorage.setItem(themeKey, theme);
+            }
+            applyTheme(getInitialTheme());
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+                if (!localStorage.getItem(themeKey)) applyTheme(e.matches ? 'dark' : 'light');
+            });
+            window.toggleTheme = function() {
+                applyTheme(isDarkMode() ? 'light' : 'dark');
+            };
+        })();
+    </script>
 </head>
 <body class="font-sans">
     <div class="container">
@@ -1367,7 +1407,7 @@
             <!-- General Info -->
             <div class="sheet-section">
                 <h3>General Info</h3>
-                <p><strong>Version:</strong> v0.21</p>
+                <p><strong>Version:</strong> v0.22</p>
                 <p><strong>Released:</strong> <span id="releaseDate">2024-01-15</span></p>
             </div>
         </div>
@@ -1813,19 +1853,19 @@
                     if (currentPhase.type === 'warmup') {
                         phaseLabel.textContent = getPrepPhaseLabel();
                         phaseLabel.classList.remove('rest');
-                        phaseLabel.style.color = 'rgb(var(--primary))';
+                        phaseLabel.style.color = '';
                     } else if (currentPhase.type === 'cooldown') {
                         phaseLabel.textContent = 'Cool-down';
                         phaseLabel.classList.remove('rest');
-                        phaseLabel.style.color = 'rgb(var(--primary))';
+                        phaseLabel.style.color = '';
                     } else if (currentPhase.type === 'rest') {
                         phaseLabel.textContent = 'Rest';
                         phaseLabel.classList.add('rest');
-                        phaseLabel.style.color = 'rgb(var(--secondary))';
+                        phaseLabel.style.color = '';
                     } else {
                         phaseLabel.textContent = getWorkPhaseLabel(currentPhase.duration);
                         phaseLabel.classList.remove('rest');
-                        phaseLabel.style.color = 'rgb(var(--primary))';
+                        phaseLabel.style.color = '';
                     }
                     
                     pyramidInfo.textContent = getPyramidPhaseDescription();
@@ -1833,7 +1873,7 @@
                     // Timer finished
                     phaseLabel.textContent = 'Pyramid Complete!';
                     phaseLabel.classList.remove('rest');
-                    phaseLabel.style.color = 'rgb(var(--primary))';
+                    phaseLabel.style.color = '';
                     pyramidInfo.textContent = getDoneMessage();
                 }
             } else {
@@ -2878,7 +2918,6 @@
         // Set release date
         document.getElementById('releaseDate').textContent = new Date().toISOString().split('T')[0];
     </script>
-    <script src="scripts/dark-mode-toggle.js"></script>
     <script>
         // Ensure theme toggle button works on mobile (iOS/Android)
         document.addEventListener('DOMContentLoaded', function() {
