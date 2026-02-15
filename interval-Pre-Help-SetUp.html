@@ -86,7 +86,7 @@
             margin: 0 auto;
             overflow-x: hidden;
             width: 100%;
-            margin-top: 0.75rem;
+            margin-top: clamp(4rem, 8vw, 5rem);
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
@@ -153,38 +153,6 @@
         [data-theme="style1"] #timerist-logo { color: #fafafa; }
         [data-theme="style1"] #timerist-logo circle, [data-theme="style1"] #timerist-logo line { stroke: #fafafa; }
         html[data-theme="style1"] #timerist-logo .logo-circle, html[data-theme="style1"] #timerist-logo .logo-line { stroke: #fafafa !important; }
-        /* Intro help phrase */
-        .intro-help { text-align: center; padding: 0.5rem 1rem 0.5rem; font-size: 1rem; color: rgb(var(--muted-foreground)); margin-top: 2.75rem; }
-        .intro-help strong { color: rgb(var(--foreground)); }
-        .intro-help .intro-setup-link { color: rgb(var(--foreground)); font-weight: 600; text-decoration: none; cursor: pointer; border-bottom: 1px solid currentColor; }
-        .intro-help .intro-setup-link:hover { text-decoration: underline; }
-        /* Smartphone: minimal set up | help */
-        .intro-help-mini { display: none; text-align: center; padding: 0.5rem 1rem; font-size: 0.95rem; color: rgb(var(--muted-foreground)); margin-top: 2.75rem; }
-        .intro-help-mini .intro-link { color: rgb(var(--foreground)); font-weight: 600; text-decoration: none; cursor: pointer; }
-        .intro-help-mini .intro-link:hover { text-decoration: underline; }
-        .intro-help-mini .intro-sep { color: rgb(var(--muted-foreground)); margin: 0 0.35rem; }
-        @media (max-width: 640px) {
-            .intro-help { display: none; }
-            .intro-help-mini { display: block; }
-        }
-        @media (min-width: 641px) {
-            .intro-help-mini { display: none; }
-        }
-        /* Guide panel */
-        #guide-panel {
-            position: fixed; top: 0; right: 0; width: 320px; height: 100%;
-            background: rgb(var(--card)); border-left: 1px solid rgb(var(--border));
-            transform: translateX(100%); transition: transform 0.3s ease; z-index: 1000;
-            box-shadow: -4px 0 20px rgba(0,0,0,0.15); overflow-y: auto;
-        }
-        #guide-panel.open { transform: translateX(0); }
-        #guide-panel h2 { margin: 0; padding: 1.25rem 1.5rem 0.75rem; font-size: 1.25rem; font-weight: 600; color: rgb(var(--primary)); border-bottom: 1px solid rgb(var(--border)); }
-        #guide-panel .content { padding: 1.25rem 1.5rem 2rem; font-size: 0.95rem; line-height: 1.55; color: rgb(var(--foreground)); }
-        #guide-panel ul { padding-left: 1.25rem; margin: 0.75rem 0 1.25rem; }
-        #guide-panel li { margin-bottom: 0.75rem; }
-        #close-guide { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.8rem; color: rgb(var(--muted-foreground)); cursor: pointer; }
-        #dont-show-again { margin: 1.5rem 1.5rem 1rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; }
-        @media (max-width: 640px) { #guide-panel { width: 85%; } }
         .timer-display-block {
             background: rgb(var(--card));
             border: 1px solid rgb(var(--border));
@@ -582,13 +550,9 @@
             </div>
             <div class="header-actions">
                 <button class="mode-toggle-btn mode-toggle" id="themeToggleBtn" aria-label="Toggle dark mode"><span id="theme-icon">🌙</span></button>
-                <button class="hamburger-menu" id="guide-btn" aria-label="Open guide">?</button>
                 <button class="hamburger-menu" id="menuBtn" aria-label="Open setup">☰</button>
             </div>
         </div>
-
-        <div class="intro-help">Presets & Custom work/rest interval timer.  <a href="#" id="intro-setup-link" class="intro-setup-link">Set Up</a> | <a href="#" id="intro-help-link" class="intro-setup-link">Help</a></div>
-        <div class="intro-help-mini"><a href="#" id="intro-setup-link-mini" class="intro-link">set up</a><span class="intro-sep">|</span><a href="#" id="intro-help-link-mini" class="intro-link">help</a></div>
 
         <div class="timer-container">
             <div class="timer-display-block" id="timerDisplayBlock">
@@ -625,23 +589,6 @@
     </div>
 
     <div class="sheet-overlay" id="drawerOverlay" aria-hidden="true"></div>
-    <div id="guide-panel">
-        <button id="close-guide">×</button>
-        <h2>Interval Help</h2>
-        <div class="content">
-            <ul>
-                <li><strong>Interval Timer</strong> is for any custom work/rest ratio and number of rounds.</li>
-                <li><strong>Quick start</strong> — Use a preset or tap Set Up (or double-tap the timer display) to open the settings panel to build your own.</li>
-                <li><strong>Custom workout</strong> — In the settings panel set: • Work time • Rest time • Total rounds • Prep countdown • Title and notes</li>
-                <li><strong>During the session</strong> — The timer switches between work and rest automatically.</li>
-                <li><strong>Save & load</strong> — Use <strong>Import / Export</strong> to save your interval workouts.</li>
-            </ul>
-            <div id="dont-show-again">
-                <input type="checkbox" id="never-show-guide" />
-                <label for="never-show-guide">Don't show this guide again</label>
-            </div>
-        </div>
-    </div>
     <div class="bottom-sheet" id="settingsDrawer" role="dialog" aria-label="Timer setup">
         <div class="sheet-grabber" aria-hidden="true"></div>
         <div class="sheet-header">
@@ -1641,10 +1588,6 @@
             }
         })();
         document.getElementById('menuBtn').addEventListener('click', toggleDrawer);
-        var introSetupLink = document.getElementById('intro-setup-link');
-        if (introSetupLink) introSetupLink.addEventListener('click', function(e) { e.preventDefault(); toggleDrawer(); });
-        var introSetupLinkMini = document.getElementById('intro-setup-link-mini');
-        if (introSetupLinkMini) introSetupLinkMini.addEventListener('click', function(e) { e.preventDefault(); toggleDrawer(); });
         document.getElementById('drawerOverlay').addEventListener('click', closeSheet);
         document.getElementById('drawerCloseBtn').addEventListener('click', closeSheet);
 
@@ -1883,29 +1826,6 @@
         window.toggleTheme = function() { if (orig) orig(); setTimeout(function() { updateLogoColors(); updateThemeIcon(); }, 10); };
         updateLogoColors();
         updateThemeIcon();
-    </script>
-    <script>
-        /* Guide panel */
-        var guidePanel = document.getElementById('guide-panel');
-        var guideBtn = document.getElementById('guide-btn');
-        var closeBtn = document.getElementById('close-guide');
-        var neverShow = document.getElementById('never-show-guide');
-        function openGuide() { if (guidePanel) guidePanel.classList.add('open'); }
-        function closeGuide() { if (guidePanel) guidePanel.classList.remove('open'); }
-        if (guideBtn) guideBtn.addEventListener('click', openGuide);
-        if (closeBtn) closeBtn.addEventListener('click', closeGuide);
-        var introHelpLink = document.getElementById('intro-help-link');
-        if (introHelpLink) introHelpLink.addEventListener('click', function(e) { e.preventDefault(); openGuide(); });
-        var introHelpLinkMini = document.getElementById('intro-help-link-mini');
-        if (introHelpLinkMini) introHelpLinkMini.addEventListener('click', function(e) { e.preventDefault(); openGuide(); });
-        if (neverShow) {
-            neverShow.addEventListener('change', function() {
-                if (neverShow.checked) {
-                    localStorage.setItem('timerist_interval_guide_seen', 'true');
-                    closeGuide();
-                }
-            });
-        }
     </script>
 </body>
 </html>
